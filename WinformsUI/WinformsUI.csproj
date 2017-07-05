@@ -111,6 +111,12 @@
     <Compile Include="Game\Phases\WatchTurnControl.Designer.cs">
       <DependentUpon>WatchTurnControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="HelperControls\AIPlayerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HelperControls\AIPlayerControl.Designer.cs">
+      <DependentUpon>AIPlayerControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="HelperControls\AISettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -193,6 +199,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Game\Phases\WatchTurnControl.resx">
       <DependentUpon>WatchTurnControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelperControls\AIPlayerControl.resx">
+      <DependentUpon>AIPlayerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelperControls\AISettingsControl.resx">
       <DependentUpon>AISettingsControl.cs</DependentUpon>
