@@ -10,17 +10,21 @@ using System.Windows.Forms;
 
 namespace WinformsUI.HelperControls
 {
-    public partial class AIPlayerControl : UserControl
+    public partial class PlayerControl : UserControl
     {
-        public AIPlayerControl()
+        public PlayerControl()
         {
             InitializeComponent();
         }
 
-        public Color PlayerColor
+        private void colorButton_Click(object sender, EventArgs e)
         {
-            get { return this.colorButton.BackColor; }
-            private set { colorButton.BackColor = value; }
+
+        }
+
+        private void playerName_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

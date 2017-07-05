@@ -123,6 +123,12 @@
     <Compile Include="HelperControls\AISettingsControl.Designer.cs">
       <DependentUpon>AISettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="HelperControls\PlayerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HelperControls\PlayerControl.Designer.cs">
+      <DependentUpon>PlayerControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="HelperControls\PlayersSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -205,6 +211,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HelperControls\AISettingsControl.resx">
       <DependentUpon>AISettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelperControls\PlayerControl.resx">
+      <DependentUpon>PlayerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelperControls\PlayersSettingsControl.resx">
       <DependentUpon>PlayersSettingsControl.cs</DependentUpon>
