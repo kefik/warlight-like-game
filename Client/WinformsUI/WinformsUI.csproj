@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7022FF55-5AB7-467C-AF9A-BE8DCE89BA2B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>WinformsUI</RootNamespace>
+    <AssemblyName>WinformsUI</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GameSetup\Multiplayer\Hotseat\GameOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Hotseat\GameOptionsControl.Designer.cs">
+      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Hotseat\LoadGamesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Hotseat\LoadGamesControl.Designer.cs">
+      <DependentUpon>LoadGamesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Hotseat\NewGameSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Hotseat\NewGameSettingsControl.Designer.cs">
+      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\NewGameSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\NewGameSettingsControl.Designer.cs">
+      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameSetup\Singleplayer\GameOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Singleplayer\GameOptionsControl.Designer.cs">
+      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameSetup\Singleplayer\LoadGamesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Singleplayer\LoadGamesControl.Designer.cs">
+      <DependentUpon>LoadGamesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameSetup\Singleplayer\NewGameSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Singleplayer\NewGameSettingsControl.Designer.cs">
+      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Game\InGameControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Game\InGameControl.Designer.cs">
+      <DependentUpon>InGameControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Game\Phases\BeginPhaseControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Game\Phases\BeginPhaseControl.Designer.cs">
+      <DependentUpon>BeginPhaseControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Game\Phases\TurnPhaseControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Game\Phases\TurnPhaseControl.Designer.cs">
+      <DependentUpon>TurnPhaseControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Game\Phases\WatchTurnControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Game\Phases\WatchTurnControl.Designer.cs">
+      <DependentUpon>WatchTurnControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HelperControls\AISettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HelperControls\AISettingsControl.Designer.cs">
+      <DependentUpon>AISettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HelperControls\PlayersSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HelperControls\PlayersSettingsControl.Designer.cs">
+      <DependentUpon>PlayersSettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainGameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainGameForm.Designer.cs">
+      <DependentUpon>MainGameForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LoadingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadingForm.Designer.cs">
+      <DependentUpon>LoadingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\GameTypeChoiceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\GameTypeChoiceForm.Designer.cs">
+      <DependentUpon>GameTypeChoiceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\GameOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\GameOptionsControl.Designer.cs">
+      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\MyGamesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\MyGamesControl.Designer.cs">
+      <DependentUpon>MyGamesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GameSetup\Multiplayer\Network\ServerLoggingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\ServerLoggingForm.Designer.cs">
+      <DependentUpon>ServerLoggingForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Hotseat\GameOptionsControl.resx">
+      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Hotseat\LoadGamesControl.resx">
+      <DependentUpon>LoadGamesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Hotseat\NewGameSettingsControl.resx">
+      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Network\NewGameSettingsControl.resx">
+      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Singleplayer\GameOptionsControl.resx">
+      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Singleplayer\LoadGamesControl.resx">
+      <DependentUpon>LoadGamesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Singleplayer\NewGameSettingsControl.resx">
+      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Game\InGameControl.resx">
+      <DependentUpon>InGameControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Game\Phases\BeginPhaseControl.resx">
+      <DependentUpon>BeginPhaseControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Game\Phases\TurnPhaseControl.resx">
+      <DependentUpon>TurnPhaseControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Game\Phases\WatchTurnControl.resx">
+      <DependentUpon>WatchTurnControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelperControls\AISettingsControl.resx">
+      <DependentUpon>AISettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelperControls\PlayersSettingsControl.resx">
+      <DependentUpon>PlayersSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainGameForm.resx">
+      <DependentUpon>MainGameForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoadingForm.resx">
+      <DependentUpon>LoadingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Multiplayer\GameTypeChoiceForm.resx">
+      <DependentUpon>GameTypeChoiceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Network\GameOptionsControl.resx">
+      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Network\MyGamesControl.resx">
+      <DependentUpon>MyGamesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Network\ServerLoggingForm.resx">
+      <DependentUpon>ServerLoggingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
