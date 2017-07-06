@@ -35,32 +35,30 @@
             // 
             // colorButton
             // 
-            this.colorButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.colorButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.colorButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.colorButton.FlatAppearance.BorderSize = 0;
             this.colorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.colorButton.Location = new System.Drawing.Point(207, 7);
+            this.colorButton.Location = new System.Drawing.Point(203, 5);
             this.colorButton.Name = "colorButton";
             this.colorButton.Size = new System.Drawing.Size(62, 21);
             this.colorButton.TabIndex = 2;
             this.colorButton.UseVisualStyleBackColor = false;
-            this.colorButton.Click += new System.EventHandler(this.colorButton_Click);
             // 
             // playerName
             // 
             this.playerName.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.playerName.AutoSize = true;
             this.playerName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.playerName.Location = new System.Drawing.Point(69, 11);
+            this.playerName.Location = new System.Drawing.Point(72, 8);
             this.playerName.Name = "playerName";
             this.playerName.Size = new System.Drawing.Size(75, 13);
             this.playerName.TabIndex = 3;
             this.playerName.Text = "Bimbinbiribong";
-            this.playerName.Click += new System.EventHandler(this.playerName_Click);
             // 
             // stateComboBox
             // 
-            this.stateComboBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.stateComboBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.stateComboBox.AutoCompleteCustomSource.AddRange(new string[] {
             "Free",
             "Filled"});
@@ -69,7 +67,7 @@
             "Easy",
             "Medium",
             "Hard"});
-            this.stateComboBox.Location = new System.Drawing.Point(5, 8);
+            this.stateComboBox.Location = new System.Drawing.Point(3, 5);
             this.stateComboBox.Name = "stateComboBox";
             this.stateComboBox.Size = new System.Drawing.Size(58, 21);
             this.stateComboBox.TabIndex = 4;
@@ -81,9 +79,9 @@
             this.Controls.Add(this.stateComboBox);
             this.Controls.Add(this.playerName);
             this.Controls.Add(this.colorButton);
-            this.MinimumSize = new System.Drawing.Size(272, 35);
+            this.MinimumSize = new System.Drawing.Size(243, 21);
             this.Name = "PlayerControl";
-            this.Size = new System.Drawing.Size(272, 35);
+            this.Size = new System.Drawing.Size(268, 31);
             this.ResumeLayout(false);
             this.PerformLayout();
 

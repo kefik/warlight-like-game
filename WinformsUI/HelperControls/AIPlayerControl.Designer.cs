@@ -41,18 +41,18 @@
             "Easy",
             "Medium",
             "Hard"});
-            this.difficultyComboBox.Location = new System.Drawing.Point(90, 6);
+            this.difficultyComboBox.Location = new System.Drawing.Point(90, 2);
             this.difficultyComboBox.Name = "difficultyComboBox";
             this.difficultyComboBox.Size = new System.Drawing.Size(109, 21);
             this.difficultyComboBox.TabIndex = 0;
             // 
             // colorButton
             // 
-            this.colorButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.colorButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.colorButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.colorButton.FlatAppearance.BorderSize = 0;
             this.colorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.colorButton.Location = new System.Drawing.Point(205, 6);
+            this.colorButton.Location = new System.Drawing.Point(205, 2);
             this.colorButton.Name = "colorButton";
             this.colorButton.Size = new System.Drawing.Size(62, 21);
             this.colorButton.TabIndex = 1;
@@ -63,7 +63,7 @@
             this.aiName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.aiName.AutoSize = true;
             this.aiName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.aiName.Location = new System.Drawing.Point(13, 9);
+            this.aiName.Location = new System.Drawing.Point(13, 5);
             this.aiName.Name = "aiName";
             this.aiName.Size = new System.Drawing.Size(27, 13);
             this.aiName.TabIndex = 2;
@@ -76,9 +76,9 @@
             this.Controls.Add(this.aiName);
             this.Controls.Add(this.colorButton);
             this.Controls.Add(this.difficultyComboBox);
-            this.MinimumSize = new System.Drawing.Size(272, 35);
+            this.MinimumSize = new System.Drawing.Size(272, 27);
             this.Name = "AIPlayerControl";
-            this.Size = new System.Drawing.Size(272, 35);
+            this.Size = new System.Drawing.Size(272, 27);
             this.ResumeLayout(false);
             this.PerformLayout();
 

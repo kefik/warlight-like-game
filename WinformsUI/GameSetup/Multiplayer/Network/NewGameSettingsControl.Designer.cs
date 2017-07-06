@@ -35,7 +35,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "NewGameSettingsControl";
-            this.Size = new System.Drawing.Size(383, 227);
+            this.Size = new System.Drawing.Size(446, 276);
             this.ResumeLayout(false);
 
         }

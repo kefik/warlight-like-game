@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace WinformsUI
 {
@@ -7,10 +8,11 @@ namespace WinformsUI
         public MainGameForm()
         {
             InitializeComponent();
-            var g = new GameSetup.Multiplayer.Network.NewGameSettingsControl()
+            var g = new HelperControls.AISettingsControl()
             {
-                Parent = this.multiplayerTabPage,
-                Dock = DockStyle.Fill
+                Parent = this.singleplayerTabPage,
+                Dock = DockStyle.Top,
+                //BackColor = Color.Red
             };
             g.Show();
 

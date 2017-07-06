@@ -16,15 +16,5 @@ namespace WinformsUI.HelperControls
         {
             InitializeComponent();
         }
-
-        private void colorButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void playerName_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

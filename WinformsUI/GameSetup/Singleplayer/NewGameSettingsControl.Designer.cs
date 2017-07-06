@@ -30,12 +30,12 @@
         {
             this.SuspendLayout();
             // 
-            // NewGameSettings
+            // NewGameSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "NewGameSettings";
-            this.Size = new System.Drawing.Size(383, 227);
+            this.Name = "NewGameSettingsControl";
+            this.Size = new System.Drawing.Size(427, 262);
             this.ResumeLayout(false);
 
         }
