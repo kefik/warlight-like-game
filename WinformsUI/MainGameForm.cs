@@ -8,10 +8,10 @@ namespace WinformsUI
         public MainGameForm()
         {
             InitializeComponent();
-            var g = new HelperControls.AISettingsControl()
+            var g = new GameSetup.Multiplayer.Hotseat.NewGameSettingsControl()
             {
                 Parent = this.singleplayerTabPage,
-                Dock = DockStyle.Top,
+                Dock = DockStyle.Top
                 //BackColor = Color.Red
             };
             g.Show();

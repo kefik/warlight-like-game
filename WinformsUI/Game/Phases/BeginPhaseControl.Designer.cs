@@ -35,7 +35,8 @@
             // 
             // beginButton
             // 
-            this.beginButton.Location = new System.Drawing.Point(108, 196);
+            this.beginButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.beginButton.Location = new System.Drawing.Point(95, 196);
             this.beginButton.Name = "beginButton";
             this.beginButton.Size = new System.Drawing.Size(90, 23);
             this.beginButton.TabIndex = 0;
@@ -53,6 +54,7 @@
             // 
             // repeatRoundButton
             // 
+            this.repeatRoundButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.repeatRoundButton.Location = new System.Drawing.Point(3, 196);
             this.repeatRoundButton.Name = "repeatRoundButton";
             this.repeatRoundButton.Size = new System.Drawing.Size(89, 23);
@@ -68,7 +70,7 @@
             this.Controls.Add(this.menuButton);
             this.Controls.Add(this.beginButton);
             this.Name = "BeginPhaseControl";
-            this.Size = new System.Drawing.Size(201, 410);
+            this.Size = new System.Drawing.Size(189, 410);
             this.ResumeLayout(false);
 
         }

@@ -53,7 +53,7 @@
             // 
             // submitButton
             // 
-            this.submitButton.Location = new System.Drawing.Point(188, 99);
+            this.submitButton.Location = new System.Drawing.Point(187, 76);
             this.submitButton.Name = "submitButton";
             this.submitButton.Size = new System.Drawing.Size(75, 23);
             this.submitButton.TabIndex = 2;
@@ -62,7 +62,7 @@
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(107, 99);
+            this.cancelButton.Location = new System.Drawing.Point(106, 76);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 3;
@@ -91,7 +91,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(275, 134);
+            this.ClientSize = new System.Drawing.Size(271, 106);
             this.Controls.Add(this.passwordLabel);
             this.Controls.Add(this.loginLabel);
             this.Controls.Add(this.cancelButton);

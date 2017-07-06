@@ -48,7 +48,7 @@
             this.mapComboBox.FormattingEnabled = true;
             this.mapComboBox.Items.AddRange(new object[] {
             "World"});
-            this.mapComboBox.Location = new System.Drawing.Point(152, 25);
+            this.mapComboBox.Location = new System.Drawing.Point(181, 25);
             this.mapComboBox.Name = "mapComboBox";
             this.mapComboBox.Size = new System.Drawing.Size(121, 21);
             this.mapComboBox.TabIndex = 1;
@@ -60,7 +60,7 @@
             this.Controls.Add(this.mapComboBox);
             this.Controls.Add(this.mapLabel);
             this.Name = "MapSettingsControl";
-            this.Size = new System.Drawing.Size(286, 71);
+            this.Size = new System.Drawing.Size(315, 71);
             this.ResumeLayout(false);
             this.PerformLayout();
 
