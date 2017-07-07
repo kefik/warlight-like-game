@@ -31,6 +31,7 @@
             this.multiplayerTabPage = new System.Windows.Forms.TabPage();
             this.singleplayerTabPage = new System.Windows.Forms.TabPage();
             this.typeGameChoiceTabControl = new System.Windows.Forms.TabControl();
+            this.settingsTabPage = new System.Windows.Forms.TabPage();
             this.typeGameChoiceTabControl.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,6 +47,7 @@
             // 
             // singleplayerTabPage
             // 
+            this.singleplayerTabPage.AutoScroll = true;
             this.singleplayerTabPage.Location = new System.Drawing.Point(4, 22);
             this.singleplayerTabPage.Name = "singleplayerTabPage";
             this.singleplayerTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -58,12 +60,23 @@
             // 
             this.typeGameChoiceTabControl.Controls.Add(this.singleplayerTabPage);
             this.typeGameChoiceTabControl.Controls.Add(this.multiplayerTabPage);
+            this.typeGameChoiceTabControl.Controls.Add(this.settingsTabPage);
             this.typeGameChoiceTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.typeGameChoiceTabControl.Location = new System.Drawing.Point(0, 0);
             this.typeGameChoiceTabControl.Name = "typeGameChoiceTabControl";
             this.typeGameChoiceTabControl.SelectedIndex = 0;
             this.typeGameChoiceTabControl.Size = new System.Drawing.Size(681, 457);
             this.typeGameChoiceTabControl.TabIndex = 1;
+            // 
+            // settingsTabPage
+            // 
+            this.settingsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.settingsTabPage.Name = "settingsTabPage";
+            this.settingsTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.settingsTabPage.Size = new System.Drawing.Size(673, 431);
+            this.settingsTabPage.TabIndex = 2;
+            this.settingsTabPage.Text = "Settings";
+            this.settingsTabPage.UseVisualStyleBackColor = true;
             // 
             // MainGameForm
             // 
@@ -84,6 +97,7 @@
         private System.Windows.Forms.TabPage multiplayerTabPage;
         private System.Windows.Forms.TabPage singleplayerTabPage;
         private System.Windows.Forms.TabControl typeGameChoiceTabControl;
+        private System.Windows.Forms.TabPage settingsTabPage;
     }
 }
 

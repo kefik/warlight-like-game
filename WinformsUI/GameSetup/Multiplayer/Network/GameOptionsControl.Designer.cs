@@ -30,9 +30,13 @@
         {
             this.gameOptionsTabControl = new System.Windows.Forms.TabControl();
             this.myGamesTabPage = new System.Windows.Forms.TabPage();
+            this.myGamesControl = new WinformsUI.GameSetup.Multiplayer.Network.MyGamesControl();
             this.openedGamesTabPage = new System.Windows.Forms.TabPage();
             this.newGameTabPage = new System.Windows.Forms.TabPage();
+            this.newGameSettingsControl = new WinformsUI.GameSetup.Multiplayer.Network.NewGameSettingsControl();
             this.gameOptionsTabControl.SuspendLayout();
+            this.myGamesTabPage.SuspendLayout();
+            this.newGameTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // gameOptionsTabControl
@@ -49,6 +53,7 @@
             // 
             // myGamesTabPage
             // 
+            this.myGamesTabPage.Controls.Add(this.myGamesControl);
             this.myGamesTabPage.Location = new System.Drawing.Point(4, 22);
             this.myGamesTabPage.Name = "myGamesTabPage";
             this.myGamesTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -56,6 +61,16 @@
             this.myGamesTabPage.TabIndex = 0;
             this.myGamesTabPage.Text = "My games";
             this.myGamesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // myGamesControl
+            // 
+            this.myGamesControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.myGamesControl.Location = new System.Drawing.Point(3, 4);
+            this.myGamesControl.Name = "myGamesControl";
+            this.myGamesControl.Size = new System.Drawing.Size(526, 274);
+            this.myGamesControl.TabIndex = 0;
             // 
             // openedGamesTabPage
             // 
@@ -69,6 +84,7 @@
             // 
             // newGameTabPage
             // 
+            this.newGameTabPage.Controls.Add(this.newGameSettingsControl);
             this.newGameTabPage.Location = new System.Drawing.Point(4, 22);
             this.newGameTabPage.Name = "newGameTabPage";
             this.newGameTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -76,6 +92,15 @@
             this.newGameTabPage.TabIndex = 2;
             this.newGameTabPage.Text = "New game";
             this.newGameTabPage.UseVisualStyleBackColor = true;
+            // 
+            // newGameSettingsControl
+            // 
+            this.newGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.newGameSettingsControl.Location = new System.Drawing.Point(3, 3);
+            this.newGameSettingsControl.Name = "newGameSettingsControl";
+            this.newGameSettingsControl.Size = new System.Drawing.Size(526, 326);
+            this.newGameSettingsControl.TabIndex = 0;
             // 
             // GameOptionsControl
             // 
@@ -85,6 +110,8 @@
             this.Name = "GameOptionsControl";
             this.Size = new System.Drawing.Size(540, 301);
             this.gameOptionsTabControl.ResumeLayout(false);
+            this.myGamesTabPage.ResumeLayout(false);
+            this.newGameTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -95,5 +122,7 @@
         private System.Windows.Forms.TabPage myGamesTabPage;
         private System.Windows.Forms.TabPage openedGamesTabPage;
         private System.Windows.Forms.TabPage newGameTabPage;
+        private MyGamesControl myGamesControl;
+        private NewGameSettingsControl newGameSettingsControl;
     }
 }

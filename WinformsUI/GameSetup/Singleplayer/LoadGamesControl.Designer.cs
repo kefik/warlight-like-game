@@ -34,7 +34,9 @@
             // 
             // loadedGamesListBox
             // 
-            this.loadedGamesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.loadedGamesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.loadedGamesListBox.FormattingEnabled = true;
             this.loadedGamesListBox.Items.AddRange(new object[] {
             "AI:4; Map: World; Saved: 18.05.2015 12:58"});
@@ -45,7 +47,7 @@
             // 
             // loadButton
             // 
-            this.loadButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.loadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.loadButton.Location = new System.Drawing.Point(332, 185);
             this.loadButton.Name = "loadButton";
             this.loadButton.Size = new System.Drawing.Size(74, 23);
