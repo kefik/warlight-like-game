@@ -99,7 +99,9 @@
             this.Controls.Add(this.passwordTextBox);
             this.Controls.Add(this.loginTextBox);
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(287, 145);
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(287, 145);
             this.Name = "ServerLoggingForm";
             this.Text = "Warlight | Server logging";
             this.ResumeLayout(false);

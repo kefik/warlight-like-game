@@ -83,7 +83,9 @@
             this.Controls.Add(this.gameTypeLabel);
             this.Controls.Add(this.multiplayerGameTypeComboBox);
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(304, 140);
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(304, 140);
             this.Name = "GameTypeChoiceForm";
             this.Text = "Warlight | Type choose";
             this.ResumeLayout(false);

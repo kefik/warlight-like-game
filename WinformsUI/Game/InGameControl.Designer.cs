@@ -34,6 +34,8 @@
             // 
             // gamePanel
             // 
+            this.gamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gamePanel.Location = new System.Drawing.Point(189, 0);
             this.gamePanel.Name = "gamePanel";
             this.gamePanel.Size = new System.Drawing.Size(462, 436);
@@ -41,6 +43,8 @@
             // 
             // gameMenuPanel
             // 
+            this.gameMenuPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.gameMenuPanel.Location = new System.Drawing.Point(0, 0);
             this.gameMenuPanel.Name = "gameMenuPanel";
             this.gameMenuPanel.Size = new System.Drawing.Size(183, 436);
