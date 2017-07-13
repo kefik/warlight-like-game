@@ -10,17 +10,55 @@ using System.Windows.Forms;
 
 namespace WinformsUI.HelperControls
 {
+    public enum Difficulty
+    {
+        Easy,
+        Medium,
+        Hard
+    }
     public partial class AIPlayerControl : UserControl
     {
         public AIPlayerControl()
         {
             InitializeComponent();
         }
-
+        /// <summary>
+        /// Accesses player color.
+        /// </summary>
         public Color PlayerColor
         {
             get { return this.colorButton.BackColor; }
-            private set { colorButton.BackColor = value; }
+            // private set { colorButton.BackColor = value; }
+        }
+        /// <summary>
+        /// Accesses player difficulty.
+        /// </summary>
+        public Difficulty PlayerDifficulty
+        {
+            get
+            {
+                // what is in combo box
+                switch (difficultyComboBox.Text)
+                {
+                    case "Easy":
+                        return Difficulty.Easy;
+                    case "Medium":
+                        return Difficulty.Medium;
+                    case "Hard":
+                        return Difficulty.Hard;
+                    default:
+                        throw new ArgumentException();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Accesses player name.
+        /// </summary>
+        public string PlayerName
+        {
+            get { return aiNameLabel.Text; }
+            private set { aiNameLabel.Text = value; }
         }
     }
 }

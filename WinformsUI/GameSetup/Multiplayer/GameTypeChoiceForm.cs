@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace WinformsUI.GameSetup.Multiplayer
 {
@@ -19,6 +20,11 @@ namespace WinformsUI.GameSetup.Multiplayer
             Close();
         }
 
+        /// <summary>
+        /// Redirects client to proper screen and closes the form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ChooseType(object sender, System.EventArgs e)
         {
             // TODO: load proper screen

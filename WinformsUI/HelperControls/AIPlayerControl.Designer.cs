@@ -30,7 +30,7 @@
         {
             this.difficultyComboBox = new System.Windows.Forms.ComboBox();
             this.colorButton = new System.Windows.Forms.Button();
-            this.aiName = new System.Windows.Forms.Label();
+            this.aiNameLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // difficultyComboBox
@@ -58,22 +58,22 @@
             this.colorButton.TabIndex = 1;
             this.colorButton.UseVisualStyleBackColor = false;
             // 
-            // aiName
+            // aiNameLabel
             // 
-            this.aiName.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.aiName.AutoSize = true;
-            this.aiName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.aiName.Location = new System.Drawing.Point(13, 5);
-            this.aiName.Name = "aiName";
-            this.aiName.Size = new System.Drawing.Size(27, 13);
-            this.aiName.TabIndex = 2;
-            this.aiName.Text = "PC1";
+            this.aiNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.aiNameLabel.AutoSize = true;
+            this.aiNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.aiNameLabel.Location = new System.Drawing.Point(13, 5);
+            this.aiNameLabel.Name = "aiNameLabel";
+            this.aiNameLabel.Size = new System.Drawing.Size(27, 13);
+            this.aiNameLabel.TabIndex = 2;
+            this.aiNameLabel.Text = "PC1";
             // 
             // AIPlayerControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.aiName);
+            this.Controls.Add(this.aiNameLabel);
             this.Controls.Add(this.colorButton);
             this.Controls.Add(this.difficultyComboBox);
             this.MinimumSize = new System.Drawing.Size(272, 27);
@@ -88,6 +88,6 @@
 
         private System.Windows.Forms.ComboBox difficultyComboBox;
         private System.Windows.Forms.Button colorButton;
-        private System.Windows.Forms.Label aiName;
+        private System.Windows.Forms.Label aiNameLabel;
     }
 }

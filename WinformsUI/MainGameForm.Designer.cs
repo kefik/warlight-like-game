@@ -32,12 +32,12 @@
             this.singleplayerTabPage = new System.Windows.Forms.TabPage();
             this.typeGameChoiceTabControl = new System.Windows.Forms.TabControl();
             this.settingsTabPage = new System.Windows.Forms.TabPage();
+            this.passwordTextBox = new System.Windows.Forms.TextBox();
+            this.emailTextBox = new System.Windows.Forms.TextBox();
+            this.playerNameTextBox = new System.Windows.Forms.TextBox();
+            this.emailLabel = new System.Windows.Forms.Label();
             this.passwordLabel = new System.Windows.Forms.Label();
             this.playerNameLabel = new System.Windows.Forms.Label();
-            this.emailLabel = new System.Windows.Forms.Label();
-            this.playerNameTextBox = new System.Windows.Forms.TextBox();
-            this.emailTextBox = new System.Windows.Forms.TextBox();
-            this.passwordTextBox = new System.Windows.Forms.TextBox();
             this.typeGameChoiceTabControl.SuspendLayout();
             this.settingsTabPage.SuspendLayout();
             this.SuspendLayout();
@@ -91,6 +91,36 @@
             this.settingsTabPage.Text = "Settings";
             this.settingsTabPage.UseVisualStyleBackColor = true;
             // 
+            // passwordTextBox
+            // 
+            this.passwordTextBox.Location = new System.Drawing.Point(484, 66);
+            this.passwordTextBox.Name = "passwordTextBox";
+            this.passwordTextBox.Size = new System.Drawing.Size(100, 20);
+            this.passwordTextBox.TabIndex = 5;
+            // 
+            // emailTextBox
+            // 
+            this.emailTextBox.Location = new System.Drawing.Point(484, 88);
+            this.emailTextBox.Name = "emailTextBox";
+            this.emailTextBox.Size = new System.Drawing.Size(100, 20);
+            this.emailTextBox.TabIndex = 4;
+            // 
+            // playerNameTextBox
+            // 
+            this.playerNameTextBox.Location = new System.Drawing.Point(484, 44);
+            this.playerNameTextBox.Name = "playerNameTextBox";
+            this.playerNameTextBox.Size = new System.Drawing.Size(100, 20);
+            this.playerNameTextBox.TabIndex = 3;
+            // 
+            // emailLabel
+            // 
+            this.emailLabel.AutoSize = true;
+            this.emailLabel.Location = new System.Drawing.Point(86, 95);
+            this.emailLabel.Name = "emailLabel";
+            this.emailLabel.Size = new System.Drawing.Size(32, 13);
+            this.emailLabel.TabIndex = 2;
+            this.emailLabel.Text = "Email";
+            // 
             // passwordLabel
             // 
             this.passwordLabel.AutoSize = true;
@@ -108,36 +138,6 @@
             this.playerNameLabel.Size = new System.Drawing.Size(67, 13);
             this.playerNameLabel.TabIndex = 0;
             this.playerNameLabel.Text = "Player Name";
-            // 
-            // emailLabel
-            // 
-            this.emailLabel.AutoSize = true;
-            this.emailLabel.Location = new System.Drawing.Point(86, 95);
-            this.emailLabel.Name = "emailLabel";
-            this.emailLabel.Size = new System.Drawing.Size(32, 13);
-            this.emailLabel.TabIndex = 2;
-            this.emailLabel.Text = "Email";
-            // 
-            // playerNameTextBox
-            // 
-            this.playerNameTextBox.Location = new System.Drawing.Point(484, 44);
-            this.playerNameTextBox.Name = "playerNameTextBox";
-            this.playerNameTextBox.Size = new System.Drawing.Size(100, 20);
-            this.playerNameTextBox.TabIndex = 3;
-            // 
-            // emailTextBox
-            // 
-            this.emailTextBox.Location = new System.Drawing.Point(484, 88);
-            this.emailTextBox.Name = "emailTextBox";
-            this.emailTextBox.Size = new System.Drawing.Size(100, 20);
-            this.emailTextBox.TabIndex = 4;
-            // 
-            // passwordTextBox
-            // 
-            this.passwordTextBox.Location = new System.Drawing.Point(484, 66);
-            this.passwordTextBox.Name = "passwordTextBox";
-            this.passwordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.passwordTextBox.TabIndex = 5;
             // 
             // MainGameForm
             // 
