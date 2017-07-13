@@ -16,22 +16,27 @@ namespace WinformsUI.HelperControls
         Medium,
         Hard
     }
+
     public partial class AIPlayerControl : UserControl
     {
         public AIPlayerControl()
         {
+            difficultyComboBox.SelectedIndex = (int) Difficulty.Medium;
+
             InitializeComponent();
         }
+        
         /// <summary>
-        /// Accesses player color.
+        /// Accesses AI player color.
         /// </summary>
         public Color PlayerColor
         {
             get { return this.colorButton.BackColor; }
-            // private set { colorButton.BackColor = value; }
+            private set { colorButton.BackColor = value; }
         }
+
         /// <summary>
-        /// Accesses player difficulty.
+        /// Accesses AI player difficulty.
         /// </summary>
         public Difficulty PlayerDifficulty
         {
@@ -50,10 +55,11 @@ namespace WinformsUI.HelperControls
                         throw new ArgumentException();
                 }
             }
+
         }
 
         /// <summary>
-        /// Accesses player name.
+        /// Accesses AI player name.
         /// </summary>
         public string PlayerName
         {

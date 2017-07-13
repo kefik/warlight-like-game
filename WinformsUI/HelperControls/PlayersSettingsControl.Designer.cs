@@ -31,9 +31,7 @@
             this.playersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.playersLabel = new System.Windows.Forms.Label();
             this.playersTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.playerControl1 = new WinformsUI.HelperControls.PlayerControl();
             ((System.ComponentModel.ISupportInitialize)(this.playersNumberNumericUpDown)).BeginInit();
-            this.playersTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // playersNumberNumericUpDown
@@ -49,6 +47,7 @@
             this.playersNumberNumericUpDown.Size = new System.Drawing.Size(47, 20);
             this.playersNumberNumericUpDown.TabIndex = 4;
             this.playersNumberNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.playersNumberNumericUpDown.ValueChanged += new System.EventHandler(this.PlayersNumberChanged);
             // 
             // playersLabel
             // 
@@ -65,7 +64,6 @@
             this.playersTableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.playersTableLayoutPanel.ColumnCount = 1;
             this.playersTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.playersTableLayoutPanel.Controls.Add(this.playerControl1, 0, 1);
             this.playersTableLayoutPanel.Location = new System.Drawing.Point(19, 45);
             this.playersTableLayoutPanel.Name = "playersTableLayoutPanel";
             this.playersTableLayoutPanel.RowCount = 7;
@@ -79,15 +77,6 @@
             this.playersTableLayoutPanel.Size = new System.Drawing.Size(343, 206);
             this.playersTableLayoutPanel.TabIndex = 5;
             // 
-            // playerControl1
-            // 
-            this.playerControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.playerControl1.Location = new System.Drawing.Point(3, 3);
-            this.playerControl1.MinimumSize = new System.Drawing.Size(243, 21);
-            this.playerControl1.Name = "playerControl1";
-            this.playerControl1.Size = new System.Drawing.Size(337, 28);
-            this.playerControl1.TabIndex = 0;
-            // 
             // PlayersSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -98,7 +87,6 @@
             this.Name = "PlayersSettingsControl";
             this.Size = new System.Drawing.Size(391, 266);
             ((System.ComponentModel.ISupportInitialize)(this.playersNumberNumericUpDown)).EndInit();
-            this.playersTableLayoutPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -108,6 +96,5 @@
         private System.Windows.Forms.NumericUpDown playersNumberNumericUpDown;
         private System.Windows.Forms.Label playersLabel;
         private System.Windows.Forms.TableLayoutPanel playersTableLayoutPanel;
-        private PlayerControl playerControl1;
     }
 }

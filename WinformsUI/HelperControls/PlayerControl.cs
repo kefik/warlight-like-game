@@ -16,5 +16,23 @@ namespace WinformsUI.HelperControls
         {
             InitializeComponent();
         }
+        /// <summary>
+        /// Accesses player color.
+        /// </summary>
+        public Color PlayerColor
+        {
+            get { return this.colorButton.BackColor; }
+            // private set { colorButton.BackColor = value; }
+        }
+        
+
+        /// <summary>
+        /// Accesses player name.
+        /// </summary>
+        public string PlayerName
+        {
+            get { return playerName.Text; }
+            private set { playerName.Text = value; }
+        }
     }
 }
