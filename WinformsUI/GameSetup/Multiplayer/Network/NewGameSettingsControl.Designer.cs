@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.mapSettingsPanel = new System.Windows.Forms.Panel();
+            this.mapSettingsControl1 = new WinformsUI.HelperControls.MapSettingsControl();
             this.aiPlayersSettingsPanel = new System.Windows.Forms.Panel();
             this.aiSettingsControl1 = new WinformsUI.HelperControls.AISettingsControl();
             this.playersSettingsPanel = new System.Windows.Forms.Panel();
             this.playersSettingsControl = new WinformsUI.HelperControls.PlayersSettingsControl();
-            this.mapSettingsControl1 = new WinformsUI.HelperControls.MapSettingsControl();
             this.mapSettingsPanel.SuspendLayout();
             this.aiPlayersSettingsPanel.SuspendLayout();
             this.playersSettingsPanel.SuspendLayout();
@@ -48,6 +48,14 @@
             this.mapSettingsPanel.Name = "mapSettingsPanel";
             this.mapSettingsPanel.Size = new System.Drawing.Size(564, 48);
             this.mapSettingsPanel.TabIndex = 0;
+            // 
+            // mapSettingsControl1
+            // 
+            this.mapSettingsControl1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mapSettingsControl1.Location = new System.Drawing.Point(0, 0);
+            this.mapSettingsControl1.Name = "mapSettingsControl1";
+            this.mapSettingsControl1.Size = new System.Drawing.Size(564, 35);
+            this.mapSettingsControl1.TabIndex = 0;
             // 
             // aiPlayersSettingsPanel
             // 
@@ -84,14 +92,6 @@
             this.playersSettingsControl.Name = "playersSettingsControl";
             this.playersSettingsControl.Size = new System.Drawing.Size(547, 266);
             this.playersSettingsControl.TabIndex = 0;
-            // 
-            // mapSettingsControl1
-            // 
-            this.mapSettingsControl1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mapSettingsControl1.Location = new System.Drawing.Point(0, 0);
-            this.mapSettingsControl1.Name = "mapSettingsControl1";
-            this.mapSettingsControl1.Size = new System.Drawing.Size(564, 35);
-            this.mapSettingsControl1.TabIndex = 0;
             // 
             // NewGameSettingsControl
             // 

@@ -63,6 +63,7 @@
             this.okButton.TabIndex = 2;
             this.okButton.Text = "Ok";
             this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this.ChooseType);
             // 
             // cancelButton
             // 
@@ -72,6 +73,7 @@
             this.cancelButton.TabIndex = 3;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.Cancel);
             // 
             // GameTypeChoiceForm
             // 
