@@ -7,7 +7,7 @@ namespace ConquestObjectsLib.GameMap
     /// </summary>
     enum MapType
     {
-        World
+        None, World
     }
 
     /// <summary>
@@ -20,11 +20,11 @@ namespace ConquestObjectsLib.GameMap
         /// Represents regions of the map that player can conquer.
         /// </summary>
         public ICollection<Region> Regions { get; } = new HashSet<Region>();
-
+        
         /// <summary>
         /// Represents region groups this map has.
         /// </summary>
-        public ICollection<RegionGroup> RegionGroups { get; } = new HashSet<RegionGroup>();
+        public ICollection<SuperRegion> RegionGroups { get; } = new HashSet<SuperRegion>();
         
         protected Map(string name)
         {

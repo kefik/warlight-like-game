@@ -25,11 +25,11 @@ namespace ConquestObjectsLib
     {
         public abstract string Name { get; }
         public Color Color { get; }
-
+        
         /// <summary>
         /// Regions this player controls.
         /// </summary>
-        public ICollection<Region> ControlledRegions { get; } = new List<Region>();
+        public ICollection<Region> ControlledRegions { get; } = new HashSet<Region>();
 
         protected Player(Color color)
         {

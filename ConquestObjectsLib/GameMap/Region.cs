@@ -13,12 +13,12 @@
         /// <summary>
         /// Represents region group it belongs to.
         /// </summary>
-        public RegionGroup RegionGroup { get; private set; }
+        public SuperRegion SuperRegion { get; private set; }
 
-        public Region(string name, RegionGroup regionGroup)
+        public Region(string name, SuperRegion superRegion)
         {
             Name = name;
-            RegionGroup = regionGroup;
+            SuperRegion = superRegion;
         }
         
     }

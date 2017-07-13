@@ -12,7 +12,7 @@ namespace ConquestObjectsLib
     /// </summary>
     enum GameType
     {
-        SinglePlayer, MultiplayerHotseat, MultiplayerNetwork
+        None, SinglePlayer, MultiplayerHotseat, MultiplayerNetwork
     }
     /// <summary>
     /// Represents one game.

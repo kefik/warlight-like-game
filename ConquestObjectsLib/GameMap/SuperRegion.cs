@@ -7,13 +7,13 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Represents region group of giving size giving bonus to player who owns it all.
     /// </summary>
-    class RegionGroup : IEnumerable<Region>
+    class SuperRegion : IEnumerable<Region>
     {
         public string Name { get; }
         public int Bonus { get; }
         readonly ICollection<Region> regions = new HashSet<Region>();
 
-        public RegionGroup(string name, int bonus)
+        public SuperRegion(string name, int bonus)
         {
             Name = name;
             Bonus = bonus;
@@ -21,7 +21,7 @@ namespace ConquestObjectsLib.GameMap
 
         public void AddRegion(Region region)
         {
-            if (this != region?.RegionGroup) throw new ArgumentException();
+            if (this != region?.SuperRegion) throw new ArgumentException();
 
             regions.Add(region);
         }
