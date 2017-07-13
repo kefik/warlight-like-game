@@ -1,4 +1,6 @@
-﻿namespace ConquestObjectsLib.GameMap
+﻿using System.Collections.Generic;
+
+namespace ConquestObjectsLib.GameMap
 {
     /// <summary>
     /// Instace of this class represents region for given map in the game.
@@ -13,13 +15,19 @@
         /// <summary>
         /// Represents region group it belongs to.
         /// </summary>
-        public SuperRegion SuperRegion { get; private set; }
+        public SuperRegion SuperRegion { get; }
+
+        /// <summary>
+        /// Represents list of regions that are neighbours to this given region.
+        /// </summary>
+        public ICollection<Region> NeighbourRegions { get; } = new List<Region>();
 
         public Region(string name, SuperRegion superRegion)
         {
             Name = name;
             SuperRegion = superRegion;
         }
+
         
     }
 }
