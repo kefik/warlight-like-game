@@ -30,6 +30,5 @@ namespace ConquestObjectsLib.GameMap
         {
             this.Name = name;
         }
-        
     }
 }

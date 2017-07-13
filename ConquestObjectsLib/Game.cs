@@ -8,6 +8,13 @@ using ConquestObjectsLib.GameMap;
 namespace ConquestObjectsLib
 {
     /// <summary>
+    /// Enum containing 3 types of game any game can have.
+    /// </summary>
+    enum GameType
+    {
+        SinglePlayer, MultiplayerHotseat, MultiplayerNetwork
+    }
+    /// <summary>
     /// Represents one game.
     /// </summary>
     class Game
@@ -45,8 +52,23 @@ namespace ConquestObjectsLib
             }
         }
 
-        public Game(Map map, ICollection<Player> players)
+        GameType gameType;
+        /// <summary>
+        /// Represents game type this game has.
+        /// </summary>
+        public GameType GameType
         {
+            get { return gameType; }
+            set
+            {
+                if (Started) throw new Exception();
+                gameType = value;
+            }
+        }
+
+        public Game(GameType gameType, Map map, ICollection<Player> players)
+        {
+            this.gameType = gameType;
             this.Map = map;
             this.Players = players;
         }
@@ -62,7 +84,5 @@ namespace ConquestObjectsLib
             // start the game
             Started = true;
         }
-        
-
     }
 }
