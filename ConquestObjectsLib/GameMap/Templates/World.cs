@@ -1,4 +1,6 @@
-﻿namespace ConquestObjectsLib.GameMap.Templates
+﻿using System.Collections.Generic;
+
+namespace ConquestObjectsLib.GameMap.Templates
 {
     class World : Map
     {
@@ -8,5 +10,7 @@
         public World() : base("World")
         {
         }
+
+        
     }
 }
