@@ -24,7 +24,7 @@ namespace ConquestObjectsLib.GameMap
         /// <summary>
         /// Represents region groups this map has.
         /// </summary>
-        public ICollection<SuperRegion> RegionGroups { get; } = new HashSet<SuperRegion>();
+        public ICollection<SuperRegion> SuperRegions { get; } = new HashSet<SuperRegion>();
         
         protected Map(string name)
         {

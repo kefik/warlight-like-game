@@ -30,13 +30,13 @@ namespace ConquestObjectsLib.GameMap
             
             if (map.Regions.Count != regionsWithColors.Count) throw new ArgumentException();
 
-            HashSet<Region> regions = new HashSet<Region>(); // for value in dictionary to be unique
+            HashSet<Region> regions = new HashSet<Region>(); // forces value in dictionary to be unique
             foreach (var item in regionsWithColors)
             {
-                if (!regions.Add(item.Item2)) throw new ArgumentException();
+                if (!regions.Add(item.Item2)) throw new ArgumentException(); // is already in HashSet
                 if (!map.Regions.Contains(item.Item2)) throw new ArgumentException(); // TODO: slow, it shouldnt matter tho
 
-                regionsMapped.Add(item.Item1, item.Item2);
+                regionsMapped.Add(item.Item1, item.Item2); // adds the pair to regions, if its unique
             }
         }
         /// <summary>
@@ -47,7 +47,7 @@ namespace ConquestObjectsLib.GameMap
         public Region GetRegion(Color color)
         {
             Region region;
-            return !regionsMapped.TryGetValue(color, out region) ? null : region;
+            return regionsMapped.TryGetValue(color, out region) ? region : null;
         }
 
         /// <summary>

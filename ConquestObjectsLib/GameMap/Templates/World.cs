@@ -7,8 +7,9 @@ namespace ConquestObjectsLib.GameMap.Templates
         /// <summary>
         /// Constructor initializing map named "World".
         /// </summary>
-        public World() : base("World")
+        public World() : base(nameof(World))
         {
+            // TODO: Add initialization of Regions and SuperRegions
         }
 
         
