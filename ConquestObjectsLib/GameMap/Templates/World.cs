@@ -2,9 +2,15 @@
 
 namespace ConquestObjectsLib.GameMap.Templates
 {
+    /// <summary>
+    /// Map representing the world map.
+    /// </summary>
     public class World : Map
     {
-        public override int PlayerLimit { get; } = 10; // TODO: test for real max number of players
+        /// <summary>
+        /// Specifies upper limit for players for this map.
+        /// </summary>
+        public const int PlayersLimit = 10; // TODO: test for real max number of players
 
         /// <summary>
         /// Constructor initializing map named "World".
