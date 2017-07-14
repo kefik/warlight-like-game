@@ -10,14 +10,14 @@ namespace ConquestObjectsLib
     /// <summary>
     /// Enum containing 3 types of game any game can have.
     /// </summary>
-    enum GameType
+    public enum GameType
     {
         None, SinglePlayer, MultiplayerHotseat, MultiplayerNetwork
     }
     /// <summary>
     /// Represents one game.
     /// </summary>
-    class Game
+    public class Game
     {
         /// <summary>
         /// Represents boolean containing information whether the game has started.

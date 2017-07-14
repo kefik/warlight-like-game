@@ -5,7 +5,7 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Represents type of the map, one for each map created for the game.
     /// </summary>
-    enum MapType
+    public enum MapType
     {
         None, World
     }
@@ -13,7 +13,7 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Instance of this class represents map of the game.
     /// </summary>
-    abstract class Map
+    public abstract class Map
     {
         public string Name { get; }
         /// <summary>

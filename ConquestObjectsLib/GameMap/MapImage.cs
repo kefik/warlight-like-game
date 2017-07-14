@@ -11,7 +11,7 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Represents visual representation of the map and functionality linked with it.
     /// </summary>
-    class MapImage
+    public class MapImage
     {
         readonly Map map;
         readonly Bitmap image;

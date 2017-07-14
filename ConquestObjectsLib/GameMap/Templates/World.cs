@@ -2,7 +2,7 @@
 
 namespace ConquestObjectsLib.GameMap.Templates
 {
-    class World : Map
+    public class World : Map
     {
         /// <summary>
         /// Constructor initializing map named "World".

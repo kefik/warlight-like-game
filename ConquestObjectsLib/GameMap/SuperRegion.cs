@@ -8,7 +8,7 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Represents region group of giving size giving bonus to player who owns it all.
     /// </summary>
-    class SuperRegion : IEnumerable<Region>
+    public class SuperRegion : IEnumerable<Region>
     {
         /// <summary>
         /// Name given of the SuperRegion.

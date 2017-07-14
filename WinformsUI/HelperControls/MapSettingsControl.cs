@@ -7,13 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ConquestObjectsLib.GameMap;
+using ConquestObjectsLib.GameMap.Templates;
 
 namespace WinformsUI.HelperControls
 {
-    public enum Map
-    {
-        None, World
-    }
     public partial class MapSettingsControl : UserControl
     {
         public MapSettingsControl()
@@ -21,16 +19,16 @@ namespace WinformsUI.HelperControls
             InitializeComponent();
         }
 
-        public Map GameMap
+        public MapType GameMap
         {
             get
             {
                 switch (this.mapComboBox.Text)
                 {
-                    case "World":
-                        return Map.World;
+                    case nameof(World):
+                        return MapType.World;
                     default:
-                        return Map.None;
+                        return MapType.None;
                 }
             }
         }

@@ -21,7 +21,7 @@ namespace ConquestObjectsLib
     /// <summary>
     /// Instance of this class represents template for player in the game.
     /// </summary>
-    abstract class Player
+    public abstract class Player
     {
         public abstract string Name { get; }
         public System.Drawing.Color Color { get; }
@@ -40,7 +40,7 @@ namespace ConquestObjectsLib
     /// <summary>
     /// Instance of this class represents AI player in the game.
     /// </summary>
-    class AIPlayer : Player
+    public class AIPlayer : Player
     {
         /// <summary>
         /// Represents difficulty of given artifficial player.
@@ -59,7 +59,7 @@ namespace ConquestObjectsLib
     /// <summary>
     /// Instance of this class represents human player in the game.
     /// </summary>
-    class HumanPlayer : Player
+    public class HumanPlayer : Player
     {
         /// <summary>
         /// Represents user this human player is linked to.

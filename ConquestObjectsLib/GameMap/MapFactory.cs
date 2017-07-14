@@ -5,7 +5,7 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Factory for creating map from templates.
     /// </summary>
-    static class MapFactory
+    public static class MapFactory
     {
         /// <summary>
         /// Method constructing map depending on the parameter.

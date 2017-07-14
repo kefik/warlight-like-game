@@ -5,7 +5,7 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Instace of this class represents region for given map in the game.
     /// </summary>
-    class Region
+    public class Region
     {
         public string Name { get; }
         /// <summary>

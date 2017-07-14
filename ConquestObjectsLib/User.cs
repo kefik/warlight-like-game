@@ -9,7 +9,7 @@ namespace ConquestObjectsLib
     /// <summary>
     /// Represents user that controls player in the game.
     /// </summary>
-    class User
+    public class User
     {
         public string Name { get; set; }
     }
