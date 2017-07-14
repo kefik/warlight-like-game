@@ -31,10 +31,10 @@
             this.gameOptionsTabControl = new System.Windows.Forms.TabControl();
             this.continueTabPage = new System.Windows.Forms.TabPage();
             this.newGameTabPage = new System.Windows.Forms.TabPage();
-            this.singleplayerNewGameSettingsControl1 = new WinformsUI.GameSetup.Singleplayer.SingleplayerNewGameSettingsControl();
             this.loadGameTabPage = new System.Windows.Forms.TabPage();
+            this.singleplayerLoadGamesControl1 = new WinformsUI.GameSetup.Singleplayer.SingleplayerLoadGamesControl();
             this.gameOptionsTabControl.SuspendLayout();
-            this.newGameTabPage.SuspendLayout();
+            this.loadGameTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // gameOptionsTabControl
@@ -61,7 +61,7 @@
             // 
             // newGameTabPage
             // 
-            this.newGameTabPage.Controls.Add(this.singleplayerNewGameSettingsControl1);
+            this.newGameTabPage.AutoScroll = true;
             this.newGameTabPage.Location = new System.Drawing.Point(4, 22);
             this.newGameTabPage.Name = "newGameTabPage";
             this.newGameTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -70,17 +70,9 @@
             this.newGameTabPage.Text = "New game";
             this.newGameTabPage.UseVisualStyleBackColor = true;
             // 
-            // singleplayerNewGameSettingsControl1
-            // 
-            this.singleplayerNewGameSettingsControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.singleplayerNewGameSettingsControl1.Location = new System.Drawing.Point(3, 0);
-            this.singleplayerNewGameSettingsControl1.Name = "singleplayerNewGameSettingsControl1";
-            this.singleplayerNewGameSettingsControl1.Size = new System.Drawing.Size(476, 298);
-            this.singleplayerNewGameSettingsControl1.TabIndex = 0;
-            // 
             // loadGameTabPage
             // 
+            this.loadGameTabPage.Controls.Add(this.singleplayerLoadGamesControl1);
             this.loadGameTabPage.Location = new System.Drawing.Point(4, 22);
             this.loadGameTabPage.Name = "loadGameTabPage";
             this.loadGameTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -88,6 +80,16 @@
             this.loadGameTabPage.TabIndex = 2;
             this.loadGameTabPage.Text = "Load game";
             this.loadGameTabPage.UseVisualStyleBackColor = true;
+            // 
+            // singleplayerLoadGamesControl1
+            // 
+            this.singleplayerLoadGamesControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.singleplayerLoadGamesControl1.Location = new System.Drawing.Point(3, 3);
+            this.singleplayerLoadGamesControl1.Name = "singleplayerLoadGamesControl1";
+            this.singleplayerLoadGamesControl1.Size = new System.Drawing.Size(479, 244);
+            this.singleplayerLoadGamesControl1.TabIndex = 0;
             // 
             // SinglepleplayerGameOptionsControl
             // 
@@ -97,7 +99,7 @@
             this.Name = "SinglepleplayerGameOptionsControl";
             this.Size = new System.Drawing.Size(493, 279);
             this.gameOptionsTabControl.ResumeLayout(false);
-            this.newGameTabPage.ResumeLayout(false);
+            this.loadGameTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -107,6 +109,6 @@
         private System.Windows.Forms.TabPage continueTabPage;
         private System.Windows.Forms.TabPage newGameTabPage;
         private System.Windows.Forms.TabPage loadGameTabPage;
-        private SingleplayerNewGameSettingsControl singleplayerNewGameSettingsControl1;
+        private SingleplayerLoadGamesControl singleplayerLoadGamesControl1;
     }
 }

@@ -36,8 +36,7 @@ namespace WinformsUI.HelperControls
 
             AIPlayerControl control = new AIPlayerControl("PC")
             {
-                Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                AutoScroll = true
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
             }; // TODO: generate unique name
             playersTableLayoutPanel.Controls.Add(control);
         }
@@ -59,6 +58,23 @@ namespace WinformsUI.HelperControls
             if (index >= PlayersCount || index < 0) throw new ArgumentException();
 
             playersTableLayoutPanel.Controls.RemoveAt(index);
+        }
+
+        /// <summary>
+        /// Calculates and returns players from controls saved in the table.
+        /// </summary>
+        /// <returns>Returns player from controls saved in the table.</returns>
+        public ICollection<Player> GetPlayers()
+        {
+            ICollection<Player> players = new List<Player>();
+            foreach (var control in playersTableLayoutPanel.Controls)
+            {
+                AIPlayerControl aiPlayerControl = control as AIPlayerControl;
+
+                players.Add(aiPlayerControl.GetPlayer()); // TODO: may throw exception
+            }
+
+            return players;
         }
     }
 }

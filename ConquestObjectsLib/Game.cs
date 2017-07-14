@@ -78,9 +78,9 @@ namespace ConquestObjectsLib
         /// </summary>
         public void Start()
         {
-            // check everything
+            // TODO: validate everything
             if (map == null || Players?.DefaultIfEmpty() == null || Started) throw new ArgumentException();
-
+            
             // start the game
             Started = true;
         }

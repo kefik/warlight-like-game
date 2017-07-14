@@ -13,7 +13,7 @@ namespace WinformsUI.HelperControls
 {
     public partial class AIPlayerControl : UserControl
     {
-        AIPlayer player;
+        AIPlayer player; // dont want to give access to players regions, so I keep it private
         public AIPlayerControl(string uniqueName)
         {
             InitializeComponent();
@@ -82,6 +82,15 @@ namespace WinformsUI.HelperControls
                     PlayerColor--;
                     break;
             }
+        }
+
+        /// <summary>
+        /// Returns copy of the player.
+        /// </summary>
+        /// <returns></returns>
+        public Player GetPlayer()
+        {
+            return new AIPlayer(player.Difficulty, player.Name, player.Color);
         }
     }
 }

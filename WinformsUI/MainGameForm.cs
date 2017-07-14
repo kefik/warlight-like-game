@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using ConquestObjectsLib;
 
 namespace WinformsUI
 {
@@ -12,7 +13,6 @@ namespace WinformsUI
             {
                 Parent = this.singleplayerTabPage,
                 Dock = DockStyle.Fill
-                //BackColor = Color.Red
             };
             g.Show();
 
@@ -22,7 +22,17 @@ namespace WinformsUI
                 Dock = DockStyle.Fill
             };
             f.Show();
+        }
 
+        /// <summary>
+        /// Loads proper screens starting the game.
+        /// </summary>
+        /// <param name="game">Instance representing the game to be started.</param>
+        public void StartGame(ConquestObjectsLib.Game game)
+        {
+            game.Start(); // starts the game
+
+            // TODO: load proper screens
 
         }
     }

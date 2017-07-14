@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -7,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ConquestObjectsLib;
+using ConquestObjectsLib.GameMap;
 
 namespace WinformsUI.GameSetup.Singleplayer
 {
@@ -30,6 +33,13 @@ namespace WinformsUI.GameSetup.Singleplayer
             };
         }
 
+        public SingleplayerNewGameSettingsControl(Action<ConquestObjectsLib.Game> start)
+        {
+            this.start = start;
+        }
+
+        readonly Action<ConquestObjectsLib.Game> start;
+
         decimal previousPlayersNumber;
         private void PlayersNumberChanged(object sender, EventArgs e)
         {
@@ -51,6 +61,17 @@ namespace WinformsUI.GameSetup.Singleplayer
                 }
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             }
+        }
+
+        private void Create(object sender, EventArgs e)
+        {
+            Map map = MapFactory.GetMap(mapSettingsControl.GameMap);
+            ICollection<Player> players = aiPlayerSettingsControl.GetPlayers(); /*as ICollection<Player>; */
+
+            ConquestObjectsLib.Game game = new ConquestObjectsLib.Game(GameType.SinglePlayer, map, players);
+
+            // TODO: start the game from delegate passed from MainGameForm
+            start(game);
         }
     }
 }
