@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ConquestObjectsLib.GameMap
 {
@@ -17,6 +18,9 @@ namespace ConquestObjectsLib.GameMap
         /// Bonus given by the SuperRegion taken by one player.
         /// </summary>
         public int Bonus { get; }
+
+        public Player Owner { get; private set; } // TODO: finish refreshing of situation, use GetOwner() method
+
         readonly ICollection<Region> regions = new HashSet<Region>();
         /// <summary>
         /// Constructs SuperRegion instance.
@@ -58,6 +62,17 @@ namespace ConquestObjectsLib.GameMap
             return regions.Contains(region);
         }
 
+        /// <summary>
+        /// Calculates owner of this SuperRegion.
+        /// </summary>
+        /// <returns>Owner of this SuperRegion, or null.</returns>
+        private Player GetOwner()
+        {
+            var firstOwner = regions.FirstOrDefault()?.Owner;
+            return (from region in regions where region.Owner != firstOwner select region).Any() // if there exists any such that hes not same as the first owner
+                ? null // return null
+                : firstOwner;
+        }
 
         public IEnumerator<Region> GetEnumerator()
         {

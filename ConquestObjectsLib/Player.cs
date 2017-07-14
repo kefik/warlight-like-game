@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ConquestObjectsLib.GameMap;
 
 namespace ConquestObjectsLib
 {
@@ -24,14 +24,14 @@ namespace ConquestObjectsLib
     abstract class Player
     {
         public abstract string Name { get; }
-        public Color Color { get; }
-        
+        public System.Drawing.Color Color { get; }
+
         /// <summary>
         /// Regions this player controls.
         /// </summary>
         public ICollection<Region> ControlledRegions { get; } = new HashSet<Region>();
-
-        protected Player(Color color)
+        
+        protected Player(System.Drawing.Color color)
         {
             Color = color;
         }
@@ -49,7 +49,7 @@ namespace ConquestObjectsLib
 
         public override string Name { get; }
 
-        public AIPlayer(Difficulty difficulty, string name, Color color) : base(color)
+        public AIPlayer(Difficulty difficulty, string name, System.Drawing.Color color) : base(color)
         {
             this.Difficulty = difficulty;
             Name = name;
@@ -71,7 +71,7 @@ namespace ConquestObjectsLib
             get { return User.Name; }
         }
 
-        public HumanPlayer(User user, Color color) : base(color)
+        public HumanPlayer(User user, System.Drawing.Color color) : base(color)
         {
             this.User = user ?? throw new ArgumentException();
         }

@@ -60,6 +60,14 @@ namespace ConquestObjectsLib.GameMap
         {
             return GetRegion(image.GetPixel(x, y));
         }
-        
+
+        /// <summary>
+        /// Returns visual representation of the map.
+        /// </summary>
+        /// <returns>Visual representation of the map.</returns>
+        public Bitmap ToBitmap()
+        {
+            return image;
+        }
     }
 }
