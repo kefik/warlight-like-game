@@ -1,34 +1,48 @@
 ﻿using System;
 using System.Windows.Forms;
+using ConquestObjectsLib;
 
 namespace WinformsUI.GameSetup.Multiplayer
 {
+    /// <summary>
+    /// In this form user decides what type of multiplayer game he wants to play. Will appear as dialog.
+    /// </summary>
     public partial class GameTypeChoiceForm : Form
     {
         public GameTypeChoiceForm()
         {
             InitializeComponent();
         }
-
         /// <summary>
-        /// Closes the form.
+        /// Indicates type of multiplayer game selected by the user.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        public GameType MultiplayerGameType
+        {
+            get
+            {
+                switch (multiplayerGameTypeComboBox.Text)
+                {
+                    case "Hotseat":
+                        return GameType.MultiplayerHotseat;
+                    case "Network":
+                        return GameType.MultiplayerNetwork;
+                    default:
+                        return GameType.None;
+                        
+                }
+            }
+        }
+        
         private void Cancel(object sender, System.EventArgs e)
         {
+            DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        /// <summary>
-        /// Redirects client to proper screen and closes the form.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ChooseType(object sender, System.EventArgs e)
+        
+        private void Ok(object sender, System.EventArgs e)
         {
-            // TODO: load proper screen
-
+            DialogResult = DialogResult.OK;
             Close();
         }
     }

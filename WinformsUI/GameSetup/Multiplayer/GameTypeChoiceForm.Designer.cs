@@ -39,8 +39,8 @@
             this.multiplayerGameTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.multiplayerGameTypeComboBox.FormattingEnabled = true;
             this.multiplayerGameTypeComboBox.Items.AddRange(new object[] {
-            "Hot seat",
-            "Network game"});
+            "Hotseat",
+            "Network"});
             this.multiplayerGameTypeComboBox.Location = new System.Drawing.Point(74, 28);
             this.multiplayerGameTypeComboBox.Name = "multiplayerGameTypeComboBox";
             this.multiplayerGameTypeComboBox.Size = new System.Drawing.Size(160, 21);
@@ -61,9 +61,9 @@
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 2;
-            this.okButton.Text = "Ok";
+            this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.ChooseType);
+            this.okButton.Click += new System.EventHandler(this.Ok);
             // 
             // cancelButton
             // 
