@@ -2,9 +2,9 @@
 
 namespace WinformsUI.GameSetup.Singleplayer
 {
-    public partial class GameOptionsControl : UserControl
+    public partial class SinglepleplayerGameOptionsControl : UserControl
     {
-        public GameOptionsControl()
+        public SinglepleplayerGameOptionsControl()
         {
             InitializeComponent();
         }

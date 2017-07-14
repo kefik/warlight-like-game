@@ -48,47 +48,47 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameSetup\Multiplayer\Hotseat\GameOptionsControl.cs">
+    <Compile Include="GameSetup\Multiplayer\Hotseat\HotseatGameOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameSetup\Multiplayer\Hotseat\GameOptionsControl.Designer.cs">
-      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    <Compile Include="GameSetup\Multiplayer\Hotseat\HotseatGameOptionsControl.Designer.cs">
+      <DependentUpon>HotseatGameOptionsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameSetup\Multiplayer\Hotseat\LoadGamesControl.cs">
+    <Compile Include="GameSetup\Multiplayer\Hotseat\HotseatLoadGamesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameSetup\Multiplayer\Hotseat\LoadGamesControl.Designer.cs">
-      <DependentUpon>LoadGamesControl.cs</DependentUpon>
+    <Compile Include="GameSetup\Multiplayer\Hotseat\HotseatLoadGamesControl.Designer.cs">
+      <DependentUpon>HotseatLoadGamesControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameSetup\Multiplayer\Hotseat\NewGameSettingsControl.cs">
+    <Compile Include="GameSetup\Multiplayer\Hotseat\HotseatNewGameSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameSetup\Multiplayer\Hotseat\NewGameSettingsControl.Designer.cs">
-      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    <Compile Include="GameSetup\Multiplayer\Hotseat\HotseatNewGameSettingsControl.Designer.cs">
+      <DependentUpon>HotseatNewGameSettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameSetup\Multiplayer\Network\NewGameSettingsControl.cs">
+    <Compile Include="GameSetup\Multiplayer\Network\NetworkNewGameSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameSetup\Multiplayer\Network\NewGameSettingsControl.Designer.cs">
-      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    <Compile Include="GameSetup\Multiplayer\Network\NetworkNewGameSettingsControl.Designer.cs">
+      <DependentUpon>NetworkNewGameSettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameSetup\Singleplayer\GameOptionsControl.cs">
+    <Compile Include="GameSetup\Singleplayer\SingleplayerGameOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameSetup\Singleplayer\GameOptionsControl.Designer.cs">
-      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    <Compile Include="GameSetup\Singleplayer\SingleplayerGameOptionsControl.Designer.cs">
+      <DependentUpon>SingleplayerGameOptionsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameSetup\Singleplayer\LoadGamesControl.cs">
+    <Compile Include="GameSetup\Singleplayer\SingleplayerLoadGamesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameSetup\Singleplayer\LoadGamesControl.Designer.cs">
-      <DependentUpon>LoadGamesControl.cs</DependentUpon>
+    <Compile Include="GameSetup\Singleplayer\SingleplayerLoadGamesControl.Designer.cs">
+      <DependentUpon>SingleplayerLoadGamesControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameSetup\Singleplayer\NewGameSettingsControl.cs">
+    <Compile Include="GameSetup\Singleplayer\SingleplayerNewGameSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameSetup\Singleplayer\NewGameSettingsControl.Designer.cs">
-      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    <Compile Include="GameSetup\Singleplayer\SingleplayerNewGameSettingsControl.Designer.cs">
+      <DependentUpon>SingleplayerNewGameSettingsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Game\InGameControl.cs">
       <SubType>UserControl</SubType>
@@ -162,11 +162,11 @@
     <Compile Include="GameSetup\Multiplayer\GameTypeChoiceForm.Designer.cs">
       <DependentUpon>GameTypeChoiceForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameSetup\Multiplayer\Network\GameOptionsControl.cs">
+    <Compile Include="GameSetup\Multiplayer\Network\NetworkGameOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameSetup\Multiplayer\Network\GameOptionsControl.Designer.cs">
-      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    <Compile Include="GameSetup\Multiplayer\Network\NetworkGameOptionsControl.Designer.cs">
+      <DependentUpon>NetworkGameOptionsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="GameSetup\Multiplayer\Network\MyGamesControl.cs">
       <SubType>UserControl</SubType>
@@ -182,26 +182,26 @@
     <Compile Include="GameSetup\Multiplayer\Network\ServerLoggingForm.Designer.cs">
       <DependentUpon>ServerLoggingForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="GameSetup\Multiplayer\Hotseat\GameOptionsControl.resx">
-      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Hotseat\HotseatGameOptionsControl.resx">
+      <DependentUpon>HotseatGameOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GameSetup\Multiplayer\Hotseat\LoadGamesControl.resx">
-      <DependentUpon>LoadGamesControl.cs</DependentUpon>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Hotseat\HotseatLoadGamesControl.resx">
+      <DependentUpon>HotseatLoadGamesControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GameSetup\Multiplayer\Hotseat\NewGameSettingsControl.resx">
-      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Hotseat\HotseatNewGameSettingsControl.resx">
+      <DependentUpon>HotseatNewGameSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GameSetup\Multiplayer\Network\NewGameSettingsControl.resx">
-      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Network\NetworkNewGameSettingsControl.resx">
+      <DependentUpon>NetworkNewGameSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GameSetup\Singleplayer\GameOptionsControl.resx">
-      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    <EmbeddedResource Include="GameSetup\Singleplayer\SingleplayerGameOptionsControl.resx">
+      <DependentUpon>SingleplayerGameOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GameSetup\Singleplayer\LoadGamesControl.resx">
-      <DependentUpon>LoadGamesControl.cs</DependentUpon>
+    <EmbeddedResource Include="GameSetup\Singleplayer\SingleplayerLoadGamesControl.resx">
+      <DependentUpon>SingleplayerLoadGamesControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GameSetup\Singleplayer\NewGameSettingsControl.resx">
-      <DependentUpon>NewGameSettingsControl.cs</DependentUpon>
+    <EmbeddedResource Include="GameSetup\Singleplayer\SingleplayerNewGameSettingsControl.resx">
+      <DependentUpon>SingleplayerNewGameSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Game\InGameControl.resx">
       <DependentUpon>InGameControl.cs</DependentUpon>
@@ -239,8 +239,8 @@
     <EmbeddedResource Include="GameSetup\Multiplayer\GameTypeChoiceForm.resx">
       <DependentUpon>GameTypeChoiceForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GameSetup\Multiplayer\Network\GameOptionsControl.resx">
-      <DependentUpon>GameOptionsControl.cs</DependentUpon>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Network\NetworkGameOptionsControl.resx">
+      <DependentUpon>NetworkGameOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GameSetup\Multiplayer\Network\MyGamesControl.resx">
       <DependentUpon>MyGamesControl.cs</DependentUpon>

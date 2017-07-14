@@ -2,9 +2,9 @@
 
 namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 {
-    public partial class GameOptionsControl : UserControl
+    public partial class HotseatGameOptionsControl : UserControl
     {
-        public GameOptionsControl()
+        public HotseatGameOptionsControl()
         {
             InitializeComponent();
         }

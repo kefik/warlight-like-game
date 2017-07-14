@@ -43,7 +43,15 @@ namespace WinformsUI.HelperControls
             get;
             private set;
         }
-        
+
+        /// <summary>
+        /// Runs when the map is chosen.
+        /// </summary>
+        public event EventHandler OnMapChosen
+        {
+            add { mapComboBox.SelectedIndexChanged += value; }
+            remove { mapComboBox.SelectedIndexChanged -= value; }
+        }
         private void MapChosen(object sender, EventArgs e)
         {
             switch (mapComboBox.Text)

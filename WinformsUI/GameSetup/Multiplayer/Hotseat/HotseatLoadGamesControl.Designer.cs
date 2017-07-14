@@ -1,6 +1,6 @@
-﻿namespace WinformsUI.GameSetup.Singleplayer
+﻿namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 {
-    partial class LoadGamesControl
+    partial class HotseatLoadGamesControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -39,7 +39,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.loadedGamesListBox.FormattingEnabled = true;
             this.loadedGamesListBox.Items.AddRange(new object[] {
-            "AI:4; Map: World; Saved: 18.05.2015 12:58"});
+            "Human: 2; AI: 4; Map: World; Saved: 18.05.2017 15:05"});
             this.loadedGamesListBox.Location = new System.Drawing.Point(15, 16);
             this.loadedGamesListBox.Name = "loadedGamesListBox";
             this.loadedGamesListBox.Size = new System.Drawing.Size(391, 160);
@@ -55,13 +55,13 @@
             this.loadButton.Text = "Load";
             this.loadButton.UseVisualStyleBackColor = true;
             // 
-            // LoadGamesControl
+            // SingleplayerLoadGamesControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.loadedGamesListBox);
-            this.Name = "LoadGamesControl";
+            this.Name = "HotseatLoadGamesControl";
             this.Size = new System.Drawing.Size(418, 219);
             this.ResumeLayout(false);
 

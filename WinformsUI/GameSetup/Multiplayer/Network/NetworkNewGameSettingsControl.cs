@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WinformsUI.GameSetup.Singleplayer
+namespace WinformsUI.GameSetup.Multiplayer.Network
 {
-    public partial class NewGameSettingsControl : UserControl
+    public partial class NetworkNewGameSettingsControl : UserControl
     {
-        public NewGameSettingsControl()
+        public NetworkNewGameSettingsControl()
         {
             InitializeComponent();
         }

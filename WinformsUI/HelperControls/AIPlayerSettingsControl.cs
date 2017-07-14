@@ -25,15 +25,20 @@ namespace WinformsUI.HelperControls
         public AIPlayerSettingsControl()
         {
             InitializeComponent();
+
         }
         /// <summary>
         /// Adds player to table to the last position.
         /// </summary>
         public void AddPlayer()
         {
-            if (PlayersLimit >= PlayersCount) throw new Exception(); // TODO: cannot be added exception
+            if (PlayersCount >= PlayersLimit) throw new Exception(); // TODO: cannot be added exception
 
-            AIPlayerControl control = new AIPlayerControl("PC"); // TODO: generate unique name
+            AIPlayerControl control = new AIPlayerControl("PC")
+            {
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                AutoScroll = true
+            }; // TODO: generate unique name
             playersTableLayoutPanel.Controls.Add(control);
         }
         /// <summary>
@@ -41,7 +46,9 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public void RemovePlayer()
         {
-            playersTableLayoutPanel.Controls.RemoveAt(PlayersCount - 1); // TODO: might not work
+            if (PlayersCount == 0) throw new Exception(); // TODO: cannot be removed exception
+
+            playersTableLayoutPanel.Controls.RemoveAt(PlayersCount - 1);
         }
         /// <summary>
         /// Removes player at given index from the table.

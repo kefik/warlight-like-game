@@ -1,6 +1,6 @@
-﻿namespace WinformsUI.GameSetup.Multiplayer.Network
+﻿namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 {
-    partial class NewGameSettingsControl
+    partial class HotseatNewGameSettingsControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,12 +30,12 @@
         {
             this.SuspendLayout();
             // 
-            // NewGameSettingsControl
+            // SingleplayerNewGameSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "NewGameSettingsControl";
-            this.Size = new System.Drawing.Size(386, 239);
+            this.Name = "HotseatNewGameSettingsControl";
+            this.Size = new System.Drawing.Size(351, 238);
             this.ResumeLayout(false);
 
         }

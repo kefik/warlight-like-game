@@ -8,7 +8,7 @@ namespace WinformsUI
         public MainGameForm()
         {
             InitializeComponent();
-            var g = new GameSetup.Singleplayer.GameOptionsControl()
+            var g = new GameSetup.Singleplayer.SinglepleplayerGameOptionsControl()
             {
                 Parent = this.singleplayerTabPage,
                 Dock = DockStyle.Fill
@@ -16,7 +16,7 @@ namespace WinformsUI
             };
             g.Show();
 
-            var f = new GameSetup.Multiplayer.Hotseat.GameOptionsControl()
+            var f = new GameSetup.Multiplayer.Hotseat.HotseatGameOptionsControl()
             {
                 Parent = this.multiplayerTabPage,
                 Dock = DockStyle.Fill

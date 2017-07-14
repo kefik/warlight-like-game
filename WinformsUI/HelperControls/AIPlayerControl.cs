@@ -78,7 +78,7 @@ namespace WinformsUI.HelperControls
                 case MouseButtons.Left:
                     PlayerColor++;
                     break;
-                case MouseButtons.Right:
+                case MouseButtons.Right: // TODO: doesnt work for some reason
                     PlayerColor--;
                     break;
             }
