@@ -120,11 +120,17 @@
     <Compile Include="HelperControls\AIPlayerControl.Designer.cs">
       <DependentUpon>AIPlayerControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperControls\AISettingsControl.cs">
+    <Compile Include="HelperControls\HumanPlayerSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="HelperControls\AISettingsControl.Designer.cs">
-      <DependentUpon>AISettingsControl.cs</DependentUpon>
+    <Compile Include="HelperControls\HumanPlayerSettingsControl.Designer.cs">
+      <DependentUpon>HumanPlayerSettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HelperControls\AIPlayerSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HelperControls\AIPlayerSettingsControl.Designer.cs">
+      <DependentUpon>AIPlayerSettingsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="HelperControls\MapSettingsControl.cs">
       <SubType>UserControl</SubType>
@@ -132,17 +138,11 @@
     <Compile Include="HelperControls\MapSettingsControl.Designer.cs">
       <DependentUpon>MapSettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperControls\PlayerControl.cs">
+    <Compile Include="HelperControls\HumanPlayerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="HelperControls\PlayerControl.Designer.cs">
-      <DependentUpon>PlayerControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HelperControls\PlayersSettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="HelperControls\PlayersSettingsControl.Designer.cs">
-      <DependentUpon>PlayersSettingsControl.cs</DependentUpon>
+    <Compile Include="HelperControls\HumanPlayerControl.Designer.cs">
+      <DependentUpon>HumanPlayerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="MainGameForm.cs">
       <SubType>Form</SubType>
@@ -218,17 +218,17 @@
     <EmbeddedResource Include="HelperControls\AIPlayerControl.resx">
       <DependentUpon>AIPlayerControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HelperControls\AISettingsControl.resx">
-      <DependentUpon>AISettingsControl.cs</DependentUpon>
+    <EmbeddedResource Include="HelperControls\HumanPlayerSettingsControl.resx">
+      <DependentUpon>HumanPlayerSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelperControls\AIPlayerSettingsControl.resx">
+      <DependentUpon>AIPlayerSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelperControls\MapSettingsControl.resx">
       <DependentUpon>MapSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HelperControls\PlayerControl.resx">
-      <DependentUpon>PlayerControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HelperControls\PlayersSettingsControl.resx">
-      <DependentUpon>PlayersSettingsControl.cs</DependentUpon>
+    <EmbeddedResource Include="HelperControls\HumanPlayerControl.resx">
+      <DependentUpon>HumanPlayerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainGameForm.resx">
       <DependentUpon>MainGameForm.cs</DependentUpon>

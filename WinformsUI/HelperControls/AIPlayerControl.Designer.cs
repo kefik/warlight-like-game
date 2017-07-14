@@ -36,6 +36,7 @@
             // difficultyComboBox
             // 
             this.difficultyComboBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.difficultyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.difficultyComboBox.FormattingEnabled = true;
             this.difficultyComboBox.Items.AddRange(new object[] {
             "Easy",

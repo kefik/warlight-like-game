@@ -1,6 +1,6 @@
 ﻿namespace WinformsUI.HelperControls
 {
-    partial class PlayerControl
+    partial class HumanPlayerControl
     {
         /// <summary> 
         /// Required designer variable.

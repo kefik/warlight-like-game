@@ -33,9 +33,7 @@
             this.newGameTabPage = new System.Windows.Forms.TabPage();
             this.loadGameTabPage = new System.Windows.Forms.TabPage();
             this.loadGamesControl = new WinformsUI.GameSetup.Singleplayer.LoadGamesControl();
-            this.newGameSettingsControl = new WinformsUI.GameSetup.Singleplayer.NewGameSettingsControl();
             this.gameOptionsTabControl.SuspendLayout();
-            this.newGameTabPage.SuspendLayout();
             this.loadGameTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +61,6 @@
             // 
             // newGameTabPage
             // 
-            this.newGameTabPage.Controls.Add(this.newGameSettingsControl);
             this.newGameTabPage.Location = new System.Drawing.Point(4, 22);
             this.newGameTabPage.Name = "newGameTabPage";
             this.newGameTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -93,16 +90,6 @@
             this.loadGamesControl.Size = new System.Drawing.Size(479, 247);
             this.loadGamesControl.TabIndex = 0;
             // 
-            // newGameSettingsControl
-            // 
-            this.newGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.newGameSettingsControl.Location = new System.Drawing.Point(3, 3);
-            this.newGameSettingsControl.Name = "newGameSettingsControl";
-            this.newGameSettingsControl.Size = new System.Drawing.Size(479, 294);
-            this.newGameSettingsControl.TabIndex = 0;
-            // 
             // GameOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -111,7 +98,6 @@
             this.Name = "GameOptionsControl";
             this.Size = new System.Drawing.Size(493, 279);
             this.gameOptionsTabControl.ResumeLayout(false);
-            this.newGameTabPage.ResumeLayout(false);
             this.loadGameTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -123,6 +109,5 @@
         private System.Windows.Forms.TabPage newGameTabPage;
         private System.Windows.Forms.TabPage loadGameTabPage;
         private LoadGamesControl loadGamesControl;
-        private Singleplayer.NewGameSettingsControl newGameSettingsControl;
     }
 }

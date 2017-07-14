@@ -11,15 +11,22 @@ using ConquestObjectsLib;
 
 namespace WinformsUI.HelperControls
 {
-    public partial class PlayerControl : UserControl
+    public partial class HumanPlayerControl : UserControl
     {
         HumanPlayer player;
-        public PlayerControl(User user)
+        public HumanPlayerControl(User user)
         {
             InitializeComponent();
 
             player = new HumanPlayer(user, KnownColor.Aqua);
             
+        }
+
+        public HumanPlayerControl(HumanPlayer player)
+        {
+            InitializeComponent();
+
+            this.player = player;
         }
         /// <summary>
         /// Accesses players controlling user.

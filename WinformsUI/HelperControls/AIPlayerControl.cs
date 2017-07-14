@@ -23,6 +23,13 @@ namespace WinformsUI.HelperControls
             difficultyComboBox.SelectedIndex = (int) player.Difficulty;
             colorButton.BackColor = Color.FromKnownColor(player.Color);
         }
+
+        public AIPlayerControl(AIPlayer player)
+        {
+            InitializeComponent();
+
+            this.player = player;
+        }
         
         /// <summary>
         /// Accesses AI player color.

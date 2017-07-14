@@ -33,10 +33,8 @@
             this.myGamesControl = new WinformsUI.GameSetup.Multiplayer.Network.MyGamesControl();
             this.openedGamesTabPage = new System.Windows.Forms.TabPage();
             this.newGameTabPage = new System.Windows.Forms.TabPage();
-            this.newGameSettingsControl = new WinformsUI.GameSetup.Multiplayer.Network.NewGameSettingsControl();
             this.gameOptionsTabControl.SuspendLayout();
             this.myGamesTabPage.SuspendLayout();
-            this.newGameTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // gameOptionsTabControl
@@ -84,7 +82,6 @@
             // 
             // newGameTabPage
             // 
-            this.newGameTabPage.Controls.Add(this.newGameSettingsControl);
             this.newGameTabPage.Location = new System.Drawing.Point(4, 22);
             this.newGameTabPage.Name = "newGameTabPage";
             this.newGameTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -92,15 +89,6 @@
             this.newGameTabPage.TabIndex = 2;
             this.newGameTabPage.Text = "New game";
             this.newGameTabPage.UseVisualStyleBackColor = true;
-            // 
-            // newGameSettingsControl
-            // 
-            this.newGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.newGameSettingsControl.Location = new System.Drawing.Point(3, 3);
-            this.newGameSettingsControl.Name = "newGameSettingsControl";
-            this.newGameSettingsControl.Size = new System.Drawing.Size(526, 326);
-            this.newGameSettingsControl.TabIndex = 0;
             // 
             // GameOptionsControl
             // 
@@ -111,7 +99,6 @@
             this.Size = new System.Drawing.Size(540, 301);
             this.gameOptionsTabControl.ResumeLayout(false);
             this.myGamesTabPage.ResumeLayout(false);
-            this.newGameTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -123,6 +110,5 @@
         private System.Windows.Forms.TabPage openedGamesTabPage;
         private System.Windows.Forms.TabPage newGameTabPage;
         private MyGamesControl myGamesControl;
-        private NewGameSettingsControl newGameSettingsControl;
     }
 }
