@@ -7,32 +7,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ConquestObjectsLib;
 
 namespace WinformsUI.HelperControls
 {
-    public enum Difficulty
-    {
-        Easy,
-        Medium,
-        Hard
-    }
-
     public partial class AIPlayerControl : UserControl
     {
-        public AIPlayerControl()
+        AIPlayer player;
+        public AIPlayerControl(string uniqueName)
         {
-            difficultyComboBox.SelectedIndex = (int) Difficulty.Medium;
-
             InitializeComponent();
+
+            this.player = new AIPlayer(Difficulty.Medium, "PC1", KnownColor.Blue);
+
+            difficultyComboBox.SelectedIndex = (int) player.Difficulty;
+            colorButton.BackColor = Color.FromKnownColor(player.Color);
         }
         
         /// <summary>
         /// Accesses AI player color.
         /// </summary>
-        public Color PlayerColor
+        public KnownColor PlayerColor
         {
-            get { return this.colorButton.BackColor; }
-            private set { colorButton.BackColor = value; }
+            get { return player.Color; }
+            private set
+            {
+                player = new AIPlayer(player.Difficulty, player.Name, value);
+                colorButton.BackColor = Color.FromKnownColor(value);
+            }
         }
 
         /// <summary>
@@ -40,20 +42,11 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public Difficulty PlayerDifficulty
         {
-            get
+            get { return player.Difficulty; }
+            private set
             {
-                // what is in combo box
-                switch (difficultyComboBox.Text)
-                {
-                    case "Easy":
-                        return Difficulty.Easy;
-                    case "Medium":
-                        return Difficulty.Medium;
-                    case "Hard":
-                        return Difficulty.Hard;
-                    default:
-                        throw new ArgumentException();
-                }
+                player = new AIPlayer(value, player.Name, player.Color);
+                difficultyComboBox.SelectedIndex = (int)player.Difficulty;
             }
 
         }
@@ -63,8 +56,25 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public string PlayerName
         {
-            get { return aiNameLabel.Text; }
-            private set { aiNameLabel.Text = value; }
+            get { return player.Name; }
+            private set
+            {
+                player = new AIPlayer(player.Difficulty, value, player.Color);
+                aiNameLabel.Text = value;
+            }
+        }
+
+        private void ChangeColor(object sender, MouseEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    PlayerColor++;
+                    break;
+                case MouseButtons.Right:
+                    PlayerColor--;
+                    break;
+            }
         }
     }
 }

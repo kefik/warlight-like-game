@@ -24,14 +24,14 @@ namespace ConquestObjectsLib
     public abstract class Player
     {
         public abstract string Name { get; }
-        public System.Drawing.Color Color { get; }
+        public System.Drawing.KnownColor Color { get; }
 
         /// <summary>
         /// Regions this player controls.
         /// </summary>
         public ICollection<Region> ControlledRegions { get; } = new HashSet<Region>();
         
-        protected Player(System.Drawing.Color color)
+        protected Player(System.Drawing.KnownColor color)
         {
             Color = color;
         }
@@ -49,7 +49,7 @@ namespace ConquestObjectsLib
 
         public override string Name { get; }
 
-        public AIPlayer(Difficulty difficulty, string name, System.Drawing.Color color) : base(color)
+        public AIPlayer(Difficulty difficulty, string name, System.Drawing.KnownColor color) : base(color)
         {
             this.Difficulty = difficulty;
             Name = name;
@@ -71,7 +71,7 @@ namespace ConquestObjectsLib
             get { return User.Name; }
         }
 
-        public HumanPlayer(User user, System.Drawing.Color color) : base(color)
+        public HumanPlayer(User user, System.Drawing.KnownColor color) : base(color)
         {
             this.User = user ?? throw new ArgumentException();
         }

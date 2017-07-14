@@ -20,7 +20,7 @@ namespace WinformsUI.HelperControls
             {
                 rowsOccupied++;
                 // add new row
-                this.playersTableLayoutPanel.SetRow(new AIPlayerControl(), rowsOccupied);
+                this.playersTableLayoutPanel.SetRow(new AIPlayerControl("Player"), rowsOccupied);
             }
             else if (playersNumberNumericUpDown.Value < rowsOccupied) // removed player
             {

@@ -4,6 +4,8 @@ namespace ConquestObjectsLib.GameMap.Templates
 {
     public class World : Map
     {
+        public override int PlayerLimit { get; } = 10; // TODO: test for real max number of players
+
         /// <summary>
         /// Constructor initializing map named "World".
         /// </summary>

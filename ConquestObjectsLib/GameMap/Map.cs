@@ -25,7 +25,12 @@ namespace ConquestObjectsLib.GameMap
         /// Represents region groups this map has.
         /// </summary>
         public ICollection<SuperRegion> SuperRegions { get; } = new HashSet<SuperRegion>();
-        
+
+        /// <summary>
+        /// Specifies upper limit for players for this map.
+        /// </summary>
+        public abstract int PlayerLimit { get; }
+
         protected Map(string name)
         {
             this.Name = name;

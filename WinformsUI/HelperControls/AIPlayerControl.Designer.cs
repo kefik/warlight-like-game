@@ -57,6 +57,7 @@
             this.colorButton.Size = new System.Drawing.Size(62, 21);
             this.colorButton.TabIndex = 1;
             this.colorButton.UseVisualStyleBackColor = false;
+            this.colorButton.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ChangeColor);
             // 
             // aiNameLabel
             // 

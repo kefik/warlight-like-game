@@ -7,32 +7,61 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ConquestObjectsLib;
 
 namespace WinformsUI.HelperControls
 {
     public partial class PlayerControl : UserControl
     {
-        public PlayerControl()
+        HumanPlayer player;
+        public PlayerControl(User user)
         {
             InitializeComponent();
+
+            player = new HumanPlayer(user, KnownColor.Aqua);
+            
         }
+        /// <summary>
+        /// Accesses players controlling user.
+        /// </summary>
+        public User User
+        {
+            get { return player.User; }
+        }
+
         /// <summary>
         /// Accesses player color.
         /// </summary>
-        public Color PlayerColor
+        public KnownColor PlayerColor
         {
-            get { return this.colorButton.BackColor; }
-            // private set { colorButton.BackColor = value; }
+            get { return player.Color; }
+            private set
+            {
+                player = new HumanPlayer(player.User, value);
+                colorButton.BackColor = Color.FromKnownColor(value);
+            }
         }
-        
+
 
         /// <summary>
         /// Accesses player name.
         /// </summary>
         public string PlayerName
         {
-            get { return playerName.Text; }
-            private set { playerName.Text = value; }
+            get { return player.Name; }
+        }
+
+        private void ChangeColor(object sender, MouseEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    PlayerColor++;
+                    break;
+                case MouseButtons.Right:
+                    PlayerColor--;
+                    break;
+            }
         }
     }
 }
