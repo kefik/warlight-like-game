@@ -23,43 +23,17 @@ namespace ConquestObjectsLib.Game
         /// <summary>
         /// Represents boolean containing information whether the game has started.
         /// </summary>
-        public abstract bool HasStarted { get; protected set; }
-
-        /// <summary>
-        /// Represents boolean containing information whether the game has been created.
-        /// When it is true, some things are locked for editing.
-        /// </summary>
-        public abstract bool IsCreated { get; protected set; }
-
-        Map map;
-
+        public bool HasStarted { get; protected set; }
+        
         /// <summary>
         /// Represents map being played in this game.
         /// </summary>
-        public Map Map
-        {
-            get { return map; }
-            set
-            {
-                if (IsCreated) throw new Exception(); // TODO: game has already started exception
-                map = value;
-            }
-        }
-
-        ICollection<Player> players;
+        public Map Map { get; }
 
         /// <summary>
         /// Represents list of players playing this game.
         /// </summary>
-        public ICollection<Player> Players
-        {
-            get { return players; }
-            set
-            {
-                if (HasStarted) throw new Exception(); // TODO: game has already started exception
-                players = value;
-            }
-        }
+        public ICollection<Player> Players { get; }
 
         /// <summary>
         /// Return game type this game has.
@@ -71,11 +45,6 @@ namespace ConquestObjectsLib.Game
             this.Map = map;
             this.Players = players;
         }
-
-        /// <summary>
-        /// Creates the game.
-        /// </summary>
-        public abstract void Create();
 
         /// <summary>
         /// Starts the game if theres no error.

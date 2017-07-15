@@ -13,6 +13,10 @@ namespace ConquestObjectsLib.GameMap
         /// </summary>
         public Player Owner { get; set; }
         /// <summary>
+        /// Number of units occuppying this region.
+        /// </summary>
+        public int Units { get; set; }
+        /// <summary>
         /// Represents region group it belongs to.
         /// </summary>
         public SuperRegion SuperRegion { get; }
@@ -21,10 +25,12 @@ namespace ConquestObjectsLib.GameMap
         /// Represents list of regions that are neighbours to this given region.
         /// </summary>
         public ICollection<Region> NeighbourRegions { get; } = new List<Region>();
+        
 
-        public Region(string name, SuperRegion superRegion)
+        public Region(string name, int units, SuperRegion superRegion)
         {
             Name = name;
+            Units = units;
             SuperRegion = superRegion;
         }
 

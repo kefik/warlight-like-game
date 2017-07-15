@@ -9,28 +9,32 @@ using ConquestObjectsLib.Properties;
 namespace ConquestObjectsLib.GameMap
 {
     /// <summary>
-    /// Represents visual representation of the map and functionality linked with it.
+    /// Represents visual representation of the map template and functionality linked with it.
     /// </summary>
-    public class MapImage
+    public class GameMapImageTemplateProcessor
     {
         readonly Map map;
-        readonly Bitmap image;
+        /// <summary>
+        /// Image containing highlighted version of the game map.
+        /// </summary>
+        public Bitmap RegionHighlightedImage { get; }
         readonly Dictionary<Color, Region> regionsMapped = new Dictionary<Color, Region>();
 
         /// <summary>
         /// Constructs MapImage instance.
         /// </summary>
         /// <param name="map">Map with regions.</param>
-        /// <param name="image">Image containing the map in proper format.</param>
+        /// <param name="colorHighlightedImage">Image containing the map in proper format.</param>
         /// <param name="regionsWithColors">Tuples mapping color of region to corresponding region. Regions must correspond to those in the map.</param>
-        public MapImage(Map map, Bitmap image, ICollection<Tuple<Color, Region>> regionsWithColors)
+        public GameMapImageTemplateProcessor(Map map, Image colorHighlightedImage,
+            ICollection<Tuple<Color, Region>> regionsWithColors)
         {
             this.map = map;
-            this.image = image;
-            
+            this.RegionHighlightedImage = new Bitmap(colorHighlightedImage);
+
             if (map.Regions.Count != regionsWithColors.Count) throw new ArgumentException();
 
-            HashSet<Region> regions = new HashSet<Region>(); // forces value in dictionary to be unique
+            var regions = new HashSet<Region>(); // forces value in dictionary to be unique
             foreach (var item in regionsWithColors)
             {
                 if (!regions.Add(item.Item2)) throw new ArgumentException(); // is already in HashSet
@@ -51,23 +55,46 @@ namespace ConquestObjectsLib.GameMap
         }
 
         /// <summary>
-        /// Based on coordinates on the image, returns region corresponding to those coordinates.
+        /// Based on the image, returns region corresponding to those coordinates.
         /// </summary>
         /// <param name="x">Coordinate x on image specified in constructor.</param>
         /// <param name="y">Coordinate y on image specified in constructor.</param>
         /// <returns>Region corresponding to the coordinates</returns>
         public Region GetRegion(int x, int y)
         {
-            return GetRegion(image.GetPixel(x, y));
+            return GetRegion(RegionHighlightedImage.GetPixel(x, y));
+        }
+        
+        
+    }
+    
+    /// <summary>
+    /// Represents visual representation of the game map and functionality linked with it.
+    /// </summary>
+    public class GameMapImageProcessor
+    {
+        Bitmap MapImage { get; }
+        readonly GameMapImageTemplateProcessor templateProcessor;
+
+        public GameMapImageProcessor(GameMapImageTemplateProcessor gameMapImageTemplateProcessor, Bitmap gameMapMapImage)
+        {
+            MapImage = gameMapMapImage;
+            templateProcessor = gameMapImageTemplateProcessor;
+        }
+        /// <summary>
+        /// Recolors every pixel of the original color in the map to the new color.
+        /// </summary>
+        /// <param name="sourceColor">Source color.</param>
+        /// <param name="targetColor">Color to recolor the region to.</param>
+        public void Recolor(Color sourceColor, Color targetColor)
+        {
+            var templateImage = templateProcessor.RegionHighlightedImage;
+            var regionHighlightedImage = MapImage;
+
+            // TODO: iterate through every pixel on "templateImage" and replace same positioned pixels with old color with new color on the "regionHighlightedImage"
+
+
         }
 
-        /// <summary>
-        /// Returns visual representation of the map.
-        /// </summary>
-        /// <returns>Visual representation of the map.</returns>
-        public Bitmap ToBitmap()
-        {
-            return image;
-        }
     }
 }

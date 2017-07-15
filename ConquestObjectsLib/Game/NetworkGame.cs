@@ -7,38 +7,9 @@ namespace ConquestObjectsLib.Game
 {
     public class NetworkGame : Game
     {
-        public override bool HasStarted { get; protected set; }
-        public override bool IsCreated { get; protected set; }
+        public bool IsCreated { get; protected set; }
 
-        int aiPlayersLimit;
-        // Max number of AI players that can play this game.
-        public int AIPlayersLimit
-        {
-            get { return aiPlayersLimit; }
-            set
-            {
-                if (IsCreated) throw new Exception(); // TODO: better exception
-                if (value + humanPlayersLimit > Map.PlayersMax) throw new Exception();
-
-                aiPlayersLimit = value;
-            }
-        }
-
-        int humanPlayersLimit;
-        // Max number of human players that can play this game.
-        public int HumanPlayersLimit
-        {
-            get { return humanPlayersLimit; }
-            set
-            {
-                if (IsCreated) throw new Exception(); // TODO: better exception
-                if (value + aiPlayersLimit > Map.PlayersMax) throw new Exception();
-
-                humanPlayersLimit = value;
-            }
-        }
         
-
         public override GameType GameType
         {
             get { return GameType.MultiplayerNetwork; }
@@ -50,13 +21,18 @@ namespace ConquestObjectsLib.Game
 
 
         
-
-        public override void Create()
+        /// <summary>
+        /// Creates a game and sends it to the server.
+        /// </summary>
+        public void Create()
         {
             // TODO: validation
             IsCreated = true;
         }
 
+        /// <summary>
+        /// Starts the game.
+        /// </summary>
         public override void Start()
         {
             if (!IsCreated) Create();
