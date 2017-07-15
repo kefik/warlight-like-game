@@ -14,26 +14,21 @@ namespace WinformsUI.HelperControls
     public partial class HumanPlayerControl : UserControl
     {
         HumanPlayer player;
-        public HumanPlayerControl(User user)
+
+        public HumanPlayerControl()
         {
             InitializeComponent();
-
-            player = new HumanPlayer(user, KnownColor.Aqua);
-            
-        }
-
-        public HumanPlayerControl(HumanPlayer player)
-        {
-            InitializeComponent();
-
-            this.player = player;
         }
         /// <summary>
         /// Accesses players controlling user.
         /// </summary>
         public User User
         {
-            get { return player.User; }
+            get { return player?.User; }
+            set
+            {
+                player = new HumanPlayer(value, KnownColor.Aqua);
+            }
         }
 
         /// <summary>
@@ -44,7 +39,7 @@ namespace WinformsUI.HelperControls
             get { return player.Color; }
             private set
             {
-                player = new HumanPlayer(player.User, value);
+                player = new HumanPlayer(player?.User, value);
                 colorButton.BackColor = Color.FromKnownColor(value);
             }
         }
@@ -55,11 +50,13 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public string PlayerName
         {
-            get { return player.Name; }
+            get { return player?.Name; }
         }
 
         private void ChangeColor(object sender, MouseEventArgs e)
         {
+            if (player == null) return;
+
             switch (e.Button)
             {
                 case MouseButtons.Left:
