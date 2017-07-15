@@ -18,6 +18,11 @@ namespace WinformsUI.HelperControls
         public MapSettingsControl()
         {
             InitializeComponent();
+
+            OnMapChosen += (sender, args) =>
+            {
+                mapPlayersLimitLabel.Text = PlayersLimit.ToString();
+            };
         }
         
         /// <summary>
@@ -54,7 +59,7 @@ namespace WinformsUI.HelperControls
             switch (mapComboBox.Text)
             {
                 case "World":
-                    map = Map.ConstructMap(MapType.World);
+                    map = Map.Create(MapType.World);
                     break;
             }
         }
