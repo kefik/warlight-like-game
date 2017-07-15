@@ -1,20 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConquestObjectsLib.GameMap.Templates
 {
     /// <summary>
     /// Map representing the world map.
     /// </summary>
-    public class World : Map
+    class World : Map
     {
         /// <summary>
         /// Specifies upper limit for players for this map.
         /// </summary>
-        public const int PlayersLimit = 10; // TODO: test for real max number of players
+        public const int LimitPlayers = 10; // TODO: test for real max number of players
 
-        public override int PlayersMax
+        public override MapType MapType
         {
-            get { return PlayersLimit; }
+            get { return MapType.World; }
+        }
+
+        public override int PlayersLimit
+        {
+            get { return LimitPlayers; }
         }
 
         /// <summary>
@@ -22,9 +28,17 @@ namespace ConquestObjectsLib.GameMap.Templates
         /// </summary>
         public World() : base(nameof(World))
         {
+            
+        }
+
+        public override void Initialize()
+        {
+            if (isInitialized) throw new Exception(); // TODO: better exception
+
+            isInitialized = true;
             // TODO: Add initialization of Regions and SuperRegions
         }
 
-        
+
     }
 }

@@ -30,12 +30,16 @@
         {
             this.gamePanel = new System.Windows.Forms.Panel();
             this.gameMenuPanel = new System.Windows.Forms.Panel();
+            this.gameMapPictureBox = new System.Windows.Forms.PictureBox();
+            this.gamePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // gamePanel
             // 
             this.gamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gamePanel.Controls.Add(this.gameMapPictureBox);
             this.gamePanel.Location = new System.Drawing.Point(189, 0);
             this.gamePanel.Name = "gamePanel";
             this.gamePanel.Size = new System.Drawing.Size(462, 436);
@@ -50,6 +54,15 @@
             this.gameMenuPanel.Size = new System.Drawing.Size(183, 436);
             this.gameMenuPanel.TabIndex = 0;
             // 
+            // gameMapPictureBox
+            // 
+            this.gameMapPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gameMapPictureBox.Location = new System.Drawing.Point(0, 0);
+            this.gameMapPictureBox.Name = "gameMapPictureBox";
+            this.gameMapPictureBox.Size = new System.Drawing.Size(462, 436);
+            this.gameMapPictureBox.TabIndex = 0;
+            this.gameMapPictureBox.TabStop = false;
+            // 
             // InGameControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -58,6 +71,8 @@
             this.Controls.Add(this.gamePanel);
             this.Name = "InGameControl";
             this.Size = new System.Drawing.Size(651, 436);
+            this.gamePanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -66,5 +81,6 @@
 
         private System.Windows.Forms.Panel gamePanel;
         private System.Windows.Forms.Panel gameMenuPanel;
+        private System.Windows.Forms.PictureBox gameMapPictureBox;
     }
 }

@@ -22,12 +22,12 @@ namespace ConquestObjectsLib.Game
                 this.game = game;
             }
             /// <summary>
-            /// Decides whether the game has too much players.
+            /// Decides whether the game has too many players.
             /// </summary>
             /// <returns>True if it has more players than the limit of the map.</returns>
-            public bool HasTooMuchPlayers()
+            public bool HasTooManyPlayers()
             {
-                return game.Players.Count > game.Map.PlayersMax;
+                return game.Players.Count > game.Map.PlayersLimit;
             }
             /// <summary>
             /// Decides whether the game at least 2 players.
@@ -65,7 +65,7 @@ namespace ConquestObjectsLib.Game
 
             // validates the game before it starts
             if (!validator.HasEnoughPlayers()) throw new ArgumentException();
-            if (validator.HasTooMuchPlayers()) throw new ArgumentException();
+            if (validator.HasTooManyPlayers()) throw new ArgumentException();
             if (!validator.HasOneHumanPlayer()) throw new ArgumentException();
 
             // TODO: save it to the database

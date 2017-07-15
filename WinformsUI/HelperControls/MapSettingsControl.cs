@@ -14,25 +14,20 @@ namespace WinformsUI.HelperControls
 {
     public partial class MapSettingsControl : UserControl
     {
+        Map map;
         public MapSettingsControl()
         {
             InitializeComponent();
-
-            GameMap = MapType.None;
-            PlayersLimit = 0;
         }
-
-        int playersLimit;
+        
         /// <summary>
         /// Limit of players for given map.
         /// </summary>
         public int PlayersLimit
         {
-            get { return playersLimit; }
-            private set
+            get
             {
-                playersLimit = value;
-                mapPlayersLimitLabel.Text = value.ToString();
+                return map == null ? 0 : map.PlayersLimit;
             }
         }
         /// <summary>
@@ -40,8 +35,10 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public MapType GameMap
         {
-            get;
-            private set;
+            get
+            {
+                return map == null ? MapType.None : map.MapType;
+            }
         }
 
         /// <summary>
@@ -56,13 +53,8 @@ namespace WinformsUI.HelperControls
         {
             switch (mapComboBox.Text)
             {
-                case nameof(World):
-                    GameMap = MapType.World;
-                    PlayersLimit = World.PlayersLimit;
-                    break;
-                default:
-                    GameMap = MapType.None;
-                    PlayersLimit = 0;
+                case "World":
+                    map = Map.ConstructMap(MapType.World);
                     break;
             }
         }

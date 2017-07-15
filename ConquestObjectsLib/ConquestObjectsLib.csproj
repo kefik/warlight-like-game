@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="Game\Game.cs" />
     <Compile Include="GameMap\Map.cs" />
-    <Compile Include="GameMap\MapFactory.cs" />
     <Compile Include="GameMap\GameMapImageTemplateProcessor.cs" />
     <Compile Include="GameMap\SuperRegion.cs" />
     <Compile Include="Game\HotseatGame.cs" />
