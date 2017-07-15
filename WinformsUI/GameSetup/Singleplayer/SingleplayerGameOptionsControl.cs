@@ -1,10 +1,17 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace WinformsUI.GameSetup.Singleplayer
 {
-    public partial class SinglepleplayerGameOptionsControl : UserControl
+    public partial class SingleplayerGameOptionsControl : UserControl
     {
-        public SinglepleplayerGameOptionsControl()
+        public event Action<ConquestObjectsLib.Game> OnGameStarted
+        {
+            add { singleplayerNewGameSettingsControl.OnGameStarted += value; }
+            remove { singleplayerNewGameSettingsControl.OnGameStarted -= value; }
+        }
+
+        public SingleplayerGameOptionsControl()
         {
             InitializeComponent();
         }

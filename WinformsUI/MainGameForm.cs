@@ -1,39 +1,48 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using ConquestObjectsLib;
+using WinformsUI.Game;
+using WinformsUI.GameSetup.Singleplayer;
 
 namespace WinformsUI
 {
     public partial class MainGameForm : Form
     {
+        SingleplayerGameOptionsControl singleplayerGameOptions;
+        InGameControl inGame;
         public MainGameForm()
         {
             InitializeComponent();
-            var g = new GameSetup.Singleplayer.SinglepleplayerGameOptionsControl()
+            singleplayerGameOptions = new SingleplayerGameOptionsControl()
             {
                 Parent = this.singleplayerTabPage,
                 Dock = DockStyle.Fill
             };
-            g.Show();
+            singleplayerGameOptions.OnGameStarted += StartGame;
+            singleplayerGameOptions.Show();
 
-            var f = new GameSetup.Multiplayer.Hotseat.HotseatGameOptionsControl()
-            {
-                Parent = this.multiplayerTabPage,
-                Dock = DockStyle.Fill
-            };
-            f.Show();
         }
 
         /// <summary>
-        /// Loads proper screens starting the game.
+        /// Loads proper screens starting newly created game the game.
         /// </summary>
         /// <param name="game">Instance representing the game to be started.</param>
         public void StartGame(ConquestObjectsLib.Game game)
         {
-            game.Start(); // starts the game
-
-            // TODO: load proper screens
-
+            // start the game
+            game.Start();
+            // removes previous
+            singleplayerGameOptions?.Dispose();
+            singleplayerGameOptions = null;
+            // loads game screens
+            inGame = new InGameControl()
+            {
+                Parent = singleplayerTabPage,
+                Dock = DockStyle.Fill
+            };
+            inGame.Show();
+            // TODO: fix starting phase
         }
     }
 }

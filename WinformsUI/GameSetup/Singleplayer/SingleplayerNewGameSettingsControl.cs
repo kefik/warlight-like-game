@@ -15,6 +15,7 @@ namespace WinformsUI.GameSetup.Singleplayer
 {
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
+        public event Action<ConquestObjectsLib.Game> OnGameStarted;
         public SingleplayerNewGameSettingsControl()
         {
             InitializeComponent();
@@ -32,13 +33,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                 aiPlayerSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit;
             };
         }
-
-        public SingleplayerNewGameSettingsControl(Action<ConquestObjectsLib.Game> start)
-        {
-            this.start = start;
-        }
-
-        readonly Action<ConquestObjectsLib.Game> start;
+        
 
         decimal previousPlayersNumber;
         private void PlayersNumberChanged(object sender, EventArgs e)
@@ -70,8 +65,7 @@ namespace WinformsUI.GameSetup.Singleplayer
 
             ConquestObjectsLib.Game game = new ConquestObjectsLib.Game(GameType.SinglePlayer, map, players);
 
-            // TODO: start the game from delegate passed from MainGameForm
-            start(game);
+            OnGameStarted?.Invoke(game);
         }
     }
 }
