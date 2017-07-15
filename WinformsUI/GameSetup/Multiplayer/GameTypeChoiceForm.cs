@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using ConquestObjectsLib;
+using ConquestObjectsLib.Game;
 
 namespace WinformsUI.GameSetup.Multiplayer
 {
@@ -12,6 +13,8 @@ namespace WinformsUI.GameSetup.Multiplayer
         public GameTypeChoiceForm()
         {
             InitializeComponent();
+
+            multiplayerGameTypeComboBox.SelectedIndex = 0;
         }
         /// <summary>
         /// Indicates type of multiplayer game selected by the user.
@@ -28,22 +31,21 @@ namespace WinformsUI.GameSetup.Multiplayer
                         return GameType.MultiplayerNetwork;
                     default:
                         return GameType.None;
-                        
                 }
             }
         }
         
         private void Cancel(object sender, System.EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
             Close();
+            DialogResult = DialogResult.Cancel;
         }
 
         
         private void Ok(object sender, System.EventArgs e)
         {
-            DialogResult = DialogResult.OK;
             Close();
+            DialogResult = DialogResult.OK;
         }
     }
 }

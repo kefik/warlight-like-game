@@ -12,6 +12,11 @@ namespace ConquestObjectsLib.GameMap.Templates
         /// </summary>
         public const int PlayersLimit = 10; // TODO: test for real max number of players
 
+        public override int PlayersMax
+        {
+            get { return PlayersLimit; }
+        }
+
         /// <summary>
         /// Constructor initializing map named "World".
         /// </summary>

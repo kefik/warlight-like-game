@@ -9,13 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ConquestObjectsLib;
+using ConquestObjectsLib.Game;
 using ConquestObjectsLib.GameMap;
 
 namespace WinformsUI.GameSetup.Singleplayer
 {
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
-        public event Action<ConquestObjectsLib.Game> OnGameStarted;
+        public event Action<ConquestObjectsLib.Game.Game> OnGameStarted;
         public SingleplayerNewGameSettingsControl()
         {
             InitializeComponent();
@@ -63,7 +64,7 @@ namespace WinformsUI.GameSetup.Singleplayer
             Map map = MapFactory.GetMap(mapSettingsControl.GameMap);
             ICollection<Player> players = aiPlayerSettingsControl.GetPlayers(); /*as ICollection<Player>; */
 
-            ConquestObjectsLib.Game game = new ConquestObjectsLib.Game(GameType.SinglePlayer, map, players);
+            ConquestObjectsLib.Game.Game game = new SingleplayerGame(map, players);
 
             OnGameStarted?.Invoke(game);
         }

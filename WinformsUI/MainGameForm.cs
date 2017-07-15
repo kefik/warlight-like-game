@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using ConquestObjectsLib;
+using ConquestObjectsLib.Game;
 using WinformsUI.Game;
 using WinformsUI.GameSetup.Multiplayer;
 using WinformsUI.GameSetup.Multiplayer.Hotseat;
@@ -31,7 +32,7 @@ namespace WinformsUI
         /// Loads proper screens starting newly created game the game.
         /// </summary>
         /// <param name="game">Instance representing the game to be started.</param>
-        private void StartGame(ConquestObjectsLib.Game game)
+        private void StartGame(ConquestObjectsLib.Game.Game game)
         {
             // start the game
             game.Start();
@@ -148,8 +149,7 @@ namespace WinformsUI
                     return;
             }
         }
-
-        bool userInvoked;
+        
         void LoadSettingsControls()
         {
             throw new NotImplementedException();

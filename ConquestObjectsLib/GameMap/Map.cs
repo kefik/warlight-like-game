@@ -17,6 +17,10 @@ namespace ConquestObjectsLib.GameMap
     {
         public string Name { get; }
         /// <summary>
+        /// Returns maximum number of players for the given map.
+        /// </summary>
+        public abstract int PlayersMax { get; }
+        /// <summary>
         /// Represents regions of the map that player can conquer.
         /// </summary>
         public ICollection<Region> Regions { get; } = new HashSet<Region>();
