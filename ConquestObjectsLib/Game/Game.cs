@@ -42,6 +42,8 @@ namespace ConquestObjectsLib.Game
 
         protected Game(Map map, ICollection<Player> players)
         {
+            if (Map.IsInitialized) throw new ArgumentException();
+
             this.Map = map;
             this.Players = players;
         }

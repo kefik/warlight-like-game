@@ -33,9 +33,9 @@ namespace ConquestObjectsLib.GameMap.Templates
 
         public override void Initialize()
         {
-            if (isInitialized) throw new Exception(); // TODO: better exception
+            if (IsInitialized) throw new Exception(); // TODO: better exception
 
-            isInitialized = true;
+            IsInitialized = true;
             // TODO: Add initialization of Regions and SuperRegions
         }
 

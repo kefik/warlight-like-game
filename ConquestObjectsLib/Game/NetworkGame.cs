@@ -37,6 +37,9 @@ namespace ConquestObjectsLib.Game
         {
             if (!IsCreated) Create();
 
+            // initialization
+            Map.Initialize();
+
             // TODO: validation
             HasStarted = true;
         }

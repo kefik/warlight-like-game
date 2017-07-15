@@ -68,6 +68,9 @@ namespace ConquestObjectsLib.Game
             if (validator.HasTooManyPlayers()) throw new ArgumentException();
             if (!validator.HasOneHumanPlayer()) throw new ArgumentException();
 
+            // initialize the map
+            Map.Initialize();
+
             // TODO: save it to the database
 
             HasStarted = true;

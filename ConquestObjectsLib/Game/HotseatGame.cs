@@ -20,6 +20,7 @@ namespace ConquestObjectsLib.Game
 
         public override void Start()
         {
+            Map.Initialize();
             // TODO: validation
             HasStarted = true;
         }

@@ -16,8 +16,10 @@ namespace ConquestObjectsLib.GameMap
     /// </summary>
     public abstract class Map
     {
-
-        protected bool isInitialized;
+        /// <summary>
+        /// Notes whether the map is initialized.
+        /// </summary>
+        public bool IsInitialized { get; protected set; }
 
         public string Name { get; }
         /// <summary>
@@ -53,7 +55,7 @@ namespace ConquestObjectsLib.GameMap
         /// </summary>
         /// <param name="map">Decides what kind of template use to construct the map.</param>
         /// <returns>Map</returns>
-        public static Map ConstructMap(MapType map)
+        public static Map Create(MapType map)
         {
             switch (map)
             {
