@@ -74,6 +74,7 @@
             this.typeGameChoiceTabControl.SelectedIndex = 0;
             this.typeGameChoiceTabControl.Size = new System.Drawing.Size(681, 457);
             this.typeGameChoiceTabControl.TabIndex = 1;
+            this.typeGameChoiceTabControl.SelectedIndexChanged += new System.EventHandler(this.TabChanged);
             // 
             // settingsTabPage
             // 
