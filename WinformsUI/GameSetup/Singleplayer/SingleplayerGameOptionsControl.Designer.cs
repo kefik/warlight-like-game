@@ -80,7 +80,7 @@
             this.singleplayerNewGameSettingsControl.AutoScroll = true;
             this.singleplayerNewGameSettingsControl.Location = new System.Drawing.Point(6, 3);
             this.singleplayerNewGameSettingsControl.Name = "singleplayerNewGameSettingsControl";
-            this.singleplayerNewGameSettingsControl.Size = new System.Drawing.Size(456, 363);
+            this.singleplayerNewGameSettingsControl.Size = new System.Drawing.Size(456, 377);
             this.singleplayerNewGameSettingsControl.TabIndex = 0;
             // 
             // loadGameTabPage

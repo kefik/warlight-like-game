@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
+using ConquestObjectsLib;
 
 
 namespace WinformsUI.GameSetup.Multiplayer.Network
 {
     public partial class ServerLoggingForm : Form
     {
+        public User User { get; private set; }
         public ServerLoggingForm()
         {
             InitializeComponent();
@@ -20,6 +22,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
         {
             // close the form
             Close();
+
+            DialogResult = DialogResult.Cancel;
         }
         
         /// <summary>
@@ -35,6 +39,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
 
             // close the form
             Close();
+
+            DialogResult = DialogResult.OK;
         }
     }
 }

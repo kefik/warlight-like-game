@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.colorButton = new System.Windows.Forms.Button();
-            this.playerName = new System.Windows.Forms.Label();
+            this.playerNameLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // colorButton
@@ -45,25 +45,25 @@
             this.colorButton.UseVisualStyleBackColor = false;
             this.colorButton.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ChangeColor);
             // 
-            // playerName
+            // playerNameLabel
             // 
-            this.playerName.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.playerName.AutoSize = true;
-            this.playerName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.playerName.Location = new System.Drawing.Point(12, 9);
-            this.playerName.Name = "playerName";
-            this.playerName.Size = new System.Drawing.Size(75, 13);
-            this.playerName.TabIndex = 3;
-            this.playerName.Text = "Bimbinbiribong";
+            this.playerNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.playerNameLabel.AutoSize = true;
+            this.playerNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.playerNameLabel.Location = new System.Drawing.Point(12, 9);
+            this.playerNameLabel.Name = "playerNameLabel";
+            this.playerNameLabel.Size = new System.Drawing.Size(75, 13);
+            this.playerNameLabel.TabIndex = 3;
+            this.playerNameLabel.Text = "Bimbinbiribong";
             // 
-            // PlayerControl
+            // HumanPlayerControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.playerName);
+            this.Controls.Add(this.playerNameLabel);
             this.Controls.Add(this.colorButton);
             this.MinimumSize = new System.Drawing.Size(243, 21);
-            this.Name = "PlayerControl";
+            this.Name = "HumanPlayerControl";
             this.Size = new System.Drawing.Size(268, 31);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -73,6 +73,6 @@
         #endregion
 
         private System.Windows.Forms.Button colorButton;
-        private System.Windows.Forms.Label playerName;
+        private System.Windows.Forms.Label playerNameLabel;
     }
 }

@@ -15,9 +15,11 @@ namespace WinformsUI.HelperControls
     {
         HumanPlayer player;
 
-        public HumanPlayerControl()
+        public HumanPlayerControl(User user)
         {
             InitializeComponent();
+
+            player = new HumanPlayer(user, KnownColor.Aqua);
         }
         /// <summary>
         /// Accesses players controlling user.
@@ -28,8 +30,10 @@ namespace WinformsUI.HelperControls
             set
             {
                 player = new HumanPlayer(value, KnownColor.Aqua);
+                playerNameLabel.Text = player.Name;
             }
         }
+        
 
         /// <summary>
         /// Accesses player color.
@@ -51,6 +55,15 @@ namespace WinformsUI.HelperControls
         public string PlayerName
         {
             get { return player?.Name; }
+        }
+
+        /// <summary>
+        /// Returns new instance representing the player.
+        /// </summary>
+        /// <returns>Player</returns>
+        public Player GetPlayer()
+        {
+            return new HumanPlayer(User, PlayerColor);
         }
 
         private void ChangeColor(object sender, MouseEventArgs e)

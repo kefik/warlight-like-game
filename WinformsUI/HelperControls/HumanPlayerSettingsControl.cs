@@ -37,7 +37,7 @@ namespace WinformsUI.HelperControls
         {
             if (PlayersLimit <= PlayersCount) throw new Exception(); // TODO: cannot be added exception
 
-            HumanPlayerControl control = new HumanPlayerControl() {User = user}; // TODO: generate unique name
+            HumanPlayerControl control = new HumanPlayerControl(user); // TODO: generate unique name
             playersTableLayoutPanel.Controls.Add(control);
         }
         /// <summary>

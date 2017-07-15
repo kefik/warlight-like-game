@@ -33,6 +33,7 @@
             this.aiPlayersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.aiPlayersNumberLabel = new System.Windows.Forms.Label();
             this.startButton = new System.Windows.Forms.Button();
+            this.myPlayerPanel = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.aiPlayersNumberNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,10 +49,10 @@
             // aiPlayerSettingsControl
             // 
             this.aiPlayerSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.aiPlayerSettingsControl.Location = new System.Drawing.Point(3, 81);
+            this.aiPlayerSettingsControl.Location = new System.Drawing.Point(3, 143);
             this.aiPlayerSettingsControl.Name = "aiPlayerSettingsControl";
             this.aiPlayerSettingsControl.PlayersLimit = 0;
-            this.aiPlayerSettingsControl.Size = new System.Drawing.Size(371, 209);
+            this.aiPlayerSettingsControl.Size = new System.Drawing.Size(371, 247);
             this.aiPlayerSettingsControl.TabIndex = 1;
             // 
             // aiPlayersNumberNumericUpDown
@@ -76,7 +77,7 @@
             // startButton
             // 
             this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.startButton.Location = new System.Drawing.Point(299, 301);
+            this.startButton.Location = new System.Drawing.Point(299, 396);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(75, 23);
             this.startButton.TabIndex = 4;
@@ -84,17 +85,26 @@
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.Start);
             // 
+            // myPlayerPanel
+            // 
+            this.myPlayerPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.myPlayerPanel.Location = new System.Drawing.Point(3, 104);
+            this.myPlayerPanel.Name = "myPlayerPanel";
+            this.myPlayerPanel.Size = new System.Drawing.Size(371, 33);
+            this.myPlayerPanel.TabIndex = 5;
+            // 
             // SingleplayerNewGameSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.myPlayerPanel);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.aiPlayersNumberLabel);
             this.Controls.Add(this.aiPlayersNumberNumericUpDown);
             this.Controls.Add(this.aiPlayerSettingsControl);
             this.Controls.Add(this.mapSettingsControl);
             this.Name = "SingleplayerNewGameSettingsControl";
-            this.Size = new System.Drawing.Size(377, 327);
+            this.Size = new System.Drawing.Size(377, 422);
             ((System.ComponentModel.ISupportInitialize)(this.aiPlayersNumberNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -108,5 +118,6 @@
         private System.Windows.Forms.NumericUpDown aiPlayersNumberNumericUpDown;
         private System.Windows.Forms.Label aiPlayersNumberLabel;
         private System.Windows.Forms.Button startButton;
+        private System.Windows.Forms.Panel myPlayerPanel;
     }
 }
