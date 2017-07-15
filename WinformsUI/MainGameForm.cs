@@ -156,8 +156,11 @@ namespace WinformsUI
         }
         private void TabChanged(object sender, EventArgs e)
         {
-            MessageBox.Show(sender.GetType().ToString());
-            // TODO: warnings about leaving game unsaved
+            // TODO: warnings about not saving the changes
+
+            inGame?.Dispose();
+            inGame = null;
+
             switch (typeGameChoiceTabControl.SelectedIndex)
             {
                 case 0: // singleplayer

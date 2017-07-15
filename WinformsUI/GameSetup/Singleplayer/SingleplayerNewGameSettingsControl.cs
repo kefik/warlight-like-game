@@ -58,8 +58,9 @@ namespace WinformsUI.GameSetup.Singleplayer
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             }
         }
+        
 
-        private void Create(object sender, EventArgs e)
+        private void Start(object sender, EventArgs e)
         {
             Map map = MapFactory.GetMap(mapSettingsControl.GameMap);
             ICollection<Player> players = aiPlayerSettingsControl.GetPlayers(); /*as ICollection<Player>; */

@@ -32,7 +32,7 @@
             this.aiPlayerSettingsControl = new WinformsUI.HelperControls.AIPlayerSettingsControl();
             this.aiPlayersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.aiPlayersNumberLabel = new System.Windows.Forms.Label();
-            this.createButton = new System.Windows.Forms.Button();
+            this.startButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.aiPlayersNumberNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
@@ -73,22 +73,22 @@
             this.aiPlayersNumberLabel.TabIndex = 3;
             this.aiPlayersNumberLabel.Text = "Number of AI players:";
             // 
-            // createButton
+            // startButton
             // 
-            this.createButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.createButton.Location = new System.Drawing.Point(299, 301);
-            this.createButton.Name = "createButton";
-            this.createButton.Size = new System.Drawing.Size(75, 23);
-            this.createButton.TabIndex = 4;
-            this.createButton.Text = "Create";
-            this.createButton.UseVisualStyleBackColor = true;
-            this.createButton.Click += new System.EventHandler(this.Create);
+            this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.startButton.Location = new System.Drawing.Point(299, 301);
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(75, 23);
+            this.startButton.TabIndex = 4;
+            this.startButton.Text = "Start";
+            this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.Click += new System.EventHandler(this.Start);
             // 
             // SingleplayerNewGameSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.createButton);
+            this.Controls.Add(this.startButton);
             this.Controls.Add(this.aiPlayersNumberLabel);
             this.Controls.Add(this.aiPlayersNumberNumericUpDown);
             this.Controls.Add(this.aiPlayerSettingsControl);
@@ -107,6 +107,6 @@
         private HelperControls.AIPlayerSettingsControl aiPlayerSettingsControl;
         private System.Windows.Forms.NumericUpDown aiPlayersNumberNumericUpDown;
         private System.Windows.Forms.Label aiPlayersNumberLabel;
-        private System.Windows.Forms.Button createButton;
+        private System.Windows.Forms.Button startButton;
     }
 }
