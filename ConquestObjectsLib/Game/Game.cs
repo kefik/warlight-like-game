@@ -39,7 +39,7 @@ namespace ConquestObjectsLib.Game
         /// Return game type this game has.
         /// </summary>
         public abstract GameType GameType { get; }
-
+        
         protected Game(Map map, ICollection<Player> players)
         {
             if (map.IsInitialized) throw new ArgumentException();

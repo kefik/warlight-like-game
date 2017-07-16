@@ -36,6 +36,11 @@ namespace ConquestObjectsLib
         {
             Color = color;
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     /// <summary>

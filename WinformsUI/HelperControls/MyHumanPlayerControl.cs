@@ -14,6 +14,14 @@ namespace WinformsUI.HelperControls
 {
     public partial class MyHumanPlayerControl : UserControl
     {
+        public MyHumanPlayerControl()
+        {
+            InitializeComponent();
+
+            player = new HumanPlayer(new LocalUser("Me"), KnownColor.Red);
+            UserChanged();
+        }
+
         HumanPlayer player;
 
         /// <summary>
@@ -25,43 +33,34 @@ namespace WinformsUI.HelperControls
             set
             {
                 if (value == null) throw new ArgumentException();
-                UserChanged(value);
+                UserChanged();
             }
         }
         /// <summary>
         /// Represents clients color.
         /// </summary>
-        public KnownColor Color
+        public KnownColor PlayerColor
         {
             get { return player.Color; }
             set
             {
                 player = new HumanPlayer(User, value);
-                colorButton.BackColor = System.Drawing.Color.FromKnownColor(Color);
+                colorButton.BackColor = System.Drawing.Color.FromKnownColor(PlayerColor);
             }
         }
         /// <summary>
         /// Represents players name.
         /// </summary>
-        public string Name
+        public string PlayerName
         {
             get { return player.Name; }
         }
         
-
-        public MyHumanPlayerControl()
+        void UserChanged()
         {
-            InitializeComponent();
-            
-            player = new HumanPlayer(new LocalUser("Me"), KnownColor.Red);
-            UserChanged(User);
-        }
-        
-        void UserChanged(User user)
-        {
-            player = new HumanPlayer(user, Color);
-            playerNameTextBox.Text = user.Name;
-            switch (user.UserType)
+            player = new HumanPlayer(User, PlayerColor);
+            playerNameTextBox.Text = User.Name;
+            switch (User.UserType)
             {
                 case UserType.Local:
                     playerNameTextBox.Enabled = true;
@@ -77,7 +76,7 @@ namespace WinformsUI.HelperControls
         /// <returns>New instance of the player represented by this control.</returns>
         public Player GetPlayer()
         {
-            return new HumanPlayer(User, Color);
+            return new HumanPlayer(User, PlayerColor);
         }
 
         private void ChangeColor(object sender, MouseEventArgs e)
@@ -85,23 +84,24 @@ namespace WinformsUI.HelperControls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    Color++; // TODO: fix so it doesnt overflow or underflow
+                    PlayerColor++; // TODO: fix so it doesnt overflow or underflow
                     break;
                 case MouseButtons.Right:
-                    Color--;
+                    PlayerColor--;
                     break;
             }
         }
 
         private void NameTextBoxTextChanged(object sender, EventArgs e)
         {
-            if (User.GetType() == typeof(MyNetworkUser))
+            switch (User.UserType)
             {
-                playerNameTextBox.Text = Name;
-            }
-            else
-            {
-                player = new HumanPlayer(new LocalUser(playerNameTextBox.Text), Color);
+                case UserType.Local:
+                    player = new HumanPlayer(new LocalUser(playerNameTextBox.Text), PlayerColor);
+                    break;
+                case UserType.Network:
+                    playerNameTextBox.Text = PlayerName;
+                    break;
             }
         }
     }

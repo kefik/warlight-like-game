@@ -13,7 +13,7 @@ namespace ConquestObjectsLib.GameUser
             get { return UserType.Local; }
         }
 
-        public LocalUser(string name) : base(name)
+        public LocalUser(string name = "") : base(name)
         {
         }
     }

@@ -66,6 +66,19 @@ namespace WinformsUI.HelperControls
         }
 
         /// <summary>
+        /// Replaces player on given index with given user.
+        /// </summary>
+        /// <param name="index">Index indicating which row of table will be replaced.</param>
+        /// <param name="user">Indicates with whom will the previous user be replaced.</param>
+        public void ReplacePlayer(int index, User user)
+        {
+            // TODO: check
+            var control = playersTableLayoutPanel.Controls[index] as HumanPlayerControl;
+            
+            control.User = user;
+        }
+
+        /// <summary>
         /// Calculates and returns players from controls saved in the table.
         /// </summary>
         /// <returns>Returns players from controls saved in the table.</returns>

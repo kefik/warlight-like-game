@@ -10,6 +10,7 @@ namespace ConquestObjectsLib.GameMap
     /// </summary>
     public class SuperRegion : IEnumerable<Region>
     {
+        public int Id { get; }
         /// <summary>
         /// Name given of the SuperRegion.
         /// </summary>
@@ -27,8 +28,9 @@ namespace ConquestObjectsLib.GameMap
         /// </summary>
         /// <param name="name">Name of the new SuperRegion.</param>
         /// <param name="bonus">Bonus given by SuperRegion.</param>
-        public SuperRegion(string name, int bonus)
+        public SuperRegion(int id, string name, int bonus)
         {
+            Id = id;
             Name = name;
             Bonus = bonus;
         }

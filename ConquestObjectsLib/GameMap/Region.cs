@@ -7,6 +7,7 @@ namespace ConquestObjectsLib.GameMap
     /// </summary>
     public class Region
     {
+        public int Id { get; }
         public string Name { get; }
         /// <summary>
         /// Player owning given region. Null means no owner.
@@ -27,8 +28,9 @@ namespace ConquestObjectsLib.GameMap
         public ICollection<Region> NeighbourRegions { get; } = new List<Region>();
         
 
-        public Region(string name, int units, SuperRegion superRegion)
+        public Region(int id, string name, int units, SuperRegion superRegion)
         {
+            Id = id;
             Name = name;
             Units = units;
             SuperRegion = superRegion;

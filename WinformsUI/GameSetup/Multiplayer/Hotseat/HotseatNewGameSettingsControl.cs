@@ -152,6 +152,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
                 players.Add(player);
             }
 
+            players.Add(myPlayerControl.GetPlayer());
+
             ConquestObjectsLib.Game.Game game = new HotseatGame(map, players);
 
             OnGameStarted?.Invoke(game);

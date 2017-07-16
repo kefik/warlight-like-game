@@ -20,7 +20,7 @@ namespace WinformsUI.HelperControls
         {
             InitializeComponent();
 
-            player = new HumanPlayer(new NetworkUser(""), KnownColor.Aqua);
+            player = new HumanPlayer(new LocalUser(""), KnownColor.Aqua);
             UserChanged(User);
         }
         /// <summary>
