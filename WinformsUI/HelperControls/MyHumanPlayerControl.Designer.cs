@@ -1,6 +1,6 @@
 ﻿namespace WinformsUI.HelperControls
 {
-    partial class HumanPlayerControl
+    partial class MyHumanPlayerControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,9 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.colorButton = new System.Windows.Forms.Button();
             this.playerNameTextBox = new System.Windows.Forms.TextBox();
+            this.colorButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
+            // 
+            // playerNameTextBox
+            // 
+            this.playerNameTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.playerNameTextBox.Enabled = false;
+            this.playerNameTextBox.Location = new System.Drawing.Point(3, 3);
+            this.playerNameTextBox.Name = "playerNameTextBox";
+            this.playerNameTextBox.Size = new System.Drawing.Size(100, 20);
+            this.playerNameTextBox.TabIndex = 5;
+            this.playerNameTextBox.TextChanged += new System.EventHandler(this.NameTextBoxTextChanged);
             // 
             // colorButton
             // 
@@ -38,29 +48,20 @@
             this.colorButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.colorButton.FlatAppearance.BorderSize = 0;
             this.colorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.colorButton.Location = new System.Drawing.Point(203, 5);
+            this.colorButton.Location = new System.Drawing.Point(217, 3);
             this.colorButton.Name = "colorButton";
             this.colorButton.Size = new System.Drawing.Size(62, 21);
-            this.colorButton.TabIndex = 2;
+            this.colorButton.TabIndex = 4;
             this.colorButton.UseVisualStyleBackColor = false;
             this.colorButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ChangeColor);
             // 
-            // playerNameTextBox
-            // 
-            this.playerNameTextBox.Location = new System.Drawing.Point(3, 6);
-            this.playerNameTextBox.Name = "playerNameTextBox";
-            this.playerNameTextBox.Size = new System.Drawing.Size(100, 20);
-            this.playerNameTextBox.TabIndex = 3;
-            // 
-            // HumanPlayerControl
+            // MyHumanPlayerControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.playerNameTextBox);
             this.Controls.Add(this.colorButton);
-            this.MinimumSize = new System.Drawing.Size(243, 21);
-            this.Name = "HumanPlayerControl";
-            this.Size = new System.Drawing.Size(268, 31);
+            this.Size = new System.Drawing.Size(282, 26);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -68,7 +69,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button colorButton;
-        private System.Windows.Forms.TextBox playerNameTextBox;
+        protected System.Windows.Forms.TextBox playerNameTextBox;
+        protected System.Windows.Forms.Button colorButton;
     }
 }

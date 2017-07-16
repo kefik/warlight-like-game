@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ConquestObjectsLib;
+using ConquestObjectsLib.GameUser;
 
 namespace WinformsUI.HelperControls
 {
@@ -15,30 +16,42 @@ namespace WinformsUI.HelperControls
     {
         HumanPlayer player;
 
-        public HumanPlayerControl(User user)
-        {
-            InitializeComponent();
-
-            player = new HumanPlayer(user, KnownColor.Aqua);
-        }
-
         public HumanPlayerControl()
         {
             InitializeComponent();
+
+            player = new HumanPlayer(new NetworkUser(""), KnownColor.Aqua);
+            UserChanged(User);
         }
         /// <summary>
         /// Accesses players controlling user.
         /// </summary>
         public User User
         {
-            get { return player?.User; }
+            get { return player.User; }
             set
             {
-                player = new HumanPlayer(value, KnownColor.Aqua);
-                playerNameLabel.Text = player.Name;
+                if (value == null) throw new ArgumentException();
+
+                player = new HumanPlayer(value, player.Color);
             }
         }
-        
+        void UserChanged(User user)
+        {
+            player = new HumanPlayer(user, PlayerColor);
+            playerNameTextBox.Text = user.Name;
+            switch (user.UserType)
+            {
+                case UserType.Local:
+                    playerNameTextBox.Enabled = true;
+                    colorButton.Enabled = true;
+                    break;
+                case UserType.Network: // locks the values for rewriting
+                    playerNameTextBox.Enabled = false;
+                    colorButton.Enabled = false;
+                    break;
+            }
+        }
 
         /// <summary>
         /// Accesses player color.
@@ -48,7 +61,7 @@ namespace WinformsUI.HelperControls
             get { return player.Color; }
             private set
             {
-                player = new HumanPlayer(player?.User, value);
+                player = new HumanPlayer(player.User, value);
                 colorButton.BackColor = Color.FromKnownColor(value);
             }
         }
@@ -59,7 +72,7 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public string PlayerName
         {
-            get { return player?.Name; }
+            get { return player.Name; }
         }
 
         /// <summary>
@@ -73,8 +86,6 @@ namespace WinformsUI.HelperControls
 
         private void ChangeColor(object sender, MouseEventArgs e)
         {
-            if (player == null) return;
-
             switch (e.Button)
             {
                 case MouseButtons.Left:

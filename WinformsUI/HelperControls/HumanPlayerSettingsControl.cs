@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ConquestObjectsLib;
+using ConquestObjectsLib.GameUser;
 
 namespace WinformsUI.HelperControls
 {
@@ -37,8 +38,9 @@ namespace WinformsUI.HelperControls
         {
             if (PlayersLimit <= PlayersCount) throw new Exception(); // TODO: cannot be added exception
 
-            HumanPlayerControl control = new HumanPlayerControl(user)
+            HumanPlayerControl control = new HumanPlayerControl()
             {
+                User = user,
                 Anchor = AnchorStyles.Left | AnchorStyles.Right
             }; // TODO: generate unique name
             playersTableLayoutPanel.Controls.Add(control);
@@ -66,7 +68,7 @@ namespace WinformsUI.HelperControls
         /// <summary>
         /// Calculates and returns players from controls saved in the table.
         /// </summary>
-        /// <returns>Returns player from controls saved in the table.</returns>
+        /// <returns>Returns players from controls saved in the table.</returns>
         public ICollection<Player> GetPlayers()
         {
             ICollection<Player> players = new List<Player>();

@@ -11,23 +11,21 @@ using System.Windows.Forms;
 using ConquestObjectsLib;
 using ConquestObjectsLib.Game;
 using ConquestObjectsLib.GameMap;
+using ConquestObjectsLib.GameUser;
 using WinformsUI.HelperControls;
 
 namespace WinformsUI.GameSetup.Singleplayer
 {
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
-        readonly HumanPlayerControl humanPlayerControl;
-
-        User user;
-
+        readonly MyHumanPlayerControl myHumanPlayerControl;
+        
         public User User
         {
-            get { return user; }
+            get { return myHumanPlayerControl.User; }
             set
             {
-                user = value;
-                humanPlayerControl.User = value;
+                myHumanPlayerControl.User = value;
             }
         }
 
@@ -35,14 +33,14 @@ namespace WinformsUI.GameSetup.Singleplayer
         public SingleplayerNewGameSettingsControl()
         {
             InitializeComponent();
-
-            user = new User() {Name = "Me"};
-            humanPlayerControl = new HumanPlayerControl(user)
+            
+            myHumanPlayerControl = new MyHumanPlayerControl()
             {
+                User = new LocalUser("Me"),
                 Parent = myPlayerPanel,
                 Dock = DockStyle.Fill,
             };
-            humanPlayerControl.Show();
+            myHumanPlayerControl.Show();
 
             previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit;
@@ -86,7 +84,7 @@ namespace WinformsUI.GameSetup.Singleplayer
             ICollection<Player> players = aiPlayerSettingsControl.GetPlayers(); /*as ICollection<Player>; */
 
             // adds clients player
-            players.Add(humanPlayerControl.GetPlayer());
+            players.Add(myHumanPlayerControl.GetPlayer());
 
             ConquestObjectsLib.Game.Game game = new SingleplayerGame(map, players);
 

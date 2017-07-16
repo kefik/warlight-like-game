@@ -138,6 +138,18 @@
     <Compile Include="HelperControls\MapSettingsControl.Designer.cs">
       <DependentUpon>MapSettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="HelperControls\MyHumanPlayerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HelperControls\MyHumanPlayerControl.Designer.cs">
+      <DependentUpon>MyHumanPlayerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HelperControls\NetworkHumanPlayerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HelperControls\NetworkHumanPlayerControl.Designer.cs">
+      <DependentUpon>NetworkHumanPlayerControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="HelperControls\HumanPlayerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -226,6 +238,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HelperControls\MapSettingsControl.resx">
       <DependentUpon>MapSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelperControls\MyHumanPlayerControl.resx">
+      <DependentUpon>MyHumanPlayerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelperControls\HumanPlayerControl.resx">
       <DependentUpon>HumanPlayerControl.cs</DependentUpon>

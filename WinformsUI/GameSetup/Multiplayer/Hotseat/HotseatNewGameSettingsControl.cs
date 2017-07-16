@@ -10,27 +10,26 @@ using System.Windows.Forms;
 using ConquestObjectsLib;
 using ConquestObjectsLib.Game;
 using ConquestObjectsLib.GameMap;
+using ConquestObjectsLib.GameUser;
 using WinformsUI.HelperControls;
 
 namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 {
     public partial class HotseatNewGameSettingsControl : UserControl
     {
-        private User myUser = new User() { Name = "Me" };
         /// <summary>
         /// This instance represenets my user.
         /// </summary>
         public User MyUser
         {
-            get { return myUser; }
+            get { return myPlayerControl.User; }
             set
             {
                 myPlayerControl.User = value;
-                myUser = value;
             }
         }
 
-        readonly HumanPlayerControl myPlayerControl;
+        readonly MyHumanPlayerControl myPlayerControl;
         /// <summary>
         /// Represents number of total players that can play this given map.
         /// </summary>
@@ -43,9 +42,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         {
             InitializeComponent();
 
-            myPlayerControl = new HumanPlayerControl()
+            myPlayerControl = new MyHumanPlayerControl()
             {
-                User = MyUser,
                 Parent = myUserPanel,
                 Dock = DockStyle.Fill
             };
@@ -123,7 +121,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
                 difference = humanPlayersNumberNumericUpDown.Value - previousHumanPlayersNumber;
                 for (int i = 0; i < difference; i++)
                 {
-                    humanPlayerSettingsControl.AddPlayer(new User()); // TODO: problem with users
+                    humanPlayerSettingsControl.AddPlayer(new LocalUser("")); // TODO: problem with users
                 }
             }
             else

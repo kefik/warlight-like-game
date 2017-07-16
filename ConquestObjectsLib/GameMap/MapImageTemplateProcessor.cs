@@ -11,7 +11,7 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Represents visual representation of the map template and functionality linked with it.
     /// </summary>
-    public class GameMapImageTemplateProcessor
+    public class MapImageTemplateProcessor
     {
         readonly Map map;
         /// <summary>
@@ -26,7 +26,7 @@ namespace ConquestObjectsLib.GameMap
         /// <param name="map">Map with regions.</param>
         /// <param name="colorHighlightedImage">Image containing the map in proper format.</param>
         /// <param name="regionsWithColors">Tuples mapping color of region to corresponding region. Regions must correspond to those in the map.</param>
-        public GameMapImageTemplateProcessor(Map map, Image colorHighlightedImage,
+        public MapImageTemplateProcessor(Map map, Image colorHighlightedImage,
             ICollection<Tuple<Color, Region>> regionsWithColors)
         {
             this.map = map;
@@ -71,15 +71,15 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Represents visual representation of the game map and functionality linked with it.
     /// </summary>
-    public class GameMapImageProcessor
+    public class MapImageProcessor
     {
         Bitmap MapImage { get; }
-        readonly GameMapImageTemplateProcessor templateProcessor;
+        readonly MapImageTemplateProcessor templateProcessor;
 
-        public GameMapImageProcessor(GameMapImageTemplateProcessor gameMapImageTemplateProcessor, Bitmap gameMapMapImage)
+        public MapImageProcessor(MapImageTemplateProcessor mapImageTemplateProcessor, Bitmap gameMapMapImage)
         {
             MapImage = gameMapMapImage;
-            templateProcessor = gameMapImageTemplateProcessor;
+            templateProcessor = mapImageTemplateProcessor;
         }
         /// <summary>
         /// Recolors every pixel of the original color in the map to the new color.
