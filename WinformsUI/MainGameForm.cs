@@ -103,6 +103,8 @@ namespace WinformsUI
             void LoadHotseatControls()
             {
                 hotseatGameOptionsControl?.Dispose();
+                networkGameOptionsControl?.Dispose();
+                networkGameOptionsControl = null;
                 hotseatGameOptionsControl = new HotseatGameOptionsControl()
                 {
                     Parent = multiplayerTabPage,
@@ -116,6 +118,8 @@ namespace WinformsUI
             void LoadNetworkControls()
             {
                 networkGameOptionsControl?.Dispose();
+                hotseatGameOptionsControl?.Dispose();
+                hotseatGameOptionsControl = null;
                 networkGameOptionsControl = new NetworkGameOptionsControl()
                 {
                     Parent = multiplayerTabPage,
