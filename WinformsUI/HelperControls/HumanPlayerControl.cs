@@ -21,6 +21,11 @@ namespace WinformsUI.HelperControls
 
             player = new HumanPlayer(user, KnownColor.Aqua);
         }
+
+        public HumanPlayerControl()
+        {
+            InitializeComponent();
+        }
         /// <summary>
         /// Accesses players controlling user.
         /// </summary>
@@ -73,7 +78,7 @@ namespace WinformsUI.HelperControls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    PlayerColor++;
+                    PlayerColor++; // hopefully there is no upper or down limit
                     break;
                 case MouseButtons.Right:
                     PlayerColor--;

@@ -9,7 +9,7 @@ namespace ConquestObjectsLib.Game
     {
         public override GameType GameType
         {
-            get { return GameType.MultiplayerNetwork; }
+            get { return GameType.MultiplayerHotseat; }
         }
 
         public HotseatGame(Map map, ICollection<Player> players) : base(map, players)

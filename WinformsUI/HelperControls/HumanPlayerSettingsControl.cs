@@ -37,7 +37,10 @@ namespace WinformsUI.HelperControls
         {
             if (PlayersLimit <= PlayersCount) throw new Exception(); // TODO: cannot be added exception
 
-            HumanPlayerControl control = new HumanPlayerControl(user); // TODO: generate unique name
+            HumanPlayerControl control = new HumanPlayerControl(user)
+            {
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            }; // TODO: generate unique name
             playersTableLayoutPanel.Controls.Add(control);
         }
         /// <summary>
@@ -58,6 +61,23 @@ namespace WinformsUI.HelperControls
             if (index >= PlayersCount || index < 0) throw new ArgumentException();
 
             playersTableLayoutPanel.Controls.RemoveAt(index);
+        }
+
+        /// <summary>
+        /// Calculates and returns players from controls saved in the table.
+        /// </summary>
+        /// <returns>Returns player from controls saved in the table.</returns>
+        public ICollection<Player> GetPlayers()
+        {
+            ICollection<Player> players = new List<Player>();
+            foreach (var control in playersTableLayoutPanel.Controls)
+            {
+                HumanPlayerControl humanPlayerControl = control as HumanPlayerControl;
+
+                players.Add(humanPlayerControl.GetPlayer()); // TODO: may throw exception
+            }
+
+            return players;
         }
     }
 }

@@ -40,10 +40,10 @@ namespace WinformsUI
             switch (game.GameType)
             {
                 case GameType.SinglePlayer:
-                    // removes previous
+                    // remove previou
                     singleplayerGameOptionsControl?.Dispose();
                     singleplayerGameOptionsControl = null;
-                    // loads game screens
+                    // load game screen
                     inGame = new InGameControl()
                     {
                         Parent = singleplayerTabPage,
@@ -51,10 +51,10 @@ namespace WinformsUI
                     };
                     break;
                 case GameType.MultiplayerHotseat:
-                    // removes previous
+                    // remove previou
                     hotseatGameOptionsControl?.Dispose();
                     hotseatGameOptionsControl = null;
-                    // loads game screens
+                    // load game screen
                     inGame = new InGameControl()
                     {
                         Parent = multiplayerTabPage,
@@ -109,6 +109,8 @@ namespace WinformsUI
                     Dock = DockStyle.Fill
                 };
                 hotseatGameOptionsControl.Show();
+
+                hotseatGameOptionsControl.OnGameStarted += StartGame;
             }
 
             void LoadNetworkControls()
@@ -120,6 +122,7 @@ namespace WinformsUI
                     Dock = DockStyle.Fill
                 };
                 networkGameOptionsControl.Show();
+                
             }
 
             var gameTypeChoiceForm = new GameTypeChoiceForm();

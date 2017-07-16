@@ -17,7 +17,7 @@ namespace WinformsUI.GameSetup.Singleplayer
 {
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
-        HumanPlayerControl humanPlayerControl;
+        readonly HumanPlayerControl humanPlayerControl;
 
         User user;
 

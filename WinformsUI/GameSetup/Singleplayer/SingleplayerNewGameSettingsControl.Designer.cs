@@ -70,9 +70,9 @@
             this.aiPlayersNumberLabel.AutoSize = true;
             this.aiPlayersNumberLabel.Location = new System.Drawing.Point(24, 40);
             this.aiPlayersNumberLabel.Name = "aiPlayersNumberLabel";
-            this.aiPlayersNumberLabel.Size = new System.Drawing.Size(108, 13);
+            this.aiPlayersNumberLabel.Size = new System.Drawing.Size(105, 13);
             this.aiPlayersNumberLabel.TabIndex = 3;
-            this.aiPlayersNumberLabel.Text = "Number of AI players:";
+            this.aiPlayersNumberLabel.Text = "Number of AI players";
             // 
             // startButton
             // 
