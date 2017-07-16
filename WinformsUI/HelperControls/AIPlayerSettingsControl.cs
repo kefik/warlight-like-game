@@ -32,7 +32,7 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public void AddPlayer()
         {
-            if (PlayersCount >= PlayersLimit) throw new Exception(); // TODO: cannot be added exception
+            if (PlayersCount >= PlayersLimit) throw new ArgumentException();
 
             AIPlayerControl control = new AIPlayerControl("PC")
             {
@@ -45,7 +45,7 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public void RemovePlayer()
         {
-            if (PlayersCount == 0) throw new Exception(); // TODO: cannot be removed exception
+            if (PlayersCount == 0) throw new ArgumentException();
 
             playersTableLayoutPanel.Controls.RemoveAt(PlayersCount - 1);
         }

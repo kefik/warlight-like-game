@@ -28,6 +28,7 @@ namespace ConquestObjectsLib.GameMap
         /// </summary>
         /// <param name="name">Name of the new SuperRegion.</param>
         /// <param name="bonus">Bonus given by SuperRegion.</param>
+        /// <param name="id">Id identifying the SuperRegion.</param>
         public SuperRegion(int id, string name, int bonus)
         {
             Id = id;

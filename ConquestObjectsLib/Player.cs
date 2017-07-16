@@ -18,7 +18,6 @@ namespace ConquestObjectsLib
         Hard
     }
 
-    // TODO: rethink locking after game started (currently player is immutable, maybe I should remake it like Game class or the other way
     /// <summary>
     /// Instance of this class represents template for player in the game.
     /// </summary>

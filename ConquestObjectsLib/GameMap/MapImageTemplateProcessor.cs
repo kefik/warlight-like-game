@@ -38,8 +38,7 @@ namespace ConquestObjectsLib.GameMap
             foreach (var item in regionsWithColors)
             {
                 if (!regions.Add(item.Item2)) throw new ArgumentException(); // is already in HashSet
-                if (!map.Regions.Contains(item.Item2)) throw new ArgumentException(); // TODO: slow, it shouldnt matter tho
-
+                if (!map.Regions.Contains(item.Item2)) throw new ArgumentException(); 
                 regionsMapped.Add(item.Item1, item.Item2); // adds the pair to regions, if its unique
             }
         }

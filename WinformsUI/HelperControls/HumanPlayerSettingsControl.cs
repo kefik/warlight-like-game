@@ -36,7 +36,7 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public void AddPlayer(User user)
         {
-            if (PlayersLimit <= PlayersCount) throw new Exception(); // TODO: cannot be added exception
+            if (PlayersLimit <= PlayersCount) throw new ArgumentException();
 
             HumanPlayerControl control = new HumanPlayerControl()
             {
@@ -72,8 +72,7 @@ namespace WinformsUI.HelperControls
         /// <param name="user">Indicates with whom will the previous user be replaced.</param>
         public void ReplacePlayer(int index, User user)
         {
-            // TODO: check
-            var control = playersTableLayoutPanel.Controls[index] as HumanPlayerControl;
+            var control = (HumanPlayerControl)playersTableLayoutPanel.Controls[index];
             
             control.User = user;
         }
