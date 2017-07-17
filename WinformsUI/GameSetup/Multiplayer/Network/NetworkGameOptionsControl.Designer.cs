@@ -32,7 +32,9 @@
             this.myGamesTabPage = new System.Windows.Forms.TabPage();
             this.openedGamesTabPage = new System.Windows.Forms.TabPage();
             this.newGameTabPage = new System.Windows.Forms.TabPage();
+            this.networkNewGameSettingsControl = new WinformsUI.GameSetup.Multiplayer.Network.NetworkNewGameSettingsControl();
             this.gameOptionsTabControl.SuspendLayout();
+            this.newGameTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // gameOptionsTabControl
@@ -69,6 +71,8 @@
             // 
             // newGameTabPage
             // 
+            this.newGameTabPage.AutoScroll = true;
+            this.newGameTabPage.Controls.Add(this.networkNewGameSettingsControl);
             this.newGameTabPage.Location = new System.Drawing.Point(4, 22);
             this.newGameTabPage.Name = "newGameTabPage";
             this.newGameTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -76,6 +80,15 @@
             this.newGameTabPage.TabIndex = 2;
             this.newGameTabPage.Text = "New game";
             this.newGameTabPage.UseVisualStyleBackColor = true;
+            // 
+            // networkNewGameSettingsControl
+            // 
+            this.networkNewGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.networkNewGameSettingsControl.Location = new System.Drawing.Point(3, 3);
+            this.networkNewGameSettingsControl.Name = "networkNewGameSettingsControl";
+            this.networkNewGameSettingsControl.Size = new System.Drawing.Size(489, 650);
+            this.networkNewGameSettingsControl.TabIndex = 0;
             // 
             // NetworkGameOptionsControl
             // 
@@ -85,6 +98,7 @@
             this.Name = "NetworkGameOptionsControl";
             this.Size = new System.Drawing.Size(540, 301);
             this.gameOptionsTabControl.ResumeLayout(false);
+            this.newGameTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -95,5 +109,6 @@
         private System.Windows.Forms.TabPage myGamesTabPage;
         private System.Windows.Forms.TabPage openedGamesTabPage;
         private System.Windows.Forms.TabPage newGameTabPage;
+        private NetworkNewGameSettingsControl networkNewGameSettingsControl;
     }
 }

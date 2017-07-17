@@ -18,8 +18,9 @@ namespace WinformsUI.HelperControls
         {
             InitializeComponent();
 
-            player = new HumanPlayer(new LocalUser("Me"), KnownColor.Red);
-            UserChanged();
+            var newUser = new LocalUser("Me");
+            player = new HumanPlayer(newUser, KnownColor.Red);
+            UserChanged(newUser);
         }
 
         HumanPlayer player;
@@ -33,7 +34,7 @@ namespace WinformsUI.HelperControls
             set
             {
                 if (value == null) throw new ArgumentException();
-                UserChanged();
+                UserChanged(value);
             }
         }
         /// <summary>
@@ -56,9 +57,9 @@ namespace WinformsUI.HelperControls
             get { return player.Name; }
         }
         
-        void UserChanged()
+        void UserChanged(User newUser)
         {
-            player = new HumanPlayer(User, PlayerColor);
+            player = new HumanPlayer(newUser, PlayerColor);
             playerNameTextBox.Text = User.Name;
             switch (User.UserType)
             {

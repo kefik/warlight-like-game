@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ConquestObjectsLib;
 using ConquestObjectsLib.Game;
+using ConquestObjectsLib.GameUser;
 using WinformsUI.Game;
 using WinformsUI.GameSetup.Multiplayer;
 using WinformsUI.GameSetup.Multiplayer.Hotseat;
@@ -21,9 +22,13 @@ namespace WinformsUI
 
         InGameControl inGame;
 
+        User myUser = new LocalUser("Me");
+
         public MainGameForm()
         {
             InitializeComponent();
+
+            // initialize default tab
             previousTabSelectedIndex = typeGameChoiceTabControl.SelectedIndex = 0;
             LoadSingleplayerControls();
         }
@@ -62,6 +67,7 @@ namespace WinformsUI
                     };
                     break;
                 case GameType.MultiplayerNetwork:
+                    // TODO: fix
                     // removes previous
                     networkGameOptionsControl?.Dispose();
                     networkGameOptionsControl = null;
@@ -89,7 +95,8 @@ namespace WinformsUI
             singleplayerGameOptionsControl = new SingleplayerGameOptionsControl()
             {
                 Parent = this.singleplayerTabPage,
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                User = myUser
             };
             singleplayerGameOptionsControl.OnGameStarted += StartGame;
             singleplayerGameOptionsControl.Show();
@@ -108,22 +115,24 @@ namespace WinformsUI
                 hotseatGameOptionsControl = new HotseatGameOptionsControl()
                 {
                     Parent = multiplayerTabPage,
-                    Dock = DockStyle.Fill
+                    Dock = DockStyle.Fill,
+                    MyUser = myUser
                 };
                 hotseatGameOptionsControl.Show();
 
                 hotseatGameOptionsControl.OnGameStarted += StartGame;
             }
-
+            
             void LoadNetworkControls()
             {
                 networkGameOptionsControl?.Dispose();
                 hotseatGameOptionsControl?.Dispose();
                 hotseatGameOptionsControl = null;
-                networkGameOptionsControl = new NetworkGameOptionsControl()
+                networkGameOptionsControl = new NetworkGameOptionsControl
                 {
                     Parent = multiplayerTabPage,
-                    Dock = DockStyle.Fill
+                    Dock = DockStyle.Fill,
+                    MyUser = myUser
                 };
                 networkGameOptionsControl.Show();
                 
@@ -141,20 +150,48 @@ namespace WinformsUI
                             LoadHotseatControls();
                             break;
                         case GameType.MultiplayerNetwork:
-                            LoadNetworkControls();
+                            // network => find out if user is logged
+                            if (myUser?.GetType() == typeof(MyNetworkUser)) // user is already logged
+                            {
+                                LoadNetworkControls();
+                                return;
+                            }
+                            // user is not logged => log him
+                            var serverLoggingForm = new ServerLoggingForm();
+                            var dialogLogging = serverLoggingForm.ShowDialog();
+
+                            switch (dialogLogging)
+                            {
+                                case DialogResult.OK:
+                                    UserChanged(serverLoggingForm.User);
+                                    LoadNetworkControls();
+                                    break;
+                                case DialogResult.Cancel:
+                                default:
+                                    // return back to previous stage
+                                    typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                                    return;
+                            }
+                            
                             break;
                         default:
+                            // return back to previous stage
                             typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
                             return;
                     }
                     break;
                 case DialogResult.Cancel:
+                default:
                     // TODO: invokes select index event, I want it to return back to previous index without deleting it
                     typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
-                    break;
-                default:
                     return;
             }
+        }
+
+        public void UserChanged(User newUser)
+        {
+            // TODO: user changed broadcast to others
+            myUser = newUser;
         }
         
         void LoadSettingsControls()

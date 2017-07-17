@@ -22,7 +22,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
         private void Cancel(object sender, System.EventArgs e)
         {
             // close the form
-            Close();
+            Close(); // TODO: not necessary prolly
 
             DialogResult = DialogResult.Cancel;
         }
@@ -37,11 +37,13 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             // TODO: validate user entries
 
             // TODO: send it to database
-
+            User user = new MyNetworkUser("Bimbinbiribong"); // returned user
+            User = user;
             // close the form
-            Close();
+            Close(); // TODO: not necessary prolly
 
             DialogResult = DialogResult.OK;
         }
+        
     }
 }

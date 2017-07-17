@@ -21,18 +21,19 @@ namespace WinformsUI.HelperControls
             InitializeComponent();
 
             player = new HumanPlayer(new LocalUser(""), KnownColor.Aqua);
-            UserChanged(User);
+            UserChanged(MyUser);
         }
         /// <summary>
         /// Accesses players controlling user.
         /// </summary>
-        public User User
+        public User MyUser
         {
             get { return player.User; }
             set
             {
                 if (value == null) throw new ArgumentException();
 
+                UserChanged(value);
                 player = new HumanPlayer(value, player.Color);
             }
         }
@@ -81,7 +82,7 @@ namespace WinformsUI.HelperControls
         /// <returns>Player</returns>
         public Player GetPlayer()
         {
-            return new HumanPlayer(User, PlayerColor);
+            return new HumanPlayer(MyUser, PlayerColor);
         }
 
         private void ChangeColor(object sender, MouseEventArgs e)
