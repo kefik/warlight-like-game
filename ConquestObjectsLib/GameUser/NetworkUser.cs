@@ -10,7 +10,7 @@ namespace ConquestObjectsLib.GameUser
     {
         public override UserType UserType
         {
-            get { return UserType.Network; }
+            get { return UserType.NetworkUser; }
         }
 
         public NetworkUser(string name) : base(name)

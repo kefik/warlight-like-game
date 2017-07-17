@@ -14,7 +14,7 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Instance of this class represents map of the game.
     /// </summary>
-    public abstract class Map
+    public abstract class Map // TODO: rework to non-abstract so the map can be dynamically loaded, remove some properties, mb add visual representation in it
     {
         /// <summary>
         /// Notes whether the map is initialized.
@@ -48,7 +48,7 @@ namespace ConquestObjectsLib.GameMap
         /// getting the map ready for the start of the game.
         /// Can be called only once.
         /// </summary>
-        public abstract void Initialize();
+        public abstract void Initialize(); // TODO: rework to non-abstract, will take paths to images and text as parameters
 
         /// <summary>
         /// Factory method constructing map depending on the parameter.

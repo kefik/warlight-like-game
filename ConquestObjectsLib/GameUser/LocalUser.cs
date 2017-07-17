@@ -10,7 +10,7 @@ namespace ConquestObjectsLib.GameUser
     {
         public override UserType UserType
         {
-            get { return UserType.Local; }
+            get { return UserType.LocalUser; }
         }
 
         public LocalUser(string name = "") : base(name)

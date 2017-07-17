@@ -11,7 +11,7 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Represents visual representation of the map template and functionality linked with it.
     /// </summary>
-    public class MapImageTemplateProcessor
+    class MapImageTemplateProcessor
     {
         readonly Map map;
         /// <summary>
@@ -70,7 +70,7 @@ namespace ConquestObjectsLib.GameMap
     /// <summary>
     /// Represents visual representation of the game map and functionality linked with it.
     /// </summary>
-    public class MapImageProcessor
+    class MapImageProcessor
     {
         Bitmap MapImage { get; }
         readonly MapImageTemplateProcessor templateProcessor;

@@ -4,7 +4,7 @@ namespace ConquestObjectsLib.GameUser
 {
     public enum UserType
     {
-        None, Local, Network
+        None, LocalUser, NetworkUser, MyNetworkUser
     }
     /// <summary>
     /// Represents user that controls player in the game.
