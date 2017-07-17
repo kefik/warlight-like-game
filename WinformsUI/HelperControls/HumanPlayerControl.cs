@@ -43,11 +43,11 @@ namespace WinformsUI.HelperControls
             playerNameTextBox.Text = user.Name;
             switch (user.UserType)
             {
-                case UserType.Local:
+                case UserType.LocalUser:
                     playerNameTextBox.Enabled = true;
                     colorButton.Enabled = true;
                     break;
-                case UserType.Network: // locks the values for rewriting
+                case UserType.NetworkUser: // locks the values for rewriting
                     playerNameTextBox.Enabled = false;
                     colorButton.Enabled = false;
                     break;

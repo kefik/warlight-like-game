@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using ConquestObjectsLib;
 using ConquestObjectsLib.GameMap;
-using ConquestObjectsLib.GameMap.Templates;
 
 namespace WinformsUI.HelperControls
 {

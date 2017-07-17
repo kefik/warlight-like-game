@@ -15,7 +15,7 @@ namespace ConquestObjectsLib.Game
             get { return GameType.MultiplayerNetwork; }
         }
 
-        public NetworkGame(Map map, ICollection<Player> players) : base(map, players)
+        public NetworkGame(GameMap.Map map, ICollection<Player> players) : base(map, players)
         {
         }
 
@@ -36,9 +36,6 @@ namespace ConquestObjectsLib.Game
         public override void Start()
         {
             if (!IsCreated) Create();
-
-            // initialization
-            Map.Initialize();
 
             // TODO: validation
             HasStarted = true;

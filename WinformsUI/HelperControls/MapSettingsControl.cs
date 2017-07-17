@@ -1,20 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 using System.Data;
+using System.Data.Entity;
+using System.Data.Entity.Core.Common;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Data.SQLite;
+using System.Data.SQLite.EF6;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ConquestObjectsLib.GameMap;
-using ConquestObjectsLib.GameMap.Templates;
+using DatabaseMappingLib;
+using DatabaseMappingLib.UtilsDb;
 
 namespace WinformsUI.HelperControls
 {
     public partial class MapSettingsControl : UserControl
     {
-        Map map;
+        List<MapInfo> maps;
         public MapSettingsControl()
         {
             InitializeComponent();
@@ -23,28 +31,19 @@ namespace WinformsUI.HelperControls
             {
                 mapPlayersLimitLabel.Text = PlayersLimit.ToString();
             };
+            
+
         }
-        
+
         /// <summary>
         /// Limit of players for given map.
         /// </summary>
-        public int PlayersLimit
-        {
-            get
-            {
-                return map == null ? 0 : map.PlayersLimit;
-            }
-        }
+        public int PlayersLimit { get; private set; }
+
         /// <summary>
-        /// Type of map that will be played.
+        /// Returns name of the map loaded in this control.
         /// </summary>
-        public MapType GameMap
-        {
-            get
-            {
-                return map == null ? MapType.None : map.MapType;
-            }
-        }
+        public string MapName { get; private set; }
 
         /// <summary>
         /// Runs when the map is chosen.
@@ -56,12 +55,34 @@ namespace WinformsUI.HelperControls
         }
         private void MapChosen(object sender, EventArgs e)
         {
-            switch (mapComboBox.Text)
+            PlayersLimit = maps[mapComboBox.SelectedIndex].PlayersLimit;
+            MapName = maps[mapComboBox.SelectedIndex].Name;
+        }
+
+        void RefreshComboBox()
+        {
+            foreach (var map in maps)
             {
-                case "World":
-                    map = Map.Create(MapType.World);
-                    break;
+                mapComboBox.Items.Add(map.Name);
             }
+            this.mapComboBox.Refresh();
+        }
+
+        // TODO: verify if it rly worksh
+
+        private void ControlLoad(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                this.Invoke(new Action(mapComboBox.Items.Clear));
+
+                var mapInfos = new UtilsDbContext().Maps;
+                this.maps = mapInfos.ToList();
+
+                this.Invoke(new Action(RefreshComboBox));
+            });
         }
     }
+
 }
+

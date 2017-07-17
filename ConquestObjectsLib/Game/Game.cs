@@ -28,7 +28,7 @@ namespace ConquestObjectsLib.Game
         /// <summary>
         /// Represents map being played in this game.
         /// </summary>
-        public Map Map { get; }
+        public GameMap.Map Map { get; }
 
         /// <summary>
         /// Represents list of players playing this game.
@@ -40,10 +40,8 @@ namespace ConquestObjectsLib.Game
         /// </summary>
         public abstract GameType GameType { get; }
         
-        protected Game(Map map, ICollection<Player> players)
+        protected Game(GameMap.Map map, ICollection<Player> players)
         {
-            if (map.IsInitialized) throw new ArgumentException();
-
             this.Map = map;
             this.Players = players;
         }

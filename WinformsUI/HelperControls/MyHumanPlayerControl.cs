@@ -18,9 +18,11 @@ namespace WinformsUI.HelperControls
         {
             InitializeComponent();
 
-            var newUser = new LocalUser("Me");
-            player = new HumanPlayer(newUser, KnownColor.Red);
-            UserChanged(newUser);
+            // initialize
+            player = new HumanPlayer(new LocalUser("Me"), KnownColor.Red);
+
+            playerNameTextBox.Text = User.Name;
+            playerNameTextBox.Enabled = true;
         }
 
         HumanPlayer player;
@@ -57,16 +59,20 @@ namespace WinformsUI.HelperControls
             get { return player.Name; }
         }
         
+        /// <summary>
+        /// Handles user change. Locks appropriate controls reacting to the new type of user.
+        /// </summary>
+        /// <param name="newUser">New user</param>
         void UserChanged(User newUser)
         {
             player = new HumanPlayer(newUser, PlayerColor);
             playerNameTextBox.Text = User.Name;
             switch (User.UserType)
             {
-                case UserType.Local:
+                case UserType.LocalUser:
                     playerNameTextBox.Enabled = true;
                     break;
-                case UserType.Network:
+                case UserType.NetworkUser:
                     playerNameTextBox.Enabled = false;
                     break;
             }
@@ -97,10 +103,10 @@ namespace WinformsUI.HelperControls
         {
             switch (User.UserType)
             {
-                case UserType.Local:
+                case UserType.LocalUser:
                     player = new HumanPlayer(new LocalUser(playerNameTextBox.Text), PlayerColor);
                     break;
-                case UserType.Network:
+                case UserType.NetworkUser:
                     playerNameTextBox.Text = PlayerName;
                     break;
             }

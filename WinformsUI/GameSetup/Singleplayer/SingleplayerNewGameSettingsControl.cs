@@ -80,15 +80,7 @@ namespace WinformsUI.GameSetup.Singleplayer
 
         private void Start(object sender, EventArgs e)
         {
-            Map map = Map.Create(mapSettingsControl.GameMap);
-            ICollection<Player> players = aiPlayerSettingsControl.GetPlayers(); /*as ICollection<Player>; */
-
-            // adds clients player
-            players.Add(myHumanPlayerControl.GetPlayer());
-
-            ConquestObjectsLib.Game.Game game = new SingleplayerGame(map, players);
-
-            OnGameStarted?.Invoke(game);
+            // TODO
         }
     }
 }

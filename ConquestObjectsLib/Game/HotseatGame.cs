@@ -12,7 +12,7 @@ namespace ConquestObjectsLib.Game
             get { return GameType.MultiplayerHotseat; }
         }
 
-        public HotseatGame(Map map, ICollection<Player> players) : base(map, players)
+        public HotseatGame(GameMap.Map map, ICollection<Player> players) : base(map, players)
         {
         }
 
@@ -20,7 +20,6 @@ namespace ConquestObjectsLib.Game
 
         public override void Start()
         {
-            Map.Initialize();
             // TODO: validation
             HasStarted = true;
         }

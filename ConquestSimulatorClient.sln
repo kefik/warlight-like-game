@@ -7,6 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinformsUI", "WinformsUI\Wi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConquestObjectsLib", "ConquestObjectsLib\ConquestObjectsLib.csproj", "{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maps", "Maps", "{B8663EA2-E2EE-4981-8B1F-DB7035326EA6}"
+	ProjectSection(SolutionItems) = preProject
+		WinformsUI\bin\Debug\Maps\Map.xsd = WinformsUI\bin\Debug\Maps\Map.xsd
+		WinformsUI\bin\Debug\Maps\World.xml = WinformsUI\bin\Debug\Maps\World.xml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseMappingLib", "DatabaseMappingLib\DatabaseMappingLib.csproj", "{AB6A3B62-7658-4325-9055-2AFC7CFAF24E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +29,10 @@ Global
 		{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB6A3B62-7658-4325-9055-2AFC7CFAF24E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB6A3B62-7658-4325-9055-2AFC7CFAF24E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB6A3B62-7658-4325-9055-2AFC7CFAF24E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB6A3B62-7658-4325-9055-2AFC7CFAF24E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

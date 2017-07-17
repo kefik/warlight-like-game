@@ -1,69 +1,43 @@
-﻿using System.Collections.Generic;
-using ConquestObjectsLib.GameMap.Templates;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConquestObjectsLib.GameMap
 {
     /// <summary>
-    /// Represents type of the map, one for each map created for the game.
-    /// </summary>
-    public enum MapType
-    {
-        None, World
-    }
-
-    /// <summary>
     /// Instance of this class represents map of the game.
     /// </summary>
-    public abstract class Map // TODO: rework to non-abstract so the map can be dynamically loaded, remove some properties, mb add visual representation in it
+    public sealed class Map // TODO: rework to non-abstract so the map can be dynamically loaded, remove some properties, mb add visual representation in it
     {
-        /// <summary>
-        /// Notes whether the map is initialized.
-        /// </summary>
-        public bool IsInitialized { get; protected set; }
-
         public string Name { get; }
         /// <summary>
         /// Returns maximum number of players for the given map.
         /// </summary>
-        public abstract int PlayersLimit { get; }
+        public int PlayersLimit { get; }
         /// <summary>
         /// Represents regions of the map that player can conquer.
         /// </summary>
         public ICollection<Region> Regions { get; } = new HashSet<Region>();
         /// <summary>
-        /// Determines what type the given map has.
-        /// </summary>
-        public abstract MapType MapType { get; }
-        /// <summary>
         /// Represents region groups this map has.
         /// </summary>
         public ICollection<SuperRegion> SuperRegions { get; } = new HashSet<SuperRegion>();
         
-        protected Map(string name)
+        private Map(string name, int playersLimit)
         {
-            this.Name = name;
+            Name = name;
+            PlayersLimit = playersLimit;
         }
-        /// <summary>
-        /// Initializes the map, loading all objects related to its given model,
-        /// getting the map ready for the start of the game.
-        /// Can be called only once.
-        /// </summary>
-        public abstract void Initialize(); // TODO: rework to non-abstract, will take paths to images and text as parameters
 
         /// <summary>
-        /// Factory method constructing map depending on the parameter.
+        /// Creates instance of map, initializes it,
+        /// loads all objects related to its given model,
+        /// getting the map ready for the start of the game.
         /// </summary>
-        /// <param name="map">Decides what kind of template use to construct the map.</param>
-        /// <returns>Map</returns>
-        public static Map Create(MapType map)
+        public static Map Create(string name, string playersLimit, string templatePath)
         {
-            switch (map)
-            {
-                case MapType.World:
-                    return new World();
-                default:
-                    return null;
-            }
+            throw new NotImplementedException();
         }
+
+        
     }
 }

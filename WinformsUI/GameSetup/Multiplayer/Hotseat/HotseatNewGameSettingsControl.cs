@@ -143,20 +143,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 
         private void Start(object sender, EventArgs e)
         {
-            Map map = Map.Create(mapSettingsControl.GameMap);
-
-            var players = aiPlayerSettingsControl.GetPlayers();
+            // TODO: todo
             
-            foreach (var player in humanPlayerSettingsControl.GetPlayers())
-            {
-                players.Add(player);
-            }
-
-            players.Add(myPlayerControl.GetPlayer());
-
-            ConquestObjectsLib.Game.Game game = new HotseatGame(map, players);
-
-            OnGameStarted?.Invoke(game);
         }
     }
 }

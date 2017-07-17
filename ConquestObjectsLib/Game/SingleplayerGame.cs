@@ -48,7 +48,7 @@ namespace ConquestObjectsLib.Game
                         select player).Count() == 1;
             }
         }
-        public SingleplayerGame(Map map, ICollection<Player> players) : base(map, players)
+        public SingleplayerGame(GameMap.Map map, ICollection<Player> players) : base(map, players)
         {
         }
         
@@ -67,9 +67,7 @@ namespace ConquestObjectsLib.Game
             if (!validator.HasEnoughPlayers()) throw new ArgumentException();
             if (validator.HasTooManyPlayers()) throw new ArgumentException();
             if (!validator.HasOneHumanPlayer()) throw new ArgumentException();
-
-            // initialize the map
-            Map.Initialize();
+            
 
             // TODO: save it to the database
 
