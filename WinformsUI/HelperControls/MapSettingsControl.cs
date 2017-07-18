@@ -26,24 +26,47 @@ namespace WinformsUI.HelperControls
         public MapSettingsControl()
         {
             InitializeComponent();
-
-            OnMapChosen += (sender, args) =>
-            {
-                mapPlayersLimitLabel.Text = PlayersLimit.ToString();
-            };
-            
-
         }
 
         /// <summary>
         /// Limit of players for given map.
         /// </summary>
-        public int PlayersLimit { get; private set; }
+        public int PlayersLimit
+        {
+            get { return ChosenMapInfo.PlayersLimit; }
+        }
 
         /// <summary>
         /// Returns name of the map loaded in this control.
         /// </summary>
-        public string MapName { get; private set; }
+        public string MapName
+        {
+            get { return ChosenMapInfo.Name; }
+        }
+        /// <summary>
+        /// Specifies path to map template.
+        /// </summary>
+        public string MapTemplatePath
+        {
+            get { return ChosenMapInfo.TemplatePath; }
+        }
+
+        MapInfo ChosenMapInfo
+        {
+            get
+            {
+                if (maps == null || maps.Count - 1 > mapComboBox.SelectedIndex)
+                {
+                    return new MapInfo()
+                    {
+                        Id = -1,
+                        PlayersLimit = 0,
+                        Name = ""
+                    };
+                }
+                return maps[mapComboBox.SelectedIndex];
+            }
+        }
 
         /// <summary>
         /// Runs when the map is chosen.
@@ -53,10 +76,10 @@ namespace WinformsUI.HelperControls
             add { mapComboBox.SelectedIndexChanged += value; }
             remove { mapComboBox.SelectedIndexChanged -= value; }
         }
+
         private void MapChosen(object sender, EventArgs e)
         {
-            PlayersLimit = maps[mapComboBox.SelectedIndex].PlayersLimit;
-            MapName = maps[mapComboBox.SelectedIndex].Name;
+            mapPlayersLimitLabel.Text = ChosenMapInfo.PlayersLimit.ToString();
         }
 
         void RefreshComboBox()
@@ -67,9 +90,7 @@ namespace WinformsUI.HelperControls
             }
             this.mapComboBox.Refresh();
         }
-
-        // TODO: verify if it rly worksh
-
+        
         private void ControlLoad(object sender, EventArgs e)
         {
             Task.Run(() =>

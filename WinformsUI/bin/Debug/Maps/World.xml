@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Map xmlns="http://tempuri.org/XMLSchema.xsd"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="https://www.w3schools.com Map.xsd">
+      xsi:schemaLocation="http://tempuri.org/XMLSchema.xsd Map.xsd">
   <SuperRegions>
     <SuperRegion Name="North America" Bonus="5">
       <Region Name="Alaska">

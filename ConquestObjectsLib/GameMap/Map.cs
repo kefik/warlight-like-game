@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -13,21 +15,13 @@ namespace ConquestObjectsLib.GameMap
     /// </summary>
     public sealed class Map // TODO: rework to non-abstract so the map can be dynamically loaded, remove some properties, mb add visual representation in it
     {
-        readonly string name;
-
-        public string Name
-        {
-            get { return name; }
-        }
-        readonly int playersLimit;
+        public string Name { get; }
 
         /// <summary>
         /// Returns maximum number of players for the given map.
         /// </summary>
-        public int PlayersLimit
-        {
-            get { return playersLimit; }
-        }
+        public int PlayersLimit { get; }
+
         /// <summary>
         /// Represents regions of the map that player can conquer.
         /// </summary>
@@ -39,8 +33,8 @@ namespace ConquestObjectsLib.GameMap
         
         private Map(string name, int playersLimit)
         {
-            this.name = name;
-            this.playersLimit = playersLimit;
+            this.Name = name;
+            this.PlayersLimit = playersLimit;
         }
 
         /// <summary>
@@ -61,8 +55,15 @@ namespace ConquestObjectsLib.GameMap
             settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
             settings.ValidationEventHandler += (sender, args) =>
             {
-                if (args.Severity == XmlSeverityType.Error)
-                    throw new XmlSchemaValidationException();
+                switch (args.Severity)
+                {
+                    case XmlSeverityType.Error:
+                        throw new XmlSchemaValidationException();
+                    case XmlSeverityType.Warning:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             };
             // verify xml against loaded xsd, read everything except for neighbours
             using (XmlReader reader = XmlReader.Create(templatePath, settings))
@@ -70,16 +71,12 @@ namespace ConquestObjectsLib.GameMap
                 #region SuperRegion stats
                 int superRegionCounter = 1;
                 bool isSuperRegionElement = false;
-
-                string superRegionName = null;
-                int superRegionBonus = 0;
                 #endregion
 
                 #region Region stats
                 int regionCounter = 1;
                 bool isRegionElement = false;
-
-                string regionName = null;
+                
                 #endregion
 
                 bool isNeighbours = false;
@@ -92,59 +89,46 @@ namespace ConquestObjectsLib.GameMap
                             {
                                 case "SuperRegion":
                                     isSuperRegionElement = true;
+                                    if (!isRegionElement && !isNeighbours) // is SuperRegion attribute
+                                    {
+                                        string superRegionName = reader.GetAttribute("Name");
+                                        int superRegionBonus = int.Parse(reader.GetAttribute("Bonus"));
+                                        var superRegion = new SuperRegion(superRegionCounter++, superRegionName,
+                                            superRegionBonus);
+                                        map.SuperRegions.Add(superRegion);
+                                    }
                                     break;
                                 case "Region":
                                     isRegionElement = true;
+                                    if (isSuperRegionElement && !isNeighbours) // is Region element
+                                    {
+                                        string regionName = reader.GetAttribute("Name");
+                                        // TODO: may drop
+                                        int army = int.Parse(reader.GetAttribute("Army"));
+                                        var region =
+                                            new Region(regionCounter++, regionName, map.SuperRegions.Last())
+                                            {
+                                                Army = army
+                                            };
+                                        map.Regions.Add(region);
+                                        map.SuperRegions.Last().Regions.Add(region);
+                                    }
                                     break;
                                 case "Neighbours":
                                     isNeighbours = true;
                                     break;
                             }
                             break;
-                        case XmlNodeType.Attribute:
-                            if (isSuperRegionElement
-                                && !isRegionElement && !isNeighbours) // is SuperRegion attribute
-                            {
-                                switch (reader.Name)
-                                {
-                                    case "Name":
-                                        superRegionName = reader.Value;
-                                        break;
-                                    case "Bonus":
-                                        superRegionBonus = int.Parse(reader.Value);
-                                        break;
-                                }
-                            }
-                            else if (isSuperRegionElement
-                                && isRegionElement && !isNeighbours) // is Region element
-                            {
-                                if (reader.Name == "Name")
-                                {
-                                    regionName = reader.Value;
-                                }
-                            }
-                            break;
                         case XmlNodeType.EndElement:
                             switch (reader.Name)
                             {
                                 case "SuperRegion":
-                                    var superRegion =
-                                        new SuperRegion(superRegionCounter, superRegionName, superRegionBonus);
-                                    map.SuperRegions.Add(superRegion);
                                     // reset
                                     isSuperRegionElement = false;
-                                    superRegionCounter++;
-                                    superRegionName = null;
-                                    superRegionBonus = 0;
                                     break;
                                 case "Region":
-                                    var region =
-                                        new Region(regionCounter, regionName, map.SuperRegions.Last());
-                                    map.Regions.Add(region);
                                     // reset
                                     isRegionElement = false;
-                                    regionCounter++;
-                                    regionName = null;
                                     break;
                                 case "Neighbours":
                                     isNeighbours = false;
@@ -179,7 +163,7 @@ namespace ConquestObjectsLib.GameMap
                                     if (isSuperRegion && isRegion == 1 && !isNeighbours)
                                     {
                                         givenRegion = (from region in map.Regions
-                                                       where region.Name == reader.Value
+                                                       where region.Name == reader.GetAttribute("Name")
                                                        select region).First();
                                     }
                                     else if (isSuperRegion && isRegion == 2 && isNeighbours)
@@ -187,7 +171,7 @@ namespace ConquestObjectsLib.GameMap
                                         // find region with this name and add it to given regions neighbours
                                         // TODO: slow
                                         var regionsNeighbour = (from region in map.Regions
-                                                                where region.Name == reader.Value
+                                                                where region.Name == reader.GetAttribute("Name")
                                                                 select region).First();
                                         givenRegion.NeighbourRegions.Add(regionsNeighbour);
                                     }
@@ -196,8 +180,6 @@ namespace ConquestObjectsLib.GameMap
                                     isNeighbours = true;
                                     break;
                             }
-                            break;
-                        case XmlNodeType.Attribute:
                             break;
                         case XmlNodeType.EndElement:
                             switch (reader.Name)
@@ -220,6 +202,22 @@ namespace ConquestObjectsLib.GameMap
             return map;
         }
 
-        
+        public override string ToString()
+        {
+            string name = string.Format($"{nameof(Name)}: {Name}");
+            string playersLimit = string.Format($"{nameof(PlayersLimit)}: {PlayersLimit}");
+            string superRegions;
+            {
+                var sb = new StringBuilder();
+                foreach (SuperRegion superRegion in SuperRegions)
+                {
+                    sb.Append(superRegion.Name + ", ");
+                }
+                superRegions = string.Format($"{nameof(SuperRegions)}: {sb}");
+            }
+
+            return name + ", " + playersLimit + ", " + superRegions;
+
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace ConquestObjectsLib.GameMap
@@ -46,6 +47,22 @@ namespace ConquestObjectsLib.GameMap
             return (from region in Regions where region.Owner != firstOwner select region).Any() // if there exists any such that hes not same as the first owner
                 ? null // return null
                 : firstOwner;
+        }
+
+        public override string ToString()
+        {
+            string name = string.Format($"{nameof(Name)}: {Name}");
+            string bonus = string.Format($"{nameof(Bonus)}: {Bonus}");
+            string regions;
+            {
+                var sb = new StringBuilder();
+                foreach (var region in Regions)
+                {
+                    sb.Append(region.Name + ", ");
+                }
+                regions = string.Format($"{nameof(Regions)}: {sb}");
+            }
+            return name + ", " + bonus + ", " + regions;
         }
         
     }

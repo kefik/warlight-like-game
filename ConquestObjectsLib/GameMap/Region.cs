@@ -13,6 +13,7 @@ namespace ConquestObjectsLib.GameMap
         /// Player owning given region. Null means no owner.
         /// </summary>
         public Player Owner { get; set; }
+
         /// <summary>
         /// Number of units occuppying this region.
         /// </summary>
@@ -35,6 +36,9 @@ namespace ConquestObjectsLib.GameMap
             SuperRegion = superRegion;
         }
 
-        
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

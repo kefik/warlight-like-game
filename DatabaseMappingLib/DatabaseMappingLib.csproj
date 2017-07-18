@@ -7,8 +7,8 @@
     <ProjectGuid>{AB6A3B62-7658-4325-9055-2AFC7CFAF24E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DatabaseORMLib</RootNamespace>
-    <AssemblyName>DatabaseORMLib</AssemblyName>
+    <RootNamespace>DatabaseMappingLib</RootNamespace>
+    <AssemblyName>DatabaseMappingLib</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

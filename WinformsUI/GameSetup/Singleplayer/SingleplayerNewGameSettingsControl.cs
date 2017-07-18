@@ -81,6 +81,8 @@ namespace WinformsUI.GameSetup.Singleplayer
         private void Start(object sender, EventArgs e)
         {
             // TODO
+            Map map
+                = Map.Create(mapSettingsControl.MapName, mapSettingsControl.PlayersLimit, mapSettingsControl.MapTemplatePath);
         }
     }
 }
