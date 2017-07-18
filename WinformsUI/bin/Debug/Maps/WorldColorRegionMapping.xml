@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dictionary xmlns="http://palasekj.cz/"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://palasekj.cz/ RegionColorMapping.xsd">
+  <!--TODO: add all values-->
+  <Entry>
+    <Color Red="10" Green="10" Blue="1"/>
+    <Region Name="Alaska"/>
+  </Entry>
+</Dictionary>
