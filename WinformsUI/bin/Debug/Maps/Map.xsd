@@ -32,29 +32,35 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:element name="Map">
     <xs:complexType>
-      <xs:sequence maxOccurs="unbounded">
-        <xs:element name="SuperRegion">
+      <xs:sequence>
+        <xs:element name="SuperRegions">
           <xs:complexType>
-            <xs:sequence minOccurs="1" maxOccurs="unbounded">
-              <xs:element name="Region" type="RegionWithNeighboursType">
+            <xs:sequence maxOccurs="unbounded">
+              <xs:element name="SuperRegion">
+                <xs:complexType>
+                  <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                    <xs:element name="Region" type="RegionWithNeighboursType">
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="Name" type="xs:string" use="required"></xs:attribute>
+                  <xs:attribute name="Bonus" type="xs:int" use="required"></xs:attribute>
+                </xs:complexType>
+                <xs:key name="RegionId">
+                  <xs:selector xpath="./Region">
+                  </xs:selector>
+                  <xs:field xpath="@Name">
+                  </xs:field>
+                </xs:key>
               </xs:element>
             </xs:sequence>
-            <xs:attribute name="Name" type="xs:string" use="required"></xs:attribute>
-            <xs:attribute name="Bonus" type="xs:int" use="required"></xs:attribute>
+            <xs:attribute name="Name" type="xs:string"></xs:attribute>
+            <xs:attribute name="PlayersLimit" type="xs:unsignedInt"></xs:attribute>
           </xs:complexType>
-          <xs:key name="RegionId">
-            <xs:selector xpath="./Region">
-            </xs:selector>
-            <xs:field xpath="@Name">
-            </xs:field>
-          </xs:key>
         </xs:element>
       </xs:sequence>
-      <xs:attribute name="Name" type="xs:string"></xs:attribute>
-      <xs:attribute name="PlayersLimit" type="xs:unsignedInt"></xs:attribute>
     </xs:complexType>
   </xs:element>
 

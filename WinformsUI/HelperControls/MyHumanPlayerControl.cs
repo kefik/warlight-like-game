@@ -19,64 +19,64 @@ namespace WinformsUI.HelperControls
             InitializeComponent();
 
             // initialize
-            player = new HumanPlayer(new LocalUser("Me"), KnownColor.Red);
-
-            playerNameTextBox.Text = User.Name;
+            user = new LocalUser("Me");
+            playerNameTextBox.Text = user.Name;
             playerNameTextBox.Enabled = true;
         }
 
-        HumanPlayer player;
-
+        User user;
         /// <summary>
         /// Represents clients user. Cannot be null.
         /// </summary>
         public User User
         {
-            get { return player.User; }
+            get { return user; }
             set
             {
                 if (value == null) throw new ArgumentException();
-                UserChanged(value);
+                switch (value.UserType)
+                {
+                    case UserType.LocalUser:
+                        playerNameTextBox.Enabled = true;
+                        break;
+                    case UserType.MyNetworkUser:
+                    case UserType.NetworkUser:
+                        playerNameTextBox.Enabled = false;
+                        break;
+                }
+                user = value;
+                playerNameTextBox.Text = user.Name;
             }
         }
+
+        KnownColor playerColor;
         /// <summary>
         /// Represents clients color.
         /// </summary>
         public KnownColor PlayerColor
         {
-            get { return player.Color; }
-            set
+            get { return playerColor; }
+            private set
             {
-                player = new HumanPlayer(User, value);
+                playerColor = value;
                 colorButton.BackColor = System.Drawing.Color.FromKnownColor(PlayerColor);
             }
         }
+
         /// <summary>
-        /// Represents players name.
+        /// Represents name of player this control is representing.
         /// </summary>
         public string PlayerName
         {
-            get { return player.Name; }
-        }
-        
-        /// <summary>
-        /// Handles user change. Locks appropriate controls reacting to the new type of user.
-        /// </summary>
-        /// <param name="newUser">New user</param>
-        void UserChanged(User newUser)
-        {
-            player = new HumanPlayer(newUser, PlayerColor);
-            playerNameTextBox.Text = User.Name;
-            switch (User.UserType)
+            get { return user.Name; }
+            private set
             {
-                case UserType.LocalUser:
-                    playerNameTextBox.Enabled = true;
-                    break;
-                case UserType.NetworkUser:
-                    playerNameTextBox.Enabled = false;
-                    break;
+                user.Name = value;
+                playerNameTextBox.Text = value;
             }
         }
+
+
         /// <summary>
         /// Creates and returns new instance of player represented by this control.
         /// </summary>
@@ -104,7 +104,7 @@ namespace WinformsUI.HelperControls
             switch (User.UserType)
             {
                 case UserType.LocalUser:
-                    player = new HumanPlayer(new LocalUser(playerNameTextBox.Text), PlayerColor);
+                    user.Name = Name;
                     break;
                 case UserType.NetworkUser:
                     playerNameTextBox.Text = PlayerName;
