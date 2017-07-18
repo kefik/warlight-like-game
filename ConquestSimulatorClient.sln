@@ -10,7 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maps", "Maps", "{B8663EA2-E2EE-4981-8B1F-DB7035326EA6}"
 	ProjectSection(SolutionItems) = preProject
 		WinformsUI\bin\Debug\Maps\Map.xsd = WinformsUI\bin\Debug\Maps\Map.xsd
+		WinformsUI\bin\Debug\Maps\RegionColorMapping.xsd = WinformsUI\bin\Debug\Maps\RegionColorMapping.xsd
 		WinformsUI\bin\Debug\Maps\World.xml = WinformsUI\bin\Debug\Maps\World.xml
+		WinformsUI\bin\Debug\Maps\WorldColorRegionMapping.xml = WinformsUI\bin\Debug\Maps\WorldColorRegionMapping.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseMappingLib", "DatabaseMappingLib\DatabaseMappingLib.csproj", "{AB6A3B62-7658-4325-9055-2AFC7CFAF24E}"

@@ -55,6 +55,7 @@ namespace WinformsUI.HelperControls
         {
             get
             {
+                // if maps havent been downloaded from database
                 if (maps == null || maps.Count - 1 > mapComboBox.SelectedIndex)
                 {
                     return new MapInfo()
@@ -95,11 +96,12 @@ namespace WinformsUI.HelperControls
         {
             Task.Run(() =>
             {
+                // clear combo box items
                 this.Invoke(new Action(mapComboBox.Items.Clear));
-
+                // get map infos from database
                 var mapInfos = new UtilsDbContext().Maps;
                 this.maps = mapInfos.ToList();
-
+                // refresh the combo box with new items
                 this.Invoke(new Action(RefreshComboBox));
             });
         }

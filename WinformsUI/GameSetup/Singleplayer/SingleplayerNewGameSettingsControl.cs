@@ -80,9 +80,21 @@ namespace WinformsUI.GameSetup.Singleplayer
 
         private void Start(object sender, EventArgs e)
         {
-            // TODO
-            Map map
-                = Map.Create(mapSettingsControl.MapName, mapSettingsControl.PlayersLimit, mapSettingsControl.MapTemplatePath);
+            try
+            {
+                Map map
+                    = Map.Create(mapSettingsControl.MapName, mapSettingsControl.PlayersLimit, mapSettingsControl.MapTemplatePath);
+                ICollection<Player> players = aiPlayerSettingsControl.GetPlayers();
+                players.Add(myHumanPlayerControl.GetPlayer());
+
+                ConquestObjectsLib.Game.Game game = new SingleplayerGame(map, players);
+
+                OnGameStarted?.Invoke(game);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("One or more components required to start the game are missing! Please, reinstall the game!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
