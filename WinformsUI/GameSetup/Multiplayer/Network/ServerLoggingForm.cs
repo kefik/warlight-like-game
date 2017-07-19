@@ -35,12 +35,23 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
         private void Log(object sender, System.EventArgs e)
         {
             // TODO: validate user entries
-
+            // local validation
+            if (loginTextBox.Text.Length < 4 || loginTextBox.Text.Length > 15)
+            {
+                // error
+            }
+            if (passwordTextBox.Text.Length < 4 || passwordTextBox.Text.Length > 50)
+            {
+                // error
+            }
+            // server side validation
             // TODO: send it to database
             User user = new MyNetworkUser("Bimbinbiribong"); // returned user
             User = user;
+
+
             // close the form
-            Close(); // TODO: not necessary prolly
+            Close();
 
             DialogResult = DialogResult.OK;
         }
