@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using GameObjectsLib.Game;
 using GameObjectsLib.GameMap;
+using ProtoBuf;
 
 namespace GameObjectsLib.Game
 {
     /// <summary>
     /// Instance represents one singleplayer game.
     /// </summary>
+    [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class SingleplayerGame : GameObjectsLib.Game.Game
     {
+        SingleplayerGame() : base() { }
         /// <summary>
         /// Instance of this class serves to validate correctness of the game before it starts.
         /// </summary>

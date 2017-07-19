@@ -118,7 +118,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
                 difference = humanPlayersNumberNumericUpDown.Value - previousHumanPlayersNumber;
                 for (int i = 0; i < difference; i++)
                 {
-                    humanPlayerSettingsControl.AddPlayer(new NetworkUser("")); // TODO: problem with users
+                    humanPlayerSettingsControl.AddPlayer(new NetworkUser(1, "")); // TODO: problem with users
                 }
             }
             else

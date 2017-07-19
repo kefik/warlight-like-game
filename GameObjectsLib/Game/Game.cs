@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Runtime.Serialization;
 using GameObjectsLib;
 using GameObjectsLib.GameMap;
+using ProtoBuf;
 
 namespace GameObjectsLib.Game
 {
@@ -19,8 +22,12 @@ namespace GameObjectsLib.Game
     /// <summary>
     /// Represents one game.
     /// </summary>
-    public abstract class Game
+    [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
+    [ProtoInclude(600, typeof(SingleplayerGame))]
+    public abstract class Game// : ISerializable
     {
+        protected Game() { }
         /// <summary>
         /// Represents boolean containing information whether the game has started.
         /// </summary>
@@ -46,11 +53,29 @@ namespace GameObjectsLib.Game
             this.Map = map;
             this.Players = players;
         }
+        
 
         /// <summary>
         /// Starts the game if theres no error.
         /// </summary>
         public abstract void Start();
+
+        public static Game Create(GameType gameType, Map map, ICollection<Player> players)
+        {
+            switch (gameType)
+            {
+                case GameType.SinglePlayer:
+                {
+                        return new SingleplayerGame(map, players);
+                }
+                case GameType.MultiplayerHotseat:
+                    throw new NotImplementedException();
+                case GameType.MultiplayerNetwork:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentException();
+            }
+        }
     }
 
 }

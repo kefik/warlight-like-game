@@ -1,7 +1,10 @@
 ﻿using System;
+using ProtoBuf;
 
 namespace GameObjectsLib.GameUser
 {
+    [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class MyNetworkUser : NetworkUser
     {
         public override UserType UserType
@@ -9,7 +12,7 @@ namespace GameObjectsLib.GameUser
             get { return UserType.MyNetworkUser; }
         }
 
-        public MyNetworkUser(string name) : base(name) { }
+        public MyNetworkUser(int id, string name) : base(id, name) { }
 
         public bool LogIn(string password)
         {

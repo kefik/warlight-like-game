@@ -1,12 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 using GameObjectsLib;
 using GameObjectsLib.GameMap;
+using ProtoBuf;
 
 namespace GameObjectsLib.GameMap
 {
     /// <summary>
     /// Instace of this class represents region for given map in the game.
     /// </summary>
+    [Serializable]
+    [ProtoContract(AsReferenceDefault = true, ImplicitFields = ImplicitFields.AllFields)]
     public class Region
     {
         public int Id { get; }
@@ -37,6 +42,7 @@ namespace GameObjectsLib.GameMap
             Name = name;
             SuperRegion = superRegion;
         }
+        Region() { }
 
         public override string ToString()
         {

@@ -46,7 +46,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             }
             // server side validation
             // TODO: send it to database
-            User user = new MyNetworkUser("Bimbinbiribong"); // returned user
+            User user = new MyNetworkUser(1, "Bimbinbiribong"); // returned user
             User = user;
 
 

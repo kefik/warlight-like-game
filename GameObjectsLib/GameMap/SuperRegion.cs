@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GameObjectsLib.GameMap;
+using ProtoBuf;
 
 namespace GameObjectsLib.GameMap
 {
     /// <summary>
     /// Represents region group of giving size giving bonus to player who owns it all.
     /// </summary>
+    [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields, AsReferenceDefault = true)]
     public class SuperRegion
     {
         public int Id { get; }
@@ -46,6 +50,8 @@ namespace GameObjectsLib.GameMap
                 ? null // return null
                 : firstOwner;
         }
+
+        SuperRegion() { }
 
         public override string ToString()
         {

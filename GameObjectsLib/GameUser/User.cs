@@ -1,4 +1,7 @@
-﻿using System.Dynamic;
+﻿using System;
+using System.Dynamic;
+using System.Runtime.Serialization;
+using ProtoBuf;
 
 namespace GameObjectsLib.GameUser
 {
@@ -9,7 +12,12 @@ namespace GameObjectsLib.GameUser
     /// <summary>
     /// Represents user that controls player in the game.
     /// </summary>
-    public abstract class User
+    [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
+    [ProtoInclude(500, typeof(NetworkUser))]
+    [ProtoInclude(501, typeof(LocalUser))]
+    [ProtoInclude(502, typeof(MyNetworkUser))]
+    public abstract class User// : ISerializable
     {
         public string Name { get; set; }
 
@@ -19,7 +27,19 @@ namespace GameObjectsLib.GameUser
         {
             Name = name;
         }
-        
+        protected User() { }
+        //public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        //{
+        //    info.AddValue(nameof(Name), Name, typeof(string));
+        //}
+
+        /// <summary>
+        /// Takes care of deserializing.
+        /// </summary>
+        //protected User(SerializationInfo info, StreamingContext context)
+        //{
+        //    Name = (string)info.GetValue(nameof(Name), typeof(string));
+        //}
     }
     
 }

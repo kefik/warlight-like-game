@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using GameObjectsLib.GameMap;
+using ProtoBuf;
 
 namespace GameObjectsLib.GameMap
 {
     /// <summary>
     /// Instance of this class represents map of the game.
     /// </summary>
-    public sealed class Map // TODO: rework to non-abstract so the map can be dynamically loaded, remove some properties, mb add visual representation in it
+    [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
+    public sealed class Map
     {
         public string Name { get; }
 
@@ -34,6 +38,7 @@ namespace GameObjectsLib.GameMap
             this.Name = name;
             this.PlayersLimit = playersLimit;
         }
+        Map() { }
 
         /// <summary>
         /// Creates instance of map, initializes it,
