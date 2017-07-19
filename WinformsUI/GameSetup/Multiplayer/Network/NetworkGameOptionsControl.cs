@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using ConquestObjectsLib.GameUser;
+using GameObjectsLib.GameUser;
 
 namespace WinformsUI.GameSetup.Multiplayer.Network
 {

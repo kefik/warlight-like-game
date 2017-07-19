@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml.Serialization;
+using GameObjectsLib.GameMap;
 
-namespace ConquestObjectsLib.GameMap
+namespace GameObjectsLib.GameMap
 {
     /// <summary>
     /// Represents region group of giving size giving bonus to player who owns it all.

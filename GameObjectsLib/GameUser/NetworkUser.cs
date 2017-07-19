@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConquestObjectsLib.GameUser
+namespace GameObjectsLib.GameUser
 {
-    public class LocalUser : User
+    public class NetworkUser : User
     {
         public override UserType UserType
         {
-            get { return UserType.LocalUser; }
+            get { return UserType.NetworkUser; }
         }
 
-        public LocalUser(string name = "") : base(name)
+        public NetworkUser(string name) : base(name)
         {
         }
     }

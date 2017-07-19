@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ConquestObjectsLib.GameMap;
-using ConquestObjectsLib.GameUser;
+using GameObjectsLib.GameMap;
+using GameObjectsLib.GameUser;
 
-namespace ConquestObjectsLib
+namespace GameObjectsLib
 {
     /// <summary>
     /// Represents difficulty of given artifficial player.

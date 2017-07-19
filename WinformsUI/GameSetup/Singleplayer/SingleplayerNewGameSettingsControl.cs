@@ -8,10 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ConquestObjectsLib;
-using ConquestObjectsLib.Game;
-using ConquestObjectsLib.GameMap;
-using ConquestObjectsLib.GameUser;
+using GameObjectsLib.GameUser;
+using GameObjectsLib;
+using GameObjectsLib.Game;
+using GameObjectsLib.GameMap;
 using WinformsUI.HelperControls;
 
 namespace WinformsUI.GameSetup.Singleplayer
@@ -29,7 +29,7 @@ namespace WinformsUI.GameSetup.Singleplayer
             }
         }
 
-        public event Action<ConquestObjectsLib.Game.Game> OnGameStarted;
+        public event Action<GameObjectsLib.Game.Game> OnGameStarted;
         public SingleplayerNewGameSettingsControl()
         {
             InitializeComponent();
@@ -87,7 +87,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                 ICollection<Player> players = aiPlayerSettingsControl.GetPlayers();
                 players.Add(myHumanPlayerControl.GetPlayer());
 
-                ConquestObjectsLib.Game.Game game = new SingleplayerGame(map, players);
+                GameObjectsLib.Game.Game game = new SingleplayerGame(map, players);
 
                 OnGameStarted?.Invoke(game);
             }

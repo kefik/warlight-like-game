@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ConquestObjectsLib;
-using ConquestObjectsLib.Game;
-using ConquestObjectsLib.GameMap;
-using ConquestObjectsLib.GameUser;
+using GameObjectsLib;
+using GameObjectsLib.Game;
+using GameObjectsLib.GameMap;
+using GameObjectsLib.GameUser;
 using WinformsUI.HelperControls;
 
 namespace WinformsUI.GameSetup.Multiplayer.Hotseat
@@ -74,7 +74,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
         }
 
-        public event Action<ConquestObjectsLib.Game.Game> OnGameStarted;
+        public event Action<GameObjectsLib.Game.Game> OnGameStarted;
 
         decimal previousAIPlayersNumber;
         private void OnNumberOfAIPlayersChanged(object sender, EventArgs e)

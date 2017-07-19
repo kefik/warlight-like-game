@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ConquestObjectsLib.GameMap;
+using GameObjectsLib;
+using GameObjectsLib.GameMap;
 
-namespace ConquestObjectsLib.Game
+namespace GameObjectsLib.Game
 {
     /// <summary>
     /// Enum containing types of game any game can have.

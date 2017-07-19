@@ -327,15 +327,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConquestObjectsLib\ConquestObjectsLib.csproj">
+    <ProjectReference Include="..\GameObjectsLib\GameObjectsLib.csproj">
       <Project>{57a48d5c-6e58-4ec7-acd0-565a4df58daf}</Project>
-      <Name>ConquestObjectsLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DatabaseMappingLib\DatabaseMappingLib.csproj">
-      <Project>{ab6a3b62-7658-4325-9055-2afc7cfaf24e}</Project>
-      <Name>DatabaseMappingLib</Name>
+      <Name>GameObjectsLib</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\DatabaseMapping\DatabaseMapping.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

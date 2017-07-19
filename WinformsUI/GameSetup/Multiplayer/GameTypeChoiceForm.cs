@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using ConquestObjectsLib;
-using ConquestObjectsLib.Game;
+using GameObjectsLib;
+using GameObjectsLib.Game;
 
 namespace WinformsUI.GameSetup.Multiplayer
 {

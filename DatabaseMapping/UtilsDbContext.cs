@@ -4,7 +4,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.SQLite;
 using SQLiteProviderFactory = System.Data.SQLite.EF6.SQLiteProviderFactory;
 
-namespace DatabaseMappingLib.UtilsDb
+namespace DatabaseMapping
 {
     public class UtilsDbContext : DbContext
     {
@@ -13,7 +13,7 @@ namespace DatabaseMappingLib.UtilsDb
             {
                 ConnectionString = new SQLiteConnectionStringBuilder()
                 {
-                    DataSource = @"C:\Users\Honza\Documents\Skola\Matfyz\BachelorWork\ConquestSimulator\ConquestSimulatorClient\WinformsUI\bin\Debug\Utils.db",
+                    DataSource = @"C:\Users\Honza\Documents\Skola\Matfyz\BachelorWork\WarlightLikeGame\WinformsUI\bin\Debug\Utils.db",
                     ForeignKeys = true
                 }.ConnectionString
             }, true)

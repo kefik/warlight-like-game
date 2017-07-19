@@ -2,8 +2,8 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using ConquestObjectsLib;
-using ConquestObjectsLib.GameMap;
+using GameObjectsLib.GameMap;
+using GameObjectsLib;
 
 namespace WinformsUI.HelperControls
 {

@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
-using ConquestObjectsLib.Properties;
 
-namespace ConquestObjectsLib.GameMap
+namespace GameObjectsLib.GameMap
 {
     /// <summary>
     /// Represents low level visual representation of the map template,

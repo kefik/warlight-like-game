@@ -14,9 +14,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ConquestObjectsLib.GameMap;
-using DatabaseMappingLib;
-using DatabaseMappingLib.UtilsDb;
+using DatabaseMapping;
+using GameObjectsLib.GameMap;
 
 namespace WinformsUI.HelperControls
 {

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using ConquestObjectsLib.Game;
-using ConquestObjectsLib.GameMap;
+using GameObjectsLib.Game;
+using GameObjectsLib;
+using GameObjectsLib.GameMap;
 
-namespace ConquestObjectsLib.Game
+namespace GameObjectsLib.Game
 {
     public class HotseatGame : Game
     {
@@ -12,7 +13,7 @@ namespace ConquestObjectsLib.Game
             get { return GameType.MultiplayerHotseat; }
         }
 
-        public HotseatGame(GameMap.Map map, ICollection<Player> players) : base(map, players)
+        public HotseatGame(Map map, ICollection<Player> players) : base(map, players)
         {
         }
 

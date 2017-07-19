@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
+using GameObjectsLib.GameMap;
 
-namespace ConquestObjectsLib.GameMap
+namespace GameObjectsLib.GameMap
 {
     /// <summary>
     /// Instance of this class represents map of the game.

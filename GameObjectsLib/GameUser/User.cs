@@ -1,6 +1,6 @@
 ﻿using System.Dynamic;
 
-namespace ConquestObjectsLib.GameUser
+namespace GameObjectsLib.GameUser
 {
     public enum UserType
     {

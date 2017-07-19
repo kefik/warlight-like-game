@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using ConquestObjectsLib.Game;
-using ConquestObjectsLib.GameMap;
+using GameObjectsLib.Game;
+using GameObjectsLib;
+using GameObjectsLib.GameMap;
 
-namespace ConquestObjectsLib.Game
+namespace GameObjectsLib.Game
 {
     public class NetworkGame : Game
     {
@@ -15,7 +16,7 @@ namespace ConquestObjectsLib.Game
             get { return GameType.MultiplayerNetwork; }
         }
 
-        public NetworkGame(GameMap.Map map, ICollection<Player> players) : base(map, players)
+        public NetworkGame(Map map, ICollection<Player> players) : base(map, players)
         {
         }
 

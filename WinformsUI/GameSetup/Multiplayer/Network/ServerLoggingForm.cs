@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using ConquestObjectsLib;
-using ConquestObjectsLib.GameUser;
+using GameObjectsLib;
+using GameObjectsLib.GameUser;
 
 
 namespace WinformsUI.GameSetup.Multiplayer.Network

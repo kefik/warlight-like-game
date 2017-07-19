@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using ConquestObjectsLib.GameUser;
+using GameObjectsLib.GameUser;
 
 namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 {
@@ -11,7 +11,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
             get { return hotseatNewGameSettingsControl.MyUser; }
             set { hotseatNewGameSettingsControl.MyUser = value; }
         }
-        public event Action<ConquestObjectsLib.Game.Game> OnGameStarted
+        public event Action<GameObjectsLib.Game.Game> OnGameStarted
         {
             add { hotseatNewGameSettingsControl.OnGameStarted += value; }
             remove { hotseatNewGameSettingsControl.OnGameStarted -= value; }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ConquestObjectsLib.GameUser;
+using GameObjectsLib.GameUser;
 using WinformsUI.HelperControls;
 
 namespace WinformsUI.GameSetup.Multiplayer.Network
@@ -71,7 +71,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
         }
 
-        public event Action<ConquestObjectsLib.Game.Game> OnGameStarted;
+        public event Action<GameObjectsLib.Game.Game> OnGameStarted;
 
         decimal previousAIPlayersNumber;
         private void OnNumberOfAIPlayersChanged(object sender, EventArgs e)

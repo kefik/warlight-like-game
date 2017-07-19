@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using ConquestObjectsLib;
-using ConquestObjectsLib.GameUser;
+using GameObjectsLib;
+using GameObjectsLib.GameUser;
 
 namespace WinformsUI.GameSetup.Singleplayer
 {
@@ -18,7 +18,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                 singleplayerNewGameSettingsControl.User = value;
             }
         }
-        public event Action<ConquestObjectsLib.Game.Game> OnGameStarted
+        public event Action<GameObjectsLib.Game.Game> OnGameStarted
         {
             add { singleplayerNewGameSettingsControl.OnGameStarted += value; }
             remove { singleplayerNewGameSettingsControl.OnGameStarted -= value; }

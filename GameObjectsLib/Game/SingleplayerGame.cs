@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ConquestObjectsLib.Game;
-using ConquestObjectsLib.GameMap;
+using GameObjectsLib.Game;
+using GameObjectsLib.GameMap;
 
-namespace ConquestObjectsLib.Game
+namespace GameObjectsLib.Game
 {
     /// <summary>
     /// Instance represents one singleplayer game.
     /// </summary>
-    public class SingleplayerGame : Game
+    public class SingleplayerGame : GameObjectsLib.Game.Game
     {
         /// <summary>
         /// Instance of this class serves to validate correctness of the game before it starts.
@@ -48,7 +48,7 @@ namespace ConquestObjectsLib.Game
                         select player).Count() == 1;
             }
         }
-        public SingleplayerGame(GameMap.Map map, ICollection<Player> players) : base(map, players)
+        public SingleplayerGame(Map map, ICollection<Player> players) : base(map, players)
         {
         }
         

@@ -7,8 +7,8 @@
     <ProjectGuid>{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConquestObjectsLib</RootNamespace>
-    <AssemblyName>ConquestObjectsLib</AssemblyName>
+    <RootNamespace>GameObjectsLib</RootNamespace>
+    <AssemblyName>GameObjectsLib</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DatabaseMappingLib.UtilsDb
+namespace DatabaseMapping
 {
     [Table("MapInfos")]
     public class MapInfo

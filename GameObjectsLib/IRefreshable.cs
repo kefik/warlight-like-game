@@ -1,4 +1,4 @@
-﻿namespace ConquestObjectsLib
+﻿namespace GameObjectsLib
 {
     /// <summary>
     /// Provides ability to refresh the situation of given game object.

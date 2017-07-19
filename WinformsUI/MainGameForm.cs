@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using ConquestObjectsLib;
-using ConquestObjectsLib.Game;
-using ConquestObjectsLib.GameUser;
+using GameObjectsLib;
+using GameObjectsLib.Game;
+using GameObjectsLib.GameUser;
 using WinformsUI.Game;
 using WinformsUI.GameSetup.Multiplayer;
 using WinformsUI.GameSetup.Multiplayer.Hotseat;
@@ -37,7 +37,7 @@ namespace WinformsUI
         /// Loads proper screens starting newly created game the game.
         /// </summary>
         /// <param name="game">Instance representing the game to be started.</param>
-        private void StartGame(ConquestObjectsLib.Game.Game game)
+        private void StartGame(GameObjectsLib.Game.Game game)
         {
             // start the game
             game.Start();

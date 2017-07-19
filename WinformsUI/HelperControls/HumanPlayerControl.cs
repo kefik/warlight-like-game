@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ConquestObjectsLib;
-using ConquestObjectsLib.GameUser;
+using GameObjectsLib.GameUser;
+using GameObjectsLib;
 
 namespace WinformsUI.HelperControls
 {

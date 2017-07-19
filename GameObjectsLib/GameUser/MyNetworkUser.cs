@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConquestObjectsLib.GameUser
+namespace GameObjectsLib.GameUser
 {
     public class MyNetworkUser : NetworkUser
     {
