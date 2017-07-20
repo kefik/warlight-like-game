@@ -9,6 +9,7 @@
     <Import_RootNamespace>DatabaseMapping</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)HotseatSavedGameInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MapInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SingleplayerSavedGameInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UtilsDbContext.cs" />

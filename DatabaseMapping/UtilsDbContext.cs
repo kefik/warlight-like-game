@@ -13,12 +13,11 @@ namespace DatabaseMapping
             {
                 ConnectionString = new SQLiteConnectionStringBuilder()
                 {
-                    DataSource = @"C:\Users\Honza\Documents\Skola\Matfyz\BachelorWork\WarlightLikeGame\WinformsUI\bin\Debug\Utils.db",
+                    DataSource = @"Utils.db",
                     ForeignKeys = true
                 }.ConnectionString
             }, true)
         {
-
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -28,7 +27,8 @@ namespace DatabaseMapping
         }
 
         public virtual DbSet<MapInfo> Maps { get; set; }
-        public virtual DbSet<SingleplayerSavedGameInfo> SavedGameInfos { get; set; }
+        public virtual DbSet<SingleplayerSavedGameInfo> SingleplayerSavedGameInfos { get; set; }
+        public virtual DbSet<HotseatSavedGameInfo> HotseatSavedGameInfos { get; set; }
     }
 
     public class SQLiteConfiguration : DbConfiguration
