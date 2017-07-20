@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using GameObjectsLib;
+using GameObjectsLib.Game;
 using GameObjectsLib.GameUser;
 
 namespace WinformsUI.GameSetup.Singleplayer
@@ -18,17 +18,23 @@ namespace WinformsUI.GameSetup.Singleplayer
                 singleplayerNewGameSettingsControl.User = value;
             }
         }
-        public event Action<GameObjectsLib.Game.Game> OnGameStarted
+        public event Action<Game> OnNewGameStarted
         {
             add
             {
                 singleplayerNewGameSettingsControl.OnGameStarted += value;
-                singleplayerLoadGamesControl.OnSingleplayerGameLoaded += value;
             }
             remove
             {
                 singleplayerNewGameSettingsControl.OnGameStarted -= value;
-                singleplayerLoadGamesControl.OnSingleplayerGameLoaded -= value;
+            }
+        }
+        public event Action<Game> OnGameLoaded
+        {
+            add { singleplayerLoadGamesControl.OnSingleplayerGameLoaded += value; }
+            remove
+            {
+                { singleplayerLoadGamesControl.OnSingleplayerGameLoaded -= value; }
             }
         }
 

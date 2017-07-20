@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DatabaseMapping;
+using GameObjectsLib.Game;
 using ProtoBuf;
 
 namespace WinformsUI.GameSetup.Singleplayer
@@ -15,9 +16,9 @@ namespace WinformsUI.GameSetup.Singleplayer
             InitializeComponent();
         }
 
-        public event Action<GameObjectsLib.Game.Game> OnSingleplayerGameLoaded;
+        public event Action<Game> OnSingleplayerGameLoaded;
 
-        private void LoadControl(object sender, System.EventArgs e)
+        private void LoadControl(object sender, EventArgs e)
         {
             Task.Run(() =>
             {
@@ -28,32 +29,31 @@ namespace WinformsUI.GameSetup.Singleplayer
                 // TODO: might be too slow
                 foreach (var savedGame in savedGames)
                 {
-                    this.Invoke(new Action(() => loadedGamesListBox.Items.Add(savedGame)));
+                    Invoke(new Action(() => loadedGamesListBox.Items.Add(savedGame)));
                 }
             });
         }
-        
+
 
         private void LoadGame(object sender, EventArgs e)
         {
             var savedGameInfo =
                 (SingleplayerSavedGameInfo)loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
 
-            GameObjectsLib.Game.Game game = null;
             try
             {
-                var fs = new FileStream(savedGameInfo.Path, FileMode.Open);
-                game = Serializer.Deserialize<GameObjectsLib.Game.Game>(fs);
-                fs.Close();
+                using (var db = new UtilsDbContext())
+                {
+                    var game = Game.Load(db, savedGameInfo);
+                    OnSingleplayerGameLoaded?.Invoke(game);
+                }
+                
             }
             catch (Exception)
             {
                 MessageBox.Show("Selected game save has been damaged.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // TODO: remove the game
-                
-            }
 
-            OnSingleplayerGameLoaded?.Invoke(game);
+            }
         }
     }
 }

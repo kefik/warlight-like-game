@@ -1,4 +1,4 @@
-﻿namespace WinformsUI.Game
+﻿namespace WinformsUI.InGame
 {
     partial class InGameControl
     {

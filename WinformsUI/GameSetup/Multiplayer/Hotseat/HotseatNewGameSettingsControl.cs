@@ -22,14 +22,14 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         /// </summary>
         public User MyUser
         {
-            get { return myPlayerControl.User; }
+            get { return myHumanPlayerControl.User; }
             set
             {
-                myPlayerControl.User = value;
+                myHumanPlayerControl.User = value;
             }
         }
 
-        readonly MyHumanPlayerControl myPlayerControl;
+        readonly MyHumanPlayerControl myHumanPlayerControl;
         /// <summary>
         /// Represents number of total players that can play this given map.
         /// </summary>
@@ -42,12 +42,12 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         {
             InitializeComponent();
 
-            myPlayerControl = new MyHumanPlayerControl()
+            myHumanPlayerControl = new MyHumanPlayerControl()
             {
                 Parent = myUserPanel,
                 Dock = DockStyle.Fill
             };
-            myPlayerControl.Show();
+            myHumanPlayerControl.Show();
 
             // TODO: get the code better
             mapSettingsControl.OnMapChosen += (sender, args) =>
@@ -74,7 +74,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
         }
 
-        public event Action<GameObjectsLib.Game.Game> OnGameStarted;
+        public event Action<Game> OnGameStarted;
 
         decimal previousAIPlayersNumber;
         private void OnNumberOfAIPlayersChanged(object sender, EventArgs e)
@@ -143,8 +143,13 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 
         private void Start(object sender, EventArgs e)
         {
-            // TODO: todo
-            
+            Map map = Map.Create(mapSettingsControl.MapName, mapSettingsControl.PlayersLimit, mapSettingsControl.MapTemplatePath);
+            ICollection<Player> players = aiPlayerSettingsControl.GetPlayers();
+            players.Add(myHumanPlayerControl.GetPlayer());
+
+            Game game = Game.Create(GameType.MultiplayerHotseat, map, players);
+
+            OnGameStarted?.Invoke(game);
         }
     }
 }

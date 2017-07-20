@@ -1,4 +1,4 @@
-﻿namespace WinformsUI.Game.Phases
+﻿namespace WinformsUI.InGame.Phases
 {
     partial class TurnPhaseControl
     {

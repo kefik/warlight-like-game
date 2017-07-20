@@ -126,28 +126,28 @@
     <Compile Include="GameSetup\Singleplayer\SingleplayerNewGameSettingsControl.Designer.cs">
       <DependentUpon>SingleplayerNewGameSettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Game\InGameControl.cs">
+    <Compile Include="InGame\InGameControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Game\InGameControl.Designer.cs">
+    <Compile Include="InGame\InGameControl.Designer.cs">
       <DependentUpon>InGameControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Game\Phases\BeginPhaseControl.cs">
+    <Compile Include="InGame\Phases\BeginPhaseControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Game\Phases\BeginPhaseControl.Designer.cs">
+    <Compile Include="InGame\Phases\BeginPhaseControl.Designer.cs">
       <DependentUpon>BeginPhaseControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Game\Phases\TurnPhaseControl.cs">
+    <Compile Include="InGame\Phases\TurnPhaseControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Game\Phases\TurnPhaseControl.Designer.cs">
+    <Compile Include="InGame\Phases\TurnPhaseControl.Designer.cs">
       <DependentUpon>TurnPhaseControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Game\Phases\WatchTurnControl.cs">
+    <Compile Include="InGame\Phases\WatchTurnControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Game\Phases\WatchTurnControl.Designer.cs">
+    <Compile Include="InGame\Phases\WatchTurnControl.Designer.cs">
       <DependentUpon>WatchTurnControl.cs</DependentUpon>
     </Compile>
     <Compile Include="HelperControls\AIPlayerControl.cs">
@@ -251,16 +251,16 @@
     <EmbeddedResource Include="GameSetup\Singleplayer\SingleplayerNewGameSettingsControl.resx">
       <DependentUpon>SingleplayerNewGameSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Game\InGameControl.resx">
+    <EmbeddedResource Include="InGame\InGameControl.resx">
       <DependentUpon>InGameControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Game\Phases\BeginPhaseControl.resx">
+    <EmbeddedResource Include="InGame\Phases\BeginPhaseControl.resx">
       <DependentUpon>BeginPhaseControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Game\Phases\TurnPhaseControl.resx">
+    <EmbeddedResource Include="InGame\Phases\TurnPhaseControl.resx">
       <DependentUpon>TurnPhaseControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Game\Phases\WatchTurnControl.resx">
+    <EmbeddedResource Include="InGame\Phases\WatchTurnControl.resx">
       <DependentUpon>WatchTurnControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelperControls\AIPlayerControl.resx">

@@ -12,6 +12,7 @@ namespace DatabaseMapping
         [Key]
         public int Id { get; set; }
         public int AINumber { get; set; }
+        public int HumanNumber { get; set; }
         public string MapName { get; set; }
         public string SavedGameDate { get; set; }
         public string Path { get; set; }

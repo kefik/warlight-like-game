@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Runtime.Serialization;
 using GameObjectsLib;
 using GameObjectsLib.GameMap;
@@ -8,6 +9,10 @@ using ProtoBuf;
 
 namespace GameObjectsLib.Game
 {
+    interface ISaveable
+    {
+        void Save(ICanSaveGame canSave);
+    }
     /// <summary>
     /// Enum containing types of game any game can have.
     /// </summary>
@@ -27,7 +32,7 @@ namespace GameObjectsLib.Game
     [ProtoInclude(10, typeof(SingleplayerGame))]
     [ProtoInclude(11, typeof(HotseatGame))]
     [ProtoInclude(12, typeof(NetworkGame))]
-    public abstract class Game
+    public abstract class Game : ISaveable
     {
         protected Game() { }
         /// <summary>
@@ -63,7 +68,7 @@ namespace GameObjectsLib.Game
         /// <param name="gameType">Type of the game.</param>
         /// <param name="map">Map of the game.</param>
         /// <param name="players">Players that will be playing the game.</param>
-        /// <returns></returns>
+        /// <returns>Created instance of the game.</returns>
         public static Game Create(GameType gameType, Map map, ICollection<Player> players)
         {
             switch (gameType)
@@ -80,7 +85,31 @@ namespace GameObjectsLib.Game
                     throw new ArgumentException();
             }
         }
-        
+        /// <summary>
+        /// Saves the game to the object based on parameter.
+        /// </summary>
+        /// <param name="canSave">Object which can save the current instance of the game.</param>
+        public void Save(ICanSaveGame canSave)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                Serializer.Serialize(stream, this);
+                stream.Position = 0; // reset position to be able to read from it again
+                canSave.SaveGame(this, stream);
+            }
+        }
+        /// <summary>
+        /// Loads the game based on parameters.
+        /// </summary>
+        /// <typeparam name="TLoadSource">Source type.</typeparam>
+        /// <param name="canLoad">Object which can load the game.</param>
+        /// <param name="source">Source from which we can load the game.</param>
+        /// <returns>Loaded game.</returns>
+        public static Game Load<TLoadSource>(ICanLoadGame<TLoadSource> canLoad, TLoadSource source)
+        {
+            Game game = Serializer.Deserialize<Game>(canLoad.LoadGame(source));
+            return game;
+        }
     }
 
 }

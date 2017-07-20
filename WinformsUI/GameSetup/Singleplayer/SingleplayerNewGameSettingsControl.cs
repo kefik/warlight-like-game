@@ -1,28 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
-using DatabaseMapping;
-using GameObjectsLib.GameUser;
 using GameObjectsLib;
 using GameObjectsLib.Game;
 using GameObjectsLib.GameMap;
-using NetworkCommsDotNet;
-using NetworkCommsDotNet.Connections;
-using NetworkCommsDotNet.Connections.TCP;
-using NetworkCommsDotNet.Connections.UDP;
-using Newtonsoft.Json;
-using ProtoBuf;
+using GameObjectsLib.GameUser;
 using WinformsUI.HelperControls;
 
 namespace WinformsUI.GameSetup.Singleplayer
@@ -40,16 +22,16 @@ namespace WinformsUI.GameSetup.Singleplayer
             }
         }
 
-        public event Action<GameObjectsLib.Game.Game> OnGameStarted;
+        public event Action<Game> OnGameStarted;
         public SingleplayerNewGameSettingsControl()
         {
             InitializeComponent();
             
-            myHumanPlayerControl = new MyHumanPlayerControl()
+            myHumanPlayerControl = new MyHumanPlayerControl
             {
                 User = new LocalUser("Me"),
                 Parent = myPlayerPanel,
-                Dock = DockStyle.Fill,
+                Dock = DockStyle.Fill
             };
             myHumanPlayerControl.Show();
 
@@ -59,7 +41,7 @@ namespace WinformsUI.GameSetup.Singleplayer
             // when the map is chosen, update maximum values
             mapSettingsControl.OnMapChosen += (o, e) =>
             {
-                this.aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit - 1;
+                aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit - 1;
                 aiPlayerSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit - 1;
             };
         }
@@ -98,7 +80,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                 ICollection<Player> players = aiPlayerSettingsControl.GetPlayers();
                 players.Add(myHumanPlayerControl.GetPlayer());
 
-                GameObjectsLib.Game.Game game = GameObjectsLib.Game.Game.Create(GameType.SinglePlayer, map, players);
+                Game game = Game.Create(GameType.SinglePlayer, map, players);
                 
                 OnGameStarted?.Invoke(game);
             }

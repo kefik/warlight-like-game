@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using DatabaseMapping;
-using GameObjectsLib;
 using GameObjectsLib.Game;
 using GameObjectsLib.GameUser;
-using ProtoBuf;
-using WinformsUI.Game;
 using WinformsUI.GameSetup.Multiplayer;
 using WinformsUI.GameSetup.Multiplayer.Hotseat;
 using WinformsUI.GameSetup.Multiplayer.Network;
 using WinformsUI.GameSetup.Singleplayer;
+using WinformsUI.InGame;
 
 namespace WinformsUI
 {
@@ -41,18 +36,16 @@ namespace WinformsUI
         /// Loads proper screens starting newly created game the game.
         /// </summary>
         /// <param name="game">Instance representing the game to be started.</param>
-        private void StartGame(GameObjectsLib.Game.Game game)
+        private void LoadInGameScreen(Game game)
         {
             switch (game.GameType)
             {
                 case GameType.SinglePlayer:
-                    // save the game locally
-                    SaveSingleplayerGame(game);
                     // remove previous
                     singleplayerGameOptionsControl?.Dispose();
                     singleplayerGameOptionsControl = null;
                     // load game screen
-                    inGame = new InGameControl()
+                    inGame = new InGameControl
                     {
                         Parent = singleplayerTabPage,
                         Dock = DockStyle.Fill
@@ -63,19 +56,18 @@ namespace WinformsUI
                     hotseatGameOptionsControl?.Dispose();
                     hotseatGameOptionsControl = null;
                     // load game screen
-                    inGame = new InGameControl()
+                    inGame = new InGameControl
                     {
                         Parent = multiplayerTabPage,
                         Dock = DockStyle.Fill
                     };
                     break;
                 case GameType.MultiplayerNetwork:
-                    // TODO: fix
                     // removes previous
                     networkGameOptionsControl?.Dispose();
                     networkGameOptionsControl = null;
                     // loads game screens
-                    inGame = new InGameControl()
+                    inGame = new InGameControl
                     {
                         Parent = multiplayerTabPage,
                         Dock = DockStyle.Fill
@@ -84,68 +76,35 @@ namespace WinformsUI
             }
             
             inGame.Show();
-            // TODO: fix starting phase
         }
-        /// <summary>
-        /// Saves given instance of <see cref="Game"/> into the local database.
-        /// </summary>
-        /// <param name="game">Instance of the game to be saved.</param>
-        private void SaveSingleplayerGame(GameObjectsLib.Game.Game game)
+
+        private void LoadGame(Game game)
         {
-            using (var db = new UtilsDbContext())
-            {
-                var savedGames = db.SingleplayerSavedGameInfos;
-                var savedGamesEnum = savedGames.AsEnumerable();
-
-                var lastGame = savedGamesEnum.LastOrDefault();
-                int lastGameId = 1;
-                if (lastGame != null) lastGameId = lastGame.Id + 1;
-
-                savedGames.Add(new SingleplayerSavedGameInfo()
-                {
-                    AINumber = game.Players.Count - 1,
-                    MapName = game.Map.Name,
-                    SavedGameDate = DateTime.Now.ToString(),
-                    Path = string.Format($"SavedGames/Singleplayer/{lastGameId}.sav")
-                });
-
-                var fs = new FileStream($"SavedGames/Singleplayer/{lastGameId}.sav", FileMode.Create);
-                Serializer.Serialize(fs, game);
-                fs.Close();
-
-                db.SaveChanges();
-            }
+            LoadInGameScreen(game);
         }
+        
+        
 
-        private void SaveHotseatGame(GameObjectsLib.Game.Game game)
+        private void StartNewGame(Game game)
         {
-            using (var db = new UtilsDbContext())
+            switch (game.GameType)
             {
-                var savedGames = db.HotseatSavedGameInfos;
-
-                var savedGamesEnum = savedGames.AsEnumerable();
-
-                var lastGame = savedGamesEnum.LastOrDefault();
-                int lastGameId = 1;
-                if (lastGame != null) lastGameId = lastGame.Id + 1;
-
-                savedGames.Add(new HotseatSavedGameInfo()
-                {
-                    AINumber = game.Players.Count - 1,
-                    MapName = game.Map.Name,
-                    SavedGameDate = DateTime.Now.ToString(),
-                    Path = string.Format($"SavedGames/Hotseat/{lastGameId}.sav")
-                });
-
-                var fs = new FileStream($"SavedGames/Hotseat/{lastGameId}.sav", FileMode.Create);
-                Serializer.Serialize(fs, game);
-                fs.Close();
-
-                db.SaveChanges();
+                case GameType.SinglePlayer:
+                    // save the game
+                    game.Save(new UtilsDbContext());
+                    break;
+                case GameType.MultiplayerHotseat:
+                    // save the game
+                    game.Save(new UtilsDbContext());
+                    break;
+                case GameType.MultiplayerNetwork:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+            LoadInGameScreen(game);
         }
-
-
+        
         /// <summary>
         /// Resets previously loaded singleplayer control and loads new, resetted one.
         /// </summary>
@@ -153,13 +112,14 @@ namespace WinformsUI
         {
             singleplayerGameOptionsControl?.Dispose();
 
-            singleplayerGameOptionsControl = new SingleplayerGameOptionsControl()
+            singleplayerGameOptionsControl = new SingleplayerGameOptionsControl
             {
-                Parent = this.singleplayerTabPage,
+                Parent = singleplayerTabPage,
                 Dock = DockStyle.Fill,
                 User = myUser
             };
-            singleplayerGameOptionsControl.OnGameStarted += StartGame;
+            singleplayerGameOptionsControl.OnNewGameStarted += StartNewGame;
+            singleplayerGameOptionsControl.OnGameLoaded += LoadGame;
             singleplayerGameOptionsControl.Show();
         }
 
@@ -173,7 +133,7 @@ namespace WinformsUI
                 hotseatGameOptionsControl?.Dispose();
                 networkGameOptionsControl?.Dispose();
                 networkGameOptionsControl = null;
-                hotseatGameOptionsControl = new HotseatGameOptionsControl()
+                hotseatGameOptionsControl = new HotseatGameOptionsControl
                 {
                     Parent = multiplayerTabPage,
                     Dock = DockStyle.Fill,
@@ -181,7 +141,7 @@ namespace WinformsUI
                 };
                 hotseatGameOptionsControl.Show();
 
-                hotseatGameOptionsControl.OnGameStarted += StartGame;
+                hotseatGameOptionsControl.OnGameStarted += StartNewGame;
             }
             
             void LoadNetworkControls()
