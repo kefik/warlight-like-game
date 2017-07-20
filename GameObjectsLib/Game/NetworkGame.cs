@@ -6,11 +6,8 @@ using GameObjectsLib.GameMap;
 
 namespace GameObjectsLib.Game
 {
-    public class NetworkGame : Game
+    class NetworkGame : Game
     {
-        public bool IsCreated { get; protected set; }
-
-        
         public override GameType GameType
         {
             get { return GameType.MultiplayerNetwork; }
@@ -19,27 +16,13 @@ namespace GameObjectsLib.Game
         public NetworkGame(Map map, ICollection<Player> players) : base(map, players)
         {
         }
-
-
         
-        /// <summary>
-        /// Creates a game and sends it to the server.
-        /// </summary>
-        public void Create()
-        {
-            // TODO: validation
-            IsCreated = true;
-        }
-
         /// <summary>
         /// Starts the game.
         /// </summary>
-        public override void Start()
+        public override void Validate()
         {
-            if (!IsCreated) Create();
-
-            // TODO: validation
-            HasStarted = true;
+            throw new NotImplementedException();
         }
     }
 }

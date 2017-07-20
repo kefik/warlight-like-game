@@ -12,7 +12,7 @@ namespace GameObjectsLib.GameMap
     /// </summary>
     [Serializable]
     [ProtoContract(AsReferenceDefault = true, ImplicitFields = ImplicitFields.AllFields)]
-    public class Region
+    public class Region : IEquatable<Region>
     {
         public int Id { get; }
         public string Name { get; }
@@ -47,6 +47,37 @@ namespace GameObjectsLib.GameMap
         public override string ToString()
         {
             return Name;
+        }
+
+        public bool Equals(Region other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Id == other.Id;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Region) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id;
+        }
+
+        public static bool operator ==(Region left, Region right)
+        {
+            if (left == null) return false;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Region left, Region right)
+        {
+            return !(left == right);
         }
     }
 }

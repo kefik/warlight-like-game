@@ -14,10 +14,10 @@ namespace GameObjectsLib.GameUser
     /// </summary>
     [Serializable]
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    [ProtoInclude(500, typeof(NetworkUser))]
-    [ProtoInclude(501, typeof(LocalUser))]
-    [ProtoInclude(502, typeof(MyNetworkUser))]
-    public abstract class User// : ISerializable
+    [ProtoInclude(50, typeof(NetworkUser))]
+    [ProtoInclude(51, typeof(LocalUser))]
+    [ProtoInclude(52, typeof(MyNetworkUser))]
+    public abstract class User
     {
         public string Name { get; set; }
 
@@ -28,18 +28,6 @@ namespace GameObjectsLib.GameUser
             Name = name;
         }
         protected User() { }
-        //public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        //{
-        //    info.AddValue(nameof(Name), Name, typeof(string));
-        //}
-
-        /// <summary>
-        /// Takes care of deserializing.
-        /// </summary>
-        //protected User(SerializationInfo info, StreamingContext context)
-        //{
-        //    Name = (string)info.GetValue(nameof(Name), typeof(string));
-        //}
     }
     
 }

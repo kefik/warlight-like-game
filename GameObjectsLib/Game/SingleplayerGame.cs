@@ -12,9 +12,9 @@ namespace GameObjectsLib.Game
     /// </summary>
     [Serializable]
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    public class SingleplayerGame : GameObjectsLib.Game.Game
+    class SingleplayerGame : Game
     {
-        SingleplayerGame() : base() { }
+        SingleplayerGame()  { }
         /// <summary>
         /// Instance of this class serves to validate correctness of the game before it starts.
         /// </summary>
@@ -63,7 +63,7 @@ namespace GameObjectsLib.Game
         }
         
 
-        public override void Start()
+        public override void Validate()
         {
             SingleplayerGameValidator validator = new SingleplayerGameValidator(this);
 
@@ -72,10 +72,6 @@ namespace GameObjectsLib.Game
             if (validator.HasTooManyPlayers()) throw new ArgumentException();
             if (!validator.HasOneHumanPlayer()) throw new ArgumentException();
             
-
-            // TODO: save it to the database
-
-            HasStarted = true;
         }
     }
 }

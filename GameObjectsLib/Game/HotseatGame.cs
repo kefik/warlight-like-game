@@ -6,7 +6,7 @@ using GameObjectsLib.GameMap;
 
 namespace GameObjectsLib.Game
 {
-    public class HotseatGame : Game
+   class HotseatGame : Game
     {
         public override GameType GameType
         {
@@ -17,12 +17,9 @@ namespace GameObjectsLib.Game
         {
         }
 
-        
-
-        public override void Start()
+        public override void Validate()
         {
-            // TODO: validation
-            HasStarted = true;
+            throw new NotImplementedException();
         }
     }
 

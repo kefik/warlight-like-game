@@ -12,7 +12,7 @@ namespace GameObjectsLib.GameMap
     /// </summary>
     [Serializable]
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields, AsReferenceDefault = true)]
-    public class SuperRegion
+    public class SuperRegion : IEquatable<SuperRegion>
     {
         public int Id { get; }
         /// <summary>
@@ -68,6 +68,36 @@ namespace GameObjectsLib.GameMap
             }
             return name + ", " + bonus + ", " + regions;
         }
-        
+
+        public bool Equals(SuperRegion other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Id == other.Id;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((SuperRegion) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id;
+        }
+
+        public static bool operator ==(SuperRegion left, SuperRegion right)
+        {
+            if (left == null) return false;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(SuperRegion left, SuperRegion right)
+        {
+            return !(left == right);
+        }
     }
 }

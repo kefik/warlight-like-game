@@ -24,15 +24,12 @@ namespace GameObjectsLib.Game
     /// </summary>
     [Serializable]
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    [ProtoInclude(600, typeof(SingleplayerGame))]
-    public abstract class Game// : ISerializable
+    [ProtoInclude(10, typeof(SingleplayerGame))]
+    [ProtoInclude(11, typeof(HotseatGame))]
+    [ProtoInclude(12, typeof(NetworkGame))]
+    public abstract class Game
     {
         protected Game() { }
-        /// <summary>
-        /// Represents boolean containing information whether the game has started.
-        /// </summary>
-        public bool HasStarted { get; protected set; }
-        
         /// <summary>
         /// Represents map being played in this game.
         /// </summary>
@@ -47,27 +44,34 @@ namespace GameObjectsLib.Game
         /// Return game type this game has.
         /// </summary>
         public abstract GameType GameType { get; }
-        
+
         protected Game(Map map, ICollection<Player> players)
         {
             this.Map = map;
             this.Players = players;
         }
-        
+
 
         /// <summary>
         /// Starts the game if theres no error.
         /// </summary>
-        public abstract void Start();
+        public abstract void Validate();
 
+        /// <summary>
+        /// Creates an instance of new <see cref="Game"/>, validates it and returns it.
+        /// </summary>
+        /// <param name="gameType">Type of the game.</param>
+        /// <param name="map">Map of the game.</param>
+        /// <param name="players">Players that will be playing the game.</param>
+        /// <returns></returns>
         public static Game Create(GameType gameType, Map map, ICollection<Player> players)
         {
             switch (gameType)
             {
                 case GameType.SinglePlayer:
-                {
-                        return new SingleplayerGame(map, players);
-                }
+                    var sp = new SingleplayerGame(map, players);
+                    sp.Validate();
+                    return sp;
                 case GameType.MultiplayerHotseat:
                     throw new NotImplementedException();
                 case GameType.MultiplayerNetwork:
@@ -76,6 +80,7 @@ namespace GameObjectsLib.Game
                     throw new ArgumentException();
             }
         }
+        
     }
 
 }
