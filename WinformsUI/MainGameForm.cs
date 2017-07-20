@@ -43,9 +43,6 @@ namespace WinformsUI
         /// <param name="game">Instance representing the game to be started.</param>
         private void StartGame(GameObjectsLib.Game.Game game)
         {
-            // start the game
-            game.Start();
-            
             switch (game.GameType)
             {
                 case GameType.SinglePlayer:
@@ -95,27 +92,57 @@ namespace WinformsUI
         /// <param name="game">Instance of the game to be saved.</param>
         private void SaveSingleplayerGame(GameObjectsLib.Game.Game game)
         {
-            var db = new UtilsDbContext();
-            var savedGames = db.SavedGameInfos;
-            var savedGamesEnum = savedGames.AsEnumerable();
-
-            var lastGame = savedGamesEnum.LastOrDefault();
-            int lastGameId = 1;
-            if (lastGame != null) lastGameId = lastGame.Id + 1;
-
-            savedGames.Add(new SingleplayerSavedGameInfo()
+            using (var db = new UtilsDbContext())
             {
-                AINumber = game.Players.Count - 1,
-                MapName = game.Map.Name,
-                SavedGameDate = DateTime.Now.ToString(),
-                Path = string.Format($"SavedGames/{lastGameId}.sav")
-            });
+                var savedGames = db.SingleplayerSavedGameInfos;
+                var savedGamesEnum = savedGames.AsEnumerable();
 
-            var fs = new FileStream($"SavedGames/{lastGameId}.sav", FileMode.Create);
-            Serializer.Serialize(fs, game);
-            fs.Close();
+                var lastGame = savedGamesEnum.LastOrDefault();
+                int lastGameId = 1;
+                if (lastGame != null) lastGameId = lastGame.Id + 1;
 
-            db.SaveChanges();
+                savedGames.Add(new SingleplayerSavedGameInfo()
+                {
+                    AINumber = game.Players.Count - 1,
+                    MapName = game.Map.Name,
+                    SavedGameDate = DateTime.Now.ToString(),
+                    Path = string.Format($"SavedGames/Singleplayer/{lastGameId}.sav")
+                });
+
+                var fs = new FileStream($"SavedGames/Singleplayer/{lastGameId}.sav", FileMode.Create);
+                Serializer.Serialize(fs, game);
+                fs.Close();
+
+                db.SaveChanges();
+            }
+        }
+
+        private void SaveHotseatGame(GameObjectsLib.Game.Game game)
+        {
+            using (var db = new UtilsDbContext())
+            {
+                var savedGames = db.HotseatSavedGameInfos;
+
+                var savedGamesEnum = savedGames.AsEnumerable();
+
+                var lastGame = savedGamesEnum.LastOrDefault();
+                int lastGameId = 1;
+                if (lastGame != null) lastGameId = lastGame.Id + 1;
+
+                savedGames.Add(new HotseatSavedGameInfo()
+                {
+                    AINumber = game.Players.Count - 1,
+                    MapName = game.Map.Name,
+                    SavedGameDate = DateTime.Now.ToString(),
+                    Path = string.Format($"SavedGames/Hotseat/{lastGameId}.sav")
+                });
+
+                var fs = new FileStream($"SavedGames/Hotseat/{lastGameId}.sav", FileMode.Create);
+                Serializer.Serialize(fs, game);
+                fs.Close();
+
+                db.SaveChanges();
+            }
         }
 
 

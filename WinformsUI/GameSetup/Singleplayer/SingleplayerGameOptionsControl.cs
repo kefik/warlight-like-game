@@ -20,8 +20,16 @@ namespace WinformsUI.GameSetup.Singleplayer
         }
         public event Action<GameObjectsLib.Game.Game> OnGameStarted
         {
-            add { singleplayerNewGameSettingsControl.OnGameStarted += value; }
-            remove { singleplayerNewGameSettingsControl.OnGameStarted -= value; }
+            add
+            {
+                singleplayerNewGameSettingsControl.OnGameStarted += value;
+                singleplayerLoadGamesControl.OnSingleplayerGameLoaded += value;
+            }
+            remove
+            {
+                singleplayerNewGameSettingsControl.OnGameStarted -= value;
+                singleplayerLoadGamesControl.OnSingleplayerGameLoaded -= value;
+            }
         }
 
         public SingleplayerGameOptionsControl()

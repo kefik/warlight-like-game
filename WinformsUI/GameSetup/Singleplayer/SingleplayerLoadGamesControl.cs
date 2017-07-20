@@ -15,13 +15,13 @@ namespace WinformsUI.GameSetup.Singleplayer
             InitializeComponent();
         }
 
-        public event Action<GameObjectsLib.Game.Game> OnSingleplayerGameLoad;
+        public event Action<GameObjectsLib.Game.Game> OnSingleplayerGameLoaded;
 
         private void LoadControl(object sender, System.EventArgs e)
         {
             Task.Run(() =>
             {
-                var savedGames = from game in new UtilsDbContext().SavedGameInfos
+                var savedGames = from game in new UtilsDbContext().SingleplayerSavedGameInfos
                                  orderby game.SavedGameDate descending
                                  select game;
 
@@ -39,11 +39,21 @@ namespace WinformsUI.GameSetup.Singleplayer
             var savedGameInfo =
                 (SingleplayerSavedGameInfo)loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
 
-            var fs = new FileStream(savedGameInfo.Path, FileMode.Open);
-            GameObjectsLib.Game.Game game = Serializer.Deserialize<GameObjectsLib.Game.Game>(fs);
-            fs.Close();
+            GameObjectsLib.Game.Game game = null;
+            try
+            {
+                var fs = new FileStream(savedGameInfo.Path, FileMode.Open);
+                game = Serializer.Deserialize<GameObjectsLib.Game.Game>(fs);
+                fs.Close();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Selected game save has been damaged.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // TODO: remove the game
+                
+            }
 
-            OnSingleplayerGameLoad?.Invoke(game);
+            OnSingleplayerGameLoaded?.Invoke(game);
         }
     }
 }

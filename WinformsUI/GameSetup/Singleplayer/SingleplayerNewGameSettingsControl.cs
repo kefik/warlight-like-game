@@ -98,7 +98,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                 ICollection<Player> players = aiPlayerSettingsControl.GetPlayers();
                 players.Add(myHumanPlayerControl.GetPlayer());
 
-                GameObjectsLib.Game.Game game = new SingleplayerGame(map, players);
+                GameObjectsLib.Game.Game game = GameObjectsLib.Game.Game.Create(GameType.SinglePlayer, map, players);
                 
                 OnGameStarted?.Invoke(game);
             }

@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SingleplayerGameOptionsControl));
             this.gameOptionsTabControl = new System.Windows.Forms.TabControl();
             this.continueTabPage = new System.Windows.Forms.TabPage();
             this.newGameTabPage = new System.Windows.Forms.TabPage();
             this.singleplayerNewGameSettingsControl = new WinformsUI.GameSetup.Singleplayer.SingleplayerNewGameSettingsControl();
             this.loadGameTabPage = new System.Windows.Forms.TabPage();
-            this.singleplayerLoadGamesControl1 = new WinformsUI.GameSetup.Singleplayer.SingleplayerLoadGamesControl();
+            this.singleplayerLoadGamesControl = new WinformsUI.GameSetup.Singleplayer.SingleplayerLoadGamesControl();
             this.gameOptionsTabControl.SuspendLayout();
             this.newGameTabPage.SuspendLayout();
             this.loadGameTabPage.SuspendLayout();
@@ -80,12 +81,13 @@
             this.singleplayerNewGameSettingsControl.AutoScroll = true;
             this.singleplayerNewGameSettingsControl.Location = new System.Drawing.Point(6, 3);
             this.singleplayerNewGameSettingsControl.Name = "singleplayerNewGameSettingsControl";
-            this.singleplayerNewGameSettingsControl.Size = new System.Drawing.Size(456, 377);
+            this.singleplayerNewGameSettingsControl.Size = new System.Drawing.Size(439, 377);
             this.singleplayerNewGameSettingsControl.TabIndex = 0;
+            this.singleplayerNewGameSettingsControl.User = ((GameObjectsLib.GameUser.User)(resources.GetObject("singleplayerNewGameSettingsControl.User")));
             // 
             // loadGameTabPage
             // 
-            this.loadGameTabPage.Controls.Add(this.singleplayerLoadGamesControl1);
+            this.loadGameTabPage.Controls.Add(this.singleplayerLoadGamesControl);
             this.loadGameTabPage.Location = new System.Drawing.Point(4, 22);
             this.loadGameTabPage.Name = "loadGameTabPage";
             this.loadGameTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -94,15 +96,15 @@
             this.loadGameTabPage.Text = "Load game";
             this.loadGameTabPage.UseVisualStyleBackColor = true;
             // 
-            // singleplayerLoadGamesControl1
+            // singleplayerLoadGamesControl
             // 
-            this.singleplayerLoadGamesControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.singleplayerLoadGamesControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.singleplayerLoadGamesControl1.Location = new System.Drawing.Point(3, 3);
-            this.singleplayerLoadGamesControl1.Name = "singleplayerLoadGamesControl1";
-            this.singleplayerLoadGamesControl1.Size = new System.Drawing.Size(479, 244);
-            this.singleplayerLoadGamesControl1.TabIndex = 0;
+            this.singleplayerLoadGamesControl.Location = new System.Drawing.Point(3, 3);
+            this.singleplayerLoadGamesControl.Name = "singleplayerLoadGamesControl";
+            this.singleplayerLoadGamesControl.Size = new System.Drawing.Size(479, 244);
+            this.singleplayerLoadGamesControl.TabIndex = 0;
             // 
             // SingleplayerGameOptionsControl
             // 
@@ -123,7 +125,7 @@
         private System.Windows.Forms.TabPage continueTabPage;
         private System.Windows.Forms.TabPage newGameTabPage;
         private System.Windows.Forms.TabPage loadGameTabPage;
-        private SingleplayerLoadGamesControl singleplayerLoadGamesControl1;
+        private SingleplayerLoadGamesControl singleplayerLoadGamesControl;
         private SingleplayerNewGameSettingsControl singleplayerNewGameSettingsControl;
     }
 }
