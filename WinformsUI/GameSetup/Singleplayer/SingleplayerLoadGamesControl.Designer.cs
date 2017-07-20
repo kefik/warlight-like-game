@@ -38,8 +38,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.loadedGamesListBox.FormattingEnabled = true;
-            this.loadedGamesListBox.Items.AddRange(new object[] {
-            "AI:4; Map: World; Saved: 18.05.2015 12:58"});
             this.loadedGamesListBox.Location = new System.Drawing.Point(15, 16);
             this.loadedGamesListBox.Name = "loadedGamesListBox";
             this.loadedGamesListBox.Size = new System.Drawing.Size(391, 160);
@@ -54,6 +52,7 @@
             this.loadButton.TabIndex = 1;
             this.loadButton.Text = "Load";
             this.loadButton.UseVisualStyleBackColor = true;
+            this.loadButton.Click += new System.EventHandler(this.LoadGame);
             // 
             // SingleplayerLoadGamesControl
             // 
@@ -63,6 +62,7 @@
             this.Controls.Add(this.loadedGamesListBox);
             this.Name = "SingleplayerLoadGamesControl";
             this.Size = new System.Drawing.Size(418, 219);
+            this.Load += new System.EventHandler(this.LoadControl);
             this.ResumeLayout(false);
 
         }

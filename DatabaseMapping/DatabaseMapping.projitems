@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)MapInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SingleplayerSavedGameInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UtilsDbContext.cs" />
   </ItemGroup>
 </Project>

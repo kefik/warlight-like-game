@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -11,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using DatabaseMapping;
 using GameObjectsLib.GameUser;
 using GameObjectsLib;
 using GameObjectsLib.Game;
@@ -97,27 +99,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                 players.Add(myHumanPlayerControl.GetPlayer());
 
                 GameObjectsLib.Game.Game game = new SingleplayerGame(map, players);
-
-                //JsonSerializer serializer = new JsonSerializer();
-                ////FileStream writer = new FileStream("1.txt", FileMode.OpenOrCreate);
-                //StreamWriter writer = new StreamWriter("1.txt");
-                //serializer.Serialize(writer, game);
-                //writer.Close();
-
-                var fs = new FileStream("2.txt", FileMode.Create);
-                //XmlWriter writer = new XmlTextWriter(new StreamWriter("2.txt"));
-                Serializer.Serialize(fs, game);
-                fs.Close();
-
-                fs = new FileStream("2.txt", FileMode.Open);
-                game = Serializer.Deserialize<GameObjectsLib.Game.Game>(fs);
-                fs.Close();
-
-                // TODO
-                // TCPConnection con = TCPConnection.GetConnection(new ConnectionInfo("", 10));
-                //game = con.SendReceiveObject<GameObjectsLib.Game.Game>("", "", 1000);
-                //NetworkComms.SendObject("", "", 10, game);
-
+                
                 OnGameStarted?.Invoke(game);
             }
             catch (UnauthorizedAccessException)

@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using DatabaseMapping;
 using GameObjectsLib;
 using GameObjectsLib.Game;
 using GameObjectsLib.GameUser;
+using ProtoBuf;
 using WinformsUI.Game;
 using WinformsUI.GameSetup.Multiplayer;
 using WinformsUI.GameSetup.Multiplayer.Hotseat;
@@ -45,7 +49,9 @@ namespace WinformsUI
             switch (game.GameType)
             {
                 case GameType.SinglePlayer:
-                    // remove previou
+                    // save the game locally
+                    SaveSingleplayerGame(game);
+                    // remove previous
                     singleplayerGameOptionsControl?.Dispose();
                     singleplayerGameOptionsControl = null;
                     // load game screen
@@ -56,7 +62,7 @@ namespace WinformsUI
                     };
                     break;
                 case GameType.MultiplayerHotseat:
-                    // remove previou
+                    // remove previous
                     hotseatGameOptionsControl?.Dispose();
                     hotseatGameOptionsControl = null;
                     // load game screen
@@ -82,6 +88,34 @@ namespace WinformsUI
             
             inGame.Show();
             // TODO: fix starting phase
+        }
+        /// <summary>
+        /// Saves given instance of <see cref="Game"/> into the local database.
+        /// </summary>
+        /// <param name="game">Instance of the game to be saved.</param>
+        private void SaveSingleplayerGame(GameObjectsLib.Game.Game game)
+        {
+            var db = new UtilsDbContext();
+            var savedGames = db.SavedGameInfos;
+            var savedGamesEnum = savedGames.AsEnumerable();
+
+            var lastGame = savedGamesEnum.LastOrDefault();
+            int lastGameId = 1;
+            if (lastGame != null) lastGameId = lastGame.Id + 1;
+
+            savedGames.Add(new SingleplayerSavedGameInfo()
+            {
+                AINumber = game.Players.Count - 1,
+                MapName = game.Map.Name,
+                SavedGameDate = DateTime.Now.ToString(),
+                Path = string.Format($"SavedGames/{lastGameId}.sav")
+            });
+
+            var fs = new FileStream($"SavedGames/{lastGameId}.sav", FileMode.Create);
+            Serializer.Serialize(fs, game);
+            fs.Close();
+
+            db.SaveChanges();
         }
 
 

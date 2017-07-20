@@ -28,6 +28,7 @@ namespace DatabaseMapping
         }
 
         public virtual DbSet<MapInfo> Maps { get; set; }
+        public virtual DbSet<SingleplayerSavedGameInfo> SavedGameInfos { get; set; }
     }
 
     public class SQLiteConfiguration : DbConfiguration
