@@ -30,6 +30,7 @@
         {
             this.loadedGamesListBox = new System.Windows.Forms.ListBox();
             this.loadButton = new System.Windows.Forms.Button();
+            this.deleteButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // loadedGamesListBox
@@ -54,10 +55,22 @@
             this.loadButton.UseVisualStyleBackColor = true;
             this.loadButton.Click += new System.EventHandler(this.LoadGame);
             // 
+            // deleteButton
+            // 
+            this.deleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.deleteButton.Location = new System.Drawing.Point(15, 185);
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(75, 23);
+            this.deleteButton.TabIndex = 2;
+            this.deleteButton.Text = "Delete";
+            this.deleteButton.UseVisualStyleBackColor = true;
+            this.deleteButton.Click += new System.EventHandler(this.DeleteGame);
+            // 
             // SingleplayerLoadGamesControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.deleteButton);
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.loadedGamesListBox);
             this.Name = "SingleplayerLoadGamesControl";
@@ -71,5 +84,6 @@
 
         private System.Windows.Forms.ListBox loadedGamesListBox;
         private System.Windows.Forms.Button loadButton;
+        private System.Windows.Forms.Button deleteButton;
     }
 }

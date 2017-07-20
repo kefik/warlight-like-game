@@ -75,8 +75,8 @@ namespace WinformsUI.GameSetup.Singleplayer
         {
             try
             {
-                Map map
-                    = Map.Create(mapSettingsControl.MapName, mapSettingsControl.PlayersLimit, mapSettingsControl.MapTemplatePath);
+                Map map = mapSettingsControl.GetMap();
+
                 ICollection<Player> players = aiPlayerSettingsControl.GetPlayers();
                 players.Add(myHumanPlayerControl.GetPlayer());
 

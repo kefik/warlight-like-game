@@ -20,6 +20,11 @@ namespace WinformsUI.GameSetup.Singleplayer
 
         private void LoadControl(object sender, EventArgs e)
         {
+            RefreshSavedGames();
+        }
+
+        public void RefreshSavedGames()
+        {
             Task.Run(() =>
             {
                 var savedGames = from game in new UtilsDbContext().SingleplayerSavedGameInfos
@@ -37,6 +42,8 @@ namespace WinformsUI.GameSetup.Singleplayer
 
         private void LoadGame(object sender, EventArgs e)
         {
+            if (loadedGamesListBox.SelectedIndex < 0) return;
+
             var savedGameInfo =
                 (SingleplayerSavedGameInfo)loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
 
@@ -53,6 +60,19 @@ namespace WinformsUI.GameSetup.Singleplayer
             {
                 MessageBox.Show("Selected game save has been damaged.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+            }
+        }
+
+        private void DeleteGame(object sender, EventArgs e)
+        {
+            if (loadedGamesListBox.SelectedIndex < 0) return;
+            var savedGameInfo =
+                (SingleplayerSavedGameInfo)loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
+
+            using (var db = new UtilsDbContext())
+            {
+                db.Remove(savedGameInfo);
+                // TODO: refresh listbox
             }
         }
     }

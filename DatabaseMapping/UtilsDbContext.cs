@@ -121,6 +121,37 @@ namespace DatabaseMapping
             return fs;
         }
 
+        public void Remove(SingleplayerSavedGameInfo savedGameInfo)
+        {
+            // TODO: rebuild to transactions
+            var objectToBeRemoved = (from info in SingleplayerSavedGameInfos
+                                     where info.Id == savedGameInfo.Id
+                                     select info).First();
+
+            string path = objectToBeRemoved.Path;
+
+            SingleplayerSavedGameInfos.Remove(objectToBeRemoved);
+
+            SaveChanges();
+
+            File.Delete(path);
+        }
+        public void Remove(HotseatSavedGameInfo savedGameInfo)
+        {
+            // TODO: rebuild to transactions
+            var objectToBeRemoved = (from info in HotseatSavedGameInfos
+                                     where info.Id == savedGameInfo.Id
+                                     select info).First();
+
+            string path = objectToBeRemoved.Path;
+
+            HotseatSavedGameInfos.Remove(objectToBeRemoved);
+
+            SaveChanges();
+
+            File.Delete(path);
+        }
+
 
         public virtual DbSet<MapInfo> Maps { get; set; }
         public virtual DbSet<SingleplayerSavedGameInfo> SingleplayerSavedGameInfos { get; set; }

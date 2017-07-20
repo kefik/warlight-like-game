@@ -143,7 +143,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 
         private void Start(object sender, EventArgs e)
         {
-            Map map = Map.Create(mapSettingsControl.MapName, mapSettingsControl.PlayersLimit, mapSettingsControl.MapTemplatePath);
+            Map map = mapSettingsControl.GetMap();
+
             ICollection<Player> players = aiPlayerSettingsControl.GetPlayers();
             players.Add(myHumanPlayerControl.GetPlayer());
 

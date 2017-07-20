@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
-using GameObjectsLib.GameMap;
 using ProtoBuf;
 
 namespace GameObjectsLib.GameMap
@@ -17,6 +15,8 @@ namespace GameObjectsLib.GameMap
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public sealed class Map
     {
+        public int Id { get; }
+
         public string Name { get; }
 
         /// <summary>
@@ -33,10 +33,11 @@ namespace GameObjectsLib.GameMap
         /// </summary>
         public ICollection<SuperRegion> SuperRegions { get; } = new HashSet<SuperRegion>();
         
-        private Map(string name, int playersLimit)
+        private Map(int id, string name, int playersLimit)
         {
-            this.Name = name;
-            this.PlayersLimit = playersLimit;
+            Id = id;
+            Name = name;
+            PlayersLimit = playersLimit;
         }
         Map() { }
 
@@ -45,11 +46,11 @@ namespace GameObjectsLib.GameMap
         /// loads all objects related to its given model,
         /// getting the map ready for the start of the game.
         /// </summary>
-        public static Map Create(string name, int playersLimit, string templatePath)
+        public static Map Create(int id, string name, int playersLimit, string templatePath)
         {
-            Map map = new Map(name, playersLimit);
+            Map map = new Map(id, name, playersLimit);
             // set validation against xsd settings
-            XmlReaderSettings settings = new XmlReaderSettings()
+            XmlReaderSettings settings = new XmlReaderSettings
             {
                 ValidationType = ValidationType.Schema
             };
@@ -204,7 +205,7 @@ namespace GameObjectsLib.GameMap
             }
             return map;
         }
-
+        
         public override string ToString()
         {
             string name = string.Format($"{nameof(Name)}: {Name}");

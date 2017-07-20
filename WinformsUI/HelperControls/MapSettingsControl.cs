@@ -34,22 +34,7 @@ namespace WinformsUI.HelperControls
         {
             get { return ChosenMapInfo.PlayersLimit; }
         }
-
-        /// <summary>
-        /// Returns name of the map loaded in this control.
-        /// </summary>
-        public string MapName
-        {
-            get { return ChosenMapInfo.Name; }
-        }
-        /// <summary>
-        /// Specifies path to map template.
-        /// </summary>
-        public string MapTemplatePath
-        {
-            get { return ChosenMapInfo.TemplatePath; }
-        }
-
+        
         MapInfo ChosenMapInfo
         {
             get
@@ -66,6 +51,14 @@ namespace WinformsUI.HelperControls
                 }
                 return maps[mapComboBox.SelectedIndex];
             }
+        }
+        /// <summary>
+        /// Creates and returns new instance of map based on parameters.
+        /// </summary>
+        /// <returns>New instance of the map.</returns>
+        public Map GetMap()
+        {
+            return Map.Create(ChosenMapInfo.Id, ChosenMapInfo.Name, ChosenMapInfo.PlayersLimit, ChosenMapInfo.TemplatePath);
         }
 
         /// <summary>

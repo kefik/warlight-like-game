@@ -107,8 +107,11 @@ namespace GameObjectsLib.Game
         /// <returns>Loaded game.</returns>
         public static Game Load<TLoadSource>(ICanLoadGame<TLoadSource> canLoad, TLoadSource source)
         {
-            Game game = Serializer.Deserialize<Game>(canLoad.LoadGame(source));
-            return game;
+            using (var stream = canLoad.LoadGame(source))
+            {
+                Game game = Serializer.Deserialize<Game>(stream);
+                return game;
+            }
         }
     }
 
