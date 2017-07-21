@@ -43,16 +43,5 @@ namespace GameObjectsLib.GameUser
         {
             return Id;
         }
-
-        //public static bool operator ==(NetworkUser left, NetworkUser right)
-        //{
-        //    if (left == null) return false;
-        //    return left.Equals(right);
-        //}
-
-        //public static bool operator !=(NetworkUser left, NetworkUser right)
-        //{
-        //    return !(left == right);
-        //}
     }
 }

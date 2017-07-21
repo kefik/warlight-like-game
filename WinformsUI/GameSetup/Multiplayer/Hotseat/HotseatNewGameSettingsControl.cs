@@ -145,7 +145,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         {
             Map map = mapSettingsControl.GetMap();
 
-            ICollection<Player> players = aiPlayerSettingsControl.GetPlayers();
+            IList<Player> players = aiPlayerSettingsControl.GetPlayers();
             players.Add(myHumanPlayerControl.GetPlayer());
 
             Game game = Game.Create(GameType.MultiplayerHotseat, map, players);

@@ -33,7 +33,7 @@ namespace GameObjectsLib.GameMap
         /// <summary>
         /// Represents list of regions that are neighbours to this given region.
         /// </summary>
-        public ICollection<Region> NeighbourRegions { get; } = new List<Region>();
+        public IList<Region> NeighbourRegions { get; } = new List<Region>();
         
 
         public Region(int id, string name, SuperRegion superRegion)

@@ -27,11 +27,11 @@ namespace GameObjectsLib.GameMap
         /// <summary>
         /// Represents regions of the map that player can conquer.
         /// </summary>
-        public ICollection<Region> Regions { get; } = new HashSet<Region>();
+        public IList<Region> Regions { get; } = new List<Region>();
         /// <summary>
         /// Represents region groups this map has.
         /// </summary>
-        public ICollection<SuperRegion> SuperRegions { get; } = new HashSet<SuperRegion>();
+        public IList<SuperRegion> SuperRegions { get; } = new List<SuperRegion>();
         
         private Map(int id, string name, int playersLimit)
         {
@@ -91,7 +91,7 @@ namespace GameObjectsLib.GameMap
                         case XmlNodeType.Element:
                             switch (reader.Name)
                             {
-                                case "SuperRegion":
+                                case nameof(SuperRegion):
                                     isSuperRegionElement = true;
                                     if (!isRegionElement && !isNeighbours) // is SuperRegion attribute
                                     {
@@ -102,7 +102,7 @@ namespace GameObjectsLib.GameMap
                                         map.SuperRegions.Add(superRegion);
                                     }
                                     break;
-                                case "Region":
+                                case nameof(Region):
                                     isRegionElement = true;
                                     if (isSuperRegionElement && !isNeighbours) // is Region element
                                     {
@@ -126,11 +126,11 @@ namespace GameObjectsLib.GameMap
                         case XmlNodeType.EndElement:
                             switch (reader.Name)
                             {
-                                case "SuperRegion":
+                                case nameof(SuperRegion):
                                     // reset
                                     isSuperRegionElement = false;
                                     break;
-                                case "Region":
+                                case nameof(Region):
                                     // reset
                                     isRegionElement = false;
                                     break;
@@ -159,10 +159,10 @@ namespace GameObjectsLib.GameMap
                         case XmlNodeType.Element:
                             switch (reader.Name)
                             {
-                                case "SuperRegion":
+                                case nameof(SuperRegion):
                                     isSuperRegion = true;
                                     break;
-                                case "Region":
+                                case nameof(Region):
                                     isRegion++;
                                     if (isSuperRegion && isRegion == 1 && !isNeighbours)
                                     {
@@ -188,10 +188,10 @@ namespace GameObjectsLib.GameMap
                         case XmlNodeType.EndElement:
                             switch (reader.Name)
                             {
-                                case "SuperRegion":
+                                case nameof(SuperRegion):
                                     isSuperRegion = false;
                                     break;
-                                case "Region":
+                                case nameof(Region):
                                     isRegion--;
                                     if (isSuperRegion && isRegion == 0 && !isNeighbours) givenRegion = null;
                                     break;

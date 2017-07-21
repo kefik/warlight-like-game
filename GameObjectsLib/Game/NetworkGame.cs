@@ -13,7 +13,7 @@ namespace GameObjectsLib.Game
             get { return GameType.MultiplayerNetwork; }
         }
 
-        public NetworkGame(Map map, ICollection<Player> players) : base(map, players)
+        public NetworkGame(Map map, IList<Player> players) : base(map, players)
         {
         }
         

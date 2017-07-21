@@ -25,7 +25,7 @@ namespace GameObjectsLib
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     [ProtoInclude(400, typeof(AIPlayer))]
     [ProtoInclude(401, typeof(HumanPlayer))]
-    public abstract class Player : IEquatable<Player>//, ISerializable
+    public abstract class Player : IEquatable<Player>
     {
         protected Player() { }
         public abstract string Name { get; }
@@ -45,21 +45,7 @@ namespace GameObjectsLib
         {
             return Name;
         }
-
-        //public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        //{
-        //    info.AddValue(nameof(Color), Color, typeof(KnownColor));
-            
-        //    //info.AddValue(nameof(ControlledRegions), ControlledRegions, typeof(HashSet<Region>));
-        //}
-
-        //protected Player(SerializationInfo info, StreamingContext context)
-        //{
-        //    Color = (KnownColor)info.GetValue(nameof(Color), typeof(KnownColor));
-
-        //    //ControlledRegions =
-        //    //    (ICollection<Region>) info.GetValue(nameof(ControlledRegions), typeof(HashSet<Region>));
-        //}
+        
 
         public bool Equals(Player other)
         {
@@ -116,18 +102,6 @@ namespace GameObjectsLib
             this.Difficulty = difficulty;
             Name = name;
         }
-
-        //public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        //{
-        //    base.GetObjectData(info, context);
-        //    // serialize difficulty
-        //    info.AddValue(nameof(Difficulty), Difficulty, typeof(Difficulty));
-        //}
-
-        //AIPlayer(SerializationInfo info, StreamingContext context) : base(info, context)
-        //{
-        //    Difficulty = (Difficulty) info.GetValue(nameof(Difficulty), typeof(Difficulty));
-        //}
     }
 
     /// <summary>

@@ -12,7 +12,7 @@ namespace GameObjectsLib.GameMap
     /// </summary>
     [Serializable]
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields, AsReferenceDefault = true)]
-    public class SuperRegion : IEquatable<SuperRegion>
+    public class SuperRegion : IEquatable<SuperRegion>, IRefreshable
     {
         public int Id { get; }
         /// <summary>
@@ -26,7 +26,7 @@ namespace GameObjectsLib.GameMap
 
         public Player Owner { get; private set; } // TODO: finish refreshing of situation, use GetOwner() method
 
-        public ICollection<Region> Regions { get; }= new HashSet<Region>();
+        public IList<Region> Regions { get; } = new List<Region>();
         /// <summary>
         /// Constructs SuperRegion instance.
         /// </summary>
@@ -50,6 +50,12 @@ namespace GameObjectsLib.GameMap
                 ? null // return null
                 : firstOwner;
         }
+
+        public void Refresh()
+        {
+            Owner = GetOwner();
+        }
+
 
         SuperRegion() { }
 

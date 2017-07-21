@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using GameObjectsLib;
 using GameObjectsLib.GameMap;
@@ -34,6 +35,8 @@ namespace GameObjectsLib.Game
     [ProtoInclude(12, typeof(NetworkGame))]
     public abstract class Game : ISaveable
     {
+        //public int RoundNumber { get; private set; }
+
         protected Game() { }
         /// <summary>
         /// Represents map being played in this game.
@@ -43,14 +46,14 @@ namespace GameObjectsLib.Game
         /// <summary>
         /// Represents list of players playing this game.
         /// </summary>
-        public ICollection<Player> Players { get; }
+        public IList<Player> Players { get; }
 
         /// <summary>
         /// Return game type this game has.
         /// </summary>
         public abstract GameType GameType { get; }
 
-        protected Game(Map map, ICollection<Player> players)
+        protected Game(Map map, IList<Player> players)
         {
             this.Map = map;
             this.Players = players;
@@ -69,7 +72,7 @@ namespace GameObjectsLib.Game
         /// <param name="map">Map of the game.</param>
         /// <param name="players">Players that will be playing the game.</param>
         /// <returns>Created instance of the game.</returns>
-        public static Game Create(GameType gameType, Map map, ICollection<Player> players)
+        public static Game Create(GameType gameType, Map map, IList<Player> players)
         {
             switch (gameType)
             {
@@ -110,8 +113,60 @@ namespace GameObjectsLib.Game
             using (var stream = canLoad.LoadGame(source))
             {
                 Game game = Serializer.Deserialize<Game>(stream);
+                game.ReconstructOriginalGraph();
                 return game;
             }
+        }
+        /// <summary>
+        /// After deserialization we have same objects that do not match references.
+        /// Purpose of this method is to remap those references back.
+        /// </summary>
+        private void ReconstructOriginalGraph()
+        {
+            // TODO: IMPORTANT = check
+            var regions = Map.Regions;
+            var superRegions = Map.SuperRegions;
+            // reconstructs original super regions
+            foreach (Region region in regions)
+            {
+                for (int j = 0; j < superRegions.Count; j++)
+                {
+                    if (superRegions[j] == region.SuperRegion)
+                        superRegions[j] = region.SuperRegion;
+                }
+            }
+            // reconstruct neighbour regions
+            for (int i = 0; i < regions.Count; i++)
+            {
+                var neighbours = regions[i].NeighbourRegions;
+                foreach (Region neighbour in neighbours)
+                {
+                    for (int j = 0; j < regions.Count; j++)
+                    {
+                        if (regions[j] == neighbour)
+                        {
+                            regions[j] = neighbour;
+                        }
+                    }
+                }
+            }
+            var players = Players;
+            // reconstruct owner
+            foreach (Player player in players)
+            {
+                var controlledRegions = player.ControlledRegions;
+                foreach (var controlledRegion in controlledRegions)
+                {
+                    controlledRegion.Owner = player;
+                }
+            }
+            // reconstruct player super regions
+            foreach (SuperRegion superRegion in superRegions)
+            {
+                superRegion.Refresh();
+            }
+
+
         }
     }
 
