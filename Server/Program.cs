@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -12,40 +15,45 @@ using GameObjectsLib.GameMap;
 
 namespace Server
 {
-    [Serializable]
-    class A : ISerializable 
-    {
-        public A() { }
-        public int Id { get; set; }
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue(nameof(Id), Id);
-        }
-
-        private A(SerializationInfo info, StreamingContext context)
-        {
-            Id = (int)info.GetValue(nameof(Id), typeof(int));
-        }
-    }
     class Program
     {
-        static void Main(string[] args)
+        static  void Main(string[] args)
         {
-            var formatter = new BinaryFormatter();
-            A a = new A()
+            Bitmap bmp = new Bitmap(@"C:\Users\Honza\Documents\Skola\Matfyz\BachelorWork\WarlightLikeGame\WinformsUI\bin\Debug\Maps\WorldImageModified1.png");
+            
+
+            // Lock the bitmap's bits.  
+            BitmapData bmpData =
+                bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite,
+                    bmp.PixelFormat);
+
+            unsafe
             {
-                Id = 10
-            };
+                byte* ptr = (byte*) bmpData.Scan0;
 
-            FileStream s = new FileStream("a.txt", FileMode.Create);
-            formatter.Serialize(s, a);
-            s.Close();
+                int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
 
-            FileStream fs = new FileStream("a.txt", FileMode.Open);
-            A newA = (A)formatter.Deserialize(fs);
-            fs.Close();
 
-            Console.WriteLine(newA.Id);
+                for (int i = 0; i < bytes; i += 3)
+                {
+                    byte* blue = ptr;
+                    byte* green = ptr + 1;
+                    byte* red = ptr + 2;
+
+                    if (*red == *green && *green == *blue && *red > 170)
+                    {
+                        *red = 155;
+                        *green = 150;
+                        *blue = 122;
+                    }
+                    ptr += 3;
+                }
+            }
+
+            // Unlock the bits.
+            bmp.UnlockBits(bmpData);
+            bmp.Save(@"C:\Users\Honza\Documents\Skola\Matfyz\BachelorWork\WarlightLikeGame\WinformsUI\bin\Debug\Maps\WorldImageModified2.png");
+            
         }
     }
 }

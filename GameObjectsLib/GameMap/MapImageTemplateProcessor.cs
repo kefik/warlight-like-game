@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
@@ -74,20 +76,67 @@ namespace GameObjectsLib.GameMap
             MapImage = gameMapMapImage;
             templateProcessor = mapImageTemplateProcessor;
         }
+        
         /// <summary>
         /// Recolors every pixel of the original color in the map to the new color.
         /// </summary>
-        /// <param name="sourceColor">Source color.</param>
+        /// <param name="sourceColor">Source color in region highlighted image.</param>
         /// <param name="targetColor">Color to recolor the region to.</param>
         public void Recolor(Color sourceColor, Color targetColor)
         {
-            var templateImage = templateProcessor.RegionHighlightedImage;
-            var regionHighlightedImage = MapImage;
+            // TODO: check
+            var regionHighlightedImage = templateProcessor.RegionHighlightedImage;
+            var mapImage = MapImage;
 
-            // TODO: iterate through every pixel on "templateImage" and replace same positioned pixels with old color with new color on the "regionHighlightedImage"
+            // Lock the bitmap's bits.  
+            BitmapData regionHighlightedImageData =
+                regionHighlightedImage.LockBits(new Rectangle(0, 0, regionHighlightedImage.Width, regionHighlightedImage.Height), ImageLockMode.ReadOnly,
+                    regionHighlightedImage.PixelFormat);
+            try
+            {
+                BitmapData imageData =
+                    mapImage.LockBits(new Rectangle(0, 0, mapImage.Width, mapImage.Height), ImageLockMode.ReadWrite,
+                        mapImage.PixelFormat);
 
+                unsafe
+                {
+                    byte* regionHighlightedMapPtr = (byte*) regionHighlightedImageData.Scan0;
+                    byte* mapPtr = (byte*) imageData.Scan0;
 
+                    int bytes = Math.Abs(regionHighlightedImageData.Stride) * mapImage.Height;
+                    
+                    for (int i = 0; i < bytes; i += 3)
+                    {
+                        // get colors from highlighted one
+                        byte* red = regionHighlightedMapPtr + 2;
+                        byte* green = regionHighlightedMapPtr + 1;
+                        byte* blue = regionHighlightedMapPtr;
+
+                        // if that color is equal to source color
+                        if (*red == sourceColor.R && *green == sourceColor.G && *blue == sourceColor.B)
+                        {
+                            // recolor it in map image
+                            *(mapPtr + 2) = targetColor.R;
+                            *(mapPtr + 1) = targetColor.G;
+                            *mapPtr = targetColor.B;
+                        }
+
+                        regionHighlightedMapPtr += 3;
+                        mapPtr += 3;
+                    }
+                }
+
+                mapImage.UnlockBits(imageData);
+            }
+            finally
+            {
+                regionHighlightedImage.UnlockBits(regionHighlightedImageData);
+            }
+            
+            
         }
+        
+    
         /// <summary>
         /// Initializes an instance of MapImageProcessor.
         /// </summary>
@@ -100,6 +149,10 @@ namespace GameObjectsLib.GameMap
         {
             // TODO: check
             var regionHighlightedImage = new Bitmap(regionHighlightedImagePath);
+            var image = new Bitmap(mapImagePath);
+
+            // images are not equally sized
+            if (image.Size != regionHighlightedImage.Size) throw new ArgumentException();
 
             // read the file
             XmlReaderSettings settings = new XmlReaderSettings()
@@ -163,8 +216,7 @@ namespace GameObjectsLib.GameMap
             }
 
             MapImageTemplateProcessor mapImageTemplateProcessor = new MapImageTemplateProcessor(map, regionHighlightedImage, dictionary);
-
-            var image = new Bitmap(mapImagePath);
+            
 
             return new MapImageProcessor(mapImageTemplateProcessor, image);
         }
