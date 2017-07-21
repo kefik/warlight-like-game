@@ -12,8 +12,8 @@ using SQLiteProviderFactory = System.Data.SQLite.EF6.SQLiteProviderFactory;
 
 namespace DatabaseMapping
 {
-    public class UtilsDbContext : DbContext, ICanSaveGame, ICanLoadGame<SingleplayerSavedGameInfo>,
-        ICanLoadGame<HotseatSavedGameInfo>
+    public class UtilsDbContext : DbContext, IGameSaver, IGameLoader<SingleplayerSavedGameInfo>,
+        IGameLoader<HotseatSavedGameInfo>
     {
         public UtilsDbContext() :
             base(new SQLiteConnection()

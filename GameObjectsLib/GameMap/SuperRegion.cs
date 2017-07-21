@@ -97,7 +97,7 @@ namespace GameObjectsLib.GameMap
 
         public static bool operator ==(SuperRegion left, SuperRegion right)
         {
-            if (left == null) return false;
+            if (object.ReferenceEquals(left, null)) return object.ReferenceEquals(right, null);
             return left.Equals(right);
         }
 

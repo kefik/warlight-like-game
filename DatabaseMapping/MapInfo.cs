@@ -13,6 +13,7 @@ namespace DatabaseMapping
         public int PlayersLimit { get; set; }
         public string TemplatePath { get; set; }
         public string ImagePath { get; set; }
-        public string ImageTemplatePath { get; set; }
+        public string ImageColoredRegionsPath { get; set; }
+        public string ColorRegionsTemplatePath { get; set; }
     }
 }

@@ -122,7 +122,7 @@ namespace GameObjectsLib.GameMap
                 }
             };
 
-            Dictionary<Color, Region> dictionary = new Dictionary<Color, Region>();
+            var dictionary = new Dictionary<Color, Region>();
             using (XmlReader reader = XmlReader.Create(regionColorMappingPath, settings))
             {
                 Color color = default(Color); 

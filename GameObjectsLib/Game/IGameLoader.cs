@@ -6,7 +6,7 @@ namespace GameObjectsLib.Game
     /// Represents object that can load the game.
     /// </summary>
     /// <typeparam name="T">Type that this object is able to load.</typeparam>
-    public interface ICanLoadGame<in T>
+    public interface IGameLoader<in T>
     {
         /// <summary>
         /// Represents object that can load game based on parameter.

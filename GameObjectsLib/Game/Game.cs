@@ -12,7 +12,7 @@ namespace GameObjectsLib.Game
 {
     interface ISaveable
     {
-        void Save(ICanSaveGame canSave);
+        void Save(IGameSaver canSave);
     }
     /// <summary>
     /// Enum containing types of game any game can have.
@@ -92,12 +92,13 @@ namespace GameObjectsLib.Game
         /// Saves the game to the object based on parameter.
         /// </summary>
         /// <param name="canSave">Object which can save the current instance of the game.</param>
-        public void Save(ICanSaveGame canSave)
+        public void Save(IGameSaver canSave)
         {
             using (MemoryStream stream = new MemoryStream())
             {
                 Serializer.Serialize(stream, this);
-                stream.Position = 0; // reset position to be able to read from it again
+                // reset position to be able to read from it again
+                stream.Position = 0;
                 canSave.SaveGame(this, stream);
             }
         }
@@ -108,7 +109,7 @@ namespace GameObjectsLib.Game
         /// <param name="canLoad">Object which can load the game.</param>
         /// <param name="source">Source from which we can load the game.</param>
         /// <returns>Loaded game.</returns>
-        public static Game Load<TLoadSource>(ICanLoadGame<TLoadSource> canLoad, TLoadSource source)
+        public static Game Load<TLoadSource>(IGameLoader<TLoadSource> canLoad, TLoadSource source)
         {
             using (var stream = canLoad.LoadGame(source))
             {
@@ -119,20 +120,36 @@ namespace GameObjectsLib.Game
         }
         /// <summary>
         /// After deserialization we have same objects that do not match references.
-        /// Purpose of this method is to remap those references back.
+        /// Purpose of this method is to remap those references back for future
+        /// graph updating to be easy..
         /// </summary>
         private void ReconstructOriginalGraph()
         {
             // TODO: IMPORTANT = check
             var regions = Map.Regions;
             var superRegions = Map.SuperRegions;
-            // reconstructs original super regions
+            // reconstruct original super regions
             foreach (Region region in regions)
             {
                 for (int j = 0; j < superRegions.Count; j++)
                 {
                     if (superRegions[j] == region.SuperRegion)
                         superRegions[j] = region.SuperRegion;
+                }
+            }
+            // reconstruct super regions and regions
+            foreach (Region region in regions)
+            {
+                foreach (var superRegion in superRegions)
+                {
+                    var superRegionRegions = superRegion.Regions;
+                    for (int j = 0; j < superRegionRegions.Count; j++)
+                    {
+                        if (superRegionRegions[j] == region)
+                        {
+                            superRegionRegions[j] = region;
+                        }
+                    }
                 }
             }
             // reconstruct neighbour regions

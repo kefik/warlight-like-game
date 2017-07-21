@@ -54,8 +54,8 @@
     <Compile Include="GameMap\MapImageTemplateProcessor.cs" />
     <Compile Include="GameMap\SuperRegion.cs" />
     <Compile Include="Game\HotseatGame.cs" />
-    <Compile Include="Game\ICanLoadGame.cs" />
-    <Compile Include="Game\ICanSaveGame.cs" />
+    <Compile Include="Game\IGameLoader.cs" />
+    <Compile Include="Game\IGameSaver.cs" />
     <Compile Include="IRefreshable.cs" />
     <Compile Include="Game\NetworkGame.cs" />
     <Compile Include="GameUser\MyNetworkUser.cs" />
