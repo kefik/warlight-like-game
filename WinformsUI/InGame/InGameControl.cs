@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using DatabaseMapping;
 using GameObjectsLib.Game;
@@ -17,6 +18,8 @@ namespace WinformsUI.InGame
             get { return game; }
             set
             {
+                if (game != null) throw new ArgumentException();
+
                 game = value;
                 using (var db = new UtilsDbContext())
                 {
@@ -27,24 +30,33 @@ namespace WinformsUI.InGame
                     processor = MapImageProcessor.Create(Game.Map, mapInfo.ImageColoredRegionsPath,
                         mapInfo.ColorRegionsTemplatePath, mapInfo.ImagePath);
 
+                    processor.Refresh(value);
+
                     gameMapPictureBox.Image = processor.MapImage;
                     gameMapPictureBox.BackgroundImage = processor.TemplateImage;
                     
-
                     Refresh();
                 }
             }
         }
+
+        void RefreshImage()
+        {
+            gameMapPictureBox.Image = processor.MapImage;
+        }
+
 
         MapImageProcessor processor;
 
         public InGameControl()
         {
             InitializeComponent();
-            
+
+            gameMapPictureBox.BackgroundImageLayout = ImageLayout.None;
+
 
             //gameMapPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            //gameMapPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+
         }
 
         private void ImageClick(object sender, MouseEventArgs e)
@@ -59,5 +71,15 @@ namespace WinformsUI.InGame
             //else Cursor.Current = Cursors.Default;
             
         }
+
+        private void ImageSizeChanged(object sender, EventArgs e)
+        {
+            PictureBox pictureBox = sender as PictureBox;
+
+            if (pictureBox == null) return;
+            
+            
+        }
+        
     }
 }

@@ -40,6 +40,7 @@
             this.gamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gamePanel.AutoScroll = true;
             this.gamePanel.Controls.Add(this.gameMapPictureBox);
             this.gamePanel.Location = new System.Drawing.Point(189, 0);
             this.gamePanel.Name = "gamePanel";
@@ -48,12 +49,13 @@
             // 
             // gameMapPictureBox
             // 
-            this.gameMapPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gameMapPictureBox.Location = new System.Drawing.Point(0, 0);
             this.gameMapPictureBox.Name = "gameMapPictureBox";
             this.gameMapPictureBox.Size = new System.Drawing.Size(462, 436);
+            this.gameMapPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.gameMapPictureBox.TabIndex = 0;
             this.gameMapPictureBox.TabStop = false;
+            this.gameMapPictureBox.SizeChanged += new System.EventHandler(this.ImageSizeChanged);
             this.gameMapPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ImageClick);
             this.gameMapPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageHover);
             // 
@@ -61,7 +63,7 @@
             // 
             this.gameMenuPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.gameMenuPanel.Location = new System.Drawing.Point(0, 0);
+            this.gameMenuPanel.Location = new System.Drawing.Point(3, 3);
             this.gameMenuPanel.Name = "gameMenuPanel";
             this.gameMenuPanel.Size = new System.Drawing.Size(183, 436);
             this.gameMenuPanel.TabIndex = 0;
@@ -75,6 +77,7 @@
             this.Name = "InGameControl";
             this.Size = new System.Drawing.Size(651, 436);
             this.gamePanel.ResumeLayout(false);
+            this.gamePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).EndInit();
             this.ResumeLayout(false);
 

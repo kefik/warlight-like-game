@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
+using GameObjectsLib.Game;
+using GameObjectsLib.GameUser;
 
 namespace GameObjectsLib.GameMap
 {
@@ -22,6 +25,7 @@ namespace GameObjectsLib.GameMap
         public Bitmap RegionHighlightedImage { get; }
 
         readonly Dictionary<Color, Region> regionsMapped;
+        readonly Dictionary<Region, Color> colorsMapped;
 
         /// <summary>
         /// Constructs MapImage instance.
@@ -38,6 +42,11 @@ namespace GameObjectsLib.GameMap
             if (map.Regions.Count != regionsWithColors.Count) throw new ArgumentException();
 
             regionsMapped = regionsWithColors;
+
+            foreach (var item in regionsWithColors)
+            {
+                colorsMapped.Add(item.Value, item.Key);
+            }
         }
         /// <summary>
         /// Finds region corresponding to the given color and returns it.
@@ -58,6 +67,17 @@ namespace GameObjectsLib.GameMap
         public Region GetRegion(int x, int y)
         {
             return GetRegion(RegionHighlightedImage.GetPixel(x, y));
+        }
+
+        /// <summary>
+        /// Returns color mapped to region. If no such regions is found, default color is returned.
+        /// </summary>
+        /// <param name="region">Region to match the color.</param>
+        /// <returns>Color matching the region.</returns>
+        public Color GetColor(Region region)
+        {
+            // TODO: better nullable Color
+            return colorsMapped.TryGetValue(region, out Color color) ? color : default(Color);
         }
         
         
@@ -139,17 +159,59 @@ namespace GameObjectsLib.GameMap
             
         }
 
+        public void Recolor(Region region, Color targetColor)
+        {
+            var color = templateProcessor.GetColor(region);
+            Recolor(color, targetColor);
+        }
+
         public Region GetRegion(int x, int y)
         {
             return templateProcessor.GetRegion(x, y);
         }
 
         /// <summary>
-        /// Refreshes the bitmaps, redrawing all the content according to the information saved in the map.
+        /// Refreshes the bitmaps, redrawing all the content according to the
+        /// information player possesses.
         /// </summary>
+        /// <param name="game">Game from which it has source.</param>
         public void Refresh(Game.Game game)
         {
-            // TODO
+            if (game.GetType() == typeof(SingleplayerGame)) Redraw((SingleplayerGame)game);
+        }
+        
+        void Redraw(SingleplayerGame game)
+        {
+            // TODO: check
+            var humanPlayer = (from player in game.Players
+                           where player.GetType() == typeof(HumanPlayer)
+                           select player).First() as HumanPlayer;
+            // get owned regions
+            var ownedRegions = humanPlayer.ControlledRegions;
+
+            // recolor them to players color
+            foreach (var ownedRegion in ownedRegions)
+            {
+                Recolor(ownedRegion, Color.FromKnownColor(humanPlayer.Color));
+            }
+
+            // recolor neighbour regions local player does not own
+            var neighbourNotOwnedRegions = (from ownedRegion in ownedRegions
+                                           from neighbour in ownedRegion.NeighbourRegions
+                                           where neighbour.Owner != humanPlayer
+                                           select neighbour).Distinct();
+
+            foreach (var region in neighbourNotOwnedRegions)
+            {
+                var owner = region.Owner;
+                if (owner == null) {}// TODO: recolor to default color
+                else
+                {
+                    var ownerColor = Color.FromKnownColor(owner.Color);
+                    
+                    Recolor(region, ownerColor);
+                }
+            }
         }
 
         /// <summary>
@@ -162,7 +224,6 @@ namespace GameObjectsLib.GameMap
         /// <returns>Initialized instance.</returns>
         public static MapImageProcessor Create(Map map, string regionHighlightedImagePath, string regionColorMappingPath, string mapImagePath)
         {
-            // TODO: check
             var regionHighlightedImage = new Bitmap(regionHighlightedImagePath);
             var image = new Bitmap(mapImagePath);
 
@@ -235,5 +296,6 @@ namespace GameObjectsLib.GameMap
 
             return new MapImageProcessor(mapImageTemplateProcessor, image);
         }
+        
     }
 }
