@@ -1,6 +1,6 @@
 ﻿namespace WinformsUI.InGame.Phases
 {
-    partial class BeginPhaseControl
+    partial class BeginRoundPhaseControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -42,6 +42,7 @@
             this.beginButton.TabIndex = 0;
             this.beginButton.Text = "Begin";
             this.beginButton.UseVisualStyleBackColor = true;
+            this.beginButton.Click += new System.EventHandler(this.BeginRound);
             // 
             // menuButton
             // 
@@ -61,15 +62,16 @@
             this.repeatRoundButton.TabIndex = 3;
             this.repeatRoundButton.Text = "Repeat round";
             this.repeatRoundButton.UseVisualStyleBackColor = true;
+            this.repeatRoundButton.Click += new System.EventHandler(this.RepeatRound);
             // 
-            // BeginPhaseControl
+            // BeginRoundPhaseControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.repeatRoundButton);
             this.Controls.Add(this.menuButton);
             this.Controls.Add(this.beginButton);
-            this.Name = "BeginPhaseControl";
+            this.Name = "BeginRoundPhaseControl";
             this.Size = new System.Drawing.Size(189, 410);
             this.ResumeLayout(false);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -15,45 +16,39 @@ using GameObjectsLib.GameMap;
 
 namespace Server
 {
+    class A : IEnumerable<int>
+    {
+        public List<int> MyList = new List<int>();
+        public IEnumerator<int> GetEnumerator()
+        {
+            foreach (int item in MyList)
+            {
+                yield return item;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public IEnumerable<int> Where(Predicate<int> pred)
+        {
+            return MyList.Where(item => pred(item));
+        }
+    }
     class Program
     {
         static  void Main(string[] args)
         {
-            Bitmap bmp = new Bitmap(@"C:\Users\Honza\Documents\Skola\Matfyz\BachelorWork\WarlightLikeGame\WinformsUI\bin\Debug\Maps\WorldImageModified1.png");
-            
+            A a = new A();
+            a.MyList.Add(10);
+            a.MyList.Add(5);
 
-            // Lock the bitmap's bits.  
-            BitmapData bmpData =
-                bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite,
-                    bmp.PixelFormat);
-
-            unsafe
+            foreach (var item in a.Where(x => x == 10))
             {
-                byte* ptr = (byte*) bmpData.Scan0;
-
-                int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
-
-
-                for (int i = 0; i < bytes; i += 3)
-                {
-                    byte* blue = ptr;
-                    byte* green = ptr + 1;
-                    byte* red = ptr + 2;
-
-                    if (*red == *green && *green == *blue && *red > 170)
-                    {
-                        *red = 155;
-                        *green = 150;
-                        *blue = 122;
-                    }
-                    ptr += 3;
-                }
+                Console.WriteLine(item);
             }
-
-            // Unlock the bits.
-            bmp.UnlockBits(bmpData);
-            bmp.Save(@"C:\Users\Honza\Documents\Skola\Matfyz\BachelorWork\WarlightLikeGame\WinformsUI\bin\Debug\Maps\WorldImageModified2.png");
-            
         }
     }
 }

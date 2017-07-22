@@ -25,6 +25,17 @@ namespace GameObjectsLib.Game
         MultiplayerNetwork
     }
 
+    public enum GameState : byte
+    {
+        GameBeginning,
+        RoundBeginning,
+        Deploying,
+        Attacking,
+        Committing,
+        Committed,
+        GameEnding
+    }
+
     /// <summary>
     /// Represents one game.
     /// </summary>
@@ -35,7 +46,7 @@ namespace GameObjectsLib.Game
     [ProtoInclude(12, typeof(NetworkGame))]
     public abstract class Game : ISaveable
     {
-        //public int RoundNumber { get; private set; }
+        public int RoundNumber { get; private set; }
 
         protected Game() { }
         /// <summary>
@@ -59,6 +70,64 @@ namespace GameObjectsLib.Game
             this.Players = players;
         }
 
+        public void Play(Round round)
+        {
+            // TODO: debug
+            // deploying
+            {
+                var deploying = round.Deploying;
+                foreach (var deployedArmies in deploying.ArmiesDeployed)
+                {
+                    var region = (from item in Map.Regions
+                                  where item == deployedArmies.Item1
+                                  select item).First();
+                    region.Army += deployedArmies.Item2;
+                }
+            }
+            // attacking
+            {
+                var attacks = round.Attacking.Attacks;
+                foreach (var attack in attacks)
+                {
+                    // TODO: real calculation according to rules
+                    // get real attacker
+                    var attacker = (from region in Map.Regions
+                                    where region == attack.Attacker
+                                    select region).First();
+
+                    // if attacking region changed owner, cancel attack
+                    if (attacker.Owner != attack.Attacker.Owner) continue;
+
+                    // get real defender
+                    var defender = (from region in Map.Regions
+                                   where region == attack.Defender
+                                   select region).First();
+                    // situation might have changed => recalculate attacking army
+                    int realAttackingArmy = Math.Min(attack.AttackingArmy, attacker.Army);
+                    // if they have same owner
+                    if (defender.Owner == attacker.Owner)
+                    {
+                        // sum armies
+                        defender.Army += realAttackingArmy;
+                    }
+                    else
+                    {
+                        defender.Army -= realAttackingArmy;
+                        if (defender.Army < 0) // all units were overcome and some of enemies units stayed
+                        {
+                            // region was conquered
+                            defender.Owner = attack.Attacker.Owner;
+                            // cuz of negative units
+                            defender.Army = -defender.Army;
+                        }
+                    }
+                    // in any way, attacker transfered units
+                    attacker.Army -= realAttackingArmy;
+                }
+
+            }
+            RoundNumber++;
+        }
 
         /// <summary>
         /// Starts the game if theres no error.

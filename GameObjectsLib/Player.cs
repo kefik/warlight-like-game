@@ -51,7 +51,7 @@ namespace GameObjectsLib
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Color == other.Color && Equals(ControlledRegions, other.ControlledRegions);
+            return Color == other.Color && Name == other.Name;
         }
 
         public override bool Equals(object obj)

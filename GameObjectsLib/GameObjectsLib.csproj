@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PhasesStructures.cs" />
     <Compile Include="GameUser\LocalUser.cs" />
     <Compile Include="GameUser\NetworkUser.cs" />
     <Compile Include="Game\Game.cs" />
@@ -69,6 +70,7 @@
     </Compile>
     <Compile Include="Game\SingleplayerGame.cs" />
     <Compile Include="GameUser\User.cs" />
+    <Compile Include="Round.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">

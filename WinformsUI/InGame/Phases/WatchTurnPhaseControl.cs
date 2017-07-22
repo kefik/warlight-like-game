@@ -2,9 +2,9 @@
 
 namespace WinformsUI.InGame.Phases
 {
-    public partial class WatchTurnControl : UserControl
+    public partial class WatchTurnPhaseControl : UserControl
     {
-        public WatchTurnControl()
+        public WatchTurnPhaseControl()
         {
             InitializeComponent();
         }

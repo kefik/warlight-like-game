@@ -1,6 +1,6 @@
 ﻿namespace WinformsUI.InGame.Phases
 {
-    partial class WatchTurnControl
+    partial class WatchTurnPhaseControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -50,13 +50,13 @@
             this.watchTurnButton.Text = "Watch turn";
             this.watchTurnButton.UseVisualStyleBackColor = true;
             // 
-            // WatchTurnControl
+            // WatchTurnPhaseControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.menuButton);
             this.Controls.Add(this.watchTurnButton);
-            this.Name = "WatchTurnControl";
+            this.Name = "WatchTurnPhaseControl";
             this.Size = new System.Drawing.Size(201, 410);
             this.ResumeLayout(false);
 
