@@ -3,12 +3,173 @@
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://palasekj.cz/ RegionColorMapping.xsd">
   <!--TODO: add all values-->
+  
   <Entry>
-    <Color Red="230" Green="230" Blue="230"/>
+    <Color Red="80" Green="250" Blue="80"/>
     <Region Name="Greenland"/>
   </Entry>
   <Entry>
-    <Color Red="110" Green="176" Blue="242"/>
+    <Color Red="60" Green="250" Blue="60"/>
+    <Region Name="Alaska"/>
+  </Entry>
+  <Entry>
+    <Color Red="80" Green="250" Blue="60"/>
+    <Region Name="Northwest Territory"/>
+  </Entry>
+  <Entry>
+    <Color Red="120" Green="250" Blue="100"/>
+    <Region Name="Alberta"/>
+  </Entry>
+  <Entry>
+    <Color Red="100" Green="250" Blue="100"/>
+    <Region Name="Ontario"/>
+  </Entry>
+  <Entry>
+    <Color Red="100" Green="250" Blue="80"/>
+    <Region Name="Quebec"/>
+  </Entry>
+  <Entry>
+    <Color Red="120" Green="250" Blue="120"/>
+    <Region Name="Western United States"/>
+  </Entry>
+  <Entry>
+    <Color Red="140" Green="250" Blue="120"/>
+    <Region Name="Eastern United States"/>
+  </Entry>
+  <Entry>
+    <Color Red="140" Green="250" Blue="140"/>
+    <Region Name="Central America"/>
+  </Entry>
+  <Entry>
+    <Color Red="70" Green="170" Blue="250"/>
+    <Region Name="Venezuela"/>
+  </Entry>
+  <Entry>
+    <Color Red="90" Green="170" Blue="250"/>
+    <Region Name="Brazil"/>
+  </Entry>
+  <Entry>
+    <Color Red="110" Green="170" Blue="250"/>
+    <Region Name="Peru"/>
+  </Entry>
+  <Entry>
+    <Color Red="130" Green="170" Blue="250"/>
+    <Region Name="Argentina"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="50" Blue="50"/>
+    <Region Name="North Africa"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="70" Blue="50"/>
+    <Region Name="Congo"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="70" Blue="70"/>
+    <Region Name="South Africa"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="90" Blue="70"/>
+    <Region Name="East Africa"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="90" Blue="90"/>
+    <Region Name="Madagascar"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="110" Blue="90"/>
+    <Region Name="Egypt"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="90" Blue="250"/>
+    <Region Name="Western Australia"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="80" Blue="250"/>
+    <Region Name="Eastern Australia"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="100" Blue="250"/>
+    <Region Name="New Guinea"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="110" Blue="250"/>
+    <Region Name="Indonesia"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="250" Blue="50"/>
     <Region Name="Iceland"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="250" Blue="60"/>
+    <Region Name="Great Britain"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="250" Blue="70"/>
+    <Region Name="Western Europe"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="250" Blue="80"/>
+    <Region Name="Southern Europe"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="250" Blue="90"/>
+    <Region Name="Northern Europe"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="250" Blue="100"/>
+    <Region Name="Scandinavia"/>
+  </Entry>
+  <Entry>
+    <Color Red="250" Green="250" Blue="100"/>
+    <Region Name="Ukraine"/>
+  </Entry>
+  <Entry>
+    <Color Red="110" Green="250" Blue="230" />
+    <Region Name="Middle East" />
+  </Entry>
+  <Entry>
+    <Color Red="120" Green="250" Blue="230" />
+    <Region Name="India" />
+  </Entry>
+  <Entry>
+    <Color Red="130" Green="250" Blue="230" />
+    <Region Name="Siam" />
+  </Entry>
+  <Entry>
+    <Color Red="140" Green="250" Blue="230" />
+    <Region Name="China" />
+  </Entry>
+  <Entry>
+    <Color Red="150" Green="250" Blue="230" />
+    <Region Name="Kazakhstan" />
+  </Entry>
+  <Entry>
+    <Color Red="160" Green="250" Blue="230" />
+    <Region Name="Ural" />
+  </Entry>
+  <Entry>
+    <Color Red="170" Green="250" Blue="230" />
+    <Region Name="Siberia" />
+  </Entry>
+  <Entry>
+    <Color Red="180" Green="250" Blue="230" />
+    <Region Name="Yakutsk" />
+  </Entry>
+  <Entry>
+    <Color Red="190" Green="250" Blue="230" />
+    <Region Name="Irkutsk" />
+  </Entry>
+  <Entry>
+    <Color Red="192" Green="250" Blue="230" />
+    <Region Name="Mongolia" />
+  </Entry>
+  <Entry>
+    <Color Red="138" Green="250" Blue="230" />
+    <Region Name="Japan" />
+  </Entry>
+  <Entry>
+    <Color Red="135" Green="250" Blue="230" />
+    <Region Name="Kamchatka" />
   </Entry>
 </Dictionary>
