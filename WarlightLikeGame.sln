@@ -9,8 +9,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maps", "Maps", "{B8663EA2-E
 	ProjectSection(SolutionItems) = preProject
 		WinformsUI\bin\Debug\Maps\Map.xsd = WinformsUI\bin\Debug\Maps\Map.xsd
 		WinformsUI\bin\Debug\Maps\RegionColorMapping.xsd = WinformsUI\bin\Debug\Maps\RegionColorMapping.xsd
+		WinformsUI\bin\Debug\Maps\World.png = WinformsUI\bin\Debug\Maps\World.png
 		WinformsUI\bin\Debug\Maps\World.xml = WinformsUI\bin\Debug\Maps\World.xml
 		WinformsUI\bin\Debug\Maps\WorldColorRegionMapping.xml = WinformsUI\bin\Debug\Maps\WorldColorRegionMapping.xml
+		WinformsUI\bin\Debug\Maps\WorldTemplate.png = WinformsUI\bin\Debug\Maps\WorldTemplate.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{E1ADE0FD-F1C8-47D3-BCD8-268E1C4F226B}"

@@ -4,7 +4,11 @@
      xsi:schemaLocation="http://palasekj.cz/ RegionColorMapping.xsd">
   <!--TODO: add all values-->
   <Entry>
-    <Color Red="10" Green="10" Blue="1"/>
-    <Region Name="Alaska"/>
+    <Color Red="230" Green="230" Blue="230"/>
+    <Region Name="Greenland"/>
+  </Entry>
+  <Entry>
+    <Color Red="110" Green="176" Blue="242"/>
+    <Region Name="Iceland"/>
   </Entry>
 </Dictionary>

@@ -7,10 +7,10 @@
 >
   <xs:import namespace="http://tempuri.org/XMLSchema.xsd" schemaLocation="Map.xsd"/>
   <xs:complexType name="ColorType">
-    <xs:attribute name="Red" type="xs:byte" use="required"></xs:attribute>
-    <xs:attribute name="Green" type="xs:byte" use="required"></xs:attribute>
-    <xs:attribute name="Blue" type="xs:byte" use="required"></xs:attribute>
-    <xs:attribute name="Alpha" type="xs:byte" use="optional" default="0"></xs:attribute>
+    <xs:attribute name="Red" type="xs:unsignedByte" use="required"></xs:attribute>
+    <xs:attribute name="Green" type="xs:unsignedByte" use="required"></xs:attribute>
+    <xs:attribute name="Blue" type="xs:unsignedByte" use="required"></xs:attribute>
+    <xs:attribute name="Alpha" type="xs:unsignedByte" use="optional" default="255"></xs:attribute>
   </xs:complexType>
   
   <xs:element name="Dictionary">
