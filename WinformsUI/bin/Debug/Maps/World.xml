@@ -111,7 +111,7 @@
       </Region>
     </SuperRegion>
     <SuperRegion Name="Europe" Bonus="5">
-      <Region Name="IceLand">
+      <Region Name="Iceland">
         <Neighbours>
           <Region Name="Greenland" />
           <Region Name="Great Britain"/>
@@ -214,6 +214,13 @@
       <Region Name="Madagascar">
         <Neighbours>
           <Region Name="South Africa" />
+          <Region Name="East Africa"/>
+        </Neighbours>
+      </Region>
+      <Region Name="South Africa">
+        <Neighbours>
+          <Region Name="Congo"/>
+          <Region Name="Madagascar"/>
           <Region Name="East Africa"/>
         </Neighbours>
       </Region>

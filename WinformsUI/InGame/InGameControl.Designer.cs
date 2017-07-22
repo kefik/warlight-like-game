@@ -29,30 +29,22 @@
         private void InitializeComponent()
         {
             this.gamePanel = new System.Windows.Forms.Panel();
-            this.gameMenuPanel = new System.Windows.Forms.Panel();
             this.gameMapPictureBox = new System.Windows.Forms.PictureBox();
+            this.gameMenuPanel = new System.Windows.Forms.Panel();
             this.gamePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // gamePanel
             // 
-            this.gamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.gamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gamePanel.Controls.Add(this.gameMapPictureBox);
             this.gamePanel.Location = new System.Drawing.Point(189, 0);
             this.gamePanel.Name = "gamePanel";
             this.gamePanel.Size = new System.Drawing.Size(462, 436);
             this.gamePanel.TabIndex = 0;
-            // 
-            // gameMenuPanel
-            // 
-            this.gameMenuPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.gameMenuPanel.Location = new System.Drawing.Point(0, 0);
-            this.gameMenuPanel.Name = "gameMenuPanel";
-            this.gameMenuPanel.Size = new System.Drawing.Size(183, 436);
-            this.gameMenuPanel.TabIndex = 0;
             // 
             // gameMapPictureBox
             // 
@@ -62,6 +54,17 @@
             this.gameMapPictureBox.Size = new System.Drawing.Size(462, 436);
             this.gameMapPictureBox.TabIndex = 0;
             this.gameMapPictureBox.TabStop = false;
+            this.gameMapPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ImageClick);
+            this.gameMapPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageHover);
+            // 
+            // gameMenuPanel
+            // 
+            this.gameMenuPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.gameMenuPanel.Location = new System.Drawing.Point(0, 0);
+            this.gameMenuPanel.Name = "gameMenuPanel";
+            this.gameMenuPanel.Size = new System.Drawing.Size(183, 436);
+            this.gameMenuPanel.TabIndex = 0;
             // 
             // InGameControl
             // 

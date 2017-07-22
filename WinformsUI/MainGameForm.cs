@@ -48,7 +48,8 @@ namespace WinformsUI
                     inGame = new InGameControl
                     {
                         Parent = singleplayerTabPage,
-                        Dock = DockStyle.Fill
+                        Dock = DockStyle.Fill,
+                        Game = game
                     };
                     break;
                 case GameType.MultiplayerHotseat:
@@ -59,7 +60,8 @@ namespace WinformsUI
                     inGame = new InGameControl
                     {
                         Parent = multiplayerTabPage,
-                        Dock = DockStyle.Fill
+                        Dock = DockStyle.Fill,
+                        Game = game
                     };
                     break;
                 case GameType.MultiplayerNetwork:
@@ -70,7 +72,8 @@ namespace WinformsUI
                     inGame = new InGameControl
                     {
                         Parent = multiplayerTabPage,
-                        Dock = DockStyle.Fill
+                        Dock = DockStyle.Fill,
+                        Game = game
                     };
                     break;
             }

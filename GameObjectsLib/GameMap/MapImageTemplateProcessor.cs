@@ -68,17 +68,20 @@ namespace GameObjectsLib.GameMap
     /// </summary>
     public class MapImageProcessor
     {
-        Bitmap MapImage { get; }
+        public Bitmap TemplateImage { get; }
+        public Bitmap MapImage { get; }
         readonly MapImageTemplateProcessor templateProcessor;
 
         private MapImageProcessor(MapImageTemplateProcessor mapImageTemplateProcessor, Bitmap gameMapMapImage)
         {
             MapImage = gameMapMapImage;
             templateProcessor = mapImageTemplateProcessor;
+            TemplateImage = templateProcessor.RegionHighlightedImage;
         }
         
         /// <summary>
-        /// Recolors every pixel of the original color in the map to the new color.
+        /// Recolors every pixel of the original color from the map template
+        /// in the map to the new color.
         /// </summary>
         /// <param name="sourceColor">Source color in region highlighted image.</param>
         /// <param name="targetColor">Color to recolor the region to.</param>
@@ -135,8 +138,20 @@ namespace GameObjectsLib.GameMap
             
             
         }
-        
-    
+
+        public Region GetRegion(int x, int y)
+        {
+            return templateProcessor.GetRegion(x, y);
+        }
+
+        /// <summary>
+        /// Refreshes the bitmaps, redrawing all the content according to the information saved in the map.
+        /// </summary>
+        public void Refresh(Game.Game game)
+        {
+            // TODO
+        }
+
         /// <summary>
         /// Initializes an instance of MapImageProcessor.
         /// </summary>
@@ -179,7 +194,7 @@ namespace GameObjectsLib.GameMap
             using (XmlReader reader = XmlReader.Create(regionColorMappingPath, settings))
             {
                 Color color = default(Color); 
-                Region region = null;
+                Region region = default(Region);
 
                 while (reader.Read())
                 {
@@ -220,6 +235,5 @@ namespace GameObjectsLib.GameMap
 
             return new MapImageProcessor(mapImageTemplateProcessor, image);
         }
-
     }
 }
