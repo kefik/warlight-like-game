@@ -43,6 +43,8 @@ namespace GameObjectsLib.GameMap
 
             regionsMapped = regionsWithColors;
 
+            // initialize color
+            colorsMapped = new Dictionary<Region, Color>();
             foreach (var item in regionsWithColors)
             {
                 colorsMapped.Add(item.Value, item.Key);
