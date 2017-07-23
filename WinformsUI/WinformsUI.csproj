@@ -132,6 +132,12 @@
     <Compile Include="InGame\InGameControl.Designer.cs">
       <DependentUpon>InGameControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="InGame\Phases\BeginGamePhaseControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InGame\Phases\BeginGamePhaseControl.Designer.cs">
+      <DependentUpon>BeginGamePhaseControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="InGame\Phases\BeginRoundPhaseControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -143,12 +149,6 @@
     </Compile>
     <Compile Include="InGame\Phases\TurnPhaseControl.Designer.cs">
       <DependentUpon>TurnPhaseControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="InGame\Phases\WatchTurnPhaseControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="InGame\Phases\WatchTurnPhaseControl.Designer.cs">
-      <DependentUpon>WatchTurnPhaseControl.cs</DependentUpon>
     </Compile>
     <Compile Include="HelperControls\AIPlayerControl.cs">
       <SubType>UserControl</SubType>
@@ -254,14 +254,14 @@
     <EmbeddedResource Include="InGame\InGameControl.resx">
       <DependentUpon>InGameControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="InGame\Phases\BeginGamePhaseControl.resx">
+      <DependentUpon>BeginGamePhaseControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InGame\Phases\BeginRoundPhaseControl.resx">
       <DependentUpon>BeginRoundPhaseControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InGame\Phases\TurnPhaseControl.resx">
       <DependentUpon>TurnPhaseControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InGame\Phases\WatchTurnPhaseControl.resx">
-      <DependentUpon>WatchTurnPhaseControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelperControls\AIPlayerControl.resx">
       <DependentUpon>AIPlayerControl.cs</DependentUpon>

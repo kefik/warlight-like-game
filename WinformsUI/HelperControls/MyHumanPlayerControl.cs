@@ -22,6 +22,7 @@ namespace WinformsUI.HelperControls
             user = new LocalUser("Me");
             playerNameTextBox.Text = user.Name;
             playerNameTextBox.Enabled = true;
+            PlayerColor = KnownColor.Green;
         }
 
         User user;

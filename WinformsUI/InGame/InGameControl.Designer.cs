@@ -65,7 +65,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.gameMenuPanel.Location = new System.Drawing.Point(3, 3);
             this.gameMenuPanel.Name = "gameMenuPanel";
-            this.gameMenuPanel.Size = new System.Drawing.Size(183, 436);
+            this.gameMenuPanel.Size = new System.Drawing.Size(180, 436);
             this.gameMenuPanel.TabIndex = 0;
             // 
             // InGameControl

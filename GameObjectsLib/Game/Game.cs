@@ -25,16 +25,7 @@ namespace GameObjectsLib.Game
         MultiplayerNetwork
     }
 
-    public enum GameState : byte
-    {
-        GameBeginning,
-        RoundBeginning,
-        Deploying,
-        Attacking,
-        Committing,
-        Committed,
-        GameEnding
-    }
+    
 
     /// <summary>
     /// Represents one game.

@@ -30,7 +30,7 @@
         {
             this.beginButton = new System.Windows.Forms.Button();
             this.menuButton = new System.Windows.Forms.Button();
-            this.repeatRoundButton = new System.Windows.Forms.Button();
+            this.watchButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // beginButton
@@ -53,22 +53,22 @@
             this.menuButton.Text = "Menu";
             this.menuButton.UseVisualStyleBackColor = true;
             // 
-            // repeatRoundButton
+            // watchButton
             // 
-            this.repeatRoundButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.repeatRoundButton.Location = new System.Drawing.Point(3, 196);
-            this.repeatRoundButton.Name = "repeatRoundButton";
-            this.repeatRoundButton.Size = new System.Drawing.Size(89, 23);
-            this.repeatRoundButton.TabIndex = 3;
-            this.repeatRoundButton.Text = "Repeat round";
-            this.repeatRoundButton.UseVisualStyleBackColor = true;
-            this.repeatRoundButton.Click += new System.EventHandler(this.RepeatRound);
+            this.watchButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.watchButton.Location = new System.Drawing.Point(3, 196);
+            this.watchButton.Name = "watchButton";
+            this.watchButton.Size = new System.Drawing.Size(89, 23);
+            this.watchButton.TabIndex = 3;
+            this.watchButton.Text = "Watch";
+            this.watchButton.UseVisualStyleBackColor = true;
+            this.watchButton.Click += new System.EventHandler(this.RepeatRound);
             // 
             // BeginRoundPhaseControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.repeatRoundButton);
+            this.Controls.Add(this.watchButton);
             this.Controls.Add(this.menuButton);
             this.Controls.Add(this.beginButton);
             this.Name = "BeginRoundPhaseControl";
@@ -81,6 +81,6 @@
 
         private System.Windows.Forms.Button beginButton;
         private System.Windows.Forms.Button menuButton;
-        private System.Windows.Forms.Button repeatRoundButton;
+        private System.Windows.Forms.Button watchButton;
     }
 }

@@ -96,7 +96,7 @@
             this.repeatRoundButton.Text = "Repeat round";
             this.repeatRoundButton.UseVisualStyleBackColor = true;
             // 
-            // TurnPhase
+            // TurnPhaseControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -106,7 +106,7 @@
             this.Controls.Add(this.attackLabel);
             this.Controls.Add(this.deployLabel);
             this.Controls.Add(this.menuButton);
-            this.Name = "TurnPhase";
+            this.Name = "TurnPhaseControl";
             this.Size = new System.Drawing.Size(201, 410);
             this.ResumeLayout(false);
 

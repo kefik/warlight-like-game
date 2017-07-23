@@ -72,14 +72,14 @@ namespace GameObjectsLib.GameMap
         }
 
         /// <summary>
-        /// Returns color mapped to region. If no such regions is found, default color is returned.
+        /// Returns color mapped to region. If no such regions is found, null is returned.
         /// </summary>
         /// <param name="region">Region to match the color.</param>
         /// <returns>Color matching the region.</returns>
-        public Color GetColor(Region region)
+        public Color? GetColor(Region region)
         {
-            // TODO: better nullable Color
-            return colorsMapped.TryGetValue(region, out Color color) ? color : default(Color);
+            bool correct = colorsMapped.TryGetValue(region, out Color color);
+            return correct ? new Color?(color) : null;
         }
         
         
@@ -90,7 +90,10 @@ namespace GameObjectsLib.GameMap
     /// </summary>
     public class MapImageProcessor
     {
-        public Bitmap TemplateImage { get; }
+        public Bitmap TemplateImage
+        {
+            get { return templateProcessor.RegionHighlightedImage; }
+        }
         public Bitmap MapImage { get; }
         readonly MapImageTemplateProcessor templateProcessor;
 
@@ -98,7 +101,6 @@ namespace GameObjectsLib.GameMap
         {
             MapImage = gameMapMapImage;
             templateProcessor = mapImageTemplateProcessor;
-            TemplateImage = templateProcessor.RegionHighlightedImage;
         }
         
         /// <summary>
@@ -109,33 +111,33 @@ namespace GameObjectsLib.GameMap
         /// <param name="targetColor">Color to recolor the region to.</param>
         public void Recolor(Color sourceColor, Color targetColor)
         {
-            // TODO: check
             var regionHighlightedImage = templateProcessor.RegionHighlightedImage;
             var mapImage = MapImage;
 
-            // Lock the bitmap's bits.  
+            // lock the bits and change format to rgb 
             BitmapData regionHighlightedImageData =
-                regionHighlightedImage.LockBits(new Rectangle(0, 0, regionHighlightedImage.Width, regionHighlightedImage.Height), ImageLockMode.ReadOnly,
-                    regionHighlightedImage.PixelFormat);
+                regionHighlightedImage.LockBits(new Rectangle(0, 0, regionHighlightedImage.Width, regionHighlightedImage.Height), ImageLockMode.ReadWrite,
+                    PixelFormat.Format24bppRgb);
             try
             {
                 BitmapData imageData =
                     mapImage.LockBits(new Rectangle(0, 0, mapImage.Width, mapImage.Height), ImageLockMode.ReadWrite,
-                        mapImage.PixelFormat);
+                        PixelFormat.Format24bppRgb);
 
                 unsafe
                 {
                     byte* regionHighlightedMapPtr = (byte*) regionHighlightedImageData.Scan0;
                     byte* mapPtr = (byte*) imageData.Scan0;
 
-                    int bytes = Math.Abs(regionHighlightedImageData.Stride) * mapImage.Height;
+                    int bytes = Math.Abs(regionHighlightedImageData.Stride) * regionHighlightedImage.Height;
                     
                     for (int i = 0; i < bytes; i += 3)
                     {
                         // get colors from highlighted one
-                        byte* red = regionHighlightedMapPtr + 2;
-                        byte* green = regionHighlightedMapPtr + 1;
                         byte* blue = regionHighlightedMapPtr;
+                        byte* green = regionHighlightedMapPtr + 1;
+                        byte* red = regionHighlightedMapPtr + 2;
+
 
                         // if that color is equal to source color
                         if (*red == sourceColor.R && *green == sourceColor.G && *blue == sourceColor.B)
@@ -157,14 +159,16 @@ namespace GameObjectsLib.GameMap
             {
                 regionHighlightedImage.UnlockBits(regionHighlightedImageData);
             }
-            
-            
         }
 
         public void Recolor(Region region, Color targetColor)
         {
-            var color = templateProcessor.GetColor(region);
-            Recolor(color, targetColor);
+            if (region == null) return;
+
+            var colorOrNull = templateProcessor.GetColor(region);
+            if (colorOrNull == null) return;
+            
+            Recolor(colorOrNull.Value, targetColor);
         }
 
         public Region GetRegion(int x, int y)
