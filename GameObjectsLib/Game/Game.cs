@@ -144,6 +144,8 @@ namespace GameObjectsLib.Game
 
                 realRegion.Owner = realPlayer;
             }
+
+            RoundNumber++;
         }
 
         /// <summary>

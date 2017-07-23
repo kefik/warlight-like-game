@@ -104,6 +104,9 @@ namespace WinformsUI.InGame
 
                         game.Save(db);
                     }
+
+                    State = GameState.RoundBeginning;
+
                     break;
                 case GameType.MultiplayerHotseat:
                     break;
@@ -112,6 +115,11 @@ namespace WinformsUI.InGame
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        void RoundPlayed()
+        {
+            
         }
 
         GameState state;
@@ -134,12 +142,17 @@ namespace WinformsUI.InGame
 
         public void GameStateChanged(GameState newGameState)
         {
+            // reset controls
+            beginGamePhaseControl?.Dispose();
+            beginRoundPhaseControl?.Dispose();
+            turnPhaseControl?.Dispose();
+
             switch (newGameState)
             {
                 case GameState.GameBeginning:
                     beginGamePhaseControl = new BeginGamePhaseControl()
                     {
-                        Parent = gameMenuPanel,
+                        Parent = gameStateMenuPanel,
                         Dock = DockStyle.Fill
                     };
                     beginGamePhaseControl.OnStartOver += StartOverGameBeginningPhase;
@@ -149,7 +162,7 @@ namespace WinformsUI.InGame
                 case GameState.RoundBeginning:
                     beginRoundPhaseControl = new BeginRoundPhaseControl()
                     {
-                        Parent = gameMenuPanel,
+                        Parent = gameStateMenuPanel,
                         Dock = DockStyle.Fill
                     };
                     beginRoundPhaseControl.Show();
@@ -169,7 +182,7 @@ namespace WinformsUI.InGame
                         default:
                             turnPhaseControl = new TurnPhaseControl()
                             {
-                                Parent = gameMenuPanel,
+                                Parent = gameStateMenuPanel,
                                 Dock = DockStyle.Fill
                             };
                             turnPhaseControl.Show();

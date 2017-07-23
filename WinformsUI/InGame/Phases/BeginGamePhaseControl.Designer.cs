@@ -35,6 +35,7 @@
             // 
             // startOverButton
             // 
+            this.startOverButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.startOverButton.Location = new System.Drawing.Point(6, 175);
             this.startOverButton.Name = "startOverButton";
             this.startOverButton.Size = new System.Drawing.Size(75, 23);
@@ -45,8 +46,8 @@
             // 
             // commitButton
             // 
-            this.commitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.commitButton.Location = new System.Drawing.Point(81, 175);
+            this.commitButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.commitButton.Location = new System.Drawing.Point(92, 175);
             this.commitButton.Name = "commitButton";
             this.commitButton.Size = new System.Drawing.Size(75, 23);
             this.commitButton.TabIndex = 1;
@@ -56,10 +57,11 @@
             // 
             // instructionLabel
             // 
+            this.instructionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.instructionLabel.Location = new System.Drawing.Point(3, 201);
             this.instructionLabel.Name = "instructionLabel";
             this.instructionLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.instructionLabel.Size = new System.Drawing.Size(156, 95);
+            this.instructionLabel.Size = new System.Drawing.Size(167, 95);
             this.instructionLabel.TabIndex = 2;
             this.instructionLabel.Text = "Please choose 2 regions and commit to start the game.";
             this.instructionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -72,7 +74,7 @@
             this.Controls.Add(this.commitButton);
             this.Controls.Add(this.startOverButton);
             this.Name = "BeginGamePhaseControl";
-            this.Size = new System.Drawing.Size(162, 412);
+            this.Size = new System.Drawing.Size(173, 412);
             this.ResumeLayout(false);
 
         }

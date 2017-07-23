@@ -31,8 +31,11 @@
             this.gamePanel = new System.Windows.Forms.Panel();
             this.gameMapPictureBox = new System.Windows.Forms.PictureBox();
             this.gameMenuPanel = new System.Windows.Forms.Panel();
+            this.menuButton = new System.Windows.Forms.Button();
+            this.gameStateMenuPanel = new System.Windows.Forms.Panel();
             this.gamePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).BeginInit();
+            this.gameMenuPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // gamePanel
@@ -61,12 +64,31 @@
             // 
             // gameMenuPanel
             // 
-            this.gameMenuPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.gameMenuPanel.Controls.Add(this.menuButton);
+            this.gameMenuPanel.Controls.Add(this.gameStateMenuPanel);
             this.gameMenuPanel.Location = new System.Drawing.Point(3, 3);
             this.gameMenuPanel.Name = "gameMenuPanel";
             this.gameMenuPanel.Size = new System.Drawing.Size(180, 436);
             this.gameMenuPanel.TabIndex = 0;
+            // 
+            // menuButton
+            // 
+            this.menuButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.menuButton.Location = new System.Drawing.Point(3, 378);
+            this.menuButton.Name = "menuButton";
+            this.menuButton.Size = new System.Drawing.Size(174, 52);
+            this.menuButton.TabIndex = 1;
+            this.menuButton.Text = "Menu";
+            this.menuButton.UseVisualStyleBackColor = true;
+            // 
+            // gameStateMenuPanel
+            // 
+            this.gameStateMenuPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gameStateMenuPanel.Location = new System.Drawing.Point(3, 3);
+            this.gameStateMenuPanel.Name = "gameStateMenuPanel";
+            this.gameStateMenuPanel.Size = new System.Drawing.Size(177, 358);
+            this.gameStateMenuPanel.TabIndex = 0;
             // 
             // InGameControl
             // 
@@ -79,6 +101,7 @@
             this.gamePanel.ResumeLayout(false);
             this.gamePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).EndInit();
+            this.gameMenuPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -88,5 +111,7 @@
         private System.Windows.Forms.Panel gamePanel;
         private System.Windows.Forms.Panel gameMenuPanel;
         private System.Windows.Forms.PictureBox gameMapPictureBox;
+        private System.Windows.Forms.Panel gameStateMenuPanel;
+        private System.Windows.Forms.Button menuButton;
     }
 }

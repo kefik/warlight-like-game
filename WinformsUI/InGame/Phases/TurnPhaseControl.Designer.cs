@@ -28,22 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.menuButton = new System.Windows.Forms.Button();
             this.deployLabel = new System.Windows.Forms.Label();
             this.attackLabel = new System.Windows.Forms.Label();
             this.commitLabel = new System.Windows.Forms.Label();
             this.nextButton = new System.Windows.Forms.Button();
             this.repeatRoundButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // menuButton
-            // 
-            this.menuButton.Location = new System.Drawing.Point(33, 371);
-            this.menuButton.Name = "menuButton";
-            this.menuButton.Size = new System.Drawing.Size(139, 21);
-            this.menuButton.TabIndex = 2;
-            this.menuButton.Text = "Menu";
-            this.menuButton.UseVisualStyleBackColor = true;
             // 
             // deployLabel
             // 
@@ -80,7 +70,7 @@
             // 
             // nextButton
             // 
-            this.nextButton.Location = new System.Drawing.Point(108, 196);
+            this.nextButton.Location = new System.Drawing.Point(108, 245);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(90, 23);
             this.nextButton.TabIndex = 6;
@@ -89,7 +79,7 @@
             // 
             // repeatRoundButton
             // 
-            this.repeatRoundButton.Location = new System.Drawing.Point(3, 196);
+            this.repeatRoundButton.Location = new System.Drawing.Point(3, 245);
             this.repeatRoundButton.Name = "repeatRoundButton";
             this.repeatRoundButton.Size = new System.Drawing.Size(90, 23);
             this.repeatRoundButton.TabIndex = 7;
@@ -105,16 +95,13 @@
             this.Controls.Add(this.commitLabel);
             this.Controls.Add(this.attackLabel);
             this.Controls.Add(this.deployLabel);
-            this.Controls.Add(this.menuButton);
             this.Name = "TurnPhaseControl";
-            this.Size = new System.Drawing.Size(201, 410);
+            this.Size = new System.Drawing.Size(201, 316);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button menuButton;
         private System.Windows.Forms.Label deployLabel;
         private System.Windows.Forms.Label attackLabel;
         private System.Windows.Forms.Label commitLabel;

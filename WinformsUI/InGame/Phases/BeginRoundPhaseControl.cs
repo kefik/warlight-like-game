@@ -8,19 +8,22 @@ namespace WinformsUI.InGame.Phases
         public BeginRoundPhaseControl()
         {
             InitializeComponent();
+
+            beginButton.Enabled = false;
         }
 
-        public event Action OnRoundBegin;
-        public event Action OnRoundRepeat;
+        public event Action OnBegin;
+        public event Action OnWatch;
 
         private void BeginRound(object sender, System.EventArgs e)
         {
-            OnRoundBegin?.Invoke();
+            OnBegin?.Invoke();
         }
 
-        private void RepeatRound(object sender, System.EventArgs e)
+        private void WatchRound(object sender, System.EventArgs e)
         {
-            OnRoundRepeat?.Invoke();
+            OnWatch?.Invoke();
+            beginButton.Enabled = true;
         }
     }
 }
