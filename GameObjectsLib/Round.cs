@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GameObjectsLib.GameMap;
+using ProtoBuf;
 
 namespace GameObjectsLib
 {
@@ -11,6 +12,7 @@ namespace GameObjectsLib
     /// Instance of this place represents a game round, which consists of each
     /// players round. Round identifies what has happened between two game states.
     /// </summary>
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class Round
     {
         /// <summary>
@@ -137,9 +139,44 @@ namespace GameObjectsLib
         //}
     }
 
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class GameBeginningRound
     {
         public List<Tuple<Player, Region>> SelectedRegions { get; } = new List<Tuple<Player, Region>>();
+
+        public GameBeginningRound(List<Tuple<Player,Region>> list)
+        {
+            SelectedRegions = list;
+        }
+        public GameBeginningRound() { }
+
+        /// <summary>
+        /// Verifies correctness of game beginning rounds.
+        /// </summary>
+        /// <param name="rounds">Rounds from different players.</param>
+        /// <returns>Linearized round.</returns>
+        public static GameBeginningRound Process(GameBeginningRound[] rounds)
+        {
+            // verify if two players chose one region, if so, return null
+            {
+                bool doesCollide = (from round in rounds
+                                     select round.SelectedRegions
+                                     into regions
+                                     from region in regions
+                                     group region by region.Item2).Any(g => g.Count() > 1);
+
+                if (doesCollide) return null;
+            }
+
+            var linearizedRegions = from round in rounds
+                         select round.SelectedRegions into regions
+                         from region in regions
+                         select region;
+
+            var newRound = new GameBeginningRound(linearizedRegions.ToList());
+
+            return newRound;
+        }
     }
 
 }

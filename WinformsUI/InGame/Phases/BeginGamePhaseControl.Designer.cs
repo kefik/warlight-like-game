@@ -35,7 +35,7 @@
             // 
             // startOverButton
             // 
-            this.startOverButton.Location = new System.Drawing.Point(3, 155);
+            this.startOverButton.Location = new System.Drawing.Point(6, 175);
             this.startOverButton.Name = "startOverButton";
             this.startOverButton.Size = new System.Drawing.Size(75, 23);
             this.startOverButton.TabIndex = 0;
@@ -46,7 +46,7 @@
             // commitButton
             // 
             this.commitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.commitButton.Location = new System.Drawing.Point(84, 155);
+            this.commitButton.Location = new System.Drawing.Point(81, 175);
             this.commitButton.Name = "commitButton";
             this.commitButton.Size = new System.Drawing.Size(75, 23);
             this.commitButton.TabIndex = 1;
@@ -56,12 +56,13 @@
             // 
             // instructionLabel
             // 
-            this.instructionLabel.Location = new System.Drawing.Point(3, 203);
+            this.instructionLabel.Location = new System.Drawing.Point(3, 201);
             this.instructionLabel.Name = "instructionLabel";
             this.instructionLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.instructionLabel.Size = new System.Drawing.Size(156, 95);
             this.instructionLabel.TabIndex = 2;
-            this.instructionLabel.Text = "Please choose 2 regions to start the game.";
+            this.instructionLabel.Text = "Please choose 2 regions and commit to start the game.";
+            this.instructionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // BeginGamePhaseControl
             // 

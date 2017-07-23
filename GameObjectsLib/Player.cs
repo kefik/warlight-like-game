@@ -45,7 +45,11 @@ namespace GameObjectsLib
         {
             return Name;
         }
-        
+
+        public void Refresh()
+        {
+            
+        }
 
         public bool Equals(Player other)
         {

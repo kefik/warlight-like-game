@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using DatabaseMapping;
@@ -7,48 +8,49 @@ using System.Linq;
 using System.Reflection;
 using GameObjectsLib;
 using GameObjectsLib.GameMap;
+using GameObjectsLib.GameUser;
 using WinformsUI.InGame.Phases;
 using Region = GameObjectsLib.GameMap.Region;
 
 namespace WinformsUI.InGame
 {
-    enum GameState : byte
+    public enum GameState : byte
     {
         GameBeginning,
-        WatchTurn,
         RoundBeginning,
         Deploying,
         Attacking,
         Committing,
-        Committed,
-        GameEnding
+        Committed
     }
     public partial class InGameControl : UserControl
     {
         Game game;
         MapImageProcessor processor;
-
-        Player playerOnTurn;
-
+        
+        IEnumerator<Player> playerOnTurn;
         BeginGamePhaseControl beginGamePhaseControl;
         BeginRoundPhaseControl beginRoundPhaseControl;
         TurnPhaseControl turnPhaseControl;
-
-        readonly Color regionNotVisibleColor = Color.FromArgb(155, 150, 122);
-        readonly Color regionVisibleUnoccupiedColor = Color.FromArgb(217, 190, 180);
-
+        
         public Game Game
         {
             get { return game; }
             set
             {
                 if (game != null) throw new ArgumentException();
-
+                // initialize game
                 game = value;
-                round = new Round(value.RoundNumber);
-                playerOnTurn = (from player in value.Players
-                           where player.GetType() == typeof(HumanPlayer)
-                           select player).First();
+                var localPlayers = (from player in value.Players
+                              where player.GetType() == typeof(HumanPlayer)
+                              let humanPlayer = (HumanPlayer)player
+                              where humanPlayer.User.UserType == UserType.LocalUser
+                              || humanPlayer.User.UserType == UserType.MyNetworkUser
+                              select player);
+                // initialize player whos on turn atm
+                playerOnTurn = localPlayers.GetEnumerator();
+                playerOnTurn.MoveNext();
+                // initialize game state
                 switch (game.RoundNumber)
                 {
                     case 0:
@@ -57,16 +59,13 @@ namespace WinformsUI.InGame
                     case 1:
                         State = GameState.RoundBeginning;
                         break;
-                    default:
-                        State = GameState.WatchTurn;
-                        break;
                 }
                 using (var db = new UtilsDbContext())
                 {
                     var mapInfo = (from item in db.Maps
                                    where item.Id == game.Map.Id
                                    select item).Single();
-
+                    // initialize map processor
                     processor = MapImageProcessor.Create(Game.Map, mapInfo.ImageColoredRegionsPath,
                         mapInfo.ColorRegionsTemplatePath, mapInfo.ImagePath);
                     
@@ -81,72 +80,51 @@ namespace WinformsUI.InGame
             }
         }
 
+        void StartOverGameBeginningPhase(GameBeginningRound gameBeginningRound)
+        {
+            processor.ResetRound(gameBeginningRound);
+
+            RefreshImage();
+            beginGamePhaseControl.BeginningRound.SelectedRegions.Clear();
+        }
+
+        void CommitGameBeginningPhase(GameBeginningRound gameBeginningRound)
+        {
+            switch (game.GameType)
+            {
+                case GameType.SinglePlayer:
+                    using (var db = new UtilsDbContext())
+                    {
+                        // TODO: play bots
+                        var gameBeginningRounds = new List<GameBeginningRound> {gameBeginningRound};
+
+                        var round = GameBeginningRound.Process(gameBeginningRounds.ToArray());
+                        
+                        game.Play(round);
+
+                        game.Save(db);
+                    }
+                    break;
+                case GameType.MultiplayerHotseat:
+                    break;
+                case GameType.MultiplayerNetwork:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         GameState state;
         GameState State
         {
             get { return state; }
             set
             {
-                switch (value)
-                {
-                    case GameState.GameBeginning:
-                        beginGamePhaseControl = new BeginGamePhaseControl()
-                        {
-                            Parent = gameMenuPanel,
-                            Dock = DockStyle.Fill
-                        };
-                        beginGamePhaseControl.OnStartOver += () =>
-                        {
-                            foreach (var tuple in beginGamePhaseControl.BeginningRound.SelectedRegions)
-                            {
-                                var region = tuple.Item2;
-                                
-                                processor.Recolor(region, regionNotVisibleColor);
-                                RefreshImage();
-                            }
-
-                            beginGamePhaseControl.BeginningRound.SelectedRegions.Clear();
-                        };
-                        beginGamePhaseControl.Show();
-                        break;
-                    case GameState.RoundBeginning:
-                        beginRoundPhaseControl = new BeginRoundPhaseControl()
-                        {
-                            Parent = gameMenuPanel,
-                            Dock = DockStyle.Fill
-                        };
-                        beginRoundPhaseControl.Show();
-                        break;
-                    case GameState.Deploying:
-                    case GameState.Attacking:
-                    case GameState.Committing:
-                    case GameState.Committed:
-                        switch (state) // what was previous state
-                        {
-                            case GameState.Deploying:
-                            case GameState.Attacking:
-                            case GameState.Committing:
-                            case GameState.Committed:
-                                // previous state was represented by same screen => dont create new one
-                                break;
-                            default:
-                                turnPhaseControl = new TurnPhaseControl()
-                                {
-                                    Parent = gameMenuPanel,
-                                    Dock = DockStyle.Fill
-                                };
-                                turnPhaseControl.Show();
-                                break;
-                        }
-                        break;
-                    case GameState.GameEnding:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(value), value, null);
-                }
+                GameStateChanged(value);
                 state = value;
             }
         }
+        
 
         void RefreshImage()
         {
@@ -154,7 +132,52 @@ namespace WinformsUI.InGame
         }
 
 
-
+        public void GameStateChanged(GameState newGameState)
+        {
+            switch (newGameState)
+            {
+                case GameState.GameBeginning:
+                    beginGamePhaseControl = new BeginGamePhaseControl()
+                    {
+                        Parent = gameMenuPanel,
+                        Dock = DockStyle.Fill
+                    };
+                    beginGamePhaseControl.OnStartOver += StartOverGameBeginningPhase;
+                    beginGamePhaseControl.OnCommit += CommitGameBeginningPhase;
+                    beginGamePhaseControl.Show();
+                    break;
+                case GameState.RoundBeginning:
+                    beginRoundPhaseControl = new BeginRoundPhaseControl()
+                    {
+                        Parent = gameMenuPanel,
+                        Dock = DockStyle.Fill
+                    };
+                    beginRoundPhaseControl.Show();
+                    break;
+                case GameState.Committed:
+                    break;
+                case GameState.Deploying:
+                case GameState.Attacking:
+                case GameState.Committing:
+                    switch (state) // what was previous state
+                    {
+                        case GameState.Deploying:
+                        case GameState.Attacking:
+                        case GameState.Committing:
+                            // previous state was represented by same screen => dont create new one
+                            break;
+                        default:
+                            turnPhaseControl = new TurnPhaseControl()
+                            {
+                                Parent = gameMenuPanel,
+                                Dock = DockStyle.Fill
+                            };
+                            turnPhaseControl.Show();
+                            break;
+                    }
+                    break;
+            }
+        }
 
         public InGameControl()
         {
@@ -162,9 +185,6 @@ namespace WinformsUI.InGame
 
             gameMapPictureBox.BackgroundImageLayout = ImageLayout.None;
         }
-
-
-        Round round;
         
         private void ImageClick(object sender, MouseEventArgs e)
         {
@@ -179,11 +199,9 @@ namespace WinformsUI.InGame
                         MessageBox.Show("You have chosen enough regions.");
                         return;
                     }
-                    processor.Recolor(region, Color.FromKnownColor(playerOnTurn.Color));
-                    beginGamePhaseControl.BeginningRound.SelectedRegions.Add(new Tuple<Player, Region>(playerOnTurn, region));
+                    processor.Recolor(region, Color.FromKnownColor(playerOnTurn.Current.Color));
+                    beginGamePhaseControl.BeginningRound.SelectedRegions.Add(new Tuple<Player, Region>(playerOnTurn.Current, region));
                     gameMapPictureBox.Refresh();
-                    break;
-                case GameState.WatchTurn:
                     break;
                 case GameState.RoundBeginning:
                     break;
@@ -194,8 +212,6 @@ namespace WinformsUI.InGame
                 case GameState.Committing:
                     break;
                 case GameState.Committed:
-                    break;
-                case GameState.GameEnding:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -217,11 +233,7 @@ namespace WinformsUI.InGame
 
             if (pictureBox == null) return;
         }
-
-        void NextPhase()
-        {
-
-        }
+        
 
     }
 }

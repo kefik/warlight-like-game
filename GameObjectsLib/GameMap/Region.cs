@@ -11,28 +11,34 @@ namespace GameObjectsLib.GameMap
     /// Instace of this class represents region for given map in the game.
     /// </summary>
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, ImplicitFields = ImplicitFields.AllFields)]
+    [ProtoContract]
     public class Region : IEquatable<Region>
     {
+        [ProtoMember(1)]
         public int Id { get; }
+        [ProtoMember(2)]
         public string Name { get; }
         /// <summary>
         /// Player owning given region. Null means no owner.
         /// </summary>
+        [ProtoMember(3, AsReference = true)]
         public Player Owner { get; set; }
 
         /// <summary>
         /// Number of units occuppying this region.
         /// </summary>
+        [ProtoMember(4)]
         public int Army { get; set; }
         /// <summary>
         /// Represents region group it belongs to.
         /// </summary>
+        [ProtoMember(5, AsReference = true)]
         public SuperRegion SuperRegion { get; }
 
         /// <summary>
         /// Represents list of regions that are neighbours to this given region.
         /// </summary>
+        [ProtoMember(6)]
         public IList<Region> NeighbourRegions { get; } = new List<Region>();
         
 

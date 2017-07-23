@@ -73,5 +73,6 @@ namespace GameObjectsLib.Game
             if (!validator.HasOneHumanPlayer()) throw new ArgumentException();
             
         }
+        
     }
 }

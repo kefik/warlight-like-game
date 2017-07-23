@@ -90,6 +90,9 @@ namespace GameObjectsLib.GameMap
     /// </summary>
     public class MapImageProcessor
     {
+        readonly Color regionNotVisibleColor = Color.FromArgb(155, 150, 122);
+        readonly Color regionVisibleUnoccupiedColor = Color.FromArgb(217, 190, 180);
+
         public Bitmap TemplateImage
         {
             get { return templateProcessor.RegionHighlightedImage; }
@@ -161,6 +164,11 @@ namespace GameObjectsLib.GameMap
             }
         }
 
+        /// <summary>
+        /// Recolors given region to target color.
+        /// </summary>
+        /// <param name="region">Given region.</param>
+        /// <param name="targetColor">Color that given region will be recolored to.</param>
         public void Recolor(Region region, Color targetColor)
         {
             if (region == null) return;
@@ -185,6 +193,30 @@ namespace GameObjectsLib.GameMap
         {
             if (game.GetType() == typeof(SingleplayerGame)) Redraw((SingleplayerGame)game);
         }
+
+        /// <summary>
+        /// Resets round, recoloring region selected by player to the default color.
+        /// </summary>
+        /// <param name="gameBeginningRound">What happened in the game round.</param>
+        public void ResetRound(GameBeginningRound gameBeginningRound)
+        {
+            foreach (var tuple in gameBeginningRound.SelectedRegions)
+            {
+                var region = tuple.Item2;
+
+                Recolor(region, regionNotVisibleColor);
+            }
+        }
+
+        public void ResetRound(Round round)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ResetRoundPhase(Attacking deploying)
+        {
+            throw new NotImplementedException();
+        }
         
         void Redraw(SingleplayerGame game)
         {
@@ -194,7 +226,7 @@ namespace GameObjectsLib.GameMap
                            select player).First() as HumanPlayer;
             // get owned regions
             var ownedRegions = humanPlayer.ControlledRegions;
-
+            
             // recolor them to players color
             foreach (var ownedRegion in ownedRegions)
             {
@@ -219,6 +251,7 @@ namespace GameObjectsLib.GameMap
                 }
             }
         }
+
 
         /// <summary>
         /// Initializes an instance of MapImageProcessor.

@@ -19,8 +19,8 @@ namespace WinformsUI.InGame.Phases
             InitializeComponent();
         }
 
-        public event Action OnStartOver;
-        public event Action OnCommit;
+        public event Action<GameBeginningRound> OnStartOver;
+        public event Action<GameBeginningRound> OnCommit;
         public GameBeginningRound BeginningRound { get; } = new GameBeginningRound();
     
         private void Commit(object sender, EventArgs e)
@@ -30,12 +30,12 @@ namespace WinformsUI.InGame.Phases
                 MessageBox.Show("Not enough regions were chosen to start the game.");
                 return;
             }
-            OnCommit?.Invoke();
+            OnCommit?.Invoke(BeginningRound);
         }
 
         private void StartOver(object sender, EventArgs e)
         {
-            OnStartOver?.Invoke();
+            OnStartOver?.Invoke(BeginningRound);
         }
     }
 }

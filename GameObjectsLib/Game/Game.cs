@@ -14,6 +14,7 @@ namespace GameObjectsLib.Game
     {
         void Save(IGameSaver canSave);
     }
+
     /// <summary>
     /// Enum containing types of game any game can have.
     /// </summary>
@@ -25,7 +26,6 @@ namespace GameObjectsLib.Game
         MultiplayerNetwork
     }
 
-    
 
     /// <summary>
     /// Represents one game.
@@ -39,7 +39,10 @@ namespace GameObjectsLib.Game
     {
         public int RoundNumber { get; private set; }
 
-        protected Game() { }
+        protected Game()
+        {
+        }
+
         /// <summary>
         /// Represents map being played in this game.
         /// </summary>
@@ -61,6 +64,11 @@ namespace GameObjectsLib.Game
             this.Players = players;
         }
 
+        /// <summary>
+        /// Plays given round, calculating everything, moving this instance of
+        /// the game into position after the round was played.
+        /// </summary>
+        /// <param name="round"></param>
         public void Play(Round round)
         {
             // TODO: debug
@@ -91,8 +99,8 @@ namespace GameObjectsLib.Game
 
                     // get real defender
                     var defender = (from region in Map.Regions
-                                   where region == attack.Defender
-                                   select region).First();
+                                    where region == attack.Defender
+                                    select region).First();
                     // situation might have changed => recalculate attacking army
                     int realAttackingArmy = Math.Min(attack.AttackingArmy, attacker.Army);
                     // if they have same owner
@@ -115,9 +123,27 @@ namespace GameObjectsLib.Game
                     // in any way, attacker transfered units
                     attacker.Army -= realAttackingArmy;
                 }
-
             }
             RoundNumber++;
+        }
+
+        /// <summary>
+        /// Plays given initial round, refreshing the situation of the game.
+        /// </summary>
+        /// <param name="round">Round to be played.</param>
+        public void Play(GameBeginningRound round)
+        {
+            foreach (var roundSelectedRegion in round.SelectedRegions)
+            {
+                var realRegion = (from region in Map.Regions
+                                  where region == roundSelectedRegion.Item2
+                                  select region).First();
+                var realPlayer = (from player in Players
+                                  where player == roundSelectedRegion.Item1
+                                  select player).First();
+
+                realRegion.Owner = realPlayer;
+            }
         }
 
         /// <summary>
@@ -148,6 +174,7 @@ namespace GameObjectsLib.Game
                     throw new ArgumentException();
             }
         }
+
         /// <summary>
         /// Saves the game to the object based on parameter.
         /// </summary>
@@ -162,6 +189,7 @@ namespace GameObjectsLib.Game
                 canSave.SaveGame(this, stream);
             }
         }
+
         /// <summary>
         /// Loads the game based on parameters.
         /// </summary>
@@ -178,6 +206,7 @@ namespace GameObjectsLib.Game
                 return game;
             }
         }
+
         /// <summary>
         /// After deserialization we have same objects that do not match references.
         /// Purpose of this method is to remap those references back for future
@@ -188,63 +217,110 @@ namespace GameObjectsLib.Game
             // TODO: IMPORTANT = check
             var regions = Map.Regions;
             var superRegions = Map.SuperRegions;
+            var players = Players;
             // reconstruct original super regions
-            foreach (Region region in regions)
             {
-                for (int j = 0; j < superRegions.Count; j++)
+                // SuperRegion = region.SuperRegion
+                foreach (Region region in regions)
                 {
-                    if (superRegions[j] == region.SuperRegion)
-                        superRegions[j] = region.SuperRegion;
+                    for (int j = 0; j < superRegions.Count; j++)
+                    {
+                        if (superRegions[j] == region.SuperRegion)
+                            superRegions[j] = region.SuperRegion;
+                    }
                 }
+                //// region.SuperRegion = SuperRegion
+                //for (int i = 0; i < regions.Count; i++)
+                //{
+                //    var region = Map.Regions[i];
+                //    var matchingSuperRegion = (from superRegion in Map.SuperRegions
+                //                              where superRegion.Regions.Contains(region)
+                //                              select superRegion).First();
+                //    region.SuperRegion = matchingSuperRegion;
+                //}
             }
             // reconstruct super regions and regions
-            foreach (Region region in regions)
             {
-                foreach (var superRegion in superRegions)
+                // superRegion.Region = region
+                foreach (Region region in regions)
                 {
-                    var superRegionRegions = superRegion.Regions;
-                    for (int j = 0; j < superRegionRegions.Count; j++)
+                    foreach (var superRegion in superRegions)
                     {
-                        if (superRegionRegions[j] == region)
+                        var superRegionRegions = superRegion.Regions;
+                        for (int j = 0; j < superRegionRegions.Count; j++)
                         {
-                            superRegionRegions[j] = region;
+                            if (superRegionRegions[j] == region)
+                            {
+                                superRegionRegions[j] = region;
+                            }
                         }
                     }
                 }
+
+                // region = superRegion.Region
+                // should be fine
             }
+            
+
             // reconstruct neighbour regions
-            for (int i = 0; i < regions.Count; i++)
             {
-                var neighbours = regions[i].NeighbourRegions;
-                foreach (Region neighbour in neighbours)
+                for (int i = 0; i < regions.Count; i++)
                 {
-                    for (int j = 0; j < regions.Count; j++)
+                    var neighbours = regions[i].NeighbourRegions;
+                    foreach (Region neighbour in neighbours)
                     {
-                        if (regions[j] == neighbour)
+                        for (int j = 0; j < regions.Count; j++)
                         {
-                            regions[j] = neighbour;
+                            if (regions[j] == neighbour)
+                            {
+                                regions[j] = neighbour;
+                            }
                         }
                     }
                 }
             }
-            var players = Players;
             // reconstruct owner
-            foreach (Player player in players)
             {
-                var controlledRegions = player.ControlledRegions;
-                foreach (var controlledRegion in controlledRegions)
+                // region.Owner = player
+                foreach (Player player in players)
                 {
-                    controlledRegion.Owner = player;
+                    var controlledRegions = player.ControlledRegions;
+                    foreach (var controlledRegion in controlledRegions)
+                    {
+                        controlledRegion.Owner = player;
+                    }
+                }
+                // other way
+                foreach (var player in players)
+                {
+                    foreach (Region region in Map.Regions)
+                    {
+                        if (region.Owner == player) region.Owner = player;
+                    }
+                }
+            }
+
+            // reconstruct players regions
+            {
+                foreach (var region in Map.Regions)
+                {
+                    if (region.Owner == null) continue;
+
+                    var owner = region.Owner;
+
+                    bool contains = (from ownedRegions in owner.ControlledRegions
+                                     where ownedRegions == region
+                                     select ownedRegions).Any();
+                    if (!contains) owner.ControlledRegions.Add(region);
                 }
             }
             // reconstruct player super regions
-            foreach (SuperRegion superRegion in superRegions)
             {
-                superRegion.Refresh();
+                foreach (SuperRegion superRegion in superRegions)
+                {
+                    superRegion.Refresh();
+                }
             }
-
-
         }
     }
-
 }

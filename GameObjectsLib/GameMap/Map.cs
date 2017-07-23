@@ -13,25 +13,29 @@ namespace GameObjectsLib.GameMap
     /// Instance of this class represents map of the game.
     /// </summary>
     [Serializable]
-    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
+    [ProtoContract]
     public sealed class Map
     {
+        [ProtoMember(1)]
         public int Id { get; }
-
+        [ProtoMember(2)]
         public string Name { get; }
 
         /// <summary>
         /// Returns maximum number of players for the given map.
         /// </summary>
+        [ProtoMember(3)]
         public int PlayersLimit { get; }
 
         /// <summary>
         /// Represents regions of the map that player can conquer.
         /// </summary>
+        [ProtoMember(4, AsReference = true)]
         public IList<Region> Regions { get; } = new List<Region>();
         /// <summary>
         /// Represents region groups this map has.
         /// </summary>
+        [ProtoMember(5)]
         public IList<SuperRegion> SuperRegions { get; } = new List<SuperRegion>();
         
         private Map(int id, string name, int playersLimit)

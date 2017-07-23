@@ -11,21 +11,26 @@ namespace GameObjectsLib.GameMap
     /// Represents region group of giving size giving bonus to player who owns it all.
     /// </summary>
     [Serializable]
-    [ProtoContract(ImplicitFields = ImplicitFields.AllFields, AsReferenceDefault = true)]
+    [ProtoContract]
     public class SuperRegion : IEquatable<SuperRegion>, IRefreshable
     {
+        [ProtoMember(1)]
         public int Id { get; }
         /// <summary>
         /// Name given of the SuperRegion.
         /// </summary>
+        [ProtoMember(2)]
         public string Name { get; }
         /// <summary>
         /// Bonus given by the SuperRegion taken by one player.
         /// </summary>
+        [ProtoMember(3)]
         public int Bonus { get; }
 
+        [ProtoMember(4, AsReference = true)]
         public Player Owner { get; private set; } // TODO: finish refreshing of situation, use GetOwner() method
 
+        [ProtoMember(5)]
         public IList<Region> Regions { get; } = new List<Region>();
         /// <summary>
         /// Constructs SuperRegion instance.
