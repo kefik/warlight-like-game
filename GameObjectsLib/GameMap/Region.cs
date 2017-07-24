@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using GameObjectsLib;
 using GameObjectsLib.GameMap;
@@ -12,7 +13,7 @@ namespace GameObjectsLib.GameMap
     /// </summary>
     [Serializable]
     [ProtoContract]
-    public class Region : IEquatable<Region>
+    public class Region : IEquatable<Region>, IRefreshable
     {
         [ProtoMember(1)]
         public int Id { get; }
@@ -38,9 +39,9 @@ namespace GameObjectsLib.GameMap
         /// <summary>
         /// Represents list of regions that are neighbours to this given region.
         /// </summary>
-        [ProtoMember(6)]
+        [ProtoMember(6, AsReference = true)]
         public IList<Region> NeighbourRegions { get; } = new List<Region>();
-        
+
 
         public Region(int id, string name, SuperRegion superRegion)
         {
@@ -67,12 +68,28 @@ namespace GameObjectsLib.GameMap
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((Region) obj);
+            return Equals((Region)obj);
         }
 
         public override int GetHashCode()
         {
             return Id;
+        }
+
+        /// <summary>
+        /// Refreshes situation of the game based on this regions owner.
+        /// </summary>
+        public void Refresh()
+        {
+            if (Owner == null) return;
+            // if this region has player as owner, but this player doesn't have
+            // this region as controlled region, add this region to controlled regions
+            // of the player
+            var ownerRegions = Owner.ControlledRegions;
+            bool containsThisRegion = (from region in ownerRegions
+                            where region == this
+                            select region).Any();
+            if (!containsThisRegion) ownerRegions.Add(this);
         }
 
         public static bool operator ==(Region left, Region right)
@@ -85,5 +102,6 @@ namespace GameObjectsLib.GameMap
         {
             return !(left == right);
         }
+
     }
 }

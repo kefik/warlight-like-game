@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.Serialization;
 using GameObjectsLib.GameUser;
 using ProtoBuf;
 using Region = GameObjectsLib.GameMap.Region;
@@ -22,21 +21,23 @@ namespace GameObjectsLib
     /// Instance of this class represents template for player in the game.
     /// </summary>
     [Serializable]
-    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
+    [ProtoContract]
     [ProtoInclude(400, typeof(AIPlayer))]
     [ProtoInclude(401, typeof(HumanPlayer))]
-    public abstract class Player : IEquatable<Player>
+    public abstract class Player : IEquatable<Player>, IRefreshable
     {
         protected Player() { }
         public abstract string Name { get; }
-        public System.Drawing.KnownColor Color { get; }
+        [ProtoMember(1)]
+        public KnownColor Color { get; }
 
         /// <summary>
         /// Regions this player controls.
         /// </summary>
-        public ICollection<Region> ControlledRegions { get; } = new HashSet<Region>();
+        [ProtoMember(2, AsReference = true)]
+        public IList<Region> ControlledRegions { get; } = new List<Region>();
         
-        protected Player(System.Drawing.KnownColor color)
+        protected Player(KnownColor color)
         {
             Color = color;
         }
@@ -46,9 +47,18 @@ namespace GameObjectsLib
             return Name;
         }
 
+        /// <summary>
+        /// Refreshes controlled regions of the player.
+        /// </summary>
         public void Refresh()
         {
-            
+            // if this players controlled region doesnt have as owner this player
+            // remove that region from controlled regions
+            for (int i = ControlledRegions.Count - 1; i >= 0; i--)
+            {
+                if (ControlledRegions[i].Owner != this)
+                    ControlledRegions.Remove(ControlledRegions[i]);
+            }
         }
 
         public bool Equals(Player other)
@@ -62,7 +72,7 @@ namespace GameObjectsLib
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Player) obj);
         }
 
@@ -76,7 +86,7 @@ namespace GameObjectsLib
 
         public static bool operator ==(Player left, Player right)
         {
-            if (object.ReferenceEquals(left, null)) return object.ReferenceEquals(right, null);
+            if (ReferenceEquals(left, null)) return ReferenceEquals(right, null);
             return left.Equals(right);
         }
 
@@ -90,7 +100,7 @@ namespace GameObjectsLib
     /// Instance of this class represents AI player in the game.
     /// </summary>
     [Serializable, ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    public class AIPlayer : Player
+    public sealed class AIPlayer : Player
     {
         AIPlayer() { }
         /// <summary>
@@ -100,9 +110,9 @@ namespace GameObjectsLib
 
         public override string Name { get; }
 
-        public AIPlayer(Difficulty difficulty, string name, System.Drawing.KnownColor color) : base(color)
+        public AIPlayer(Difficulty difficulty, string name, KnownColor color) : base(color)
         {
-            this.Difficulty = difficulty;
+            Difficulty = difficulty;
             Name = name;
         }
     }
@@ -124,9 +134,9 @@ namespace GameObjectsLib
             get { return User.Name; }
         }
 
-        public HumanPlayer(User user, System.Drawing.KnownColor color) : base(color)
+        public HumanPlayer(User user, KnownColor color) : base(color)
         {
-            this.User = user ?? throw new ArgumentException();
+            User = user ?? throw new ArgumentException();
         }
 
         public bool Equals(HumanPlayer other)

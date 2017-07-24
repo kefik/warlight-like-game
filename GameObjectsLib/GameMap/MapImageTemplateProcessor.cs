@@ -88,10 +88,10 @@ namespace GameObjectsLib.GameMap
     /// <summary>
     /// Represents visual representation of the game map and functionality linked with it.
     /// </summary>
-    public class MapImageProcessor
+    public class MapImageProcessor : IRefreshable<Game.Game>
     {
         readonly Color regionNotVisibleColor = Color.FromArgb(155, 150, 122);
-        readonly Color regionVisibleUnoccupiedColor = Color.FromArgb(217, 190, 180);
+        readonly Color regionVisibleUnoccupiedColor = Color.White;
 
         public Bitmap TemplateImage
         {
@@ -242,7 +242,10 @@ namespace GameObjectsLib.GameMap
             foreach (var region in neighbourNotOwnedRegions)
             {
                 var owner = region.Owner;
-                if (owner == null) {}// TODO: recolor to default color
+                if (owner == null)
+                {
+                    Recolor(region, regionVisibleUnoccupiedColor);
+                }
                 else
                 {
                     var ownerColor = Color.FromKnownColor(owner.Color);

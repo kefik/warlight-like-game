@@ -30,7 +30,7 @@ namespace GameObjectsLib.GameMap
         /// <summary>
         /// Represents regions of the map that player can conquer.
         /// </summary>
-        [ProtoMember(4, AsReference = true)]
+        [ProtoMember(4)]
         public IList<Region> Regions { get; } = new List<Region>();
         /// <summary>
         /// Represents region groups this map has.
@@ -183,6 +183,9 @@ namespace GameObjectsLib.GameMap
                                                                 where region.Name == reader.GetAttribute("Name")
                                                                 select region).First();
                                         givenRegion.NeighbourRegions.Add(regionsNeighbour);
+
+                                        // empty element doesnt invoke EndElement action, so =>
+                                        if (reader.IsEmptyElement) isRegion--;
                                     }
                                     break;
                                 case "Neighbours":

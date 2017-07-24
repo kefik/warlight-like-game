@@ -52,7 +52,7 @@ namespace GameObjectsLib.Game
                         select player).Count() == 1;
             }
         }
-        public SingleplayerGame(Map map, IList<Player> players) : base(map, players)
+        public SingleplayerGame(int id, Map map, IList<Player> players) : base(id, map, players)
         {
         }
         

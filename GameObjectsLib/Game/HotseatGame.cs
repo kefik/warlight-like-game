@@ -13,7 +13,7 @@ namespace GameObjectsLib.Game
             get { return GameType.MultiplayerHotseat; }
         }
 
-        public HotseatGame(Map map, IList<Player> players) : base(map, players)
+        public HotseatGame(int id, Map map, IList<Player> players) : base(id, map, players)
         {
         }
 

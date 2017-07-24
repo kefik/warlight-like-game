@@ -282,7 +282,7 @@
           <Region Name="Ural"/>
           <Region Name="Siberia"/>
           <Region Name="India"/>
-          <Region Name="Sian"/>
+          <Region Name="Siam"/>
           <Region Name="Kazakhstan"/>
         </Neighbours>
       </Region>
@@ -315,7 +315,7 @@
         <Neighbours>
           <Region Name="Middle East" />
           <Region Name="China"/>
-          <Region Name="Sian"/>
+          <Region Name="Siam"/>
           <Region Name="Kazakhstan"/>
         </Neighbours>
       </Region>
@@ -332,7 +332,7 @@
         <Neighbours>
           <Region Name="New Guinea" />
           <Region Name="Western Australia"/>
-          <Region Name="Sian"/>
+          <Region Name="Siam"/>
         </Neighbours>
       </Region>
       <Region Name="New Guinea">
@@ -345,7 +345,7 @@
       <Region Name="Western Australia">
         <Neighbours>
           <Region Name="New Guinea" />
-          <Region Name="Easter Australia"/>
+          <Region Name="Eastern Australia"/>
           <Region Name="Indonesia"/>
         </Neighbours>
       </Region>

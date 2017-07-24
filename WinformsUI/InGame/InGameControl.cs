@@ -107,6 +107,8 @@ namespace WinformsUI.InGame
 
                     State = GameState.RoundBeginning;
 
+                    NewRound();
+
                     break;
                 case GameType.MultiplayerHotseat:
                     break;
@@ -117,9 +119,10 @@ namespace WinformsUI.InGame
             }
         }
 
-        void RoundPlayed()
+        void NewRound()
         {
-            
+            processor.Refresh(Game);
+            RefreshImage();
         }
 
         GameState state;
@@ -164,6 +167,10 @@ namespace WinformsUI.InGame
                     {
                         Parent = gameStateMenuPanel,
                         Dock = DockStyle.Fill
+                    };
+                    beginRoundPhaseControl.OnBegin += () =>
+                    {
+                        State = GameState.Deploying;
                     };
                     beginRoundPhaseControl.Show();
                     break;

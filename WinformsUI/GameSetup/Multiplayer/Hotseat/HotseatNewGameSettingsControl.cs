@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DatabaseMapping;
 using GameObjectsLib;
 using GameObjectsLib.Game;
 using GameObjectsLib.GameMap;
@@ -148,7 +149,17 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
             IList<Player> players = aiPlayerSettingsControl.GetPlayers();
             players.Add(myHumanPlayerControl.GetPlayer());
 
-            Game game = Game.Create(GameType.MultiplayerHotseat, map, players);
+            Game game = null;
+
+            using (var db = new UtilsDbContext())
+            {
+                var savedGamesEnum = db.HotseatSavedGameInfos.AsEnumerable();
+                var lastGame = savedGamesEnum.LastOrDefault();
+                int gameId = 1;
+                if (lastGame != null) gameId = lastGame.Id + 1;
+
+                game = Game.Create(gameId, GameType.MultiplayerHotseat, map, players);
+            }
 
             OnGameStarted?.Invoke(game);
         }

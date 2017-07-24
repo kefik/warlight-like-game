@@ -94,11 +94,17 @@ namespace WinformsUI
             {
                 case GameType.SinglePlayer:
                     // save the game
-                    game.Save(new UtilsDbContext());
+                    using (var db = new UtilsDbContext())
+                    {
+                        game.Save(db);
+                    }
                     break;
                 case GameType.MultiplayerHotseat:
                     // save the game
-                    game.Save(new UtilsDbContext());
+                    using (var db = new UtilsDbContext())
+                    {
+                        game.Save(db);
+                    }
                     break;
                 case GameType.MultiplayerNetwork:
                     break;

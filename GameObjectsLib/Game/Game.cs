@@ -31,12 +31,14 @@ namespace GameObjectsLib.Game
     /// Represents one game.
     /// </summary>
     [Serializable]
-    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
+    [ProtoContract]
     [ProtoInclude(10, typeof(SingleplayerGame))]
     [ProtoInclude(11, typeof(HotseatGame))]
     [ProtoInclude(12, typeof(NetworkGame))]
-    public abstract class Game : ISaveable
+    public abstract class Game : ISaveable, IRefreshable
     {
+        public int Id { get; }
+        [ProtoMember(1)]
         public int RoundNumber { get; private set; }
 
         protected Game()
@@ -46,11 +48,13 @@ namespace GameObjectsLib.Game
         /// <summary>
         /// Represents map being played in this game.
         /// </summary>
+        [ProtoMember(2)]
         public Map Map { get; }
 
         /// <summary>
         /// Represents list of players playing this game.
         /// </summary>
+        [ProtoMember(3)]
         public IList<Player> Players { get; }
 
         /// <summary>
@@ -58,8 +62,9 @@ namespace GameObjectsLib.Game
         /// </summary>
         public abstract GameType GameType { get; }
 
-        protected Game(Map map, IList<Player> players)
+        protected Game(int id, Map map, IList<Player> players)
         {
+            Id = id;
             this.Map = map;
             this.Players = players;
         }
@@ -156,16 +161,17 @@ namespace GameObjectsLib.Game
         /// <summary>
         /// Creates an instance of new <see cref="Game"/>, validates it and returns it.
         /// </summary>
+        /// <param name="id">Id of the game corresponding to Id that will be stored in the database.</param>
         /// <param name="gameType">Type of the game.</param>
         /// <param name="map">Map of the game.</param>
         /// <param name="players">Players that will be playing the game.</param>
         /// <returns>Created instance of the game.</returns>
-        public static Game Create(GameType gameType, Map map, IList<Player> players)
+        public static Game Create(int id, GameType gameType, Map map, IList<Player> players)
         {
             switch (gameType)
             {
                 case GameType.SinglePlayer:
-                    var sp = new SingleplayerGame(map, players);
+                    var sp = new SingleplayerGame(id, map, players);
                     sp.Validate();
                     return sp;
                 case GameType.MultiplayerHotseat:
@@ -183,6 +189,7 @@ namespace GameObjectsLib.Game
         /// <param name="canSave">Object which can save the current instance of the game.</param>
         public void Save(IGameSaver canSave)
         {
+            Refresh();
             using (MemoryStream stream = new MemoryStream())
             {
                 Serializer.Serialize(stream, this);
@@ -190,6 +197,29 @@ namespace GameObjectsLib.Game
                 stream.Position = 0;
                 canSave.SaveGame(this, stream);
             }
+        }
+
+        /// <summary>
+        /// Refreshes situation in the game.
+        /// </summary>
+        public void Refresh()
+        {
+            // refresh regions owner
+            foreach (var region in Map.Regions)
+            {
+                region.Refresh();
+            }
+            // refresh super regions
+            foreach (SuperRegion superRegion in Map.SuperRegions)
+            {
+                superRegion.Refresh();
+            }
+            // refresh
+            foreach (var player in Players)
+            {
+                player.Refresh();
+            }
+
         }
 
         /// <summary>
@@ -262,7 +292,7 @@ namespace GameObjectsLib.Game
                 // region = superRegion.Region
                 // should be fine
             }
-            
+
 
             // reconstruct neighbour regions
             {
@@ -302,27 +332,6 @@ namespace GameObjectsLib.Game
                 }
             }
 
-            // reconstruct players regions
-            {
-                foreach (var region in Map.Regions)
-                {
-                    if (region.Owner == null) continue;
-
-                    var owner = region.Owner;
-
-                    bool contains = (from ownedRegions in owner.ControlledRegions
-                                     where ownedRegions == region
-                                     select ownedRegions).Any();
-                    if (!contains) owner.ControlledRegions.Add(region);
-                }
-            }
-            // reconstruct player super regions
-            {
-                foreach (SuperRegion superRegion in superRegions)
-                {
-                    superRegion.Refresh();
-                }
-            }
         }
     }
 }

@@ -30,7 +30,7 @@ namespace GameObjectsLib.GameMap
         [ProtoMember(4, AsReference = true)]
         public Player Owner { get; private set; } // TODO: finish refreshing of situation, use GetOwner() method
 
-        [ProtoMember(5)]
+        [ProtoMember(5, AsReference = true)]
         public IList<Region> Regions { get; } = new List<Region>();
         /// <summary>
         /// Constructs SuperRegion instance.
@@ -55,7 +55,9 @@ namespace GameObjectsLib.GameMap
                 ? null // return null
                 : firstOwner;
         }
-
+        /// <summary>
+        /// Refreshes given instance of super region.
+        /// </summary>
         public void Refresh()
         {
             Owner = GetOwner();

@@ -39,28 +39,31 @@ namespace DatabaseMapping
             {
                 case GameType.SinglePlayer:
                     {
+
                         var savedGames = SingleplayerSavedGameInfos;
-                        var savedGamesEnum = savedGames.AsEnumerable();
-
-                        var lastGame = savedGamesEnum.LastOrDefault();
-                        int lastGameId = 1;
-                        if (lastGame != null) lastGameId = lastGame.Id + 1;
-
-                        string path = string.Format($"SavedGames/Singleplayer/{lastGameId}.sav");
-
-                        savedGames.Add(new SingleplayerSavedGameInfo()
+                        string path = string.Format($"SavedGames/Singleplayer/{game.Id}.sav");
+                        
+                        var save = (from savedGame in savedGames
+                                    where savedGame.Id == game.Id
+                                    select savedGame).AsEnumerable().FirstOrDefault();
+                        // game hasn't been saved yet
+                        if (save == null)
                         {
-                            AINumber = game.Players.Count - 1,
-                            MapName = game.Map.Name,
-                            SavedGameDate = DateTime.Now.ToString(),
-                            Path = string.Format(path)
-                        });
-
+                            savedGames.Add(new SingleplayerSavedGameInfo()
+                            {
+                                AINumber = game.Players.Count - 1,
+                                MapName = game.Map.Name,
+                                SavedGameDate = DateTime.Now.ToString(),
+                                Path = path
+                            });
+                        }
+                        else save.SavedGameDate = DateTime.Now.ToString();
+                        
+                        // write the game into file
                         using (FileStream fs = new FileStream(path, FileMode.Create))
                         {
                             stream.CopyTo(fs);
                         }
-
                         SaveChanges();
                         break;
                     }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
+using DatabaseMapping;
 using GameObjectsLib;
 using GameObjectsLib.Game;
 using GameObjectsLib.GameMap;
@@ -12,7 +14,7 @@ namespace WinformsUI.GameSetup.Singleplayer
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
         readonly MyHumanPlayerControl myHumanPlayerControl;
-        
+
         public User User
         {
             get { return myHumanPlayerControl.User; }
@@ -26,7 +28,7 @@ namespace WinformsUI.GameSetup.Singleplayer
         public SingleplayerNewGameSettingsControl()
         {
             InitializeComponent();
-            
+
             myHumanPlayerControl = new MyHumanPlayerControl
             {
                 User = new LocalUser("Me"),
@@ -45,7 +47,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                 aiPlayerSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit - 1;
             };
         }
-        
+
 
         decimal previousPlayersNumber;
         private void PlayersNumberChanged(object sender, EventArgs e)
@@ -69,7 +71,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             }
         }
-        
+
 
         private void Start(object sender, EventArgs e)
         {
@@ -80,8 +82,17 @@ namespace WinformsUI.GameSetup.Singleplayer
                 IList<Player> players = aiPlayerSettingsControl.GetPlayers();
                 players.Add(myHumanPlayerControl.GetPlayer());
 
-                Game game = Game.Create(GameType.SinglePlayer, map, players);
-                
+                Game game = null;
+                // generate id for the game
+                using (var db = new UtilsDbContext())
+                {
+                    var savedGamesEnum = db.SingleplayerSavedGameInfos.AsEnumerable();
+                    var lastGame = savedGamesEnum.LastOrDefault();
+                    int gameId = 1;
+                    if (lastGame != null) gameId = lastGame.Id + 1;
+
+                    game = Game.Create(gameId, GameType.SinglePlayer, map, players);
+                }
                 OnGameStarted?.Invoke(game);
             }
             catch (UnauthorizedAccessException)
