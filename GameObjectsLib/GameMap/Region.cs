@@ -49,6 +49,18 @@ namespace GameObjectsLib.GameMap
             Name = name;
             SuperRegion = superRegion;
         }
+
+        /// <summary>
+        /// Finds out whether region in parameter is neighbour of this instance.
+        /// </summary>
+        /// <param name="region">Region.</param>
+        /// <returns>True, if it is neighbour to this instance.</returns>
+        public bool IsNeighbourOf(Region region)
+        {
+            if (region == null) return false;
+            return NeighbourRegions.Any(x => x == region);
+        }
+
         Region() { }
 
         public override string ToString()

@@ -147,42 +147,6 @@ namespace GameObjectsLib.GameMap
 
                     int bytes = Math.Abs(regionHighlightedImageData.Stride) * regionHighlightedImage.Height;
 
-                    //// without unsafe
-                    //IntPtr highlightedPtr = regionHighlightedImageData.Scan0;
-                    //IntPtr ptr = imageData.Scan0;
-
-                    //byte[] arrayHighlighted = new byte[bytes];
-                    //byte[] array = new byte[bytes];
-
-                    //Marshal.Copy(highlightedPtr, arrayHighlighted, 0, bytes);
-                    //Marshal.Copy(ptr, array, 0, bytes);
-
-                    //bool isTheArea = false;
-                    //for (int i = 0; i < bytes; i += 3)
-                    //{
-                    //    byte blue = arrayHighlighted[i];
-                    //    byte green = arrayHighlighted[i + 1];
-                    //    byte red = arrayHighlighted[i + 2];
-
-                    //    if (red == sourceColor.R && green == sourceColor.G && blue == sourceColor.B)
-                    //    {
-                    //        array[i] = targetColor.B;
-                    //        array[i + 1] = targetColor.G;
-                    //        array[i + 2] = targetColor.R;
-                    //        isTheArea = true;
-                    //    }
-                    //    else if (isTheArea && red == 78 && green == 24 && blue == 86)
-                    //    {
-                    //        array[i] = targetColor.B;
-                    //        array[i + 1] = targetColor.G;
-                    //        array[i + 2] = targetColor.R;
-                    //        isTheArea = false;
-                    //    }
-                    //    else { isTheArea = false; }
-                    //}
-                    //Marshal.Copy(array, 0, ptr, bytes);
-
-
                     bool isTheArea = false;
                     for (int i = 0; i < bytes; i += 3)
                     {
@@ -320,8 +284,104 @@ namespace GameObjectsLib.GameMap
             }
         }
 
+        Color highlightColor = Color.Gold;
         /// <summary>
-        /// Draws army number into the map. If its been drawed previously, it overdraws it. If not, it draws it.
+        /// Highlights given region in the map by drawing stripes onto it.
+        /// </summary>
+        /// <param name="region">Region in the map.</param>
+        /// <param name="army">Army of the highlighted region</param>
+        public void HighlightRegion(Region region, int army)
+        {
+            Color color;
+            {
+                var colorOrNull = templateProcessor.GetColor(region);
+                if (colorOrNull == null) return;
+
+                color = colorOrNull.Value;
+            }
+
+            var regionHighlightedImage = templateProcessor.RegionHighlightedImage;
+            var mapImage = MapImage;
+
+            // lock the bits and change format to rgb 
+            BitmapData regionHighlightedImageData =
+                regionHighlightedImage.LockBits(new Rectangle(0, 0, regionHighlightedImage.Width, regionHighlightedImage.Height), ImageLockMode.ReadOnly,
+                    PixelFormat.Format24bppRgb);
+            try
+            {
+                BitmapData imageData =
+                    mapImage.LockBits(new Rectangle(0, 0, mapImage.Width, mapImage.Height), ImageLockMode.ReadWrite,
+                        PixelFormat.Format24bppRgb);
+
+                unsafe
+                {
+                    byte* regionHighlightedMapPtr = (byte*)regionHighlightedImageData.Scan0;
+                    byte* mapPtr = (byte*)imageData.Scan0;
+
+                    int bytes = Math.Abs(regionHighlightedImageData.Stride) * regionHighlightedImage.Height;
+
+                    for (int i = 0; i < bytes; i += 6)
+                    {
+                        // get colors from highlighted one
+                        byte* blue = regionHighlightedMapPtr;
+                        byte* green = regionHighlightedMapPtr + 1;
+                        byte* red = regionHighlightedMapPtr + 2;
+
+                        Color regionColor = Color.FromArgb(*red, *green, *blue);
+                        if (regionColor == color)
+                        {
+                            *(mapPtr + 2) = highlightColor.R;
+                            *(mapPtr + 1) = highlightColor.G;
+                            *mapPtr = highlightColor.B;
+                        }
+
+
+                        regionHighlightedMapPtr += 6;
+                        mapPtr += 6;
+                    }
+                }
+
+                mapImage.UnlockBits(imageData);
+            }
+            finally
+            {
+                regionHighlightedImage.UnlockBits(regionHighlightedImageData);
+            }
+
+            DrawArmyNumber(region, army);
+
+
+        }
+
+        public void UnhighlightRegion(Region region, Player playerOnTurn, int army)
+        {
+            if (region == null) return;
+            if (region.Owner == null)
+            {
+                // is it neighbour of some of players region?
+                bool isNeighbour = (from controlledRegion in playerOnTurn.ControlledRegions
+                                    where controlledRegion.IsNeighbourOf(region)
+                                    select controlledRegion).Any();
+                if (isNeighbour)
+                {
+                    Recolor(region, regionVisibleUnoccupiedColor);
+                    DrawArmyNumber(region, army);
+                }
+                else
+                {
+                    Recolor(region, regionNotVisibleColor);
+                }
+            }
+            else
+            {
+                Recolor(region, Color.FromKnownColor(region.Owner.Color));
+                DrawArmyNumber(region, army);
+            }
+        }
+
+        /// <summary>
+        /// Draws army number into the map. If its been drawed previously, it overdraws it
+        /// resetting color to regions owner color. If not, it draws it.
         /// </summary>
         /// <param name="region">Region to draw it into.</param>
         /// <param name="army">Army number to draw.</param>
@@ -339,8 +399,8 @@ namespace GameObjectsLib.GameMap
             else
             {
                 bool isNeighbour = (from item in region.NeighbourRegions
-                                   where item == region
-                                   select item).Any();
+                                    where item == region
+                                    select item).Any();
                 if (!isNeighbour) Recolor(sourceColor, regionNotVisibleColor);
                 else Recolor(sourceColor, regionVisibleUnoccupiedColor);
             }

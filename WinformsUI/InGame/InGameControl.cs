@@ -299,27 +299,56 @@ namespace WinformsUI.InGame
                     }
                 case GameState.Attacking:
                     {
-                        if (region == null) return;
-                        if (region.Owner != playerOnTurn.Current) return;
-                        // TODO!!!!!
                         // this one is the first selected region
                         if (previouslySelectedRegion == null && region != null)
                         {
+                            if (region?.Owner != playerOnTurn?.Current) return;
                             // highlight the region
+                            var currentArmy = from tuple in turnPhaseControl.DeployingStructure.ArmiesDeployed
+                                              where tuple.Item1 == region
+                                              select tuple.Item2;
+                            if (currentArmy.Any())
+                            {
+                                processor.HighlightRegion(region, currentArmy.First());
+                            }
+                            else
+                            {
+                                processor.HighlightRegion(region, region.Army);
+                            }
+                            RefreshImage();
 
                         }
-                        else if (region == previouslySelectedRegion
-                            && region == null)
+                        // already highlighted someone and the second one is a neighbour
+                        else if (previouslySelectedRegion != null && previouslySelectedRegion.IsNeighbourOf(region))
                         {
                             // unhighlight both of them
+                            processor.HighlightRegion(region, turnPhaseControl.GetRealArmy(region));
+                            RefreshImage();
+                            // TODO: dialog with attacking army selection
+                            MessageBox.Show("");
 
+                            processor.UnhighlightRegion(previouslySelectedRegion, playerOnTurn.Current, turnPhaseControl.GetRealArmy(previouslySelectedRegion));
+                            processor.UnhighlightRegion(region, playerOnTurn.Current, turnPhaseControl.GetRealArmy(region));
                             region = null;
                             previouslySelectedRegion = null;
+                            RefreshImage();
                         }
-                        else if (previouslySelectedRegion.NeighbourRegions
-                            .Any(x => x == region))
+                        else
                         {
-                            // do attack
+                            if (region != null)
+                            {
+                                processor.UnhighlightRegion(region, playerOnTurn.Current,
+                                    turnPhaseControl.GetRealArmy(region));
+                                region = null;
+                            }
+                            if (previouslySelectedRegion != null)
+                            {
+                                processor.UnhighlightRegion(previouslySelectedRegion, playerOnTurn.Current, turnPhaseControl.GetRealArmy(previouslySelectedRegion));
+                                previouslySelectedRegion = null;
+                            }
+                            
+                            
+                            RefreshImage();
                         }
 
                         previouslySelectedRegion = region;

@@ -15,7 +15,8 @@ namespace GameObjectsLib
     public struct Deploying
     {
         /// <summary>
-        /// Represents armis deployed in the deploying phase in given regions.
+        /// Represents armies deployed in the deploying phase in given regions.
+        /// Int represents armies that will be occuppying this region after this stage.
         /// </summary>
         public List<Tuple<Region, int>> ArmiesDeployed { get; }
 
