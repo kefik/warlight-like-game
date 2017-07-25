@@ -59,7 +59,7 @@
             this.gameMapPictureBox.TabIndex = 0;
             this.gameMapPictureBox.TabStop = false;
             this.gameMapPictureBox.SizeChanged += new System.EventHandler(this.ImageSizeChanged);
-            this.gameMapPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ImageClick);
+            this.gameMapPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ImageClick);
             this.gameMapPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageHover);
             // 
             // gameMenuPanel

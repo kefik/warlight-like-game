@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
@@ -23,6 +25,8 @@ namespace GameObjectsLib.GameMap
         /// Image containing highlighted version of the game map.
         /// </summary>
         public Bitmap RegionHighlightedImage { get; }
+
+        readonly Color textPlacementColor = Color.FromArgb(78, 24, 86);
 
         readonly Dictionary<Color, Region> regionsMapped;
         readonly Dictionary<Region, Color> colorsMapped;
@@ -68,6 +72,14 @@ namespace GameObjectsLib.GameMap
         /// <returns>Region corresponding to the coordinates</returns>
         public Region GetRegion(int x, int y)
         {
+            var color = RegionHighlightedImage.GetPixel(x, y);
+            if (color.R == textPlacementColor.R
+                && color.G == textPlacementColor.G
+                && color.B == textPlacementColor.B) // its color marking army writing position
+            {
+                // that color is only one pixel sized, so we get other pixel
+                return GetRegion(RegionHighlightedImage.GetPixel(x - 1, y));
+            }
             return GetRegion(RegionHighlightedImage.GetPixel(x, y));
         }
 
@@ -81,10 +93,10 @@ namespace GameObjectsLib.GameMap
             bool correct = colorsMapped.TryGetValue(region, out Color color);
             return correct ? new Color?(color) : null;
         }
-        
-        
+
+
     }
-    
+
     /// <summary>
     /// Represents visual representation of the game map and functionality linked with it.
     /// </summary>
@@ -92,6 +104,7 @@ namespace GameObjectsLib.GameMap
     {
         readonly Color regionNotVisibleColor = Color.FromArgb(155, 150, 122);
         readonly Color regionVisibleUnoccupiedColor = Color.White;
+        readonly Color textPlacementColor = Color.FromArgb(78, 24, 86);
 
         public Bitmap TemplateImage
         {
@@ -105,7 +118,7 @@ namespace GameObjectsLib.GameMap
             MapImage = gameMapMapImage;
             templateProcessor = mapImageTemplateProcessor;
         }
-        
+
         /// <summary>
         /// Recolors every pixel of the original color from the map template
         /// in the map to the new color.
@@ -119,7 +132,7 @@ namespace GameObjectsLib.GameMap
 
             // lock the bits and change format to rgb 
             BitmapData regionHighlightedImageData =
-                regionHighlightedImage.LockBits(new Rectangle(0, 0, regionHighlightedImage.Width, regionHighlightedImage.Height), ImageLockMode.ReadWrite,
+                regionHighlightedImage.LockBits(new Rectangle(0, 0, regionHighlightedImage.Width, regionHighlightedImage.Height), ImageLockMode.ReadOnly,
                     PixelFormat.Format24bppRgb);
             try
             {
@@ -129,11 +142,48 @@ namespace GameObjectsLib.GameMap
 
                 unsafe
                 {
-                    byte* regionHighlightedMapPtr = (byte*) regionHighlightedImageData.Scan0;
-                    byte* mapPtr = (byte*) imageData.Scan0;
+                    byte* regionHighlightedMapPtr = (byte*)regionHighlightedImageData.Scan0;
+                    byte* mapPtr = (byte*)imageData.Scan0;
 
                     int bytes = Math.Abs(regionHighlightedImageData.Stride) * regionHighlightedImage.Height;
-                    
+
+                    //// without unsafe
+                    //IntPtr highlightedPtr = regionHighlightedImageData.Scan0;
+                    //IntPtr ptr = imageData.Scan0;
+
+                    //byte[] arrayHighlighted = new byte[bytes];
+                    //byte[] array = new byte[bytes];
+
+                    //Marshal.Copy(highlightedPtr, arrayHighlighted, 0, bytes);
+                    //Marshal.Copy(ptr, array, 0, bytes);
+
+                    //bool isTheArea = false;
+                    //for (int i = 0; i < bytes; i += 3)
+                    //{
+                    //    byte blue = arrayHighlighted[i];
+                    //    byte green = arrayHighlighted[i + 1];
+                    //    byte red = arrayHighlighted[i + 2];
+
+                    //    if (red == sourceColor.R && green == sourceColor.G && blue == sourceColor.B)
+                    //    {
+                    //        array[i] = targetColor.B;
+                    //        array[i + 1] = targetColor.G;
+                    //        array[i + 2] = targetColor.R;
+                    //        isTheArea = true;
+                    //    }
+                    //    else if (isTheArea && red == 78 && green == 24 && blue == 86)
+                    //    {
+                    //        array[i] = targetColor.B;
+                    //        array[i + 1] = targetColor.G;
+                    //        array[i + 2] = targetColor.R;
+                    //        isTheArea = false;
+                    //    }
+                    //    else { isTheArea = false; }
+                    //}
+                    //Marshal.Copy(array, 0, ptr, bytes);
+
+
+                    bool isTheArea = false;
                     for (int i = 0; i < bytes; i += 3)
                     {
                         // get colors from highlighted one
@@ -149,7 +199,18 @@ namespace GameObjectsLib.GameMap
                             *(mapPtr + 2) = targetColor.R;
                             *(mapPtr + 1) = targetColor.G;
                             *mapPtr = targetColor.B;
+                            isTheArea = true;
                         }
+                        else if (isTheArea && *red == textPlacementColor.R
+                            && *green == textPlacementColor.G
+                            && *blue == textPlacementColor.B)
+                        {
+                            *(mapPtr + 2) = targetColor.R;
+                            *(mapPtr + 1) = targetColor.G;
+                            *mapPtr = targetColor.B;
+                            isTheArea = false;
+                        }
+                        else isTheArea = false;
 
                         regionHighlightedMapPtr += 3;
                         mapPtr += 3;
@@ -175,9 +236,10 @@ namespace GameObjectsLib.GameMap
 
             var colorOrNull = templateProcessor.GetColor(region);
             if (colorOrNull == null) return;
-            
+
             Recolor(colorOrNull.Value, targetColor);
         }
+
 
         public Region GetRegion(int x, int y)
         {
@@ -217,27 +279,28 @@ namespace GameObjectsLib.GameMap
         {
             throw new NotImplementedException();
         }
-        
+
         void Redraw(SingleplayerGame game)
         {
-            // TODO: check
             var humanPlayer = (from player in game.Players
-                           where player.GetType() == typeof(HumanPlayer)
-                           select player).First() as HumanPlayer;
+                               where player.GetType() == typeof(HumanPlayer)
+                               select player).First() as HumanPlayer;
             // get owned regions
             var ownedRegions = humanPlayer.ControlledRegions;
-            
+
             // recolor them to players color
             foreach (var ownedRegion in ownedRegions)
             {
                 Recolor(ownedRegion, Color.FromKnownColor(humanPlayer.Color));
+
+                DrawArmyNumber(ownedRegion, ownedRegion.Army);
             }
 
             // recolor neighbour regions local player does not own
             var neighbourNotOwnedRegions = (from ownedRegion in ownedRegions
-                                           from neighbour in ownedRegion.NeighbourRegions
-                                           where neighbour.Owner != humanPlayer
-                                           select neighbour).Distinct();
+                                            from neighbour in ownedRegion.NeighbourRegions
+                                            where neighbour.Owner != humanPlayer
+                                            select neighbour).Distinct();
 
             foreach (var region in neighbourNotOwnedRegions)
             {
@@ -249,13 +312,106 @@ namespace GameObjectsLib.GameMap
                 else
                 {
                     var ownerColor = Color.FromKnownColor(owner.Color);
-                    
+
                     Recolor(region, ownerColor);
                 }
+                DrawArmyNumber(region, region.Army);
+
             }
         }
 
+        /// <summary>
+        /// Draws army number into the map. If its been drawed previously, it overdraws it. If not, it draws it.
+        /// </summary>
+        /// <param name="region">Region to draw it into.</param>
+        /// <param name="army">Army number to draw.</param>
+        public void OverDrawArmyNumber(Region region, int army)
+        {
+            // get color that match the region
+            var colorOrNull = templateProcessor.GetColor(region);
+            if (colorOrNull == null) return;
+            // source color
+            var sourceColor = colorOrNull.Value;
 
+            // recolor back to the previous color
+            if (region.Owner != null)
+                Recolor(sourceColor, Color.FromKnownColor(region.Owner.Color));
+            else
+            {
+                bool isNeighbour = (from item in region.NeighbourRegions
+                                   where item == region
+                                   select item).Any();
+                if (!isNeighbour) Recolor(sourceColor, regionNotVisibleColor);
+                else Recolor(sourceColor, regionVisibleUnoccupiedColor);
+            }
+
+            DrawArmyNumber(region, army);
+
+        }
+        /// <summary>
+        /// Draws number of army by selected region onto MapImage.
+        /// </summary>
+        /// <param name="region">Regions army to be drawed.</param>
+        /// <param name="army">Army number to draw.</param>
+        void DrawArmyNumber(Region region, int army)
+        {
+            // get color that match the region
+            var colorOrNull = templateProcessor.GetColor(region);
+            if (colorOrNull == null) return;
+            // source color
+            var sourceColor = colorOrNull.Value;
+
+            Rectangle rect = new Rectangle(0, 0, TemplateImage.Width, TemplateImage.Height);
+            BitmapData bmpData =
+                TemplateImage.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+
+            PointF point = default(PointF);
+            try
+            {
+                IntPtr ptr = bmpData.Scan0;
+
+                int stride = bmpData.Stride;
+                byte[] rgbValues = new byte[bmpData.Stride * bmpData.Height];
+
+                Marshal.Copy(ptr, rgbValues, 0, rgbValues.Length);
+
+                PointF GetMatchingPoint()
+                {
+                    for (int column = 0; column < bmpData.Height; column++)
+                    {
+                        Color previousColor = default(Color);
+                        for (int row = 0; row < bmpData.Width; row++)
+                        {
+                            byte red = rgbValues[(column * stride) + (row * 3) + 2];
+                            byte green = rgbValues[(column * stride) + (row * 3) + 1];
+                            byte blue = rgbValues[(column * stride) + (row * 3)];
+                            Color color = Color.FromArgb(red, green, blue);
+                            // if it is point to draw and its in the correct region, get point coordinates
+                            if (color == textPlacementColor && previousColor == sourceColor)
+                                return new PointF(row, column);
+                            previousColor = color;
+                        }
+                    }
+                    throw new ArgumentException();
+                }
+                // get point where to draw the number of armies
+                point = GetMatchingPoint();
+            }
+            finally
+            {
+                TemplateImage.UnlockBits(bmpData);
+            }
+
+            Graphics gr = Graphics.FromImage(MapImage);
+            gr.SmoothingMode = SmoothingMode.AntiAlias;
+            gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            // draw the string onto map
+            gr.DrawString(army.ToString(),
+                new Font("Tahoma", 8), Brushes.Black,
+                point);
+            gr.Flush();
+        }
         /// <summary>
         /// Initializes an instance of MapImageProcessor.
         /// </summary>
@@ -296,7 +452,7 @@ namespace GameObjectsLib.GameMap
             var dictionary = new Dictionary<Color, Region>();
             using (XmlReader reader = XmlReader.Create(regionColorMappingPath, settings))
             {
-                Color color = default(Color); 
+                Color color = default(Color);
                 Region region = default(Region);
 
                 while (reader.Read())
@@ -318,8 +474,8 @@ namespace GameObjectsLib.GameMap
                                     break;
                                 case nameof(Region):
                                     region = (from item in map.Regions
-                                             where item.Name == reader.GetAttribute("Name")
-                                             select item).First();
+                                              where item.Name == reader.GetAttribute("Name")
+                                              select item).First();
                                     break;
                             }
                             break;
@@ -334,10 +490,10 @@ namespace GameObjectsLib.GameMap
             }
 
             MapImageTemplateProcessor mapImageTemplateProcessor = new MapImageTemplateProcessor(map, regionHighlightedImage, dictionary);
-            
+
 
             return new MapImageProcessor(mapImageTemplateProcessor, image);
         }
-        
+
     }
 }

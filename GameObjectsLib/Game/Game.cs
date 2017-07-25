@@ -37,8 +37,9 @@ namespace GameObjectsLib.Game
     [ProtoInclude(12, typeof(NetworkGame))]
     public abstract class Game : ISaveable, IRefreshable
     {
-        public int Id { get; }
         [ProtoMember(1)]
+        public int Id { get; }
+        [ProtoMember(2)]
         public int RoundNumber { get; private set; }
 
         protected Game()
@@ -48,13 +49,13 @@ namespace GameObjectsLib.Game
         /// <summary>
         /// Represents map being played in this game.
         /// </summary>
-        [ProtoMember(2)]
+        [ProtoMember(3)]
         public Map Map { get; }
 
         /// <summary>
         /// Represents list of players playing this game.
         /// </summary>
-        [ProtoMember(3)]
+        [ProtoMember(4)]
         public IList<Player> Players { get; }
 
         /// <summary>
