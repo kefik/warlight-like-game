@@ -286,7 +286,7 @@ namespace WinformsUI.InGame
                                     // deployed already in this region
 
                                     // if player has deployed all of his possible units
-                                    if (turnPhaseControl.DeployingStructure.UnitsLeftToDeploy(playerOnTurn.Current) <= 0)
+                                    if (turnPhaseControl.DeployingStructure.GetUnitsLeftToDeploy(playerOnTurn.Current) <= 0)
                                     {
                                         return;
                                     }
@@ -353,9 +353,24 @@ namespace WinformsUI.InGame
                             // unhighlight both of them
                             processor.HighlightRegion(region, turnPhaseControl.GetRealArmy(region));
                             RefreshImage();
-                            // TODO: dialog with attacking army selection
-                            AttackManagerForm attackManager = new AttackManagerForm();
+                            
+                            AttackManagerForm attackManager = new AttackManagerForm()
+                            {
+                                ArmyLowerLimit = 0,
+                                ArmyUpperLimit
+                                = turnPhaseControl.AttackingStructure
+                                .GetUnitsLeftToAttack(previouslySelectedRegion,
+                                turnPhaseControl.DeployingStructure)
+                            };
                             var dialogResult = attackManager.ShowDialog();
+                            // execute the attack
+                            if (dialogResult == DialogResult.OK)
+                            {
+                                Attack attack = new Attack(previouslySelectedRegion, attackManager.AttackingArmy,
+                                    region);
+                                turnPhaseControl.AttackingStructure.Attacks.Add(attack);
+                            }
+
 
                             processor.UnhighlightRegion(previouslySelectedRegion, playerOnTurn.Current, turnPhaseControl.GetRealArmy(previouslySelectedRegion));
                             processor.UnhighlightRegion(region, playerOnTurn.Current, turnPhaseControl.GetRealArmy(region));

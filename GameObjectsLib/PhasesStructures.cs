@@ -29,7 +29,7 @@ namespace GameObjectsLib
         /// </summary>
         /// <param name="player">Given player.</param>
         /// <returns>Units left to deploy for given player.</returns>
-        public int UnitsLeftToDeploy(Player player)
+        public int GetUnitsLeftToDeploy(Player player)
         {
             int income = player.GetIncome();
             int alreadyDeployed = (from tuple in ArmiesDeployed
@@ -53,8 +53,48 @@ namespace GameObjectsLib
         {
             Attacks = attacks;
         }
+        /// <summary>
+        /// Calculates units of given region that are left to attack.
+        /// </summary>
+        /// <param name="region">Given region.</param>
+        /// <param name="deployingPhase">Deploying based on which it will be calculated.</param>
+        /// <returns></returns>
+        public int GetUnitsLeftToAttack(Region region, Deploying deployingPhase)
+        {
+            var deployRegionEnumerable = from tuple in deployingPhase.ArmiesDeployed
+                                where tuple.Item1 == region
+                                select tuple.Item2;
+            var attackRegionEnumerable = from attack in Attacks
+                                         where attack.Attacker == region
+                                         select attack.AttackingArmy;
+            // nothing was deployed in this region
+            if (!deployRegionEnumerable.Any())
+            {
+                // nothing was attacked with
+                if (!attackRegionEnumerable.Any())
+                {
+                    return region.Army - Region.MinimumArmy;
+                }
+                else
+                {
+                    return region.Army - attackRegionEnumerable.Sum() - Region.MinimumArmy;
+                }
+            }
+            else
+            {
+                // nothing was attacked with
+                if (!attackRegionEnumerable.Any())
+                {
+                    return deployRegionEnumerable.Sum() - Region.MinimumArmy;
+                }
+                else
+                {
+                    return deployRegionEnumerable.Sum() - attackRegionEnumerable.Sum() - Region.MinimumArmy;
+                }
+            }
+        }
     }
-
+    
     /// <summary>
     /// Represents one attack in the game round.
     /// </summary>

@@ -105,6 +105,7 @@
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(287, 145);
             this.Name = "ServerLoggingForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Warlight | Server logging";
             this.ResumeLayout(false);
             this.PerformLayout();

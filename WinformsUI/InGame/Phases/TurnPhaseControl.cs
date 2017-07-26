@@ -125,24 +125,7 @@ namespace WinformsUI.InGame.Phases
         /// <returns>Army.</returns>
         public int GetRealArmy(Region region)
         {
-            if (region == null) throw new ArgumentException();
-
-            var result = from tuple in DeployingStructure.ArmiesDeployed
-                         where region == tuple.Item1
-                         select tuple.Item2;
-            var attackingArmyEnumerable = from attack in AttackingStructure.Attacks
-                                          where attack.Attacker == region
-                                          select attack.AttackingArmy;
-            if (result.Any())
-            {
-                int armyAfterDeployment = result.First();
-                if (attackingArmyEnumerable.Any())
-                    return armyAfterDeployment - attackingArmyEnumerable.First();
-                return armyAfterDeployment;
-            }
-            if (attackingArmyEnumerable.Any())
-                return region.Army - attackingArmyEnumerable.First();
-            return region.Army;
+            return AttackingStructure.GetUnitsLeftToAttack(region, DeployingStructure) + 1;
         }
     }
 }

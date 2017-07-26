@@ -78,6 +78,7 @@
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(260, 115);
             this.Name = "AttackManagerForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "AttackManagerForm";
             ((System.ComponentModel.ISupportInitialize)(this.attackArmyNumericUpDown)).EndInit();
             this.ResumeLayout(false);

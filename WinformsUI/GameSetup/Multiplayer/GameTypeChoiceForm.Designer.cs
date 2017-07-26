@@ -89,6 +89,7 @@
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(304, 140);
             this.Name = "GameTypeChoiceForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Warlight | Type choose";
             this.ResumeLayout(false);
 

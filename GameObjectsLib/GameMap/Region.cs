@@ -15,6 +15,8 @@ namespace GameObjectsLib.GameMap
     [ProtoContract]
     public class Region : IEquatable<Region>, IRefreshable
     {
+        public const int MinimumArmy = 1;
+
         [ProtoMember(1)]
         public int Id { get; }
         [ProtoMember(2)]

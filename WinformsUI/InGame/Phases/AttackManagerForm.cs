@@ -19,7 +19,7 @@ namespace WinformsUI.InGame.Phases
             get { return armyLowerLimit; }
             set
             {
-                if (value <= 0) throw new ArgumentException();
+                if (value < 0) throw new ArgumentException();
 
                 armyLowerLimit = value;
                 attackArmyNumericUpDown.Minimum = value;
@@ -34,7 +34,7 @@ namespace WinformsUI.InGame.Phases
             get { return armyUpperLimit; }
             set
             {
-                if (value <= 0) throw new ArgumentException();
+                if (value < 0) throw new ArgumentException();
 
                 armyUpperLimit = value;
                 attackArmyNumericUpDown.Maximum = value;
