@@ -132,6 +132,12 @@
     <Compile Include="InGame\InGameControl.Designer.cs">
       <DependentUpon>InGameControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="InGame\Phases\AttackManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InGame\Phases\AttackManagerForm.Designer.cs">
+      <DependentUpon>AttackManagerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="InGame\Phases\BeginGamePhaseControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -253,6 +259,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InGame\InGameControl.resx">
       <DependentUpon>InGameControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InGame\Phases\AttackManagerForm.resx">
+      <DependentUpon>AttackManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InGame\Phases\BeginGamePhaseControl.resx">
       <DependentUpon>BeginGamePhaseControl.cs</DependentUpon>

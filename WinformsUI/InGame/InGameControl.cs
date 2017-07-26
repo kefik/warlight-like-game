@@ -195,6 +195,27 @@ namespace WinformsUI.InGame
                             {
                                 state = gameState;
                             };
+                            turnPhaseControl.OnReset += gameState =>
+                            {
+                                switch (gameState)
+                                {
+                                    case GameState.Deploying:
+                                        if (state > GameState.Attacking)
+                                        {
+                                            ResetAttackingPhase();
+                                            ResetDeployingPhase();
+                                        }
+                                        break;
+                                    case GameState.Attacking:
+                                        ResetAttackingPhase();
+                                        break;
+                                    case GameState.Committing:
+                                        break;
+                                    case GameState.Committed:
+                                        break;
+                                }
+                                state = gameState;
+                            };
                             turnPhaseControl.Show();
                             break;
                     }
@@ -202,6 +223,16 @@ namespace WinformsUI.InGame
             }
         }
 
+        void ResetAttackingPhase()
+        {
+            
+        }
+
+        void ResetDeployingPhase()
+        {
+            
+        }
+        
         public InGameControl()
         {
             InitializeComponent();
@@ -304,17 +335,9 @@ namespace WinformsUI.InGame
                         {
                             if (region?.Owner != playerOnTurn?.Current) return;
                             // highlight the region
-                            var currentArmy = from tuple in turnPhaseControl.DeployingStructure.ArmiesDeployed
-                                              where tuple.Item1 == region
-                                              select tuple.Item2;
-                            if (currentArmy.Any())
-                            {
-                                processor.HighlightRegion(region, currentArmy.First());
-                            }
-                            else
-                            {
-                                processor.HighlightRegion(region, region.Army);
-                            }
+
+                            processor.HighlightRegion(region, turnPhaseControl.GetRealArmy(region));
+
                             RefreshImage();
 
                         }
@@ -346,8 +369,8 @@ namespace WinformsUI.InGame
                                 processor.UnhighlightRegion(previouslySelectedRegion, playerOnTurn.Current, turnPhaseControl.GetRealArmy(previouslySelectedRegion));
                                 previouslySelectedRegion = null;
                             }
-                            
-                            
+
+
                             RefreshImage();
                         }
 
@@ -355,7 +378,10 @@ namespace WinformsUI.InGame
                         break;
                     }
                 case GameState.Committing:
-                    break;
+                    {
+
+                        break;
+                    }
                 case GameState.Committed:
                     break;
             }

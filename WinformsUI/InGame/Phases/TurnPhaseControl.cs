@@ -23,11 +23,13 @@ namespace WinformsUI.InGame.Phases
 
         /// <summary>
         ///     Is invoked when state of the game is changed.
+        /// Argument is the new state.
         /// </summary>
         public event Action<GameState> OnStateChanged;
 
         /// <summary>
         ///     Resets everything from previous stages of this stage.
+        /// Argument is the new state.
         /// </summary>
         public event Action<GameState> OnReset;
 
@@ -124,7 +126,7 @@ namespace WinformsUI.InGame.Phases
         public int GetRealArmy(Region region)
         {
             if (region == null) throw new ArgumentException();
-            
+
             var result = from tuple in DeployingStructure.ArmiesDeployed
                          where region == tuple.Item1
                          select tuple.Item2;
