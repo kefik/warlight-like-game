@@ -23,7 +23,20 @@ namespace GameObjectsLib
         public Deploying(List<Tuple<Region, int>> armiesDeployed)
         {
             ArmiesDeployed = armiesDeployed;
-        }  
+        }
+        /// <summary>
+        /// Calculates how many units can given player deploy to fulfill his maximum.
+        /// </summary>
+        /// <param name="player">Given player.</param>
+        /// <returns>Units left to deploy for given player.</returns>
+        public int UnitsLeftToDeploy(Player player)
+        {
+            int income = player.GetIncome();
+            int alreadyDeployed = (from tuple in ArmiesDeployed
+                                   where tuple.Item1.Owner == player
+                                   select tuple.Item2 - tuple.Item1.Army).Sum();
+            return income - alreadyDeployed;
+        }
     }
     /// <summary>
     /// Represents attacking phase of the game.
@@ -41,7 +54,7 @@ namespace GameObjectsLib
             Attacks = attacks;
         }
     }
-    
+
     /// <summary>
     /// Represents one attack in the game round.
     /// </summary>
@@ -74,4 +87,5 @@ namespace GameObjectsLib
             Defender = defender;
         }
     }
+
 }

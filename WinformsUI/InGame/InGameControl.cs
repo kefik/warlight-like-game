@@ -284,6 +284,12 @@ namespace WinformsUI.InGame
                             {
                                 case MouseButtons.Left:
                                     // deployed already in this region
+
+                                    // if player has deployed all of his possible units
+                                    if (turnPhaseControl.DeployingStructure.UnitsLeftToDeploy(playerOnTurn.Current) <= 0)
+                                    {
+                                        return;
+                                    }
                                     if (regionRepresentingTuple != null)
                                     {
                                         // cuz its immutable, remove the region
@@ -348,7 +354,8 @@ namespace WinformsUI.InGame
                             processor.HighlightRegion(region, turnPhaseControl.GetRealArmy(region));
                             RefreshImage();
                             // TODO: dialog with attacking army selection
-                            MessageBox.Show("");
+                            AttackManagerForm attackManager = new AttackManagerForm();
+                            var dialogResult = attackManager.ShowDialog();
 
                             processor.UnhighlightRegion(previouslySelectedRegion, playerOnTurn.Current, turnPhaseControl.GetRealArmy(previouslySelectedRegion));
                             processor.UnhighlightRegion(region, playerOnTurn.Current, turnPhaseControl.GetRealArmy(region));

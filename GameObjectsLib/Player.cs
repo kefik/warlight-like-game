@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using GameObjectsLib.GameMap;
 using GameObjectsLib.GameUser;
 using ProtoBuf;
 using Region = GameObjectsLib.GameMap.Region;
@@ -36,7 +38,21 @@ namespace GameObjectsLib
         /// </summary>
         [ProtoMember(2, AsReference = true)]
         public IList<Region> ControlledRegions { get; } = new List<Region>();
-        
+
+        const int BasicIncome = 5;
+        /// <summary>
+        /// Calculates players army income and returns it.
+        /// </summary>
+        /// <returns>Army income of the player.</returns>
+        public int GetIncome()
+        {
+            var superRegionsOwned = (from region in ControlledRegions
+                                select region.SuperRegion into superRegion
+                                where superRegion.Owner == this
+                                select superRegion).Distinct();
+            return BasicIncome + superRegionsOwned.Sum(superRegion => superRegion.Bonus);
+        }
+
         protected Player(KnownColor color)
         {
             Color = color;
@@ -73,14 +89,14 @@ namespace GameObjectsLib
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((Player) obj);
+            return Equals((Player)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((int) Color * 397) ^ (ControlledRegions != null ? ControlledRegions.GetHashCode() : 0);
+                return ((int)Color * 397) ^ (ControlledRegions != null ? ControlledRegions.GetHashCode() : 0);
             }
         }
 
