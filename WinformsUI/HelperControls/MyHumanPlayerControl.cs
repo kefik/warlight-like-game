@@ -92,10 +92,12 @@ namespace WinformsUI.HelperControls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    PlayerColor++; // TODO: fix so it doesnt overflow or underflow
+                    if ((int) PlayerColor >= 173) PlayerColor = (KnownColor) 0;
+                    else PlayerColor++;
                     break;
                 case MouseButtons.Right:
-                    PlayerColor--;
+                    if ((int)PlayerColor <= 0) PlayerColor = (KnownColor)173;
+                    else PlayerColor--;
                     break;
             }
         }

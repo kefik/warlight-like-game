@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GameObjectsLib.GameMap;
 using ProtoBuf;
+using Region = GameObjectsLib.GameMap.Region;
 
 namespace GameObjectsLib
 {
@@ -178,5 +179,4 @@ namespace GameObjectsLib
             return newRound;
         }
     }
-
 }

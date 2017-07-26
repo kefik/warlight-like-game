@@ -31,15 +31,15 @@
             this.attackArmyNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.attackingArmySizeLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.attackArmyNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // attackArmyNumericUpDown
             // 
-            this.attackArmyNumericUpDown.Location = new System.Drawing.Point(12, 12);
-            this.attackArmyNumericUpDown.MinimumSize = new System.Drawing.Size(120, 0);
+            this.attackArmyNumericUpDown.Location = new System.Drawing.Point(137, 12);
             this.attackArmyNumericUpDown.Name = "attackArmyNumericUpDown";
-            this.attackArmyNumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.attackArmyNumericUpDown.Size = new System.Drawing.Size(95, 20);
             this.attackArmyNumericUpDown.TabIndex = 0;
             this.attackArmyNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -65,23 +65,35 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.Cancel);
             // 
+            // attackingArmySizeLabel
+            // 
+            this.attackingArmySizeLabel.AutoSize = true;
+            this.attackingArmySizeLabel.Location = new System.Drawing.Point(8, 14);
+            this.attackingArmySizeLabel.Name = "attackingArmySizeLabel";
+            this.attackingArmySizeLabel.Size = new System.Drawing.Size(98, 13);
+            this.attackingArmySizeLabel.TabIndex = 3;
+            this.attackingArmySizeLabel.Text = "Attacking army size";
+            // 
             // AttackManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(244, 76);
+            this.Controls.Add(this.attackingArmySizeLabel);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.attackArmyNumericUpDown);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(260, 115);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(260, 115);
             this.Name = "AttackManagerForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "AttackManagerForm";
+            this.Text = "Attack manager";
             ((System.ComponentModel.ISupportInitialize)(this.attackArmyNumericUpDown)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -90,5 +102,6 @@
         private System.Windows.Forms.NumericUpDown attackArmyNumericUpDown;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.Label attackingArmySizeLabel;
     }
 }

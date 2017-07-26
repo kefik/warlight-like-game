@@ -20,7 +20,7 @@ namespace WinformsUI.HelperControls
 
             this.player = new AIPlayer(Difficulty.Medium, "PC1", KnownColor.Blue);
 
-            difficultyComboBox.SelectedIndex = (int) player.Difficulty;
+            difficultyComboBox.SelectedIndex = (int)player.Difficulty;
             colorButton.BackColor = Color.FromKnownColor(player.Color);
         }
 
@@ -30,7 +30,7 @@ namespace WinformsUI.HelperControls
 
             this.player = player;
         }
-        
+
         /// <summary>
         /// Accesses AI player color.
         /// </summary>
@@ -76,10 +76,12 @@ namespace WinformsUI.HelperControls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    PlayerColor++;
+                    if ((int)PlayerColor >= 173) PlayerColor = (KnownColor)0;
+                    else PlayerColor++;
                     break;
                 case MouseButtons.Right:
-                    PlayerColor--;
+                    if ((int)PlayerColor <= 0) PlayerColor = (KnownColor)173;
+                    else PlayerColor--;
                     break;
             }
         }
