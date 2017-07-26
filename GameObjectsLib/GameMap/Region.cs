@@ -62,6 +62,15 @@ namespace GameObjectsLib.GameMap
             if (region == null) return false;
             return NeighbourRegions.Any(x => x == region);
         }
+        /// <summary>
+        /// Finds out whether this region is neighbour of any of players controlled regions.
+        /// </summary>
+        /// <param name="player">Given player.</param>
+        /// <returns>True, if it is neighbour of player.</returns>
+        public bool IsNeighbourOf(Player player)
+        {
+            return player.ControlledRegions.Any(controlledRegion => controlledRegion.IsNeighbourOf(this));
+        }
 
         Region() { }
 

@@ -233,15 +233,86 @@ namespace GameObjectsLib.GameMap
                 Recolor(region, regionNotVisibleColor);
             }
         }
-
+        /// <summary>
+        /// Resets round, recoloring everything to previous color, writing
+        /// original numbers of armies.
+        /// </summary>
+        /// <param name="round">Round to reset</param>
         public void ResetRound(Round round)
         {
-            throw new NotImplementedException();
-        }
+            var attackingPhase = round.Attacking;
+            ResetAttackingPhase(attackingPhase, round.Deploying);
 
-        public void ResetRoundPhase(Attacking deploying)
+            var deployingPhase = round.Deploying;
+            ResetDeployingPhase(deployingPhase);
+        }
+        /// <summary>
+        /// Resets attacking phase recoloring everything back.
+        /// Notice: deploying phase passed in parameter must be corect in order
+        /// to make this method work properly.
+        /// </summary>
+        /// <param name="attackingPhase">Attacking phase</param>
+        /// <param name="deployingPhase">Deploying phase</param>
+        public void ResetAttackingPhase(Attacking attackingPhase, Deploying deployingPhase)
         {
-            throw new NotImplementedException();
+            // TODO: check + should not clear
+            var attacks = attackingPhase.Attacks;
+            //for (int i = attacks.Count - 1; i >= 0; i--)
+            //{
+            //    var attacker = attacks[i].Attacker;
+            //    attacks.Remove(attacks[i]);
+            //    // + 1 bcuz 1 army unit must always stay in the region
+            //    int armyBeforeAttack
+            //        = attackingPhase.GetUnitsLeftToAttack(attacker, deployingPhase) + 1;
+            //    OverDrawArmyNumber(attacker, armyBeforeAttack);
+            //}
+            var attackerRegionsGroups = from attack in attacks
+                                        group attack by attack.Attacker;
+            var regionAttackingArmyPairEnumerable = from gr in attackerRegionsGroups
+                                                    select new
+                                                    {
+                                                        Attacker = gr.Key,
+                                                        AttackingArmy = gr.Sum(x => x.AttackingArmy)
+                                                    };
+
+            foreach (var item in regionAttackingArmyPairEnumerable)
+            {
+                var attacker = item.Attacker;
+                int attackingArmy = item.AttackingArmy;
+
+                var regionDeployedArmy = (from tuple in deployingPhase.ArmiesDeployed
+                                         where tuple.Item1 == attacker
+                                         select tuple.Item2);
+                if (!regionDeployedArmy.Any())
+                {
+                    OverDrawArmyNumber(attacker, attacker.Army);
+                }
+                else
+                {
+                    int army = regionDeployedArmy.First();
+                    OverDrawArmyNumber(attacker, army);
+                }
+                
+            }
+        }
+        /// <summary>
+        /// Resets deploying phase, recoloring everything to the previous color, 
+        /// redrawing everything to the original state.
+        /// </summary>
+        /// <param name="deployingPhase"></param>
+        public void ResetDeployingPhase(Deploying deployingPhase)
+        {
+            // TODO: check + should not clear
+            foreach (var tuple in deployingPhase.ArmiesDeployed)
+            {
+                var region = tuple.Item1;
+                if (region.Owner != null)
+                {
+                    Recolor(region, Color.FromKnownColor(region.Owner.Color));
+                }
+                else throw new ArgumentException();
+                DrawArmyNumber(region, region.Army);
+            }
         }
 
         void Redraw(SingleplayerGame game)

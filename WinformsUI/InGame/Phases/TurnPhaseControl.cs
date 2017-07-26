@@ -79,7 +79,7 @@ namespace WinformsUI.InGame.Phases
         {
             ResetStateHighlight(state);
             // committing phase
-            if (state > GameState.Attacking) OnReset?.Invoke(GameState.Attacking);
+            if (state > GameState.Attacking) OnReset?.Invoke(GameState.Committing);
 
             state = GameState.Attacking;
             // highlight
@@ -91,8 +91,12 @@ namespace WinformsUI.InGame.Phases
         void Deploying(object sender, EventArgs e)
         {
             ResetStateHighlight(state);
+
             // committing phase
+            if (state > GameState.Deploying) OnReset?.Invoke(GameState.Attacking);
+
             state = GameState.Deploying;
+            
             // highlight button
             HighlightCorrectButton(state);
 

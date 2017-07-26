@@ -117,7 +117,7 @@ namespace WinformsUI.InGame
                     throw new ArgumentOutOfRangeException();
             }
         }
-
+        
         void NewRound()
         {
             processor.Refresh(Game);
@@ -200,37 +200,34 @@ namespace WinformsUI.InGame
                                 switch (gameState)
                                 {
                                     case GameState.Deploying:
-                                        if (state > GameState.Attacking)
+                                        if (state >= GameState.Attacking)
                                         {
-                                            ResetAttackingPhase();
-                                            ResetDeployingPhase();
+                                            processor.ResetRound(new Round(game.Id, turnPhaseControl.DeployingStructure,
+                                                turnPhaseControl.AttackingStructure));
+                                            turnPhaseControl.DeployingStructure.ArmiesDeployed.Clear();
+                                            turnPhaseControl.AttackingStructure.Attacks.Clear();
+                                        }
+                                        else
+                                        {
+                                            processor.ResetDeployingPhase(turnPhaseControl.DeployingStructure);
+                                            turnPhaseControl.DeployingStructure.ArmiesDeployed.Clear();
                                         }
                                         break;
                                     case GameState.Attacking:
-                                        ResetAttackingPhase();
+                                        processor.ResetAttackingPhase(turnPhaseControl.AttackingStructure,
+                                            turnPhaseControl.DeployingStructure);
+                                        turnPhaseControl.AttackingStructure.Attacks.Clear();
                                         break;
                                     case GameState.Committing:
                                         break;
-                                    case GameState.Committed:
-                                        break;
                                 }
-                                state = gameState;
+                                RefreshImage();
                             };
                             turnPhaseControl.Show();
                             break;
                     }
                     break;
             }
-        }
-
-        void ResetAttackingPhase()
-        {
-            
-        }
-
-        void ResetDeployingPhase()
-        {
-            
         }
         
         public InGameControl()
