@@ -25,8 +25,20 @@ namespace WinformsUI.InGame
     }
     public partial class InGameControl : UserControl
     {
+        public InGameControl()
+        {
+            InitializeComponent();
+
+            mapHandlerControl.OnDeployAttempt += DeployAttempt;
+            mapHandlerControl.OnAttackAttempt += AttackAttempt;
+            mapHandlerControl.OnRegionSeizeAttempt += SeizeAttempt;
+            mapHandlerControl.GetState = () => state;
+            mapHandlerControl.GetPlayerOnTurn = () => playerOnTurn?.Current;
+            // TODO: might throw exception
+            
+        }
+
         Game game;
-        MapImageProcessor processor;
 
         IEnumerator<Player> playerOnTurn;
         BeginGamePhaseControl beginGamePhaseControl;
@@ -61,24 +73,18 @@ namespace WinformsUI.InGame
                                    where item.Id == game.Map.Id
                                    select item).Single();
                     // initialize map processor
-                    processor = MapImageProcessor.Create(Game.Map, mapInfo.ImageColoredRegionsPath,
+                    mapHandlerControl.Processor = MapImageProcessor.Create(Game.Map, mapInfo.ImageColoredRegionsPath,
                         mapInfo.ColorRegionsTemplatePath, mapInfo.ImagePath);
 
                 }
-                processor.Refresh(value);
-
-                gameMapPictureBox.Image = processor.MapImage;
-                gameMapPictureBox.BackgroundImage = processor.TemplateImage;
+                mapHandlerControl.Processor.Refresh(value);
                 Refresh();
-
             }
         }
 
         void StartOverGameBeginningPhase(GameBeginningRound gameBeginningRound)
         {
-            processor.ResetRound(gameBeginningRound);
-
-            RefreshImage();
+            mapHandlerControl.StartOver(gameBeginningRound);
             beginGamePhaseControl.BeginningRound.SelectedRegions.Clear();
         }
 
@@ -99,8 +105,8 @@ namespace WinformsUI.InGame
                         }
                         State = GameState.RoundBeginning;
 
-                        processor.Refresh(Game);
-                        RefreshImage();
+                        mapHandlerControl.Processor.Refresh(Game);
+                        mapHandlerControl.RefreshImage();
 
                         break;
                     }
@@ -137,8 +143,8 @@ namespace WinformsUI.InGame
             var combinedRound = Round.Process(rounds);
             game.Play(combinedRound);
 
-            processor.Refresh(game);
-            RefreshImage();
+            mapHandlerControl.Processor.Refresh(game);
+            mapHandlerControl.RefreshImage();
         }
 
         
@@ -153,13 +159,7 @@ namespace WinformsUI.InGame
                 state = value;
             }
         }
-
-
-        void RefreshImage()
-        {
-            gameMapPictureBox.Refresh();
-        }
-
+        
 
         public void GameStateChanged(GameState newGameState)
         {
@@ -208,6 +208,7 @@ namespace WinformsUI.InGame
                             Parent = gameStateMenuPanel,
                             Dock = DockStyle.Fill
                         };
+                        mapHandlerControl.GetRegionArmy = turnPhaseControl.GetRealArmy;
                         turnPhaseControl.OnStateChanged += gameState =>
                         {
                             // TODO: problem: this phase depends on type of game, mb implement more switches or do it via inheritance
@@ -271,26 +272,26 @@ namespace WinformsUI.InGame
                                 case GameState.Deploying:
                                     if (state >= GameState.Attacking)
                                     {
-                                        processor.ResetRound(new Round(game.Id, turnPhaseControl.DeployingStructure,
+                                        mapHandlerControl.Processor.ResetRound(new Round(game.Id, turnPhaseControl.DeployingStructure,
                                             turnPhaseControl.AttackingStructure));
                                         turnPhaseControl.DeployingStructure.ArmiesDeployed.Clear();
                                         turnPhaseControl.AttackingStructure.Attacks.Clear();
                                     }
                                     else
                                     {
-                                        processor.ResetDeployingPhase(turnPhaseControl.DeployingStructure);
+                                        mapHandlerControl.Processor.ResetDeployingPhase(turnPhaseControl.DeployingStructure);
                                         turnPhaseControl.DeployingStructure.ArmiesDeployed.Clear();
                                     }
                                     break;
                                 case GameState.Attacking:
-                                    processor.ResetAttackingPhase(turnPhaseControl.AttackingStructure,
+                                    mapHandlerControl.Processor.ResetAttackingPhase(turnPhaseControl.AttackingStructure,
                                         turnPhaseControl.DeployingStructure);
                                     turnPhaseControl.AttackingStructure.Attacks.Clear();
                                     break;
                                 case GameState.Committing:
                                     break;
                             }
-                            RefreshImage();
+                            mapHandlerControl.RefreshImage();
                         };
                         turnPhaseControl.Show();
                     }
@@ -300,199 +301,101 @@ namespace WinformsUI.InGame
             }
         }
 
-        public InGameControl()
+        void SeizeAttempt(Region region)
         {
-            InitializeComponent();
+            if (region == null) return;
+            // already selected 2 regions
+            if (beginGamePhaseControl.BeginningRound.SelectedRegions.Count >= 2)
+            {
+                MessageBox.Show("You have chosen enough regions.");
+                return;
+            }
+            bool containsSameRegion = beginGamePhaseControl
+                .BeginningRound.SelectedRegions.Any(tuple => tuple.Item2 == region);
+            // if he chose the very same region already, ignore this choice
+            if (containsSameRegion) return;
 
-            gameMapPictureBox.BackgroundImageLayout = ImageLayout.None;
+            // add, recolor, refresh
+            beginGamePhaseControl.BeginningRound.SelectedRegions.Add(
+                new Tuple<Player, Region>(playerOnTurn.Current, region));
+            mapHandlerControl.SeizeRegion(region, playerOnTurn.Current);
         }
 
-        Region previouslySelectedRegion;
-        private void ImageClick(object sender, MouseEventArgs e)
+        void DeployAttempt(Region region, int addedArmy)
         {
-            var region = processor.GetRegion(e.X, e.Y);
+            if (region == null) return;
+            // represents the already existing deployment entry
+            var regionRepresentingTuple = (from item in turnPhaseControl.DeployingStructure.ArmiesDeployed
+                                           where item.Item1 == region
+                                           select item).FirstOrDefault();
 
-            switch (State)
+            if (addedArmy > 0)
             {
-                case GameState.GameBeginning:
-                    {
-                        if (region == null) return;
-                        // already selected 2 regions
-                        if (beginGamePhaseControl.BeginningRound.SelectedRegions.Count >= 2)
-                        {
-                            MessageBox.Show("You have chosen enough regions.");
-                            return;
-                        }
-                        bool containsSameRegion = (from tuple in beginGamePhaseControl.BeginningRound.SelectedRegions
-                                                   where tuple.Item2 == region
-                                                   select tuple.Item2).Any();
-                        // if he chose the very same region already, ignore this choice
-                        if (containsSameRegion) return;
+                // if cant deploy anything
+                if (turnPhaseControl.DeployingStructure.GetUnitsLeftToDeploy(playerOnTurn.Current) <= 0) return;
+                // if the entry exists
+                if (regionRepresentingTuple != null)
+                {
+                    // cuz its immutable, remove the region
+                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Remove(regionRepresentingTuple);
+                    // add it with army + 1
+                    regionRepresentingTuple = new Tuple<Region, int>(
+                        regionRepresentingTuple.Item1, regionRepresentingTuple.Item2 + 1);
+                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple);
+                }
+                else
+                {
+                    // create new structure for this
+                    regionRepresentingTuple = new Tuple<Region, int>(
+                        region, region.Army + 1);
+                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple);
+                }
+            }
+            else if (addedArmy < 0)
+            {
+                if (regionRepresentingTuple != null)
+                {
+                    // cuz its immutable, remove the region
+                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Remove(
+                        regionRepresentingTuple);
 
-                        // add, recolor, refresh
-                        processor.Recolor(region, Color.FromKnownColor(playerOnTurn.Current.Color));
-                        beginGamePhaseControl.BeginningRound.SelectedRegions.Add(
-                            new Tuple<Player, Region>(playerOnTurn.Current, region));
-                        gameMapPictureBox.Refresh();
-                        break;
-                    }
-                case GameState.RoundBeginning:
-                    break;
-                case GameState.Deploying:
-                    {
-                        if (region == null) return;
-                        // if player clicked on his own region
-                        if (playerOnTurn.Current == region.Owner)
-                        {
-                            var regionRepresentingTuple = (from item in turnPhaseControl.DeployingStructure.ArmiesDeployed
-                                                           where item.Item1 == region
-                                                           select item).FirstOrDefault();
-                            switch (e.Button)
-                            {
-                                case MouseButtons.Left:
-                                    // deployed already in this region
+                    // if you want to go under regions current state, dont
+                    if (regionRepresentingTuple.Item2 <= regionRepresentingTuple.Item1.Army) return;
 
-                                    // if player has deployed all of his possible units
-                                    if (turnPhaseControl.DeployingStructure.GetUnitsLeftToDeploy(playerOnTurn.Current) <= 0)
-                                    {
-                                        return;
-                                    }
-                                    if (regionRepresentingTuple != null)
-                                    {
-                                        // cuz its immutable, remove the region
-                                        turnPhaseControl.DeployingStructure.ArmiesDeployed.Remove(regionRepresentingTuple);
-                                        // add it with army + 1
-                                        regionRepresentingTuple = new Tuple<Region, int>(
-                                            regionRepresentingTuple.Item1, regionRepresentingTuple.Item2 + 1);
-                                        turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple);
-                                    }
-                                    else // didnt deploy in this region
-                                    {
-                                        // create new structure for this
-                                        regionRepresentingTuple = new Tuple<Region, int>(
-                                            region, region.Army + 1);
-                                        turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple);
-                                    }
-                                    break;
-                                case MouseButtons.Right:
-                                    // deployed already in this region
-                                    if (regionRepresentingTuple != null)
-                                    {
-                                        // cuz its immutable, remove the region
-                                        turnPhaseControl.DeployingStructure.ArmiesDeployed.Remove(
-                                            regionRepresentingTuple);
-
-                                        // if you want to go under regions current state, dont
-                                        if (regionRepresentingTuple.Item2 <= regionRepresentingTuple.Item1.Army) return;
-
-                                        // add it with army - 1
-                                        regionRepresentingTuple = new Tuple<Region, int>(
-                                            regionRepresentingTuple.Item1, regionRepresentingTuple.Item2 - 1);
+                    // add it with army - 1
+                    regionRepresentingTuple = new Tuple<Region, int>(
+                        regionRepresentingTuple.Item1, regionRepresentingTuple.Item2 - 1);
 
 
-                                        turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple);
-                                    }
-                                    else return; // didnt deploy => has nothing to remove
-                                    break;
-                            }
-
-                            processor.OverDrawArmyNumber(regionRepresentingTuple.Item1, regionRepresentingTuple.Item2);
-                            RefreshImage();
-                        }
-                        break;
-                    }
-                case GameState.Attacking:
-                    {
-                        // this one is the first selected region
-                        if (previouslySelectedRegion == null && region != null)
-                        {
-                            if (region?.Owner != playerOnTurn?.Current) return;
-                            // highlight the region
-
-                            processor.HighlightRegion(region, turnPhaseControl.GetRealArmy(region));
-
-                            RefreshImage();
-
-                        }
-                        // already highlighted someone and the second one is a neighbour
-                        else if (previouslySelectedRegion != null && previouslySelectedRegion.IsNeighbourOf(region))
-                        {
-                            // unhighlight both of them
-                            processor.HighlightRegion(region, turnPhaseControl.GetRealArmy(region));
-                            RefreshImage();
-
-                            AttackManagerForm attackManager = new AttackManagerForm()
-                            {
-                                ArmyLowerLimit = 0,
-                                ArmyUpperLimit
-                                = turnPhaseControl.AttackingStructure
-                                .GetUnitsLeftToAttack(previouslySelectedRegion,
-                                turnPhaseControl.DeployingStructure)
-                            };
-                            var dialogResult = attackManager.ShowDialog();
-                            // execute the attack
-                            if (dialogResult == DialogResult.OK)
-                            {
-                                Attack attack = new Attack(previouslySelectedRegion, attackManager.AttackingArmy,
-                                    region);
-                                turnPhaseControl.AttackingStructure.Attacks.Add(attack);
-                            }
-
-
-                            processor.UnhighlightRegion(previouslySelectedRegion, playerOnTurn.Current, turnPhaseControl.GetRealArmy(previouslySelectedRegion));
-                            processor.UnhighlightRegion(region, playerOnTurn.Current, turnPhaseControl.GetRealArmy(region));
-                            region = null;
-                            previouslySelectedRegion = null;
-                            RefreshImage();
-                        }
-                        else
-                        {
-                            if (region != null)
-                            {
-                                processor.UnhighlightRegion(region, playerOnTurn.Current,
-                                    turnPhaseControl.GetRealArmy(region));
-                                region = null;
-                            }
-                            if (previouslySelectedRegion != null)
-                            {
-                                processor.UnhighlightRegion(previouslySelectedRegion, playerOnTurn.Current, turnPhaseControl.GetRealArmy(previouslySelectedRegion));
-                                previouslySelectedRegion = null;
-                            }
-
-
-                            RefreshImage();
-                        }
-
-                        previouslySelectedRegion = region;
-                        break;
-                    }
-                case GameState.Committing:
-                    {
-                        break;
-                    }
-                case GameState.Committed:
-                    break;
+                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple);
+                }
+                else return;
             }
 
+            mapHandlerControl.Deploy(regionRepresentingTuple.Item1, regionRepresentingTuple.Item2);
+
         }
 
-        private void ImageHover(object sender, MouseEventArgs e)
+        void AttackAttempt(Region previouslySelectedRegion, Region region)
         {
-            // TODO: fix flickering
-            //if (processor.GetRegion(e.X, e.Y) != null) Cursor.Current = Cursors.Hand;
-            //else Cursor.Current = Cursors.Default;
-
-            menuButton.Text = string.Format($"X: {e.X}, Y: {e.Y}");
-
+            AttackManagerForm attackManager = new AttackManagerForm()
+            {
+                ArmyLowerLimit = 0,
+                ArmyUpperLimit
+                    = turnPhaseControl.AttackingStructure
+                        .GetUnitsLeftToAttack(previouslySelectedRegion,
+                            turnPhaseControl.DeployingStructure)
+            };
+            var dialogResult = attackManager.ShowDialog();
+            // execute the attack
+            if (dialogResult == DialogResult.OK)
+            {
+                Attack attack = new Attack(previouslySelectedRegion, attackManager.AttackingArmy,
+                    region);
+                turnPhaseControl.AttackingStructure.Attacks.Add(attack);
+            }
         }
-
-        private void ImageSizeChanged(object sender, EventArgs e)
-        {
-            PictureBox pictureBox = sender as PictureBox;
-
-            if (pictureBox == null) return;
-        }
-
+        
 
     }
 }

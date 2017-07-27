@@ -204,6 +204,11 @@ namespace GameObjectsLib.GameMap
             Recolor(colorOrNull.Value, targetColor);
         }
 
+        public void Recolor(Region region, KnownColor targetColor)
+        {
+            Recolor(region, Color.FromKnownColor(targetColor));
+        }
+
 
         public Region GetRegion(int x, int y)
         {
@@ -484,7 +489,7 @@ namespace GameObjectsLib.GameMap
         /// </summary>
         /// <param name="region">Regions army to be drawed.</param>
         /// <param name="army">Army number to draw.</param>
-        void DrawArmyNumber(Region region, int army)
+        public void DrawArmyNumber(Region region, int army)
         {
             // get color that match the region
             var colorOrNull = templateProcessor.GetColor(region);

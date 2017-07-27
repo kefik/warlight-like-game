@@ -238,6 +238,7 @@ namespace GameObjectsLib.Game
             {
                 Game game = Serializer.Deserialize<Game>(stream);
                 game.ReconstructOriginalGraph();
+                game.Refresh();
                 return game;
             }
         }
