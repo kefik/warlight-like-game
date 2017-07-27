@@ -48,21 +48,9 @@ namespace GameObjectsLib
         /// </summary>
         /// <param name="rounds">Rounds, each from one certain player.</param>
         /// <returns>Round consisting of round in parameter, ordered differently.</returns>
-        public static Round Process(params Round[] rounds)
+        public static Round Process(IList<Round> rounds)
         {
-            // validate that rounds have same number
-
-            //{
-            //    var first = rounds.First();
-
-            //    bool anyWithDifferentRoundNumber = (from round in rounds
-            //                 where round.Number != first.Number
-            //                 select round).Any();
-
-            //    if (anyWithDifferentRoundNumber) throw new ArgumentException();
-            //}
-
-            // TODO: check
+            //if (rounds == null || rounds.Count == 0) return null;
 
             var deploying = new Deploying(new List<Tuple<Region, int>>());
             var attacking = new Attacking(new List<Attack>());
@@ -75,14 +63,14 @@ namespace GameObjectsLib
                 bool didSomething = false;
                 foreach (var round in rounds)
                 {
-                    if (round.Deploying.ArmiesDeployed.Count < index)
+                    if (round.Deploying.ArmiesDeployed.Count > index)
                     {
                         var armyDeployed = round.Deploying.ArmiesDeployed[index];
                         deploying.ArmiesDeployed.Add(armyDeployed);
                         didSomething = true;
                     }
 
-                    if (round.Attacking.Attacks.Count < index)
+                    if (round.Attacking.Attacks.Count > index)
                     {
                         var attack = round.Attacking.Attacks[index];
                         attacking.Attacks.Add(attack);
@@ -156,7 +144,7 @@ namespace GameObjectsLib
         /// </summary>
         /// <param name="rounds">Rounds from different players.</param>
         /// <returns>Linearized round.</returns>
-        public static GameBeginningRound Process(GameBeginningRound[] rounds)
+        public static GameBeginningRound Process(IList<GameBeginningRound> rounds)
         {
             // verify if two players chose one region, if so, return null
             {

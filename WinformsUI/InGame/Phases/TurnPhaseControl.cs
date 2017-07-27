@@ -67,6 +67,7 @@ namespace WinformsUI.InGame.Phases
 
         void Committing(object sender, EventArgs e)
         {
+            nextButton.Enabled = true;
             ResetStateHighlight(state);
             // committing phase
             state = GameState.Committing;
@@ -77,6 +78,7 @@ namespace WinformsUI.InGame.Phases
 
         void Attacking(object sender, EventArgs e)
         {
+            nextButton.Enabled = true;
             ResetStateHighlight(state);
             // committing phase
             if (state > GameState.Attacking) OnReset?.Invoke(GameState.Committing);
@@ -90,6 +92,7 @@ namespace WinformsUI.InGame.Phases
 
         void Deploying(object sender, EventArgs e)
         {
+            nextButton.Enabled = true;
             ResetStateHighlight(state);
 
             // committing phase
@@ -105,7 +108,8 @@ namespace WinformsUI.InGame.Phases
 
         void Next(object sender, EventArgs e)
         {
-            if (state >= GameState.Committed) return;
+            if (state == GameState.Committing) nextButton.Enabled = false;
+
             ResetStateHighlight(state);
 
             state++;
@@ -115,6 +119,7 @@ namespace WinformsUI.InGame.Phases
 
         void Repeat(object sender, EventArgs e)
         {
+            nextButton.Enabled = true;
             ResetStateHighlight(state);
             state = GameState.Deploying;
             HighlightCorrectButton(state);

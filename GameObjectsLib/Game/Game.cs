@@ -86,7 +86,7 @@ namespace GameObjectsLib.Game
                     var region = (from item in Map.Regions
                                   where item == deployedArmies.Item1
                                   select item).First();
-                    region.Army += deployedArmies.Item2;
+                    region.Army = deployedArmies.Item2;
                 }
             }
             // attacking
@@ -152,6 +152,8 @@ namespace GameObjectsLib.Game
             }
 
             RoundNumber++;
+
+            Refresh();
         }
 
         /// <summary>

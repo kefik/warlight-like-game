@@ -38,8 +38,7 @@ namespace Server
 
             // Copy the RGB values into the array.
             Marshal.Copy(ptr, rgbValues, 0, bytes);
-
-            int count = 0;
+            
             int stride = bmpData.Stride;
             
             for (int column = 0; column < bmpData.Height; column++)

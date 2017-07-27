@@ -30,11 +30,13 @@ namespace WinformsUI.InGame.Phases
                 MessageBox.Show("Not enough regions were chosen to start the game.");
                 return;
             }
+            commitButton.Enabled = false;
             OnCommit?.Invoke(BeginningRound);
         }
 
         private void StartOver(object sender, EventArgs e)
         {
+            commitButton.Enabled = true;
             OnStartOver?.Invoke(BeginningRound);
         }
     }
