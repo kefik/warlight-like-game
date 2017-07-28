@@ -9,6 +9,9 @@ namespace Server.WarlightLikeDatabase
     public class Game
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        
+        public ICollection<User> PlayingUsers { get; set; }
     }
 }

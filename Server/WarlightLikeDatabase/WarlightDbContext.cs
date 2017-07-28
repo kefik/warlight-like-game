@@ -10,6 +10,7 @@ namespace Server.WarlightLikeDatabase
         public WarlightDbContext()
             : base("name=WarlightDbContext")
         {
+            Database.SetInitializer(new DropCreateDatabaseAlways<WarlightDbContext>());
         }
 
         public virtual DbSet<Game> Games { get; set; }
@@ -18,6 +19,28 @@ namespace Server.WarlightLikeDatabase
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            // m : n Games - Users
+            modelBuilder.Entity<User>()
+                .HasMany(user => user.StartedGames)
+                .WithMany(game => game.PlayingUsers)
+                .Map(manyToManyAssociationMappingConfiguration =>
+                {
+                    manyToManyAssociationMappingConfiguration.MapLeftKey("UserId");
+                    manyToManyAssociationMappingConfiguration.MapRightKey("GameId");
+                    manyToManyAssociationMappingConfiguration.ToTable("GamesUsers");
+                });
+
+            // m : n OpenedGames - Users
+            modelBuilder.Entity<User>()
+                .HasMany(user => user.UnstartedGames)
+                .WithMany(openedGame => openedGame.SignedUsers)
+                .Map(x =>
+                {
+                    x.MapLeftKey("UserId");
+                    x.MapRightKey("OpenedGameId");
+                    x.ToTable("OpenedGamesUsers");
+                });
+
         }
     }
 }

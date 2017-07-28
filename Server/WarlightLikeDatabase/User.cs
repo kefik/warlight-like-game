@@ -9,6 +9,7 @@ namespace Server.WarlightLikeDatabase
     public partial class User
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -22,5 +23,8 @@ namespace Server.WarlightLikeDatabase
         [Required]
         [StringLength(50)]
         public string PasswordHash { get; set; }
+
+        public ICollection<Game> StartedGames { get; set; }
+        public ICollection<OpenedGame> UnstartedGames { get; set; }
     }
 }
