@@ -125,6 +125,10 @@ namespace WinformsUI.InGame
                                 game.Play(round);
                                 game.Save(db);
                             }
+                            State = GameState.RoundBeginning;
+
+                            mapHandlerControl.Processor.Refresh(Game);
+                            mapHandlerControl.RefreshImage();
                         }
                         break;
                     }
@@ -138,10 +142,9 @@ namespace WinformsUI.InGame
 
         void PlayRound()
         {
-            State = GameState.RoundBeginning;
-
             var combinedRound = Round.Process(rounds);
             game.Play(combinedRound);
+
 
             mapHandlerControl.Processor.Refresh(game);
             mapHandlerControl.RefreshImage();
@@ -166,11 +169,14 @@ namespace WinformsUI.InGame
             // TODO: refactor
             // reset controls
             beginGamePhaseControl?.Dispose();
+            beginGamePhaseControl = null;
             beginRoundPhaseControl?.Dispose();
+            beginGamePhaseControl = null;
 
             switch (newGameState)
             {
                 case GameState.GameBeginning:
+                    turnPhaseControl?.Dispose();
                     turnPhaseControl = null;
                     beginGamePhaseControl = new BeginGamePhaseControl()
                     {
@@ -182,6 +188,7 @@ namespace WinformsUI.InGame
                     beginGamePhaseControl.Show();
                     break;
                 case GameState.RoundBeginning:
+                    turnPhaseControl?.Dispose();
                     turnPhaseControl = null;
                     beginRoundPhaseControl = new BeginRoundPhaseControl()
                     {
@@ -221,15 +228,20 @@ namespace WinformsUI.InGame
                                             rounds.Add(new Round(game.Id, turnPhaseControl.DeployingStructure,
                                                 turnPhaseControl.AttackingStructure));
 
-
-                                            // TODO: play AI players
+                                            // TODO: play bots
+                                            
                                             PlayRound();
+                                            rounds.Clear();
 
                                             using (var db = new UtilsDbContext())
                                             {
                                                 game.Save(db);
                                             }
-
+                                            
+                                            
+                                            turnPhaseControl?.Dispose();
+                                            turnPhaseControl = null;
+                                            State = GameState.RoundBeginning;
                                             break;
                                         }
                                     case GameType.MultiplayerHotseat:
@@ -241,25 +253,32 @@ namespace WinformsUI.InGame
                                             {
                                                 // play the next player instead
                                                 State = GameState.RoundBeginning;
+
+                                                turnPhaseControl?.Dispose();
+                                                turnPhaseControl = null;
                                             }
                                             else
                                             {
                                                 // play the whole round
+
+                                                // TODO: play bots
                                                 var round = Round.Process(rounds);
 
                                                 using (var db = new UtilsDbContext())
                                                 {
                                                     game.Save(db);
                                                 }
-
-                                                game.Play(round);
+                                                
                                                 PlayRound();
+
+                                                turnPhaseControl?.Dispose();
+                                                turnPhaseControl = null;
                                             }
 
                                             break;
                                         }
                                     case GameType.MultiplayerNetwork:
-                                        // TODO:
+                                        // TODO
                                         break;
                                 }
                             }
@@ -323,7 +342,7 @@ namespace WinformsUI.InGame
 
         void DeployAttempt(Region region, int addedArmy)
         {
-            if (region == null) return;
+            if (region == null || region.Owner == null) return;
             // represents the already existing deployment entry
             var regionRepresentingTuple = (from item in turnPhaseControl.DeployingStructure.ArmiesDeployed
                                            where item.Item1 == region

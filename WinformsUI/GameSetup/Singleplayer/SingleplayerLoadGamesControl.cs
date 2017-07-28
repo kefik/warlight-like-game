@@ -36,6 +36,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                 {
                     Invoke(new Action(() => loadedGamesListBox.Items.Add(savedGame)));
                 }
+                // TODO: data binding
             });
         }
 
@@ -54,7 +55,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                     var game = Game.Load(db, savedGameInfo);
                     OnSingleplayerGameLoaded?.Invoke(game);
                 }
-                
+
             }
             catch (Exception)
             {
@@ -66,14 +67,20 @@ namespace WinformsUI.GameSetup.Singleplayer
         private void DeleteGame(object sender, EventArgs e)
         {
             if (loadedGamesListBox.SelectedIndex < 0) return;
-            var savedGameInfo =
-                (SingleplayerSavedGameInfo)loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
+            var selectedFiles = loadedGamesListBox.SelectedItems.Cast<SingleplayerSavedGameInfo>().ToList();
+            foreach (var selectedFile in selectedFiles)
+            {
+                loadedGamesListBox.SelectedItems.Remove(selectedFile);
+            }
 
             using (var db = new UtilsDbContext())
             {
-                db.Remove(savedGameInfo);
-                // TODO: refresh listbox
+                foreach (var savedGameInfo in selectedFiles)
+                {
+                    db.Remove(savedGameInfo);
+                }
             }
+            // TODO: databinding
         }
     }
 }

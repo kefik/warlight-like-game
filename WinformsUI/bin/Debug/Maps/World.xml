@@ -101,6 +101,7 @@
           <Region Name="Venezuela"/>
           <Region Name="Peru"/>
           <Region Name="Argentina"/>
+          <Region Name="North Africa"/>
         </Neighbours>
       </Region>
       <Region Name="Argentina">

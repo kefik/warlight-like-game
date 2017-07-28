@@ -47,9 +47,9 @@ namespace GameObjectsLib
         public int GetIncome()
         {
             var superRegionsOwned = (from region in ControlledRegions
-                                select region.SuperRegion into superRegion
-                                where superRegion.Owner == this
-                                select superRegion).Distinct();
+                                     select region.SuperRegion into superRegion
+                                     where superRegion.Owner == this
+                                     select superRegion).Distinct();
             return BasicIncome + superRegionsOwned.Sum(superRegion => superRegion.Bonus);
         }
 
@@ -75,6 +75,7 @@ namespace GameObjectsLib
                 if (ControlledRegions[i].Owner != this)
                     ControlledRegions.Remove(ControlledRegions[i]);
             }
+            
         }
 
         public bool Equals(Player other)

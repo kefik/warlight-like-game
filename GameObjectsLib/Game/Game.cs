@@ -130,6 +130,8 @@ namespace GameObjectsLib.Game
                     attacker.Army -= realAttackingArmy;
                 }
             }
+            Refresh();
+            //ReconstructOriginalGraph();
             RoundNumber++;
         }
 
@@ -151,9 +153,9 @@ namespace GameObjectsLib.Game
                 realRegion.Owner = realPlayer;
             }
 
-            RoundNumber++;
-
             Refresh();
+            //ReconstructOriginalGraph();
+            RoundNumber++;
         }
 
         /// <summary>
@@ -207,6 +209,7 @@ namespace GameObjectsLib.Game
         /// </summary>
         public void Refresh()
         {
+            
             // refresh regions owner
             foreach (var region in Map.Regions)
             {
@@ -250,7 +253,7 @@ namespace GameObjectsLib.Game
         /// </summary>
         private void ReconstructOriginalGraph()
         {
-            // TODO: IMPORTANT = check
+            // TODO: IMPORTANT = check how it differs from Refresh
             var regions = Map.Regions;
             var superRegions = Map.SuperRegions;
             var players = Players;
@@ -265,15 +268,6 @@ namespace GameObjectsLib.Game
                             superRegions[j] = region.SuperRegion;
                     }
                 }
-                //// region.SuperRegion = SuperRegion
-                //for (int i = 0; i < regions.Count; i++)
-                //{
-                //    var region = Map.Regions[i];
-                //    var matchingSuperRegion = (from superRegion in Map.SuperRegions
-                //                              where superRegion.Regions.Contains(region)
-                //                              select superRegion).First();
-                //    region.SuperRegion = matchingSuperRegion;
-                //}
             }
             // reconstruct super regions and regions
             {
@@ -317,8 +311,7 @@ namespace GameObjectsLib.Game
             }
             // reconstruct owner
             {
-                // region.Owner = player
-                foreach (Player player in players)
+                foreach (var player in Players)
                 {
                     var controlledRegions = player.ControlledRegions;
                     foreach (var controlledRegion in controlledRegions)

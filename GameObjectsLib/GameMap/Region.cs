@@ -113,6 +113,7 @@ namespace GameObjectsLib.GameMap
                             where region == this
                             select region).Any();
             if (!containsThisRegion) ownerRegions.Add(this);
+            
         }
 
         public static bool operator ==(Region left, Region right)
