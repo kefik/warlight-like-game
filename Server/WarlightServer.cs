@@ -67,7 +67,7 @@ namespace Server
             }
             finally
             {
-                cancellationTokenSource.Cancel();
+                Dispose();
             }
 
 

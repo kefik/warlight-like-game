@@ -30,6 +30,12 @@ namespace GameObjectsLib
             await Task.Yield();
             Serializer.SerializeWithLengthPrefix(stream, this, PrefixStyle.Base128);
         }
+
+        public void Serialize(Stream stream)
+        {
+            Serializer.SerializeWithLengthPrefix(stream, this, PrefixStyle.Base128);
+        }
+
         /// <summary>
         /// Asynchronously deserializes object from the stream and returns it.
         /// </summary>
@@ -59,7 +65,30 @@ namespace GameObjectsLib
 
             throw new ArgumentException();
         }
-        
+
+        public static NetworkObjectWrapper Deserialize(Stream stream)
+        {
+            int length;
+            if (Serializer.TryReadLengthPrefix(stream, PrefixStyle.Base128, out length))
+            {
+                byte[] buffer = new byte[length];
+                stream.Read(buffer, 0, buffer.Length);
+
+                using (var ms = new MemoryStream())
+                {
+                     ms.Write(buffer, 0, buffer.Length);
+
+                    ms.Position = 0;
+
+                    var wrapper = Serializer.Deserialize<NetworkObjectWrapper>(ms);
+
+                    return wrapper;
+                }
+            }
+
+            throw new ArgumentException();
+        }
+
     }
     [ProtoContract]
     public class NetworkObjectWrapper<T> : NetworkObjectWrapper

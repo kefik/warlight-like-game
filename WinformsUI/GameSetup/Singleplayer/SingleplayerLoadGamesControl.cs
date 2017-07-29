@@ -27,16 +27,19 @@ namespace WinformsUI.GameSetup.Singleplayer
         {
             Task.Run(() =>
             {
-                var savedGames = from game in new UtilsDbContext().SingleplayerSavedGameInfos
-                                 orderby game.SavedGameDate descending
-                                 select game;
-
-                // TODO: might be too slow
-                foreach (var savedGame in savedGames)
+                using (var db = new UtilsDbContext())
                 {
-                    Invoke(new Action(() => loadedGamesListBox.Items.Add(savedGame)));
+                    var savedGames = from game in db.SingleplayerSavedGameInfos
+                                     orderby game.SavedGameDate descending
+                                     select game;
+
+                    // TODO: might be too slow
+                    foreach (var savedGame in savedGames)
+                    {
+                        Invoke(new Action(() => loadedGamesListBox.Items.Add(savedGame)));
+                    }
+                    // TODO: data binding
                 }
-                // TODO: data binding
             });
         }
 

@@ -183,7 +183,8 @@ namespace GameObjectsLib.Game
                 case GameType.MultiplayerHotseat:
                     throw new NotImplementedException();
                 case GameType.MultiplayerNetwork:
-                    throw new NotImplementedException();
+                    var networkGame = new NetworkGame(id, map, players);
+                    return networkGame;
                 default:
                     throw new ArgumentException();
             }
@@ -198,7 +199,8 @@ namespace GameObjectsLib.Game
             Refresh();
             using (MemoryStream stream = new MemoryStream())
             {
-                Serializer.SerializeWithLengthPrefix(stream, this, PrefixStyle.Base128);
+                NetworkObjectWrapper wrapper = new NetworkObjectWrapper<Game>() {TypedValue = this};
+                wrapper.Serialize(stream);
                 // reset position to be able to read from it again
                 stream.Position = 0;
                 canSave.SaveGame(this, stream);
@@ -245,7 +247,7 @@ namespace GameObjectsLib.Game
         {
             using (var stream = canLoad.LoadGame(source))
             {
-                Game game = Serializer.DeserializeWithLengthPrefix<Game>(stream, PrefixStyle.Base128);
+                Game game = (Game)(NetworkObjectWrapper.Deserialize(stream).Value);
                 game.ReconstructOriginalGraph();
                 game.Refresh();
                 return game;
