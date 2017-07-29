@@ -70,35 +70,43 @@ namespace DatabaseMapping
                 case GameType.MultiplayerHotseat:
                     {
                         var savedGames = HotseatSavedGameInfos;
+                        string path = string.Format($"SavedGames/Hotseat/{game.Id}.sav");
 
-                        var savedGamesEnum = savedGames.AsEnumerable();
-
-                        var lastGame = savedGamesEnum.LastOrDefault();
-                        int lastGameId = 1;
-                        if (lastGame != null) lastGameId = lastGame.Id + 1;
-
-                        int aiPlayerNumber = (from player in game.Players
-                                              where player.GetType() == typeof(AIPlayer)
-                                              select player).Count();
-                        int humanPlayersNumber = game.Players.Count - aiPlayerNumber;
-
-                        savedGames.Add(new HotseatSavedGameInfo()
+                        var save = (from savedGame in savedGames
+                                    where savedGame.Id == game.Id
+                                    select savedGame).AsEnumerable().FirstOrDefault();
+                        if (save == null)
                         {
-                            AINumber = aiPlayerNumber,
-                            HumanNumber = humanPlayersNumber,
-                            MapName = game.Map.Name,
-                            SavedGameDate = DateTime.Now.ToString(),
-                            Path = string.Format($"SavedGames/Hotseat/{lastGameId}.sav")
-                        });
+                            int aiPlayerNumber = (from player in game.Players
+                                                  where player.GetType() == typeof(AIPlayer)
+                                                  select player).Count();
+                            int humanPlayersNumber = game.Players.Count - aiPlayerNumber;
 
-                        using (var fs = new FileStream($"SavedGames/Hotseat/{lastGameId}.sav", FileMode.Create))
-                        {
-                            Serializer.Serialize(fs, game);
+                            savedGames.Add(new HotseatSavedGameInfo()
+                            {
+                                Id = game.Id,
+                                AINumber = aiPlayerNumber,
+                                HumanNumber = humanPlayersNumber,
+                                MapName = game.Map.Name,
+                                SavedGameDate = DateTime.Now.ToString(),
+                                Path = path
+                            });
                         }
+                        else save.SavedGameDate = DateTime.Now.ToString();
+                        
+                        
+
+                        using (var fs = new FileStream(path, FileMode.Create))
+                        {
+                            stream.CopyTo(fs);
+                        }
+
+                        SaveChanges();
 
                         break;
                     }
                 case GameType.MultiplayerNetwork:
+                    throw new NotImplementedException();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

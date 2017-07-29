@@ -61,5 +61,10 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         {
 
         }
+
+        private void FormLoad(object sender, EventArgs e)
+        {
+            RefreshSavedGames();
+        }
     }
 }

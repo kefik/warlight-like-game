@@ -181,7 +181,8 @@ namespace GameObjectsLib.Game
                     sp.Validate();
                     return sp;
                 case GameType.MultiplayerHotseat:
-                    throw new NotImplementedException();
+                    var hotseatGame = new HotseatGame(id, map, players);
+                    return hotseatGame;
                 case GameType.MultiplayerNetwork:
                     var networkGame = new NetworkGame(id, map, players);
                     return networkGame;

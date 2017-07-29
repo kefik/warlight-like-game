@@ -75,6 +75,7 @@
             this.Controls.Add(this.loadedGamesListBox);
             this.Name = "HotseatLoadGamesControl";
             this.Size = new System.Drawing.Size(418, 219);
+            this.Load += new System.EventHandler(this.FormLoad);
             this.ResumeLayout(false);
 
         }

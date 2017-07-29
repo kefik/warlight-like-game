@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using GameObjectsLib.Game;
 using GameObjectsLib;
 using GameObjectsLib.GameMap;
+using ProtoBuf;
 
 namespace GameObjectsLib.Game
 {
+   [ProtoContract]
    class HotseatGame : Game
     {
         public override GameType GameType
@@ -16,6 +18,8 @@ namespace GameObjectsLib.Game
         public HotseatGame(int id, Map map, IList<Player> players) : base(id, map, players)
         {
         }
+
+        private HotseatGame() : base() { }
 
         public override void Validate()
         {

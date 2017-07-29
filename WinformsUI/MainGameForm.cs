@@ -151,6 +151,7 @@ namespace WinformsUI
                 hotseatGameOptionsControl.Show();
 
                 hotseatGameOptionsControl.OnGameStarted += StartNewGame;
+                hotseatGameOptionsControl.OnGameLoaded += LoadGame;
             }
             
             void LoadNetworkControls()

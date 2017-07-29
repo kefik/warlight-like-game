@@ -40,6 +40,7 @@ namespace WinformsUI.InGame
 
         Game game;
 
+        IEnumerable<Player> localPlayers;
         IEnumerator<Player> playerOnTurn;
         BeginGamePhaseControl beginGamePhaseControl;
         BeginRoundPhaseControl beginRoundPhaseControl;
@@ -55,7 +56,7 @@ namespace WinformsUI.InGame
                 if (game != null) throw new ArgumentException();
                 // initialize game
                 game = value;
-                var localPlayers = (from player in value.Players
+                localPlayers = (from player in value.Players
                                     where player.GetType() == typeof(HumanPlayer)
                                     let humanPlayer = (HumanPlayer)player
                                     where humanPlayer.User.UserType == UserType.LocalUser
@@ -63,7 +64,8 @@ namespace WinformsUI.InGame
                                     select player);
                 // initialize player whos on turn atm
                 playerOnTurn = localPlayers.GetEnumerator();
-                playerOnTurn.MoveNext();
+
+                NextPlayer();
                 // initialize game state
                 State = game.RoundNumber == 0 ? GameState.GameBeginning : GameState.RoundBeginning;
                 
@@ -81,6 +83,14 @@ namespace WinformsUI.InGame
                 Refresh();
             }
         }
+
+        bool NextPlayer()
+        {
+            bool returnValue = playerOnTurn.MoveNext();
+            if (returnValue && game.GameType == GameType.MultiplayerHotseat) MessageBox.Show($"Player {playerOnTurn.Current} is on turn!");
+            return returnValue;
+        }
+        
 
         void StartOverGameBeginningPhase(GameBeginningRound gameBeginningRound)
         {
@@ -129,6 +139,9 @@ namespace WinformsUI.InGame
 
                             mapHandlerControl.Processor.Refresh(Game);
                             mapHandlerControl.RefreshImage();
+
+                            playerOnTurn = localPlayers.GetEnumerator();
+                            NextPlayer();
                         }
                         break;
                     }

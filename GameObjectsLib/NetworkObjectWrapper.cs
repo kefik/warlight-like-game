@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using GameObjectsLib.Game;
 using ProtoBuf;
 
 namespace GameObjectsLib
@@ -16,6 +17,8 @@ namespace GameObjectsLib
     [ProtoInclude(11, typeof(NetworkObjectWrapper<Round>))]
     [ProtoInclude(12, typeof(NetworkObjectWrapper<GameBeginningRound>))]
     [ProtoInclude(13, typeof(NetworkObjectWrapper<int>))]
+    [ProtoInclude(14, typeof(NetworkObjectWrapper<HotseatGame>))]
+    [ProtoInclude(15, typeof(NetworkObjectWrapper<NetworkGame>))]
     public abstract class NetworkObjectWrapper
     {
         public abstract object Value { get; }

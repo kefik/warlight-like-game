@@ -19,7 +19,7 @@ namespace DatabaseMapping
 
         public override string ToString()
         {
-            return string.Format($"AI: {AINumber}; Map: {MapName}, Saved: {SavedGameDate}");
+            return string.Format($"Human: {HumanNumber}, AI: {AINumber}; Map: {MapName}, Saved: {SavedGameDate}");
         }
     }
 }

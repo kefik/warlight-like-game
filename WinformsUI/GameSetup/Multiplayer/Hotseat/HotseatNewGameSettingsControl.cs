@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -149,6 +150,11 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
             IList<Player> players = aiPlayerSettingsControl.GetPlayers();
             players.Add(myHumanPlayerControl.GetPlayer());
 
+            foreach (var player in humanPlayerSettingsControl.GetPlayers())
+            {
+                players.Add(player);
+            }
+
             Game game = null;
 
             using (var db = new UtilsDbContext())
@@ -159,6 +165,19 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
                 if (lastGame != null) gameId = lastGame.Id + 1;
 
                 game = Game.Create(gameId, GameType.MultiplayerHotseat, map, players);
+
+
+                // TEST
+                /*NetworkObjectWrapper wrapper = new NetworkObjectWrapper<Game>() {TypedValue = game};
+                using (var ms = new MemoryStream())
+                {
+                    wrapper.Serialize(ms);
+
+                    ms.Position = 0;
+
+                    var obj = NetworkObjectWrapper.Deserialize(ms).Value;
+                }*/
+                // END TEST
             }
 
             OnGameStarted?.Invoke(game);
