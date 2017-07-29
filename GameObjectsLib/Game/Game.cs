@@ -4,6 +4,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using GameObjectsLib;
 using GameObjectsLib.GameMap;
 using ProtoBuf;
@@ -197,11 +198,16 @@ namespace GameObjectsLib.Game
             Refresh();
             using (MemoryStream stream = new MemoryStream())
             {
-                Serializer.Serialize(stream, this);
+                Serializer.SerializeWithLengthPrefix(stream, this, PrefixStyle.Base128);
                 // reset position to be able to read from it again
                 stream.Position = 0;
                 canSave.SaveGame(this, stream);
             }
+        }
+
+        public async Task SaveGameAsync(IGameSaver canSave)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -239,11 +245,16 @@ namespace GameObjectsLib.Game
         {
             using (var stream = canLoad.LoadGame(source))
             {
-                Game game = Serializer.Deserialize<Game>(stream);
+                Game game = Serializer.DeserializeWithLengthPrefix<Game>(stream, PrefixStyle.Base128);
                 game.ReconstructOriginalGraph();
                 game.Refresh();
                 return game;
             }
+        }
+
+        public static async Task<Game> LoadAsync<TLoadSource>(IGameLoader<TLoadSource> canLoad, TLoadSource source)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

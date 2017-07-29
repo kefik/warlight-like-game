@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NetworkObjectWrapper.cs" />
     <Compile Include="PhasesStructures.cs" />
     <Compile Include="GameUser\LocalUser.cs" />
     <Compile Include="GameUser\NetworkUser.cs" />

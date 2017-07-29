@@ -14,19 +14,12 @@ namespace Server
     {
         static void Main(string[] args)
         {
-        }
-        private static IPAddress LocalIPAddress()
-        {
-            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            //Console.Write($"Insert port number servers going to listen on: ");
+            //string s = Console.ReadLine();
+            using (var server = WarlightServer.Create(5000))
             {
-                return null;
+                server.Run(10);
             }
-
-            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
-
-            return host
-                .AddressList
-            .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
         }
     }
 }

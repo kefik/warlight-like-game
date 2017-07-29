@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GameObjectsLib.Game;
-using ProtoBuf;
 
 namespace Server
 {
-    class WarlightServer
+    class WarlightServer : IDisposable
     {
-        readonly Queue<Task> clients = new Queue<Task>();
+        readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        readonly Queue<WarlightClient> clients = new Queue<WarlightClient>();
         readonly TcpListener listener;
         private WarlightServer(IPEndPoint endPoint)
         {
@@ -57,27 +57,23 @@ namespace Server
 
         public void Run(int connectionsLimit)
         {
-            listener.Start();
-
-            Accept(connectionsLimit);
-            
-            while (true)
+            try
             {
-                while (clients.Any())
-                {
-                    var clientTask = clients.Dequeue();
+                listener.Start();
+                
+                AcceptClientsAsync(connectionsLimit);
 
-                    if (clientTask.IsFaulted || clientTask.IsCompleted) continue;
-
-                    clients.Enqueue(clientTask);
-                    
-                    
-                }
-                Task.Delay(100);
+                Thread.Sleep(Timeout.Infinite);
             }
+            finally
+            {
+                cancellationTokenSource.Cancel();
+            }
+
+
         }
 
-        async void Accept(int connectionsLimit)
+        async void AcceptClientsAsync(int connectionsLimit)
         {
             while (true)
             {
@@ -85,12 +81,31 @@ namespace Server
                 {
                     await Task.Delay(300);
                 }
-                TcpClient client = await listener.AcceptTcpClientAsync();
-                clients.Enqueue(Task.Run(() => new WarlightClient(client).Run()));
+                TcpClient client = await listener.AcceptTcpClientAsync().ConfigureAwait(false);
+                
+                WarlightClient wClient = new WarlightClient(client, cancellationTokenSource.Token);
+                clients.Enqueue(wClient);
+                wClient.RunAsync();
             }
         }
 
-        
+        public void Dispose()
+        {
+            Dispose(false);
+        }
+        void Dispose(bool calledFromFinalizer = false)
+        {
+            if (!cancellationTokenSource.IsCancellationRequested)
+            {
+                cancellationTokenSource.Cancel();
+                if (calledFromFinalizer == false) GC.SuppressFinalize(this);
+            }
+        }
+
+        ~WarlightServer()
+        {
+            Dispose(true);
+        }
 
         static IPAddress GetLocalIPAddress()
         {
@@ -107,40 +122,8 @@ namespace Server
         }
     }
 
-    class WarlightClient
+    class ClientNotRespondingException : Exception
     {
-        readonly TcpClient client;
-        readonly Stopwatch stopwatch;
-
-        bool finished;
-        public bool IsFinished
-        {
-            get { return stopwatch.ElapsedMilliseconds > 1000 || finished; }
-        }
-
-        public WarlightClient(TcpClient client)
-        {
-            this.client = client;
-            stopwatch = Stopwatch.StartNew();
-        }
-
-        public void Run()
-        {
-            // TODO: horrible, get it better
-            var stream = client.GetStream();
-
-            while (!stream.DataAvailable) ;
-
-            if (IsFinished) return;
-            stopwatch.Restart();
-
-            var gameObject = Serializer.Deserialize<object>(stream);
-            // TODO: game logic
-
-
-            finished = true;
-        }
-
-
+        
     }
 }
