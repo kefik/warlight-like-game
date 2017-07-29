@@ -14,9 +14,8 @@ namespace GameObjectsLib.GameUser
     /// </summary>
     [Serializable]
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    [ProtoInclude(50, typeof(NetworkUser))]
-    [ProtoInclude(51, typeof(LocalUser))]
-    [ProtoInclude(52, typeof(MyNetworkUser))]
+    [ProtoInclude(100, typeof(NetworkUser))]
+    [ProtoInclude(101, typeof(LocalUser))]
     public abstract class User
     {
         public string Name { get; set; }

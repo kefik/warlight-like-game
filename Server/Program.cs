@@ -14,8 +14,6 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            //Console.Write($"Insert port number servers going to listen on: ");
-            //string s = Console.ReadLine();
             using (var server = WarlightServer.Create(5000))
             {
                 server.Run(10);

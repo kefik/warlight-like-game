@@ -33,10 +33,10 @@
             this.humanPlayerSettingsControl = new WinformsUI.HelperControls.HumanPlayerSettingsControl();
             this.humanPlayersLabel = new System.Windows.Forms.Label();
             this.humanPlayersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.aiPlayerSettingsControl = new WinformsUI.HelperControls.AIPlayerSettingsControl();
-            this.aiPlayersNumberLabel = new System.Windows.Forms.Label();
-            this.aiPlayersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.createButton = new System.Windows.Forms.Button();
+            this.aiPlayersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.aiPlayersNumberLabel = new System.Windows.Forms.Label();
+            this.aiPlayerSettingsControl = new WinformsUI.HelperControls.AIPlayerSettingsControl();
             ((System.ComponentModel.ISupportInitialize)(this.humanPlayersNumberNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.aiPlayersNumberNumericUpDown)).BeginInit();
             this.SuspendLayout();
@@ -86,25 +86,15 @@
             this.humanPlayersNumberNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.humanPlayersNumberNumericUpDown.ValueChanged += new System.EventHandler(this.OnNumberOfHumanPlayersChanged);
             // 
-            // aiPlayerSettingsControl
+            // createButton
             // 
-            this.aiPlayerSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.aiPlayerSettingsControl.Location = new System.Drawing.Point(3, 382);
-            this.aiPlayerSettingsControl.Name = "aiPlayerSettingsControl";
-            this.aiPlayerSettingsControl.PlayersLimit = 0;
-            this.aiPlayerSettingsControl.Size = new System.Drawing.Size(371, 232);
-            this.aiPlayerSettingsControl.TabIndex = 18;
-            // 
-            // aiPlayersNumberLabel
-            // 
-            this.aiPlayersNumberLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.aiPlayersNumberLabel.AutoSize = true;
-            this.aiPlayersNumberLabel.Location = new System.Drawing.Point(3, 358);
-            this.aiPlayersNumberLabel.Name = "aiPlayersNumberLabel";
-            this.aiPlayersNumberLabel.Size = new System.Drawing.Size(105, 13);
-            this.aiPlayersNumberLabel.TabIndex = 17;
-            this.aiPlayersNumberLabel.Text = "Number of AI players";
+            this.createButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.createButton.Location = new System.Drawing.Point(305, 624);
+            this.createButton.Name = "createButton";
+            this.createButton.Size = new System.Drawing.Size(75, 23);
+            this.createButton.TabIndex = 19;
+            this.createButton.Text = "Create";
+            this.createButton.UseVisualStyleBackColor = true;
             // 
             // aiPlayersNumberNumericUpDown
             // 
@@ -116,15 +106,25 @@
             this.aiPlayersNumberNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.aiPlayersNumberNumericUpDown.ValueChanged += new System.EventHandler(this.OnNumberOfAIPlayersChanged);
             // 
-            // createButton
+            // aiPlayersNumberLabel
             // 
-            this.createButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.createButton.Location = new System.Drawing.Point(305, 624);
-            this.createButton.Name = "createButton";
-            this.createButton.Size = new System.Drawing.Size(75, 23);
-            this.createButton.TabIndex = 19;
-            this.createButton.Text = "Create";
-            this.createButton.UseVisualStyleBackColor = true;
+            this.aiPlayersNumberLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.aiPlayersNumberLabel.AutoSize = true;
+            this.aiPlayersNumberLabel.Location = new System.Drawing.Point(3, 358);
+            this.aiPlayersNumberLabel.Name = "aiPlayersNumberLabel";
+            this.aiPlayersNumberLabel.Size = new System.Drawing.Size(105, 13);
+            this.aiPlayersNumberLabel.TabIndex = 17;
+            this.aiPlayersNumberLabel.Text = "Number of AI players";
+            // 
+            // aiPlayerSettingsControl
+            // 
+            this.aiPlayerSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.aiPlayerSettingsControl.Location = new System.Drawing.Point(3, 382);
+            this.aiPlayerSettingsControl.Name = "aiPlayerSettingsControl";
+            this.aiPlayerSettingsControl.PlayersLimit = 0;
+            this.aiPlayerSettingsControl.Size = new System.Drawing.Size(371, 232);
+            this.aiPlayerSettingsControl.TabIndex = 18;
             // 
             // NetworkNewGameSettingsControl
             // 
@@ -155,9 +155,9 @@
         private HelperControls.HumanPlayerSettingsControl humanPlayerSettingsControl;
         private System.Windows.Forms.Label humanPlayersLabel;
         private System.Windows.Forms.NumericUpDown humanPlayersNumberNumericUpDown;
-        private HelperControls.AIPlayerSettingsControl aiPlayerSettingsControl;
-        private System.Windows.Forms.Label aiPlayersNumberLabel;
-        private System.Windows.Forms.NumericUpDown aiPlayersNumberNumericUpDown;
         private System.Windows.Forms.Button createButton;
+        private System.Windows.Forms.NumericUpDown aiPlayersNumberNumericUpDown;
+        private System.Windows.Forms.Label aiPlayersNumberLabel;
+        private HelperControls.AIPlayerSettingsControl aiPlayerSettingsControl;
     }
 }

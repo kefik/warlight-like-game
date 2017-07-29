@@ -7,14 +7,35 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using GameObjectsLib.Game;
 
 namespace Server
 {
+    class ConnectedUser
+    {
+        public int Id { get; }
+        readonly Stopwatch stopwatch;
+        public bool IsConnected
+        {
+            // elapsed more than 5 minus
+            get { return ((double)stopwatch.ElapsedMilliseconds / 1000) / 60 >= 5; }
+        }
+        
+        public ConnectedUser(int id)
+        {
+            Id = id;
+            stopwatch = Stopwatch.StartNew();
+        }
+    }
     class WarlightServer : IDisposable
     {
         readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        readonly Queue<WarlightClient> clients = new Queue<WarlightClient>();
+        readonly List<WarlightClient> directlyConnectedClients = new List<WarlightClient>();
+
+        readonly List<ConnectedUser> connectedUsers = new List<ConnectedUser>();
+
         readonly TcpListener listener;
         private WarlightServer(IPEndPoint endPoint)
         {
@@ -77,15 +98,16 @@ namespace Server
         {
             while (true)
             {
-                while (clients.Count >= connectionsLimit)
+                while (directlyConnectedClients.Count >= connectionsLimit)
                 {
                     await Task.Delay(300);
                 }
                 TcpClient client = await listener.AcceptTcpClientAsync().ConfigureAwait(false);
                 
                 WarlightClient wClient = new WarlightClient(client, cancellationTokenSource.Token);
-                clients.Enqueue(wClient);
-                wClient.RunAsync();
+                directlyConnectedClients.Add(wClient);
+                // TODO: thread synchronizing problem
+                wClient.RunAsync().ContinueWith(antecedent => directlyConnectedClients.Remove(wClient));
             }
         }
 
@@ -93,7 +115,7 @@ namespace Server
         {
             Dispose(false);
         }
-        void Dispose(bool calledFromFinalizer = false)
+        void Dispose(bool calledFromFinalizer)
         {
             if (!cancellationTokenSource.IsCancellationRequested)
             {

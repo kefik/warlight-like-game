@@ -8,17 +8,19 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GameObjectsLib.Game;
+using GameObjectsLib.GameUser;
 using ProtoBuf;
 
 namespace GameObjectsLib
 {
     [ProtoContract]
-    [ProtoInclude(10, typeof(NetworkObjectWrapper<Game.Game>))]
-    [ProtoInclude(11, typeof(NetworkObjectWrapper<Round>))]
-    [ProtoInclude(12, typeof(NetworkObjectWrapper<GameBeginningRound>))]
-    [ProtoInclude(13, typeof(NetworkObjectWrapper<int>))]
-    [ProtoInclude(14, typeof(NetworkObjectWrapper<HotseatGame>))]
-    [ProtoInclude(15, typeof(NetworkObjectWrapper<NetworkGame>))]
+    [ProtoInclude(100, typeof(NetworkObjectWrapper<Game.Game>))]
+    [ProtoInclude(101, typeof(NetworkObjectWrapper<Round>))]
+    [ProtoInclude(102, typeof(NetworkObjectWrapper<GameBeginningRound>))]
+    [ProtoInclude(103, typeof(NetworkObjectWrapper<bool>))]
+    [ProtoInclude(104, typeof(NetworkObjectWrapper<HotseatGame>))]
+    [ProtoInclude(105, typeof(NetworkObjectWrapper<NetworkGame>))]
+    [ProtoInclude(106, typeof(NetworkObjectWrapper<MyNetworkUser>))]
     public abstract class NetworkObjectWrapper
     {
         public abstract object Value { get; }

@@ -10,7 +10,7 @@ namespace Server.WarlightLikeDatabase
         public WarlightDbContext()
             : base("name=WarlightDbContext")
         {
-            Database.SetInitializer(new DropCreateDatabaseAlways<WarlightDbContext>());
+            //Database.SetInitializer(new DropCreateDatabaseAlways<WarlightDbContext>());
         }
 
         public virtual DbSet<Game> Games { get; set; }

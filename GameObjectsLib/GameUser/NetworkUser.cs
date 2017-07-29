@@ -9,10 +9,14 @@ using ProtoBuf;
 namespace GameObjectsLib.GameUser
 {
     [Serializable]
-    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
+    [ProtoInclude(200, typeof(MyNetworkUser))]
+    [ProtoContract]
     public class NetworkUser : User, IEquatable<NetworkUser>
     {
+        [ProtoMember(1)]
         public int Id { get; }
+
+        protected NetworkUser() : base() { }
 
         public override UserType UserType
         {
