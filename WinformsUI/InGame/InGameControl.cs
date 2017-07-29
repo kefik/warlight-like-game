@@ -123,7 +123,7 @@ namespace WinformsUI.InGame
                 case GameType.MultiplayerHotseat:
                     {
                         gameBeginningRounds.Add(gameBeginningRound);
-                        if (playerOnTurn.MoveNext())
+                        if (NextPlayer())
                         {
                             State = GameState.GameBeginning;
                         }
@@ -251,7 +251,6 @@ namespace WinformsUI.InGame
                                                 game.Save(db);
                                             }
                                             
-                                            
                                             turnPhaseControl?.Dispose();
                                             turnPhaseControl = null;
                                             State = GameState.RoundBeginning;
@@ -262,13 +261,13 @@ namespace WinformsUI.InGame
                                             rounds.Add(new Round(game.Id, turnPhaseControl.DeployingStructure,
                                                 turnPhaseControl.AttackingStructure));
 
-                                            if (playerOnTurn.MoveNext())
+                                            if (NextPlayer())
                                             {
                                                 // play the next player instead
-                                                State = GameState.RoundBeginning;
-
                                                 turnPhaseControl?.Dispose();
                                                 turnPhaseControl = null;
+
+                                                State = GameState.RoundBeginning;
                                             }
                                             else
                                             {
@@ -277,15 +276,36 @@ namespace WinformsUI.InGame
                                                 // TODO: play bots
                                                 var round = Round.Process(rounds);
 
+                                                PlayRound();
+                                                rounds.Clear();
+
                                                 using (var db = new UtilsDbContext())
                                                 {
                                                     game.Save(db);
                                                 }
-                                                
-                                                PlayRound();
 
                                                 turnPhaseControl?.Dispose();
                                                 turnPhaseControl = null;
+                                                
+                                                for (int i = game.Players.Count - 1; i >= 0; i--)
+                                                {
+                                                    if (game.Players[i].ControlledRegions.Count == 0)
+                                                    {
+                                                        MessageBox.Show($"Player {game.Players[i].Name} has lost.");
+                                                        game.Players.RemoveAt(i);
+                                                    }
+                                                }
+                                                if (game.Players.Count == 1)
+                                                {
+                                                    // TODO: game quit
+                                                    MessageBox.Show($"Player {game.Players[0].Name} has won the game!");
+                                                    return;
+                                                }
+
+                                                playerOnTurn = localPlayers.GetEnumerator();
+                                                NextPlayer();
+
+                                                State = GameState.RoundBeginning;
                                             }
 
                                             break;
@@ -355,7 +375,7 @@ namespace WinformsUI.InGame
 
         void DeployAttempt(Region region, int addedArmy)
         {
-            if (region == null || region.Owner == null) return;
+            if (region == null || region.Owner == null || region.Owner != playerOnTurn.Current) return;
             // represents the already existing deployment entry
             var regionRepresentingTuple = (from item in turnPhaseControl.DeployingStructure.ArmiesDeployed
                                            where item.Item1 == region

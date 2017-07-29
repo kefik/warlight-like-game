@@ -132,7 +132,6 @@ namespace GameObjectsLib.Game
                 }
             }
             Refresh();
-            //ReconstructOriginalGraph();
             RoundNumber++;
         }
 
@@ -155,7 +154,6 @@ namespace GameObjectsLib.Game
             }
 
             Refresh();
-            //ReconstructOriginalGraph();
             RoundNumber++;
         }
 
@@ -224,16 +222,17 @@ namespace GameObjectsLib.Game
             {
                 region.Refresh();
             }
-            // refresh super regions
-            foreach (SuperRegion superRegion in Map.SuperRegions)
-            {
-                superRegion.Refresh();
-            }
             // refresh
             foreach (var player in Players)
             {
                 player.Refresh();
             }
+            // refresh super regions
+            foreach (SuperRegion superRegion in Map.SuperRegions)
+            {
+                superRegion.Refresh();
+            }
+            
 
         }
 

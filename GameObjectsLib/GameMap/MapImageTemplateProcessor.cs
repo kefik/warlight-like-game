@@ -222,7 +222,17 @@ namespace GameObjectsLib.GameMap
         /// <param name="game">Game from which it has source.</param>
         public void Refresh(Game.Game game)
         {
-            if (game.GetType() == typeof(SingleplayerGame)) Redraw((SingleplayerGame)game);
+            switch (game.GameType)
+            {
+                case GameType.SinglePlayer:
+                    Redraw((SingleplayerGame)game);
+                    break;
+                case GameType.MultiplayerHotseat:
+                    Redraw((HotseatGame)game);
+                    break;
+                case GameType.MultiplayerNetwork:
+                    break;
+            }
         }
 
         /// <summary>
@@ -286,8 +296,8 @@ namespace GameObjectsLib.GameMap
                 int attackingArmy = item.AttackingArmy;
 
                 var regionDeployedArmy = (from tuple in deployingPhase.ArmiesDeployed
-                                         where tuple.Item1 == attacker
-                                         select tuple.Item2);
+                                          where tuple.Item1 == attacker
+                                          select tuple.Item2);
                 if (!regionDeployedArmy.Any())
                 {
                     OverDrawArmyNumber(attacker, attacker.Army);
@@ -297,7 +307,7 @@ namespace GameObjectsLib.GameMap
                     int army = regionDeployedArmy.First();
                     OverDrawArmyNumber(attacker, army);
                 }
-                
+
             }
         }
         /// <summary>
@@ -331,7 +341,7 @@ namespace GameObjectsLib.GameMap
             // recolor them to players color
             foreach (var ownedRegion in ownedRegions)
             {
-                Recolor(ownedRegion, Color.FromKnownColor(humanPlayer.Color));
+                Recolor(ownedRegion, humanPlayer.Color);
 
                 DrawArmyNumber(ownedRegion, ownedRegion.Army);
             }
@@ -358,6 +368,40 @@ namespace GameObjectsLib.GameMap
                 DrawArmyNumber(region, region.Army);
 
             }
+        }
+
+        void Redraw(HotseatGame game)
+        {
+            var humanPlayers = (from player in game.Players
+                                where player.GetType() == typeof(HumanPlayer)
+                                select (HumanPlayer)player);
+
+            var controlledRegions = from humanPlayer in humanPlayers
+                                    from controlledRegion in humanPlayer.ControlledRegions
+                                    select controlledRegion;
+
+            foreach (Region ownedRegion in controlledRegions)
+            {
+                Recolor(ownedRegion, ownedRegion.Owner.Color);
+
+                DrawArmyNumber(ownedRegion, ownedRegion.Army);
+            }
+
+
+            var neighbourNotOwnedRegions = (from humanPlayer in humanPlayers
+                                            from ownedRegion in humanPlayer.ControlledRegions
+                                            from neighbour in ownedRegion.NeighbourRegions
+                                            where neighbour.Owner != humanPlayer
+                                            select neighbour).Distinct();
+            foreach (var region in neighbourNotOwnedRegions)
+            {
+                if (region.Owner == null) Recolor(region, regionVisibleUnoccupiedColor);
+                else Recolor(region, region.Owner.Color);
+
+                DrawArmyNumber(region, region.Army);
+            }
+
+
         }
 
         Color highlightColor = Color.Gold;
