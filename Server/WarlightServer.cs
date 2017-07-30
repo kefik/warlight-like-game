@@ -28,6 +28,11 @@ namespace Server
             Id = id;
             stopwatch = Stopwatch.StartNew();
         }
+
+        public void Refresh()
+        {
+            stopwatch.Restart();
+        }
     }
     class WarlightServer : IDisposable
     {
@@ -103,7 +108,6 @@ namespace Server
                     await Task.Delay(300);
                 }
                 TcpClient client = await listener.AcceptTcpClientAsync().ConfigureAwait(false);
-                
                 WarlightClient wClient = new WarlightClient(client, cancellationTokenSource.Token);
                 directlyConnectedClients.Add(wClient);
                 // TODO: thread synchronizing problem

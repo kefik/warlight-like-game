@@ -28,10 +28,9 @@ namespace Server
 
         public async Task RunAsync()
         {
-            try
+            while (!token.IsCancellationRequested)
             {
                 var stream = client.GetStream();
-
 
                 var delayTask = Task.Delay(TimeSpan.FromSeconds(50000));
                 var deserializationTask = NetworkObjectWrapper.DeserializeAsync(stream);
@@ -74,10 +73,6 @@ namespace Server
                         await confirmation.SerializeAsync(stream);
                     }
                 }
-            }
-            finally
-            {
-                Dispose();
             }
 
         }

@@ -47,20 +47,15 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
                 
             }*/
             // server side validation
-            var user = new MyNetworkUser(1, loginTextBox.Text); // returned user
-
-
             TcpClient client = new TcpClient();
             {
                 IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("78.128.199.63"), 5000);
                 client.Connect(endPoint);
             }
-
-            using (var stream = client.GetStream())
-            {
+            var user = new MyNetworkUser(1, loginTextBox.Text, client); // returned user
+            
                 // cant log in, return
-                if (!user.LogIn(passwordTextBox.Text, stream)) return;
-            }
+                if (!user.LogIn(passwordTextBox.Text)) return;
 
             User = user;
 

@@ -18,6 +18,10 @@ namespace WinformsUI.GameSetup.Singleplayer
                 singleplayerNewGameSettingsControl.User = value;
             }
         }
+
+        public Func<User> GetUser;
+        public Action<User> SetUser;
+
         public event Action<Game> OnNewGameStarted
         {
             add

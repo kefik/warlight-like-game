@@ -48,7 +48,7 @@
             this.multiplayerTabPage.Location = new System.Drawing.Point(4, 22);
             this.multiplayerTabPage.Name = "multiplayerTabPage";
             this.multiplayerTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.multiplayerTabPage.Size = new System.Drawing.Size(673, 406);
+            this.multiplayerTabPage.Size = new System.Drawing.Size(752, 426);
             this.multiplayerTabPage.TabIndex = 1;
             this.multiplayerTabPage.Text = "Multiplayer";
             this.multiplayerTabPage.UseVisualStyleBackColor = true;
@@ -90,7 +90,7 @@
             this.settingsTabPage.Location = new System.Drawing.Point(4, 22);
             this.settingsTabPage.Name = "settingsTabPage";
             this.settingsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.settingsTabPage.Size = new System.Drawing.Size(673, 406);
+            this.settingsTabPage.Size = new System.Drawing.Size(752, 426);
             this.settingsTabPage.TabIndex = 2;
             this.settingsTabPage.Text = "Settings";
             this.settingsTabPage.UseVisualStyleBackColor = true;
@@ -151,7 +151,7 @@
             this.loggedInLabel.Name = "loggedInLabel";
             this.loggedInLabel.Size = new System.Drawing.Size(309, 18);
             this.loggedInLabel.TabIndex = 2;
-            this.loggedInLabel.Text = "You are currently logged in as \"TODO\"";
+            this.loggedInLabel.Text = "You are currently logged in as a local user.";
             this.loggedInLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // MainGameForm

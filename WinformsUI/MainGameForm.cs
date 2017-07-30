@@ -223,6 +223,12 @@ namespace WinformsUI
         {
             // TODO: user changed broadcast to others
             myUser = newUser;
+            if (myUser.UserType == UserType.MyNetworkUser)
+                loggedInLabel.Text = $"You are currently logged in as {myUser.Name}.";
+            else
+            {
+                loggedInLabel.Text = $"You are currently logged in as a local user.";
+            }
         }
         
         void LoadSettingsControls()

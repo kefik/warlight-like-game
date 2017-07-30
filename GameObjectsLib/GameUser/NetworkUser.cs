@@ -14,7 +14,7 @@ namespace GameObjectsLib.GameUser
     public class NetworkUser : User, IEquatable<NetworkUser>
     {
         [ProtoMember(1)]
-        public int Id { get; }
+        public int Id { get; set; }
 
         protected NetworkUser() : base() { }
 
