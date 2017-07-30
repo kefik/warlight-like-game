@@ -177,13 +177,13 @@
         private System.Windows.Forms.TabPage singleplayerTabPage;
         private System.Windows.Forms.TabControl typeGameChoiceTabControl;
         private System.Windows.Forms.TabPage settingsTabPage;
-        private System.Windows.Forms.TextBox passwordTextBox;
-        private System.Windows.Forms.TextBox emailTextBox;
-        private System.Windows.Forms.TextBox playerNameTextBox;
         private System.Windows.Forms.Label emailLabel;
         private System.Windows.Forms.Label passwordLabel;
         private System.Windows.Forms.Label playerNameLabel;
         private System.Windows.Forms.Label loggedInLabel;
+        private System.Windows.Forms.TextBox playerNameTextBox;
+        private System.Windows.Forms.TextBox passwordTextBox;
+        private System.Windows.Forms.TextBox emailTextBox;
     }
 }
 

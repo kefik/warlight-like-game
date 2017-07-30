@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using GameObjectsLib;
 using GameObjectsLib.GameMap;
+using GameObjectsLib.GameUser;
 using ProtoBuf;
 
 namespace GameObjectsLib.Game
@@ -58,7 +59,7 @@ namespace GameObjectsLib.Game
         /// </summary>
         [ProtoMember(4)]
         public IList<Player> Players { get; }
-
+        
         /// <summary>
         /// Return game type this game has.
         /// </summary>
@@ -343,5 +344,18 @@ namespace GameObjectsLib.Game
             }
 
         }
+    }
+
+    [ProtoContract]
+    public class GameSeed
+    {
+        [ProtoMember(1)]
+        public Player CreatingPlayer { get; set; }
+        [ProtoMember(2)]
+        public IEnumerable<Player> AIPlayers { get; set; }
+        [ProtoMember(3)]
+        public int FreeSlots { get; set; }
+        [ProtoMember(4)]
+        public string MapName { get; set; }
     }
 }

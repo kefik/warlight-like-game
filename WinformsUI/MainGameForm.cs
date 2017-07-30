@@ -14,7 +14,7 @@ namespace WinformsUI
     public partial class MainGameForm : Form
     {
         int previousTabSelectedIndex;
-        
+
         SingleplayerGameOptionsControl singleplayerGameOptionsControl;
         HotseatGameOptionsControl hotseatGameOptionsControl;
         NetworkGameOptionsControl networkGameOptionsControl;
@@ -87,7 +87,7 @@ namespace WinformsUI
                     };
                     break;
             }
-            
+
             inGame.Show();
         }
 
@@ -95,8 +95,8 @@ namespace WinformsUI
         {
             LoadInGameScreen(game);
         }
-        
-        
+
+
 
         private void StartNewGame(Game game)
         {
@@ -123,7 +123,24 @@ namespace WinformsUI
             }
             LoadInGameScreen(game);
         }
-        
+
+        private void CreateNewGame(GameSeed seed)
+        {
+            if (TryToLogIn())
+            {
+                var networkUser = (MyNetworkUser)myUser;
+                bool wasCreatedCorrectly = networkUser.CreateGame(seed);
+                if (!wasCreatedCorrectly)
+                {
+                    MessageBox.Show($"Server is unavailable.");
+                }
+                else
+                {
+                    // TODO: load appropriate screen
+                }
+            }
+        }
+
         /// <summary>
         /// Resets previously loaded singleplayer control and loads new, resetted one.
         /// </summary>
@@ -158,14 +175,14 @@ namespace WinformsUI
                     Parent = multiplayerTabPage,
                     Dock = DockStyle.Fill,
                     GetUser = () => MyUser,
-                    SetUser = user => MyUser= user
+                    SetUser = user => MyUser = user
                 };
                 hotseatGameOptionsControl.Show();
 
                 hotseatGameOptionsControl.OnGameStarted += StartNewGame;
                 hotseatGameOptionsControl.OnGameLoaded += LoadGame;
             }
-            
+
             void LoadNetworkControls()
             {
                 networkGameOptionsControl?.Dispose();
@@ -175,10 +192,12 @@ namespace WinformsUI
                 {
                     Parent = multiplayerTabPage,
                     Dock = DockStyle.Fill,
-                    MyUser = MyUser
+                    GetUser = () => MyUser,
+                    SetUser = user => MyUser = user
                 };
+                networkGameOptionsControl.OnGameCreated += CreateNewGame;
                 networkGameOptionsControl.Show();
-                
+
             }
 
             var gameTypeChoiceForm = new GameTypeChoiceForm();
@@ -194,28 +213,14 @@ namespace WinformsUI
                             break;
                         case GameType.MultiplayerNetwork:
                             // network => find out if user is logged
-                            if (MyUser?.GetType() == typeof(MyNetworkUser)) // user is already logged
+                            if (TryToLogIn())
                             {
                                 LoadNetworkControls();
-                                return;
                             }
-                            // user is not logged => log him
-                            var serverLoggingForm = new ServerLoggingForm();
-                            var dialogLogging = serverLoggingForm.ShowDialog();
-
-                            switch (dialogLogging)
+                            else
                             {
-                                case DialogResult.OK:
-                                    MyUser = serverLoggingForm.User;
-                                    LoadNetworkControls();
-                                    break;
-                                case DialogResult.Cancel:
-                                default:
-                                    // return back to previous stage
-                                    typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
-                                    return;
+                                typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
                             }
-                            
                             break;
                         default:
                             // return back to previous stage
@@ -241,10 +246,58 @@ namespace WinformsUI
                 loggedInLabel.Text = $"You are currently logged in as a local user.";
             }
         }
-        
+
+        bool TryToLogIn()
+        {
+            if (MyUser.UserType != UserType.MyNetworkUser)
+            {
+                ServerLoggingForm serverLoggingForm = new ServerLoggingForm();
+                var dialogResult = serverLoggingForm.ShowDialog();
+                switch (dialogResult)
+                {
+                    case DialogResult.OK:
+                        MyUser = serverLoggingForm.User;
+                        break;
+                    default:
+                        typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                        return false;
+                }
+            }
+            else
+            {
+                var converted = (MyNetworkUser)MyUser;
+                bool amILogged = converted.IsLoggedIn();
+
+                if (!amILogged)
+                {
+                    ServerLoggingForm serverLoggingForm = new ServerLoggingForm();
+                    var dialogResult = serverLoggingForm.ShowDialog();
+                    switch (dialogResult)
+                    {
+                        case DialogResult.OK:
+                            MyUser = serverLoggingForm.User;
+                            break;
+                        default:
+                            typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                            return false;
+                    }
+                }
+            }
+            return true;
+        }
         void LoadSettingsControls()
         {
-            throw new NotImplementedException();
+            if (TryToLogIn())
+            {
+                var newUser = (MyNetworkUser)MyUser;
+                playerNameTextBox.Text = newUser.Name;
+                emailTextBox.Text = newUser.Email;
+                Refresh();
+            }
+            else
+            {
+                typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+            }
         }
         private void TabChanged(object sender, EventArgs e)
         {

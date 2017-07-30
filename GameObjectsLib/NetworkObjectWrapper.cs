@@ -21,6 +21,8 @@ namespace GameObjectsLib
     [ProtoInclude(104, typeof(NetworkObjectWrapper<HotseatGame>))]
     [ProtoInclude(105, typeof(NetworkObjectWrapper<NetworkGame>))]
     [ProtoInclude(106, typeof(NetworkObjectWrapper<MyNetworkUser>))]
+    [ProtoInclude(107, typeof(NetworkObjectWrapper<NetworkUser>))]
+    [ProtoInclude(108, typeof(NetworkObjectWrapper<GameSeed>))]
     public abstract class NetworkObjectWrapper
     {
         public abstract object Value { get; }

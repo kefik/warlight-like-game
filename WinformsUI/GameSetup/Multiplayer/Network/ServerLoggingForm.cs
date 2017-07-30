@@ -47,20 +47,21 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
                 
             }*/
             // server side validation
+            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("78.128.199.63"), 5000);
             TcpClient client = new TcpClient();
             {
-                IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("78.128.199.63"), 5000);
+                
                 try
                 {
                     client.Connect(endPoint);
                 }
-                catch  (System.Net.Sockets.SocketException)
+                catch (SocketException)
                 {
                     MessageBox.Show("Server is unavailable, please, contact the administrator.");
                     return;
                 }
             }
-            var user = new MyNetworkUser(1, loginTextBox.Text, client); // returned user
+            var user = new MyNetworkUser(loginTextBox.Text, client, endPoint); // returned user
             
                 // cant log in, return
             if (!user.LogIn(passwordTextBox.Text))

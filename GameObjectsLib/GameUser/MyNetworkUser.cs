@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using GameObjectsLib.Game;
 using ProtoBuf;
 
 namespace GameObjectsLib.GameUser
@@ -19,43 +20,86 @@ namespace GameObjectsLib.GameUser
         readonly TcpClient client;
         readonly IPEndPoint serverEndPoint;
 
-        public MyNetworkUser(int id, string name, TcpClient connectedClient, IPEndPoint serverEndPoint) : base(id, name)
+        public MyNetworkUser(string name, TcpClient client, IPEndPoint serverEndPoint) : base(name)
         {
-            if (client == null) throw new ArgumentException();
-
-            this.client = connectedClient;
+            this.client = client ?? throw new ArgumentException();
             this.serverEndPoint = serverEndPoint;
         }
         [ProtoMember(1)]
-        public string Email { get; private set; }
+        public string Email { get; set; }
         [ProtoMember(2)]
-        public string PasswordHash { get; private set; }
+        public string Password { get; set; }
+        /// <summary>
+        /// Attempts to log to the server specified in constructor.
+        /// </summary>
+        /// <param name="password">Password.</param>
+        /// <returns>True, if this client successfully logs into the server.</returns>
         public bool LogIn(string password)
         {
             if (!client.Connected) client.Connect(serverEndPoint);
 
-            {
-                byte[] data = System.Text.Encoding.ASCII.GetBytes(password);
-                data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
-                PasswordHash = System.Text.Encoding.ASCII.GetString(data);
-            }
             var stream = client.GetStream();
-            NetworkObjectWrapper wrapper = new NetworkObjectWrapper<MyNetworkUser>() {TypedValue = this};
+
+            Password = password;
+            NetworkObjectWrapper wrapper = new NetworkObjectWrapper<MyNetworkUser>() { TypedValue = this };
             wrapper.Serialize(stream);
+            // remove password pointer for security
+            Password = null;
+            GC.Collect();
 
             bool successful = (bool)NetworkObjectWrapper.Deserialize(stream).Value;
             if (successful)
             {
-                var user = (MyNetworkUser) NetworkObjectWrapper.Deserialize(stream).Value;
+                var user = (MyNetworkUser)NetworkObjectWrapper.Deserialize(stream).Value;
                 Email = user.Email;
             }
 
             return successful;
         }
 
+        /// <summary>
+        /// Based on client passed in constructor, finds out, whether client is still connected to the server.
+        /// </summary>
+        /// <returns>True, if client is connected to the server.</returns>
+        public bool IsLoggedIn()
+        {
+            // if the tcp connection still exists, then the user is logged in, because otherwise server would close the connection
+            return client.Connected;
+        }
+
+        /// <summary>
+        /// Creates a game from the seed.
+        /// </summary>
+        /// <param name="seed">Seed of the game.</param>
+        /// <returns>True, if everything ran correctly and the game was created.</returns>
+        public bool CreateGame(GameSeed seed)
+        {
+            if (!client.Connected) client.Connect(serverEndPoint);
+
+            var stream = client.GetStream();
+            {
+                NetworkObjectWrapper wrapper = new NetworkObjectWrapper<GameSeed>() {TypedValue = seed};
+                wrapper.Serialize(stream);
+            }
+            {
+                var answer = NetworkObjectWrapper.Deserialize(stream).Value;
+                if (answer is bool)
+                {
+                    bool wasCreatedCorrectly = (bool) answer;
+                    return wasCreatedCorrectly;
+                }
+                return false;
+            }
+        }
+
         public bool LogOut()
         {
-            throw new NotImplementedException();
+            if (client.Connected)
+            {
+                client.Client.Disconnect(true);
+                return true;
+            }
+            return false;
         }
 
         public bool ChangePassword(string oldPassword, string newPassword)
@@ -71,14 +115,13 @@ namespace GameObjectsLib.GameUser
         bool disposed;
         void Dispose(bool calledFromFinalizer)
         {
-            if (disposed == false && client.Connected)
+            if (disposed == false)
             {
                 disposed = true;
-                client.Close();
+                client?.Close();
                 if (calledFromFinalizer == false)
                 {
                     GC.SuppressFinalize(this);
-                    GC.SuppressFinalize(client);
                 }
             }
         }

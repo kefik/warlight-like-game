@@ -7,8 +7,27 @@ namespace WinformsUI.GameSetup.Singleplayer
 {
     public partial class SingleplayerGameOptionsControl : UserControl
     {
-        public Func<User> GetUser;
-        public Action<User> SetUser;
+        Func<User> getUser;
+        public Func<User> GetUser
+        {
+            get { return getUser; }
+            set
+            {
+                getUser = value;
+                singleplayerNewGameSettingsControl.GetUser = value;
+            }
+        }
+
+        Action<User> setUser;
+        public Action<User> SetUser
+        {
+            get { return setUser; }
+            set
+            {
+                setUser = value;
+                singleplayerNewGameSettingsControl.SetUser = value;
+            }
+        }
 
         public event Action<Game> OnNewGameStarted
         {
@@ -33,9 +52,6 @@ namespace WinformsUI.GameSetup.Singleplayer
         public SingleplayerGameOptionsControl()
         {
             InitializeComponent();
-
-            singleplayerNewGameSettingsControl.GetUser = GetUser;
-            singleplayerNewGameSettingsControl.SetUser = SetUser;
         }
     }
 }

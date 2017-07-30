@@ -19,8 +19,30 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 {
     public partial class HotseatNewGameSettingsControl : UserControl
     {
-        public Func<User> GetUser;
-        public Action<User> SetUser;
+        Func<User> getUser;
+
+        public Func<User> GetUser
+        {
+            get { return getUser; }
+            set
+            {
+                getUser = value;
+                myHumanPlayerControl.GetUser = value;
+            }
+        }
+
+        Action<User> setUser;
+
+        public Action<User> SetUser
+        {
+            get { return setUser; }
+            set
+            {
+                setUser = value;
+                myHumanPlayerControl.SetUser = value;
+                myHumanPlayerControl.User = GetUser();
+            }
+        }
 
         readonly MyHumanPlayerControl myHumanPlayerControl;
         /// <summary>

@@ -4,9 +4,13 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DatabaseMapping;
+using GameObjectsLib;
+using GameObjectsLib.Game;
 using GameObjectsLib.GameUser;
 using WinformsUI.HelperControls;
 
@@ -14,17 +18,26 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
 {
     public partial class NetworkNewGameSettingsControl : UserControl
     {
-
-        /// <summary>
-        /// This instance represenets my user.
-        /// </summary>
-        public User MyUser
+        Func<User> getUser;
+        public Func<User> GetUser
         {
-            // TODO: doesnt work!
-            get { return myPlayerControl.User; }
+            get { return getUser; }
             set
             {
-                myPlayerControl.User = value;
+                getUser = value;
+                myPlayerControl.GetUser = value;
+            }
+        }
+
+        Action<User> setUser;
+        public Action<User> SetUser
+        {
+            get { return setUser; }
+            set
+            {
+                setUser = value;
+                myPlayerControl.SetUser = value;
+                myPlayerControl.User = GetUser();
             }
         }
 
@@ -41,7 +54,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
         {
             InitializeComponent();
 
-            myPlayerControl = new MyHumanPlayerControl()
+            myPlayerControl = new MyHumanPlayerControl
             {
                 Parent = myUserPanel,
                 Dock = DockStyle.Fill
@@ -71,7 +84,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
         }
 
-        public event Action<GameObjectsLib.Game.Game> OnGameStarted;
+        public event Action<GameSeed> OnGameCreated;
 
         decimal previousAIPlayersNumber;
         private void OnNumberOfAIPlayersChanged(object sender, EventArgs e)
@@ -118,7 +131,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
                 difference = humanPlayersNumberNumericUpDown.Value - previousHumanPlayersNumber;
                 for (int i = 0; i < difference; i++)
                 {
-                    humanPlayerSettingsControl.AddPlayer(new NetworkUser(1, "")); // TODO: problem with users
+                    humanPlayerSettingsControl.AddPlayer(new NetworkUser("")); // TODO: problem with users
                 }
             }
             else
@@ -136,6 +149,18 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
         bool DoesSumToPlayersLimit(decimal aiPlayers, decimal humanPlayers)
         {
             return aiPlayers + humanPlayers <= Math.Max(0, TotalPlayersLimit - 1);
+        }
+
+        private void Create(object sender, EventArgs e)
+        {
+            GameSeed seed = new GameSeed
+            {
+                AIPlayers = aiPlayerSettingsControl.GetPlayers(),
+                MapName = mapSettingsControl.Name,
+                CreatingPlayer = myPlayerControl.GetPlayer(),
+                FreeSlots = aiPlayerSettingsControl.PlayersCount
+            };
+            OnGameCreated?.Invoke(seed);
         }
     }
 }
