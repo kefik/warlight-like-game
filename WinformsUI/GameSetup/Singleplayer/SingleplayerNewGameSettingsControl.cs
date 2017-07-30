@@ -15,14 +15,9 @@ namespace WinformsUI.GameSetup.Singleplayer
     {
         readonly MyHumanPlayerControl myHumanPlayerControl;
 
-        public User User
-        {
-            get { return myHumanPlayerControl.User; }
-            set
-            {
-                myHumanPlayerControl.User = value;
-            }
-        }
+
+        public Func<User> GetUser;
+        public Action<User> SetUser;
 
         public event Action<Game> OnGameStarted;
         public SingleplayerNewGameSettingsControl()
@@ -31,7 +26,8 @@ namespace WinformsUI.GameSetup.Singleplayer
 
             myHumanPlayerControl = new MyHumanPlayerControl
             {
-                User = new LocalUser("Me"),
+                GetUser = this.GetUser,
+                SetUser = this.SetUser,
                 Parent = myPlayerPanel,
                 Dock = DockStyle.Fill
             };

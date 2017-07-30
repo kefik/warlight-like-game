@@ -38,7 +38,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
         private void Log(object sender, System.EventArgs e)
         {
             // local validation
-            /*if (loginTextBox.Text.Length < 4 || loginTextBox.Text.Length > 15)
+            /*if (loginTextBox.Text.Length < 3 || loginTextBox.Text.Length > 15)
             {
                 
             }
@@ -50,12 +50,24 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             TcpClient client = new TcpClient();
             {
                 IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("78.128.199.63"), 5000);
-                client.Connect(endPoint);
+                try
+                {
+                    client.Connect(endPoint);
+                }
+                catch  (System.Net.Sockets.SocketException)
+                {
+                    MessageBox.Show("Server is unavailable, please, contact the administrator.");
+                    return;
+                }
             }
             var user = new MyNetworkUser(1, loginTextBox.Text, client); // returned user
             
                 // cant log in, return
-                if (!user.LogIn(passwordTextBox.Text)) return;
+            if (!user.LogIn(passwordTextBox.Text))
+            {
+                MessageBox.Show("Invalid credentials!");
+                return;
+            }
 
             User = user;
 

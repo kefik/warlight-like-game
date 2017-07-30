@@ -19,19 +19,21 @@ namespace WinformsUI.HelperControls
             InitializeComponent();
 
             // initialize
-            user = new LocalUser("Me");
-            playerNameTextBox.Text = user.Name;
+            playerNameTextBox.Text = User.Name;
             playerNameTextBox.Enabled = true;
             PlayerColor = KnownColor.Green;
         }
-
-        User user;
+        
         /// <summary>
         /// Represents clients user. Cannot be null.
         /// </summary>
         public User User
         {
-            get { return user; }
+            get
+            {
+                if (GetUser == null) return new LocalUser("Me");
+                return GetUser();
+            }
             set
             {
                 if (value == null) throw new ArgumentException();
@@ -45,10 +47,13 @@ namespace WinformsUI.HelperControls
                         playerNameTextBox.Enabled = false;
                         break;
                 }
-                user = value;
-                playerNameTextBox.Text = user.Name;
+                playerNameTextBox.Text = value.Name;
+                SetUser?.Invoke(value);
             }
         }
+        public Func<User> GetUser;
+        public Action<User> SetUser;
+
 
         KnownColor playerColor;
         /// <summary>
@@ -69,10 +74,10 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public string PlayerName
         {
-            get { return user.Name; }
+            get { return User.Name; }
             private set
             {
-                user.Name = value;
+                User.Name = value;
                 playerNameTextBox.Text = value;
             }
         }
@@ -107,7 +112,7 @@ namespace WinformsUI.HelperControls
             switch (User.UserType)
             {
                 case UserType.LocalUser:
-                    user.Name = Name;
+                    User.Name = Name;
                     break;
                 case UserType.NetworkUser:
                     playerNameTextBox.Text = PlayerName;

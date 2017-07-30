@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using ProtoBuf;
 
@@ -14,11 +15,16 @@ namespace GameObjectsLib.GameUser
             get { return UserType.MyNetworkUser; }
         }
         MyNetworkUser() : base() { }
-        TcpClient client;
 
-        public MyNetworkUser(int id, string name, TcpClient connectedClient) : base(id, name)
+        readonly TcpClient client;
+        readonly IPEndPoint serverEndPoint;
+
+        public MyNetworkUser(int id, string name, TcpClient connectedClient, IPEndPoint serverEndPoint) : base(id, name)
         {
+            if (client == null) throw new ArgumentException();
+
             this.client = connectedClient;
+            this.serverEndPoint = serverEndPoint;
         }
         [ProtoMember(1)]
         public string Email { get; private set; }
@@ -26,6 +32,8 @@ namespace GameObjectsLib.GameUser
         public string PasswordHash { get; private set; }
         public bool LogIn(string password)
         {
+            if (!client.Connected) client.Connect(serverEndPoint);
+
             {
                 byte[] data = System.Text.Encoding.ASCII.GetBytes(password);
                 data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
@@ -35,7 +43,14 @@ namespace GameObjectsLib.GameUser
             NetworkObjectWrapper wrapper = new NetworkObjectWrapper<MyNetworkUser>() {TypedValue = this};
             wrapper.Serialize(stream);
 
-            return (bool)NetworkObjectWrapper.Deserialize(stream).Value;
+            bool successful = (bool)NetworkObjectWrapper.Deserialize(stream).Value;
+            if (successful)
+            {
+                var user = (MyNetworkUser) NetworkObjectWrapper.Deserialize(stream).Value;
+                Email = user.Email;
+            }
+
+            return successful;
         }
 
         public bool LogOut()

@@ -23,6 +23,16 @@ namespace WinformsUI
 
         User myUser = new LocalUser("Me");
 
+        User MyUser
+        {
+            get { return myUser; }
+            set
+            {
+                myUser = value;
+                UserChanged(value);
+            }
+        }
+
         public MainGameForm()
         {
             InitializeComponent();
@@ -125,7 +135,8 @@ namespace WinformsUI
             {
                 Parent = singleplayerTabPage,
                 Dock = DockStyle.Fill,
-                User = myUser
+                GetUser = () => MyUser,
+                SetUser = user => MyUser = user
             };
             singleplayerGameOptionsControl.OnNewGameStarted += StartNewGame;
             singleplayerGameOptionsControl.OnGameLoaded += LoadGame;
@@ -146,7 +157,8 @@ namespace WinformsUI
                 {
                     Parent = multiplayerTabPage,
                     Dock = DockStyle.Fill,
-                    MyUser = myUser
+                    GetUser = () => MyUser,
+                    SetUser = user => MyUser= user
                 };
                 hotseatGameOptionsControl.Show();
 
@@ -163,7 +175,7 @@ namespace WinformsUI
                 {
                     Parent = multiplayerTabPage,
                     Dock = DockStyle.Fill,
-                    MyUser = myUser
+                    MyUser = MyUser
                 };
                 networkGameOptionsControl.Show();
                 
@@ -182,7 +194,7 @@ namespace WinformsUI
                             break;
                         case GameType.MultiplayerNetwork:
                             // network => find out if user is logged
-                            if (myUser?.GetType() == typeof(MyNetworkUser)) // user is already logged
+                            if (MyUser?.GetType() == typeof(MyNetworkUser)) // user is already logged
                             {
                                 LoadNetworkControls();
                                 return;
@@ -194,7 +206,7 @@ namespace WinformsUI
                             switch (dialogLogging)
                             {
                                 case DialogResult.OK:
-                                    UserChanged(serverLoggingForm.User);
+                                    MyUser = serverLoggingForm.User;
                                     LoadNetworkControls();
                                     break;
                                 case DialogResult.Cancel:
@@ -222,9 +234,8 @@ namespace WinformsUI
         public void UserChanged(User newUser)
         {
             // TODO: user changed broadcast to others
-            myUser = newUser;
-            if (myUser.UserType == UserType.MyNetworkUser)
-                loggedInLabel.Text = $"You are currently logged in as {myUser.Name}.";
+            if (MyUser.UserType == UserType.MyNetworkUser)
+                loggedInLabel.Text = $"You are currently logged in as {MyUser.Name}.";
             else
             {
                 loggedInLabel.Text = $"You are currently logged in as a local user.";

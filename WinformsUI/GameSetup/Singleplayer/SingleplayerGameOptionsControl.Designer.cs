@@ -83,7 +83,6 @@
             this.singleplayerNewGameSettingsControl.Name = "singleplayerNewGameSettingsControl";
             this.singleplayerNewGameSettingsControl.Size = new System.Drawing.Size(439, 377);
             this.singleplayerNewGameSettingsControl.TabIndex = 0;
-            this.singleplayerNewGameSettingsControl.User = ((GameObjectsLib.GameUser.User)(resources.GetObject("singleplayerNewGameSettingsControl.User")));
             // 
             // loadGameTabPage
             // 

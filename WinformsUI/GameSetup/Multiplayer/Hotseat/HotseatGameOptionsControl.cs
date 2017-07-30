@@ -7,11 +7,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 {
     public partial class HotseatGameOptionsControl : UserControl
     {
-        public User MyUser
-        {
-            get { return hotseatNewGameSettingsControl.MyUser; }
-            set { hotseatNewGameSettingsControl.MyUser = value; }
-        }
+        public Func<User> GetUser;
+        public Action<User> SetUser;
         public event Action<Game> OnGameStarted
         {
             add { hotseatNewGameSettingsControl.OnGameStarted += value; }
@@ -25,6 +22,9 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         public HotseatGameOptionsControl()
         {
             InitializeComponent();
+
+            hotseatNewGameSettingsControl.GetUser = GetUser;
+            hotseatNewGameSettingsControl.SetUser = SetUser;
         }
     }
 }

@@ -7,18 +7,6 @@ namespace WinformsUI.GameSetup.Singleplayer
 {
     public partial class SingleplayerGameOptionsControl : UserControl
     {
-        User user;
-
-        public User User
-        {
-            get { return user; }
-            set
-            {
-                user = value;
-                singleplayerNewGameSettingsControl.User = value;
-            }
-        }
-
         public Func<User> GetUser;
         public Action<User> SetUser;
 
@@ -45,6 +33,9 @@ namespace WinformsUI.GameSetup.Singleplayer
         public SingleplayerGameOptionsControl()
         {
             InitializeComponent();
+
+            singleplayerNewGameSettingsControl.GetUser = GetUser;
+            singleplayerNewGameSettingsControl.SetUser = SetUser;
         }
     }
 }
