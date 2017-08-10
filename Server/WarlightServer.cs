@@ -75,8 +75,7 @@ namespace Server
                 IPEndPoint endPoint = new IPEndPoint(address, port);
                 server = new WarlightServer(endPoint);
             }
-
-
+            
             return server;
         }
         
@@ -95,8 +94,6 @@ namespace Server
             {
                 Dispose();
             }
-
-
         }
 
         async void AcceptClientsAsync(int connectionsLimit)

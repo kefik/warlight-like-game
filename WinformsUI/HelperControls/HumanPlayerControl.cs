@@ -35,13 +35,8 @@ namespace WinformsUI.HelperControls
 
                 UserChanged(value);
                 player = new HumanPlayer(value, player.Color);
-
-                SetUser(value);
             }
         }
-
-        public Func<User> GetUser;
-        public Action<User> SetUser;
 
         void UserChanged(User user)
         {

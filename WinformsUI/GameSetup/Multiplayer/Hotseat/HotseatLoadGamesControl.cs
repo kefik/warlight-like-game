@@ -59,7 +59,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         }
         private void DeleteGame(object sender, EventArgs e)
         {
-
+            throw new NotImplementedException();
         }
 
         private void FormLoad(object sender, EventArgs e)

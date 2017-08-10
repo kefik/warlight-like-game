@@ -53,6 +53,7 @@ namespace Server
                     {
                         GameSeed seed = (GameSeed)deserializedObject;
 
+                        // seed to create the game
                     }
                     else if (deserializedObject.GetType() == typeof(Round))
                     {
