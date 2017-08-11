@@ -11,11 +11,37 @@ namespace Server.WarlightLikeDatabase
             : base("name=WarlightDbContext")
         {
             //Database.SetInitializer(new DropCreateDatabaseAlways<WarlightDbContext>());
+            //Maps.Add(new Map()
+            //{
+            //    Id = 1,
+            //    ColorRegionsTemplatePath = "Maps/WorldColorRegionMapping.xml",
+            //    ImageColoredRegionsPath = "Maps/WorldTemplate.png",
+            //    ImagePath = "Maps/World.png",
+            //    TemplatePath = "Maps/World.xml",
+            //    PlayersLimit = 10,
+            //    Name = "World"
+            //});
+            //string passwordHash;
+            //{
+            //    byte[] data = System.Text.Encoding.ASCII.GetBytes("1234");
+            //    data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+            //    passwordHash = System.Text.Encoding.ASCII.GetString(data);
+            //}
+            //Users.Add(new User()
+            //{
+            //    Email = "bimbinbiribong@seznam.cz",
+            //    Id = 1,
+            //    PasswordHash = "x", // TODO
+            //    Login = "Hez"
+            //});
+
+            //SaveChanges();
         }
 
         public virtual DbSet<Game> Games { get; set; }
         public virtual DbSet<OpenedGame> OpenedGames { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Map> Maps { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
