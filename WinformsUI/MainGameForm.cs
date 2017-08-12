@@ -128,12 +128,12 @@ namespace WinformsUI
             LoadInGameScreen(game);
         }
 
-        private async Task CreateNewGame(GameSeed seed)
+        private async Task CreateNewGame(ICollection<AIPlayer> aiPlayers, string mapName, int freeSlotsCount)
         {
             if (TryToLogIn())
             {
                 var networkUser = (MyNetworkUser)myUser;
-                bool wasCreatedCorrectly = await networkUser.CreateGameAsync((ICollection<AIPlayer>)seed.AIPlayers, seed.MapName, seed.FreeSlots);
+                bool wasCreatedCorrectly = await networkUser.CreateGameAsync(aiPlayers, mapName, freeSlotsCount);
                 if (!wasCreatedCorrectly)
                 {
                     MessageBox.Show($"Server is unavailable.");

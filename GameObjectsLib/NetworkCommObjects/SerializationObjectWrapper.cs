@@ -8,18 +8,19 @@
     using ProtoBuf;
 
     /// <summary>
-    /// Network object wrapper whose purpose is to enable network communication via objects.
+    ///     Network object wrapper whose purpose is to enable network communication via objects.
     /// </summary>
-    [ProtoContract, ProtoInclude(100, typeof(SerializationObjectWrapper<CreateGameRequestMessage>)),
-     ProtoInclude(101, typeof(SerializationObjectWrapper<CreateGameResponseMessage>)),
-     ProtoInclude(102, typeof(SerializationObjectWrapper<JoinGameRequestMessage>)),
-     ProtoInclude(103, typeof(SerializationObjectWrapper<JoinGameResponseMessage>)),
-     ProtoInclude(104, typeof(SerializationObjectWrapper<LoadGameRequestMessage>)),
-     ProtoInclude(105, typeof(SerializationObjectWrapper<LoadGameResponseMessage<bool>>)),
-     ProtoInclude(106, typeof(SerializationObjectWrapper<LoadMyGamesListRequestMessage>)),
-     ProtoInclude(107, typeof(SerializationObjectWrapper<LoadMyGamesResponseMessage>)),
-     ProtoInclude(108, typeof(SerializationObjectWrapper<UserLogInRequestMessage>)),
-     ProtoInclude(109, typeof(SerializationObjectWrapper<UserLogInResponseMessage>))]
+    [ProtoContract]
+    [ProtoInclude(100, typeof(SerializationObjectWrapper<CreateGameRequestMessage>))]
+    [ProtoInclude(101, typeof(SerializationObjectWrapper<CreateGameResponseMessage>))]
+    [ProtoInclude(102, typeof(SerializationObjectWrapper<JoinGameRequestMessage>))]
+    [ProtoInclude(103, typeof(SerializationObjectWrapper<JoinGameResponseMessage>))]
+    [ProtoInclude(104, typeof(SerializationObjectWrapper<LoadGameRequestMessage>))]
+    [ProtoInclude(105, typeof(SerializationObjectWrapper<LoadGameResponseMessage<bool>>))]
+    [ProtoInclude(106, typeof(SerializationObjectWrapper<LoadMyGamesListRequestMessage>))]
+    [ProtoInclude(107, typeof(SerializationObjectWrapper<LoadMyGamesResponseMessage>))]
+    [ProtoInclude(108, typeof(SerializationObjectWrapper<UserLogInRequestMessage>))]
+    [ProtoInclude(109, typeof(SerializationObjectWrapper<UserLogInResponseMessage>))]
     [ProtoInclude(110, typeof(SerializationObjectWrapper<Game>))]
     public abstract class SerializationObjectWrapper
     {
@@ -51,7 +52,8 @@
             await Task.Yield();
 
             int length = 0;
-            if (await Task.Factory.StartNew(() => Serializer.TryReadLengthPrefix(stream, PrefixStyle.Base128, out length),
+            if (await Task.Factory.StartNew(
+                () => Serializer.TryReadLengthPrefix(stream, PrefixStyle.Base128, out length),
                 TaskCreationOptions.DenyChildAttach))
             {
                 var buffer = new byte[length];
@@ -95,8 +97,9 @@
             throw new ArgumentException();
         }
     }
+
     /// <summary>
-    /// Typed NetworkObjectWrapper.
+    ///     Typed NetworkObjectWrapper.
     /// </summary>
     /// <typeparam name="T">Type.</typeparam>
     [ProtoContract]

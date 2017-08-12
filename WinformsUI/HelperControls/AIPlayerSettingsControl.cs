@@ -63,14 +63,14 @@ namespace WinformsUI.HelperControls
         /// Calculates and returns players from controls saved in the table.
         /// </summary>
         /// <returns>Returns player from controls saved in the table.</returns>
-        public IList<Player> GetPlayers()
+        public IList<AIPlayer> GetPlayers()
         {
-            IList<Player> players = new List<Player>();
+            IList<AIPlayer> players = new List<AIPlayer>();
             foreach (var control in playersTableLayoutPanel.Controls)
             {
                 AIPlayerControl aiPlayerControl = control as AIPlayerControl;
 
-                players.Add(aiPlayerControl.GetPlayer()); // TODO: may throw exception
+                players.Add(aiPlayerControl.GetPlayer() as AIPlayer); // TODO: may throw exception
             }
 
             return players;

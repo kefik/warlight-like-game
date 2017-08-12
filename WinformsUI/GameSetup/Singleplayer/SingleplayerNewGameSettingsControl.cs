@@ -10,6 +10,8 @@ using WinformsUI.HelperControls;
 
 namespace WinformsUI.GameSetup.Singleplayer
 {
+    using System.Collections;
+
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
         readonly MyHumanPlayerControl myHumanPlayerControl;
@@ -91,7 +93,14 @@ namespace WinformsUI.GameSetup.Singleplayer
             {
                 Map map = mapSettingsControl.GetMap();
 
-                IList<Player> players = aiPlayerSettingsControl.GetPlayers();
+                var aiPlayers = aiPlayerSettingsControl.GetPlayers();
+
+                IList<Player> players = new List<Player>();
+                foreach (var aiPlayer in aiPlayers)
+                {
+                    players.Add(aiPlayer);
+                }
+
                 players.Add(myHumanPlayerControl.GetPlayer());
 
                 Game game = null;

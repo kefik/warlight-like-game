@@ -159,7 +159,14 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         {
             Map map = mapSettingsControl.GetMap();
 
-            IList<Player> players = aiPlayerSettingsControl.GetPlayers();
+            var aiPlayers = aiPlayerSettingsControl.GetPlayers();
+
+            IList<Player> players = new List<Player>();
+            foreach (var aiPlayer in aiPlayers)
+            {
+                players.Add(aiPlayer);
+            }
+
             players.Add(myHumanPlayerControl.GetPlayer());
 
             foreach (var player in humanPlayerSettingsControl.GetPlayers())

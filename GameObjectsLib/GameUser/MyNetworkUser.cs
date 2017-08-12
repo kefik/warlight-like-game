@@ -118,10 +118,10 @@ namespace GameObjectsLib.GameUser
         {
             if (client.Connected)
             {
-                return await Task.Run(() => client.Client.DisconnectAsync(new SocketAsyncEventArgs()
+                return await Task.Factory.StartNew(() => client.Client.DisconnectAsync(new SocketAsyncEventArgs()
                 {
                     DisconnectReuseSocket = true
-                }));
+                }), TaskCreationOptions.DenyChildAttach);
             }
             return false;
         }

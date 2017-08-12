@@ -50,23 +50,9 @@ namespace Server
                     // its non blocking now
                     var deserializedObject = deserializationTask.Result.Value;
                     // find out the type
-                    if (deserializedObject.GetType() == typeof(GameSeed))
-                    {
-                        GameSeed seed = (GameSeed)deserializedObject;
-
-                        // seed to create the game
-                    }
-                    else if (deserializedObject.GetType() == typeof(Round))
-                    {
-                        Round round = (Round)deserializedObject;
-                    }
-                    else if (deserializedObject.GetType() == typeof(GameBeginningRound))
-                    {
-                        GameBeginningRound round = (GameBeginningRound)deserializedObject;
-                    }
-                    else if (deserializedObject.GetType() == typeof(MyNetworkUser))
-                    {
-                        MyNetworkUser user = (MyNetworkUser)deserializedObject;
+                    
+                   
+                        /*MyNetworkUser user = (MyNetworkUser)deserializedObject;
                         string passwordHash;
                         {
                             // calculate hash
@@ -93,9 +79,8 @@ namespace Server
                                     new SerializationObjectWrapper<MyNetworkUser>() { TypedValue = user };
                                 await userWrapper.SerializeAsync(stream);
                             }
-                        }
+                        }*/
                     }
-                }
             }
             finally
             {

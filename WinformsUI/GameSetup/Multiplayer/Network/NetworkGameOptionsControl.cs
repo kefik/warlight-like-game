@@ -5,7 +5,9 @@ using GameObjectsLib.GameUser;
 
 namespace WinformsUI.GameSetup.Multiplayer.Network
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using GameObjectsLib;
 
     public partial class NetworkGameOptionsControl : UserControl
     {
@@ -31,7 +33,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             }
         }
 
-        public event Func<GameSeed, Task> OnGameCreated
+        public event Func<ICollection<AIPlayer>, string, int, Task> OnGameCreated
         {
             add { networkNewGameSettingsControl.OnGameCreated += value; }
             remove { networkNewGameSettingsControl.OnGameCreated -= value; }

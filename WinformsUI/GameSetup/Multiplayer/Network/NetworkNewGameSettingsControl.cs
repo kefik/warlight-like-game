@@ -83,7 +83,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
         }
 
-        public event Func<GameSeed, Task> OnGameCreated;
+        public event Func<ICollection<AIPlayer>, string, int, Task> OnGameCreated;
 
         decimal previousAIPlayersNumber;
         private void OnNumberOfAIPlayersChanged(object sender, EventArgs e)
@@ -152,14 +152,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
 
         private void Create(object sender, EventArgs e)
         {
-            GameSeed seed = new GameSeed
-            {
-                AIPlayers = aiPlayerSettingsControl.GetPlayers(),
-                MapName = mapSettingsControl.Name,
-                CreatingPlayer = myPlayerControl.GetPlayer(),
-                FreeSlots = aiPlayerSettingsControl.PlayersCount
-            };
-            OnGameCreated?.Invoke(seed);
+            // TODO: mb bug in conversion
+            OnGameCreated?.Invoke((ICollection<AIPlayer>)aiPlayerSettingsControl.GetPlayers(), mapSettingsControl.Name, aiPlayerSettingsControl.PlayersCount);
         }
     }
 }

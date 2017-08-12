@@ -346,19 +346,5 @@ namespace GameObjectsLib.Game
 
         }
     }
-
-    [ProtoContract]
-    public class GameSeed
-    {
-        [ProtoMember(1)]
-        public int Id { get; set; } = -1;
-        [ProtoMember(2)]
-        public Player CreatingPlayer { get; set; }
-        [ProtoMember(3)]
-        public IEnumerable<Player> AIPlayers { get; set; }
-        [ProtoMember(4)]
-        public int FreeSlots { get; set; }
-        [ProtoMember(5)]
-        public string MapName { get; set; }
-    }
+    
 }
