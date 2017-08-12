@@ -38,7 +38,7 @@ namespace Server
                     var stream = client.GetStream();
 
                     var delayTask = Task.Delay(TimeSpan.FromSeconds(50000));
-                    var deserializationTask = NetworkObjectWrapper.DeserializeAsync(stream);
+                    var deserializationTask = SerializationObjectWrapper.DeserializeAsync(stream);
                     var completedTask = await Task.WhenAny(delayTask, deserializationTask);
 
                     // client didnt send anything
@@ -82,15 +82,15 @@ namespace Server
                                                select dbUser).FirstOrDefault();
                             bool existsMatchingUser = matchedUser != null;
                             {
-                                NetworkObjectWrapper confirmation =
-                                    new NetworkObjectWrapper<bool>() { TypedValue = existsMatchingUser };
+                                SerializationObjectWrapper confirmation =
+                                    new SerializationObjectWrapper<bool>() { TypedValue = existsMatchingUser };
                                 await confirmation.SerializeAsync(stream);
                             }
                             if (existsMatchingUser)
                             {
                                 user.Email = matchedUser.Email;
-                                NetworkObjectWrapper userWrapper =
-                                    new NetworkObjectWrapper<MyNetworkUser>() { TypedValue = user };
+                                SerializationObjectWrapper userWrapper =
+                                    new SerializationObjectWrapper<MyNetworkUser>() { TypedValue = user };
                                 await userWrapper.SerializeAsync(stream);
                             }
                         }

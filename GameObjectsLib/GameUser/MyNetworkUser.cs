@@ -42,16 +42,16 @@ namespace GameObjectsLib.GameUser
             var stream = client.GetStream();
 
             Password = password;
-            NetworkObjectWrapper wrapper = new NetworkObjectWrapper<MyNetworkUser>() { TypedValue = this };
+            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<MyNetworkUser>() { TypedValue = this };
             wrapper.Serialize(stream);
             // remove password pointer for security
             Password = null;
             GC.Collect();
 
-            bool successful = (bool)NetworkObjectWrapper.Deserialize(stream).Value;
+            bool successful = (bool)SerializationObjectWrapper.Deserialize(stream).Value;
             if (successful)
             {
-                var user = (MyNetworkUser)NetworkObjectWrapper.Deserialize(stream).Value;
+                var user = (MyNetworkUser)SerializationObjectWrapper.Deserialize(stream).Value;
                 Email = user.Email;
             }
 
@@ -79,11 +79,11 @@ namespace GameObjectsLib.GameUser
 
             var stream = client.GetStream();
             {
-                NetworkObjectWrapper wrapper = new NetworkObjectWrapper<GameSeed>() {TypedValue = seed};
+                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<GameSeed>() {TypedValue = seed};
                 wrapper.Serialize(stream);
             }
             {
-                var answer = NetworkObjectWrapper.Deserialize(stream).Value;
+                var answer = SerializationObjectWrapper.Deserialize(stream).Value;
                 if (answer is bool)
                 {
                     bool wasCreatedCorrectly = (bool) answer;

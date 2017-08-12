@@ -40,21 +40,23 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 
             var savedGameInfo =
                 (HotseatSavedGameInfo)loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
-
+#if (!DEBUG)
             try
             {
+#endif
                 using (var db = new UtilsDbContext())
                 {
                     var game = Game.Load(db, savedGameInfo);
                     OnHotseatGameLoaded?.Invoke(game);
                 }
-
-            }
+#if (!DEBUG)
+        }
             catch (Exception)
             {
                 MessageBox.Show("Selected game save has been damaged.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             }
+#endif
         }
         private void DeleteGame(object sender, EventArgs e)
         {

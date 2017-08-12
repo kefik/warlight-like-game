@@ -57,7 +57,7 @@
     <Compile Include="NetworkCommObjects\Message\LoadMyGamesResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\UserLogInRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\UserLogInResponseMessage.cs" />
-    <Compile Include="NetworkCommObjects\NetworkObjectWrapper.cs" />
+    <Compile Include="NetworkCommObjects\SerializationObjectWrapper.cs" />
     <Compile Include="PhasesStructures.cs" />
     <Compile Include="GameUser\LocalUser.cs" />
     <Compile Include="GameUser\NetworkUser.cs" />

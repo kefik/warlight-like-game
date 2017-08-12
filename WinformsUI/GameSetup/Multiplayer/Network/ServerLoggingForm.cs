@@ -50,20 +50,23 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("78.128.199.63"), 5000);
             TcpClient client = new TcpClient();
             {
-                
+#if (!DEBUG)
                 try
                 {
+#endif
                     client.Connect(endPoint);
+#if (!DEBUG)
                 }
                 catch (SocketException)
                 {
                     MessageBox.Show("Server is unavailable, please, contact the administrator.");
                     return;
                 }
+#endif
             }
             var user = new MyNetworkUser(loginTextBox.Text, client, endPoint); // returned user
-            
-                // cant log in, return
+
+            // cant log in, return
             if (!user.LogIn(passwordTextBox.Text))
             {
                 MessageBox.Show("Invalid credentials!");

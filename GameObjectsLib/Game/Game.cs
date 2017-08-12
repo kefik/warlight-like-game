@@ -200,7 +200,7 @@ namespace GameObjectsLib.Game
             Refresh();
             using (MemoryStream stream = new MemoryStream())
             {
-                NetworkObjectWrapper wrapper = new NetworkObjectWrapper<Game>() {TypedValue = this};
+                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<Game>() {TypedValue = this};
                 wrapper.Serialize(stream);
                 // reset position to be able to read from it again
                 stream.Position = 0;
@@ -249,7 +249,7 @@ namespace GameObjectsLib.Game
         {
             using (var stream = canLoad.LoadGame(source))
             {
-                Game game = (Game)(NetworkObjectWrapper.Deserialize(stream).Value);
+                Game game = (Game)(SerializationObjectWrapper.Deserialize(stream).Value);
                 game.ReconstructOriginalGraph();
                 game.Refresh();
                 return game;
