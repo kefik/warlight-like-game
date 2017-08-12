@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using GameObjectsLib.Game;
+using GameObjectsLib.NetworkCommObjects;
 using ProtoBuf;
 
 namespace GameObjectsLib.GameUser

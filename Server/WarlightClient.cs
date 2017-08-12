@@ -11,6 +11,7 @@ using GameObjectsLib;
 using GameObjectsLib.Game;
 using GameObjectsLib.GameMap;
 using GameObjectsLib.GameUser;
+using GameObjectsLib.NetworkCommObjects;
 using ProtoBuf;
 using Server.WarlightLikeDatabase;
 using Game = GameObjectsLib.Game.Game;

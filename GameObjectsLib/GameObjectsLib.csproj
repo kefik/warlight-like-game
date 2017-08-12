@@ -47,7 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NetworkObjectWrapper.cs" />
+    <Compile Include="NetworkCommObjects\Message\CreateGameRequestMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\CreateGameResponseMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\JoinGameRequestMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\JoinGameResponseMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\LoadGameRequestMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\LoadGameResponseMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\LoadMyGamesListRequestMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\LoadMyGamesResponseMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\UserLogInRequest.cs" />
+    <Compile Include="NetworkCommObjects\Message\UserLogInResponse.cs" />
+    <Compile Include="NetworkCommObjects\NetworkObjectWrapper.cs" />
     <Compile Include="PhasesStructures.cs" />
     <Compile Include="GameUser\LocalUser.cs" />
     <Compile Include="GameUser\NetworkUser.cs" />
@@ -83,5 +93,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

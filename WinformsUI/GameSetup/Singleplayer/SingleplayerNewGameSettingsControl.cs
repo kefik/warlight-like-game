@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using DatabaseMapping;
 using GameObjectsLib;
 using GameObjectsLib.Game;
 using GameObjectsLib.GameMap;

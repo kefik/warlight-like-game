@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using GameObjectsLib;
 using GameObjectsLib.GameMap;
 using GameObjectsLib.GameUser;
+using GameObjectsLib.NetworkCommObjects;
 using ProtoBuf;
 
 namespace GameObjectsLib.Game

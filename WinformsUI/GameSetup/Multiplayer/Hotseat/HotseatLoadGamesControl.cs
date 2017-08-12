@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DatabaseMapping;
 using GameObjectsLib.Game;
 
 namespace WinformsUI.GameSetup.Multiplayer.Hotseat

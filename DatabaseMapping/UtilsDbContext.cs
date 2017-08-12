@@ -7,10 +7,9 @@ using System.IO;
 using System.Linq;
 using GameObjectsLib;
 using GameObjectsLib.Game;
-using ProtoBuf;
 using SQLiteProviderFactory = System.Data.SQLite.EF6.SQLiteProviderFactory;
 
-namespace DatabaseMapping
+namespace WinformsUI
 {
     public class UtilsDbContext : DbContext, IGameSaver, IGameLoader<SingleplayerSavedGameInfo>,
         IGameLoader<HotseatSavedGameInfo>
