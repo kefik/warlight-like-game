@@ -5,6 +5,8 @@ using GameObjectsLib.GameUser;
 
 namespace WinformsUI.GameSetup.Multiplayer.Network
 {
+    using System.Threading.Tasks;
+
     public partial class NetworkGameOptionsControl : UserControl
     {
         Func<User> getUser;
@@ -29,7 +31,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             }
         }
 
-        public event Action<GameSeed> OnGameCreated
+        public event Func<GameSeed, Task> OnGameCreated
         {
             add { networkNewGameSettingsControl.OnGameCreated += value; }
             remove { networkNewGameSettingsControl.OnGameCreated -= value; }

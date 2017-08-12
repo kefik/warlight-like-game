@@ -8,6 +8,10 @@ using ProtoBuf;
 
 namespace GameObjectsLib.GameUser
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using NetworkCommObjects.Message;
+
     [Serializable]
     [ProtoContract]
     public class MyNetworkUser : NetworkUser, IDisposable
@@ -35,27 +39,36 @@ namespace GameObjectsLib.GameUser
         /// </summary>
         /// <param name="password">Password.</param>
         /// <returns>True, if this client successfully logs into the server.</returns>
-        public bool LogIn(string password)
+        public async Task<bool> LogInAsync(string password)
         {
-            if (!client.Connected) client.Connect(serverEndPoint);
+            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
 
             var stream = client.GetStream();
 
             Password = password;
-            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<MyNetworkUser>() { TypedValue = this };
-            wrapper.Serialize(stream);
+            SerializationObjectWrapper wrapper =
+                new SerializationObjectWrapper<UserLogInRequestMessage>()
+                {
+                    TypedValue = new UserLogInRequestMessage()
+                    {
+                        LoggingUser = this
+                    }
+                };
+            await wrapper.SerializeAsync(stream);
             // remove password pointer for security
             Password = null;
             GC.Collect();
 
-            bool successful = (bool)SerializationObjectWrapper.Deserialize(stream).Value;
-            if (successful)
+            var responseMessage = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as UserLogInResponseMessage;
+
+            if (responseMessage == null) return false;
+
+            if (responseMessage.SuccessfullyLoggedIn)
             {
-                var user = (MyNetworkUser)SerializationObjectWrapper.Deserialize(stream).Value;
-                Email = user.Email;
+                Email = responseMessage.Email;
             }
 
-            return successful;
+            return responseMessage.SuccessfullyLoggedIn;
         }
 
         /// <summary>
@@ -71,19 +84,27 @@ namespace GameObjectsLib.GameUser
         /// <summary>
         /// Creates a game from the seed.
         /// </summary>
-        /// <param name="seed">Seed of the game.</param>
         /// <returns>True, if everything ran correctly and the game was created.</returns>
-        public bool CreateGame(GameSeed seed)
+        public async Task<bool> CreateGameAsync(ICollection<AIPlayer> aiPlayers, string mapName, int freeSlotsCount)
         {
-            if (!client.Connected) client.Connect(serverEndPoint);
+            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
 
             var stream = client.GetStream();
             {
-                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<GameSeed>() {TypedValue = seed};
-                wrapper.Serialize(stream);
+                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<CreateGameRequestMessage>()
+                {
+                    TypedValue = new CreateGameRequestMessage()
+                    {
+                        AIPlayers = aiPlayers,
+                        CreatingUser = this,
+                        FreeSlotsCount = freeSlotsCount,
+                        MapName = mapName
+                    }
+                };
+                await wrapper.SerializeAsync(stream);
             }
             {
-                var answer = SerializationObjectWrapper.Deserialize(stream).Value;
+                var answer = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value;
                 if (answer is bool)
                 {
                     bool wasCreatedCorrectly = (bool) answer;
@@ -93,17 +114,19 @@ namespace GameObjectsLib.GameUser
             }
         }
 
-        public bool LogOut()
+        public async Task<bool> LogOut()
         {
             if (client.Connected)
             {
-                client.Client.Disconnect(true);
-                return true;
+                return await Task.Run(() => client.Client.DisconnectAsync(new SocketAsyncEventArgs()
+                {
+                    DisconnectReuseSocket = true
+                }));
             }
             return false;
         }
 
-        public bool ChangePassword(string oldPassword, string newPassword)
+        public async Task<bool> ChangePasswordAsync(string oldPassword, string newPassword)
         {
             throw new NotImplementedException();
         }

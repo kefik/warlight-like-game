@@ -7,6 +7,8 @@ using ProtoBuf;
 
 namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    using GameUser;
+
     /// <summary>
     /// Represents response from the server on create game attempt.
     /// </summary>

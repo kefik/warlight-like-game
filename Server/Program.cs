@@ -14,6 +14,7 @@ namespace Server
     {
         static void Main(string[] args)
         {
+            Console.WriteLine(WarlightServer.GetLocalIPAddress());
             using (var server = WarlightServer.Create(5000))
             {
                 server.Run(10);

@@ -15,5 +15,7 @@ namespace GameObjectsLib.NetworkCommObjects.Message
     {
         [ProtoMember(1)]
         public bool SuccessfullyLoggedIn { get; set; }
+        [ProtoMember(2)]
+        public string Email { get; set; }
     }
 }

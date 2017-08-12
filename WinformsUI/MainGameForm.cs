@@ -10,6 +10,11 @@ using WinformsUI.InGame;
 
 namespace WinformsUI
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using GameObjectsLib;
+
     public partial class MainGameForm : Form
     {
         int previousTabSelectedIndex;
@@ -123,12 +128,12 @@ namespace WinformsUI
             LoadInGameScreen(game);
         }
 
-        private void CreateNewGame(GameSeed seed)
+        private async Task CreateNewGame(GameSeed seed)
         {
             if (TryToLogIn())
             {
                 var networkUser = (MyNetworkUser)myUser;
-                bool wasCreatedCorrectly = networkUser.CreateGame(seed);
+                bool wasCreatedCorrectly = await networkUser.CreateGameAsync((ICollection<AIPlayer>)seed.AIPlayers, seed.MapName, seed.FreeSlots);
                 if (!wasCreatedCorrectly)
                 {
                     MessageBox.Show($"Server is unavailable.");

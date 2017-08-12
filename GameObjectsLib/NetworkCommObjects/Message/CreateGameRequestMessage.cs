@@ -21,6 +21,6 @@ namespace GameObjectsLib.NetworkCommObjects.Message
         [ProtoMember(3)]
         public string MapName { get; set; }
         [ProtoMember(3)]
-        public int FreeSlots { get; set; }
+        public int FreeSlotsCount { get; set; }
     }
 }

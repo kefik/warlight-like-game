@@ -9,6 +9,8 @@ using GameObjectsLib.GameUser;
 
 namespace WinformsUI.GameSetup.Multiplayer.Network
 {
+    using System.Threading.Tasks;
+
     public partial class ServerLoggingForm : Form
     {
         public User User { get; private set; }
@@ -35,7 +37,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Log(object sender, System.EventArgs e)
+        private async void Log(object sender, System.EventArgs e)
         {
             // local validation
             /*if (loginTextBox.Text.Length < 3 || loginTextBox.Text.Length > 15)
@@ -47,14 +49,14 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
                 
             }*/
             // server side validation
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("78.128.199.63"), 5000);
+            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("192.168.2.164"), 5000);
             TcpClient client = new TcpClient();
             {
 #if (!DEBUG)
                 try
                 {
 #endif
-                    client.Connect(endPoint);
+                    await client.ConnectAsync(endPoint.Address, endPoint.Port);
 #if (!DEBUG)
                 }
                 catch (SocketException)
@@ -67,7 +69,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             var user = new MyNetworkUser(loginTextBox.Text, client, endPoint); // returned user
 
             // cant log in, return
-            if (!user.LogIn(passwordTextBox.Text))
+            if (!await user.LogInAsync(passwordTextBox.Text))
             {
                 MessageBox.Show("Invalid credentials!");
                 return;

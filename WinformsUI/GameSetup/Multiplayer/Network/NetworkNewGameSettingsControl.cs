@@ -83,7 +83,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
         }
 
-        public event Action<GameSeed> OnGameCreated;
+        public event Func<GameSeed, Task> OnGameCreated;
 
         decimal previousAIPlayersNumber;
         private void OnNumberOfAIPlayersChanged(object sender, EventArgs e)

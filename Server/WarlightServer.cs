@@ -130,7 +130,7 @@ namespace Server
             Dispose(true);
         }
 
-        static IPAddress GetLocalIPAddress()
+        public static IPAddress GetLocalIPAddress()
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {

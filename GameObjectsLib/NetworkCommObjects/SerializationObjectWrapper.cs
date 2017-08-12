@@ -50,8 +50,9 @@
         {
             await Task.Yield();
 
-            int length;
-            if (Serializer.TryReadLengthPrefix(stream, PrefixStyle.Base128, out length))
+            int length = 0;
+            if (await Task.Factory.StartNew(() => Serializer.TryReadLengthPrefix(stream, PrefixStyle.Base128, out length),
+                TaskCreationOptions.DenyChildAttach))
             {
                 var buffer = new byte[length];
                 await stream.ReadAsync(buffer, 0, buffer.Length);
