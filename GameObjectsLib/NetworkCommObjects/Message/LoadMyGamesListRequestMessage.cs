@@ -8,6 +8,9 @@ using ProtoBuf;
 
 namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    /// <summary>
+    /// Loads list of games started by the specified <see cref="RequestingUser"/>
+    /// </summary>
     [ProtoContract]
     public class LoadMyGamesListRequestMessage
     {

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProtoBuf;
-
-namespace GameObjectsLib.NetworkCommObjects.Message
+﻿namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    using ProtoBuf;
+
+    /// <summary>
+    /// Response to the load game attempt.
+    /// </summary>
+    /// <typeparam name="T">Can be <see cref="bool"/>,
+    /// <see cref="Round"/>, <see cref="GameBeginningRound"/> or
+    /// <see cref="Game.Game"/></typeparam>
     [ProtoContract]
     public class LoadGameResponseMessage<T>
     {

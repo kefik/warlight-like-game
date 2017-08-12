@@ -7,10 +7,13 @@ using ProtoBuf;
 
 namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    /// <summary>
+    /// Represents response from the server on create game attempt.
+    /// </summary>
     [ProtoContract]
     public class CreateGameResponseMessage
     {
         [ProtoMember(1)]
-        public Game.Game Game { get; set; }
+        public bool Successful { get; set; }
     }
 }

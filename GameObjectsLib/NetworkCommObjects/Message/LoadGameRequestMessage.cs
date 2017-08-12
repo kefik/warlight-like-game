@@ -8,6 +8,9 @@ using ProtoBuf;
 
 namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    /// <summary>
+    /// Request to load a game specified by GameId.
+    /// </summary>
     [ProtoContract]
     public class LoadGameRequestMessage
     {

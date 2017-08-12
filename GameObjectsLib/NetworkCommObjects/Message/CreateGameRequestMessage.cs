@@ -8,6 +8,9 @@ using ProtoBuf;
 
 namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    /// <summary>
+    /// Represents request from client to server attempting to create the game.
+    /// </summary>
     [ProtoContract]
     public class CreateGameRequestMessage
     {

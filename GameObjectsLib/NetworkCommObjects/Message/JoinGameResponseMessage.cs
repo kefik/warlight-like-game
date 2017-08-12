@@ -7,6 +7,9 @@ using ProtoBuf;
 
 namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    /// <summary>
+    /// Binary response to the join game attempt.
+    /// </summary>
     [ProtoContract]
     public class JoinGameResponseMessage
     {

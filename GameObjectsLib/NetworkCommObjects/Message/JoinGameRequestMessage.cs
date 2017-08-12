@@ -8,6 +8,9 @@ using ProtoBuf;
 
 namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    /// <summary>
+    /// Attempt to join the game specified by GameId with RequestingUser.
+    /// </summary>
     [ProtoContract]
     public class JoinGameRequestMessage
     {

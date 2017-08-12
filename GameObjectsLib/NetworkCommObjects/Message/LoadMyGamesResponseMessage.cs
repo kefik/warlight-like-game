@@ -7,6 +7,9 @@ using ProtoBuf;
 
 namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    /// <summary>
+    /// Gives response whether the request was valid.
+    /// </summary>
     [ProtoContract]
     class LoadMyGamesResponseMessage
     {

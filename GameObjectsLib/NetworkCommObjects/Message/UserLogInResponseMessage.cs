@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GameObjectsLib.GameUser;
 using ProtoBuf;
 
 namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    /// <summary>
+    /// Response whether the attempt to log in was successful.
+    /// </summary>
     [ProtoContract]
-    public class UserLogInRequest
+    public class UserLogInResponseMessage
     {
         [ProtoMember(1)]
-        public MyNetworkUser LoggingUser { get; set; }
+        public bool SuccessfullyLoggedIn { get; set; }
     }
 }
