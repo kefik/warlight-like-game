@@ -37,7 +37,7 @@ namespace Server.WarlightLikeDatabase
                 .WithMany(game => game.PlayingUsers)
                 .Map(manyToManyAssociationMappingConfiguration =>
                 {
-                    manyToManyAssociationMappingConfiguration.MapLeftKey(nameof(User.Id));
+                    manyToManyAssociationMappingConfiguration.MapLeftKey(nameof(User.UserId));
                     manyToManyAssociationMappingConfiguration.MapRightKey(nameof(Game.Id));
                     manyToManyAssociationMappingConfiguration.ToTable("GamesUsers");
                 });
@@ -48,8 +48,8 @@ namespace Server.WarlightLikeDatabase
                 .WithMany(openedGame => openedGame.SignedUsers)
                 .Map(x =>
                 {
-                    x.MapLeftKey(nameof(User.Id));
-                    x.MapRightKey(nameof(OpenedGame.Id));
+                    x.MapLeftKey(nameof(User.UserId));
+                    x.MapRightKey(nameof(OpenedGame.OpenedGameId));
                     x.ToTable("OpenedGamesUsers");
                 });
             #endregion
@@ -78,7 +78,7 @@ namespace Server.WarlightLikeDatabase
 
         public int GetMaxOpenedGameId()
         {
-            return OpenedGames.Any() == false ? 0 : OpenedGames.Max(x => x.Id);
+            return OpenedGames.Any() == false ? 0 : OpenedGames.Max(x => x.OpenedGameId);
         }
 
         public void SaveGame(OpenedGame gameMetaInfo, Stream stream)

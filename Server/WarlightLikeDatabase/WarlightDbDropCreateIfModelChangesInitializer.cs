@@ -14,7 +14,7 @@ namespace Server.WarlightLikeDatabase
         {
             context.Maps.Add(new MapInfo()
             {
-                Id = 1,
+                MapInfoId = 1,
                 ColorRegionsTemplatePath = "Maps/WorldColorRegionMapping.xml",
                 ImageColoredRegionsPath = "Maps/WorldTemplate.png",
                 ImagePath = "Maps/World.png",
@@ -32,7 +32,7 @@ namespace Server.WarlightLikeDatabase
             context.Users.Add(new User()
             {
                 Email = "bimbinbiribong@seznam.cz",
-                Id = 1,
+                UserId = 1,
                 PasswordHash = passwordHash, // TODO
                 Login = "Hez"
             });

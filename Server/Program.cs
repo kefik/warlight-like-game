@@ -14,13 +14,12 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            string ipAddress = "127.0.0.1";
+            const string ipAddress = "127.0.0.1";
             Console.WriteLine(ipAddress);
             using (var server = WarlightServer.Create(IPAddress.Parse(ipAddress), 5000))
             {
                 server.Run(10);
             }
-
         }
     }
 }

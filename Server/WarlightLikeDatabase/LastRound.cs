@@ -7,7 +7,7 @@
     public class LastRound
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int LastRoundId { get; set; }
 
         [MaxLength(6144)]
         public virtual byte[] SerializedAiTurns { get; set; }

@@ -6,7 +6,7 @@
     public class MapInfo
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int MapInfoId { get; set; }
 
         [Required]
         [StringLength(50)]

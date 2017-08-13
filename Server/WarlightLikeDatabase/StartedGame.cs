@@ -7,7 +7,7 @@
     public class StartedGame
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int StartedGameId { get; set; }
 
         [Required]
         [MaxLength(20480)]

@@ -142,6 +142,7 @@ namespace WinformsUI
 
                 int id = idOrNull.Value;
                 // TODO: load appropriate screen
+                LoadSingleplayerControls();
             }
         }
 

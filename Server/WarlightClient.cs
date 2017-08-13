@@ -71,7 +71,7 @@
                                 User matchedUser = (from dbUser in db.Users
                                                     where dbUser.Login == user.Name &&
                                                           dbUser.PasswordHash == passwordHash
-                                                    select dbUser).FirstOrDefault();
+                                                    select dbUser).AsEnumerable().FirstOrDefault();
                                 bool existsMatchingUser = matchedUser != null;
                                 SerializationObjectWrapper userWrapper =
                                     new SerializationObjectWrapper<UserLogInResponseMessage>
@@ -131,7 +131,7 @@
                                         return;
                                     }
 
-                                    var map = GameObjectsLib.GameMap.Map.Create(mapInfoInfo.Id,
+                                    var map = GameObjectsLib.GameMap.Map.Create(mapInfoInfo.MapInfoId,
                                         mapInfoInfo.Name,
                                         mapInfoInfo.PlayersLimit, mapInfoInfo.TemplatePath);
 
@@ -159,7 +159,7 @@
 
                                     OpenedGame openedGame = new OpenedGame
                                     {
-                                        Id = newGameId,
+                                        OpenedGameId = newGameId,
                                         MapName = map.Name,
                                         AiPlayersCount = message.AiPlayers.Count,
                                         HumanPlayersCount = 1,

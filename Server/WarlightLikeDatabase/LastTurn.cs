@@ -6,7 +6,7 @@
     public class LastTurn
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int LastTurnId { get; set; }
 
         [MaxLength(1024)]
         [Required]
