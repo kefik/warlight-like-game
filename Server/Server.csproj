@@ -57,8 +57,10 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeSwitch.cs" />
     <Compile Include="WarlightClient.cs" />
     <Compile Include="WarlightLikeDatabase\Game.cs" />
+    <Compile Include="WarlightLikeDatabase\WarlightDbDropCreateIfModelChangesInitializer.cs" />
     <Compile Include="WarlightLikeDatabase\Map.cs" />
     <Compile Include="WarlightLikeDatabase\OpenedGame.cs" />
     <Compile Include="WarlightLikeDatabase\User.cs" />

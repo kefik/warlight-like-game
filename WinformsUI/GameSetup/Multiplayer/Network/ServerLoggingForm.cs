@@ -49,7 +49,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
                 
             }*/
             // server side validation
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("192.168.2.164"), 5000);
+            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5000);
             TcpClient client = new TcpClient();
             {
 #if (!DEBUG)

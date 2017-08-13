@@ -87,7 +87,7 @@ namespace WinformsUI.HelperControls
         /// Creates and returns new instance of player represented by this control.
         /// </summary>
         /// <returns>New instance of the player represented by this control.</returns>
-        public Player GetPlayer()
+        public HumanPlayer GetPlayer()
         {
             return new HumanPlayer(User, PlayerColor);
         }

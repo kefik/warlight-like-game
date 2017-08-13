@@ -11,7 +11,11 @@ using SQLiteProviderFactory = System.Data.SQLite.EF6.SQLiteProviderFactory;
 
 namespace WinformsUI
 {
-    public class UtilsDbContext : DbContext, IGameSaver, IGameLoader<SingleplayerSavedGameInfo>,
+    using System.Threading.Tasks;
+
+    public class UtilsDbContext : DbContext,
+        IGameSaver<Game>,
+        IGameLoader<SingleplayerSavedGameInfo>,
         IGameLoader<HotseatSavedGameInfo>
     {
         public UtilsDbContext() :
@@ -111,6 +115,7 @@ namespace WinformsUI
                     throw new ArgumentOutOfRangeException();
             }
         }
+        
 
         public Stream LoadGame(SingleplayerSavedGameInfo info)
         {

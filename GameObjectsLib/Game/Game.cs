@@ -13,9 +13,10 @@ using ProtoBuf;
 
 namespace GameObjectsLib.Game
 {
-    interface ISaveable
+    
+    interface ISaveable<T>
     {
-        void Save(IGameSaver canSave);
+        void Save(IGameSaver<T> canSave);
     }
 
     /// <summary>
@@ -28,8 +29,7 @@ namespace GameObjectsLib.Game
         MultiplayerHotseat,
         MultiplayerNetwork
     }
-
-
+    
     /// <summary>
     /// Represents one game.
     /// </summary>
@@ -38,7 +38,7 @@ namespace GameObjectsLib.Game
     [ProtoInclude(10, typeof(SingleplayerGame))]
     [ProtoInclude(11, typeof(HotseatGame))]
     [ProtoInclude(12, typeof(NetworkGame))]
-    public abstract class Game : ISaveable, IRefreshable
+    public abstract class Game : ISaveable<Game>, IRefreshable
     {
         [ProtoMember(1)]
         public int Id { get; }
@@ -195,7 +195,7 @@ namespace GameObjectsLib.Game
         /// Saves the game to the object based on parameter.
         /// </summary>
         /// <param name="canSave">Object which can save the current instance of the game.</param>
-        public void Save(IGameSaver canSave)
+        public void Save(IGameSaver<Game> canSave)
         {
             Refresh();
             using (MemoryStream stream = new MemoryStream())
@@ -208,9 +208,45 @@ namespace GameObjectsLib.Game
             }
         }
 
-        public async Task SaveGameAsync(IGameSaver canSave)
+        public async Task SaveGameAsync(IGameSaver<Game> canSave)
         {
-            throw new NotImplementedException();
+            Refresh();
+            using (var ms = await GetStreamForSerializedGameAsync())
+            {
+                canSave.SaveGame(this, ms);
+            }
+        }
+
+        public async Task<byte[]> GetBytesAsync()
+        {
+            SerializationObjectWrapper wrapper
+                = new SerializationObjectWrapper<Game>()
+                {
+                    TypedValue = this
+                };
+            using (var ms = new MemoryStream())
+            {
+                await wrapper.SerializeAsync(ms);
+
+                ms.Position = 0;
+
+                return ms.GetBuffer();
+            }
+        }
+
+        public async Task<MemoryStream> GetStreamForSerializedGameAsync()
+        {
+            SerializationObjectWrapper wrapper
+                = new SerializationObjectWrapper<Game>()
+                {
+                    TypedValue = this
+                };
+            var ms = new MemoryStream();
+            await wrapper.SerializeAsync(ms);
+
+            ms.Position = 0;
+
+            return ms;
         }
 
         /// <summary>

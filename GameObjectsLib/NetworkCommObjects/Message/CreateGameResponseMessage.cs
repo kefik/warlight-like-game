@@ -15,7 +15,10 @@ namespace GameObjectsLib.NetworkCommObjects.Message
     [ProtoContract]
     public class CreateGameResponseMessage
     {
+        /// <summary>
+        /// Id of the game that was successfully created or null.
+        /// </summary>
         [ProtoMember(1)]
-        public bool Successful { get; set; }
+        public int? Id { get; set; }
     }
 }

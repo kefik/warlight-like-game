@@ -15,7 +15,7 @@ namespace GameObjectsLib.NetworkCommObjects.Message
     public class CreateGameRequestMessage
     {
         [ProtoMember(1)]
-        public MyNetworkUser CreatingUser { get; set; }
+        public HumanPlayer CreatingPlayer { get; set; }
         [ProtoMember(2)]
         public ICollection<AIPlayer> AIPlayers { get; set; }
         [ProtoMember(3)]

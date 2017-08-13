@@ -13,6 +13,8 @@ using GameObjectsLib.Game;
 
 namespace Server
 {
+    
+
     class ConnectedUser
     {
         public int Id { get; }
@@ -39,8 +41,8 @@ namespace Server
         readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         readonly List<WarlightClient> directlyConnectedClients = new List<WarlightClient>();
 
-        readonly List<ConnectedUser> connectedUsers = new List<ConnectedUser>();
-
+        readonly Dictionary<string, WarlightClient> connectedUsers = new Dictionary<string, WarlightClient>();
+        
         readonly TcpListener listener;
         private WarlightServer(IPEndPoint endPoint)
         {

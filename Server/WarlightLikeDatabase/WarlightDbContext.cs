@@ -3,39 +3,22 @@ namespace Server.WarlightLikeDatabase
     using System;
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
+    using GameObjectsLib.Game;
+    using GameObjectsLib.NetworkCommObjects;
 
-    public partial class WarlightDbContext : DbContext
+    public partial class WarlightDbContext : DbContext, IGameSaver<OpenedGame>, IGameSaverAsync<OpenedGame>
     {
         public WarlightDbContext()
             : base("name=WarlightDbContext")
         {
-            //Database.SetInitializer(new DropCreateDatabaseAlways<WarlightDbContext>());
-            //Maps.Add(new Map()
-            //{
-            //    Id = 1,
-            //    ColorRegionsTemplatePath = "Maps/WorldColorRegionMapping.xml",
-            //    ImageColoredRegionsPath = "Maps/WorldTemplate.png",
-            //    ImagePath = "Maps/World.png",
-            //    TemplatePath = "Maps/World.xml",
-            //    PlayersLimit = 10,
-            //    Name = "World"
-            //});
-            //string passwordHash;
-            //{
-            //    byte[] data = System.Text.Encoding.ASCII.GetBytes("1234");
-            //    data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
-            //    passwordHash = System.Text.Encoding.ASCII.GetString(data);
-            //}
-            //Users.Add(new User()
-            //{
-            //    Email = "bimbinbiribong@seznam.cz",
-            //    Id = 1,
-            //    PasswordHash = "x", // TODO
-            //    Login = "Hez"
-            //});
+        }
 
-            //SaveChanges();
+        static WarlightDbContext()
+        {
+            Database.SetInitializer(new WarlightDbDropCreateIfModelChangesInitializer());
         }
 
         public virtual DbSet<Game> Games { get; set; }
@@ -67,6 +50,39 @@ namespace Server.WarlightLikeDatabase
                     x.ToTable("OpenedGamesUsers");
                 });
 
+        }
+
+        public User GetMatchingUser(string login)
+        {
+            return (from user in Users
+                    where user.Login == login
+                    select user).AsEnumerable().FirstOrDefault();
+        }
+
+        public Map GetMatchingMap(string mapName)
+        {
+            return (from info in Maps
+                    where info.Name == mapName
+                    select info).AsEnumerable().FirstOrDefault();
+        }
+
+        public int GetMaxOpenedGameId()
+        {
+            return OpenedGames.Any() == false ? 0 : OpenedGames.Max(x => x.Id);
+        }
+
+        public void SaveGame(OpenedGame gameMetaInfo, Stream stream)
+        {
+            gameMetaInfo.SerializedGame = ((MemoryStream) stream).GetBuffer();
+            OpenedGames.Add(gameMetaInfo);
+            SaveChanges();
+        }
+
+        public async Task SaveGameAsync(OpenedGame gameMetaInfo, Stream stream)
+        {
+            gameMetaInfo.SerializedGame = ((MemoryStream)stream).GetBuffer();
+            OpenedGames.Add(gameMetaInfo);
+            await SaveChangesAsync();
         }
     }
 }
