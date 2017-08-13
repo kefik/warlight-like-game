@@ -27,7 +27,7 @@ namespace Server.WarlightLikeDatabase
         [StringLength(100)]
         public string PasswordHash { get; set; }
 
-        public ICollection<StartedGame> StartedGames { get; set; }
-        public ICollection<OpenedGame> OpenedGames { get; set; }
+        public virtual ICollection<StartedGame> StartedGames { get; set; }
+        public virtual ICollection<OpenedGame> OpenedGames { get; set; }
     }
 }

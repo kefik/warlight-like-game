@@ -11,11 +11,11 @@
 
         [Required]
         [MaxLength(20480)]
-        public byte[] SerializedGame { get; set; }
+        public virtual byte[] SerializedGame { get; set; }
 
         [Required]
         [MaxLength(20480)]
-        public byte[] SerializedRounds { get; set; }
+        public virtual byte[] SerializedRounds { get; set; }
 
         public int? LastRoundId { get; set; }
         public LastRound LastRound { get; set; }

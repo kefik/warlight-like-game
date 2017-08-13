@@ -27,10 +27,10 @@ namespace Server.WarlightLikeDatabase
         public int HumanPlayersCount { get; set; }
 
         [Required]
-        public ICollection<User> SignedUsers { get; set; }
+        public virtual ICollection<User> SignedUsers { get; set; }
         
         [Required]
         [MaxLength(20480)]
-        public byte[] SerializedGame { get; set; }
+        public virtual byte[] SerializedGame { get; set; }
     }
 }

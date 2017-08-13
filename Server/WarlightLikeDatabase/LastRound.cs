@@ -10,8 +10,8 @@
         public int Id { get; set; }
 
         [MaxLength(6144)]
-        public byte[] SerializedAiTurns { get; set; }
+        public virtual byte[] SerializedAiTurns { get; set; }
 
-        public ICollection<LastTurn> LastTurns { get; set; }
+        public virtual ICollection<LastTurn> LastTurns { get; set; }
     }
 }
