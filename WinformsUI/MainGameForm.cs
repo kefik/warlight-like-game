@@ -128,7 +128,7 @@ namespace WinformsUI
             LoadInGameScreen(game);
         }
 
-        private async Task CreateNewGame(HumanPlayer creatingPlayer, ICollection<AIPlayer> aiPlayers, string mapName, int freeSlotsCount)
+        private async Task CreateNewGame(HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers, string mapName, int freeSlotsCount)
         {
             if (TryToLogIn())
             {

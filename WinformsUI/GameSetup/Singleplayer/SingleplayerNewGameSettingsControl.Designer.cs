@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.mapSettingsControl = new WinformsUI.HelperControls.MapSettingsControl();
-            this.aiPlayerSettingsControl = new WinformsUI.HelperControls.AIPlayerSettingsControl();
+            this.aiPlayerSettingsControl = new WinformsUI.HelperControls.AiPlayerSettingsControl();
             this.aiPlayersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.aiPlayersNumberLabel = new System.Windows.Forms.Label();
             this.startButton = new System.Windows.Forms.Button();
@@ -72,7 +72,7 @@
             this.aiPlayersNumberLabel.Name = "aiPlayersNumberLabel";
             this.aiPlayersNumberLabel.Size = new System.Drawing.Size(105, 13);
             this.aiPlayersNumberLabel.TabIndex = 3;
-            this.aiPlayersNumberLabel.Text = "Number of AI players";
+            this.aiPlayersNumberLabel.Text = "Number of Ai players";
             // 
             // startButton
             // 
@@ -114,7 +114,7 @@
         #endregion
 
         private HelperControls.MapSettingsControl mapSettingsControl;
-        private HelperControls.AIPlayerSettingsControl aiPlayerSettingsControl;
+        private HelperControls.AiPlayerSettingsControl aiPlayerSettingsControl;
         private System.Windows.Forms.NumericUpDown aiPlayersNumberNumericUpDown;
         private System.Windows.Forms.Label aiPlayersNumberLabel;
         private System.Windows.Forms.Button startButton;

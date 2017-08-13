@@ -34,7 +34,7 @@
             this.humanPlayerSettingsControl = new WinformsUI.HelperControls.HumanPlayerSettingsControl();
             this.startButton = new System.Windows.Forms.Button();
             this.myUserPanel = new System.Windows.Forms.Panel();
-            this.aiPlayerSettingsControl = new WinformsUI.HelperControls.AIPlayerSettingsControl();
+            this.aiPlayerSettingsControl = new WinformsUI.HelperControls.AiPlayerSettingsControl();
             this.aiPlayersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.aiPlayersNumberLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.humanPlayersNumberNumericUpDown)).BeginInit();
@@ -115,7 +115,7 @@
             this.aiPlayersNumberNumericUpDown.Size = new System.Drawing.Size(45, 20);
             this.aiPlayersNumberNumericUpDown.TabIndex = 4;
             this.aiPlayersNumberNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.aiPlayersNumberNumericUpDown.ValueChanged += new System.EventHandler(this.OnNumberOfAIPlayersChanged);
+            this.aiPlayersNumberNumericUpDown.ValueChanged += new System.EventHandler(this.OnNumberOfAiPlayersChanged);
             // 
             // aiPlayersNumberLabel
             // 
@@ -125,7 +125,7 @@
             this.aiPlayersNumberLabel.Name = "aiPlayersNumberLabel";
             this.aiPlayersNumberLabel.Size = new System.Drawing.Size(105, 13);
             this.aiPlayersNumberLabel.TabIndex = 5;
-            this.aiPlayersNumberLabel.Text = "Number of AI players";
+            this.aiPlayersNumberLabel.Text = "Number of Ai players";
             // 
             // HotseatNewGameSettingsControl
             // 
@@ -157,7 +157,7 @@
         private HelperControls.HumanPlayerSettingsControl humanPlayerSettingsControl;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Panel myUserPanel;
-        private HelperControls.AIPlayerSettingsControl aiPlayerSettingsControl;
+        private HelperControls.AiPlayerSettingsControl aiPlayerSettingsControl;
         private System.Windows.Forms.NumericUpDown aiPlayersNumberNumericUpDown;
         private System.Windows.Forms.Label aiPlayersNumberLabel;
     }

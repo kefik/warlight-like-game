@@ -54,7 +54,7 @@ namespace WinformsUI
                         {
                             savedGames.Add(new SingleplayerSavedGameInfo()
                             {
-                                AINumber = game.Players.Count - 1,
+                                AiNumber = game.Players.Count - 1,
                                 MapName = game.Map.Name,
                                 SavedGameDate = DateTime.Now.ToString(),
                                 Path = path
@@ -81,14 +81,14 @@ namespace WinformsUI
                         if (save == null)
                         {
                             int aiPlayerNumber = (from player in game.Players
-                                                  where player.GetType() == typeof(AIPlayer)
+                                                  where player.GetType() == typeof(AiPlayer)
                                                   select player).Count();
                             int humanPlayersNumber = game.Players.Count - aiPlayerNumber;
 
                             savedGames.Add(new HotseatSavedGameInfo()
                             {
                                 Id = game.Id,
-                                AINumber = aiPlayerNumber,
+                                AiNumber = aiPlayerNumber,
                                 HumanNumber = humanPlayersNumber,
                                 MapName = game.Map.Name,
                                 SavedGameDate = DateTime.Now.ToString(),

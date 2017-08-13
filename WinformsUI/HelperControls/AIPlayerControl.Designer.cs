@@ -1,6 +1,6 @@
 ﻿namespace WinformsUI.HelperControls
 {
-    partial class AIPlayerControl
+    partial class AiPlayerControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -71,7 +71,7 @@
             this.aiNameLabel.TabIndex = 2;
             this.aiNameLabel.Text = "PC1";
             // 
-            // AIPlayerControl
+            // AiPlayerControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -79,7 +79,7 @@
             this.Controls.Add(this.colorButton);
             this.Controls.Add(this.difficultyComboBox);
             this.MinimumSize = new System.Drawing.Size(272, 27);
-            this.Name = "AIPlayerControl";
+            this.Name = "AiPlayerControl";
             this.Size = new System.Drawing.Size(272, 27);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -17,7 +17,7 @@ namespace GameObjectsLib.NetworkCommObjects.Message
         [ProtoMember(1)]
         public HumanPlayer CreatingPlayer { get; set; }
         [ProtoMember(2)]
-        public ICollection<AIPlayer> AIPlayers { get; set; }
+        public ICollection<AiPlayer> AiPlayers { get; set; }
         [ProtoMember(3)]
         public string MapName { get; set; }
         [ProtoMember(3)]

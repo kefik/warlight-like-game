@@ -33,7 +33,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             }
         }
 
-        public event Func<HumanPlayer, ICollection<AIPlayer>, string, int, Task> OnGameCreated
+        public event Func<HumanPlayer, ICollection<AiPlayer>, string, int, Task> OnGameCreated
         {
             add { networkNewGameSettingsControl.OnGameCreated += value; }
             remove { networkNewGameSettingsControl.OnGameCreated -= value; }

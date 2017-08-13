@@ -24,7 +24,7 @@ namespace GameObjectsLib
     /// </summary>
     [Serializable]
     [ProtoContract]
-    [ProtoInclude(400, typeof(AIPlayer))]
+    [ProtoInclude(400, typeof(AiPlayer))]
     [ProtoInclude(401, typeof(HumanPlayer))]
     public abstract class Player : IEquatable<Player>, IRefreshable
     {
@@ -114,12 +114,12 @@ namespace GameObjectsLib
     }
 
     /// <summary>
-    /// Instance of this class represents AI player in the game.
+    /// Instance of this class represents Ai player in the game.
     /// </summary>
     [Serializable, ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    public sealed class AIPlayer : Player
+    public sealed class AiPlayer : Player
     {
-        AIPlayer() { }
+        AiPlayer() { }
         /// <summary>
         /// Represents difficulty of given artifficial player.
         /// </summary>
@@ -127,7 +127,7 @@ namespace GameObjectsLib
 
         public override string Name { get; }
 
-        public AIPlayer(Difficulty difficulty, string name, KnownColor color) : base(color)
+        public AiPlayer(Difficulty difficulty, string name, KnownColor color) : base(color)
         {
             Difficulty = difficulty;
             Name = name;

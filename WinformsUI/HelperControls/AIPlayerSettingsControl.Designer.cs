@@ -1,6 +1,6 @@
 ﻿namespace WinformsUI.HelperControls
 {
-    partial class AIPlayerSettingsControl
+    partial class AiPlayerSettingsControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -52,12 +52,12 @@
             this.playersTableLayoutPanel.Size = new System.Drawing.Size(380, 268);
             this.playersTableLayoutPanel.TabIndex = 2;
             // 
-            // AIPlayerSettingsControl
+            // AiPlayerSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.playersTableLayoutPanel);
-            this.Name = "AIPlayerSettingsControl";
+            this.Name = "AiPlayerSettingsControl";
             this.Size = new System.Drawing.Size(380, 268);
             this.ResumeLayout(false);
 

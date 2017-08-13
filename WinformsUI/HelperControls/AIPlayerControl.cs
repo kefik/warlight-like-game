@@ -11,20 +11,20 @@ using GameObjectsLib;
 
 namespace WinformsUI.HelperControls
 {
-    public partial class AIPlayerControl : UserControl
+    public partial class AiPlayerControl : UserControl
     {
-        AIPlayer player; // dont want to give access to players regions, so I keep it private
-        public AIPlayerControl(string uniqueName)
+        AiPlayer player; // dont want to give access to players regions, so I keep it private
+        public AiPlayerControl(string uniqueName)
         {
             InitializeComponent();
 
-            this.player = new AIPlayer(Difficulty.Medium, "PC1", KnownColor.Blue);
+            this.player = new AiPlayer(Difficulty.Medium, "PC1", KnownColor.Blue);
 
             difficultyComboBox.SelectedIndex = (int)player.Difficulty;
             colorButton.BackColor = Color.FromKnownColor(player.Color);
         }
 
-        public AIPlayerControl(AIPlayer player)
+        public AiPlayerControl(AiPlayer player)
         {
             InitializeComponent();
 
@@ -32,41 +32,41 @@ namespace WinformsUI.HelperControls
         }
 
         /// <summary>
-        /// Accesses AI player color.
+        /// Accesses Ai player color.
         /// </summary>
         public KnownColor PlayerColor
         {
             get { return player.Color; }
             private set
             {
-                player = new AIPlayer(player.Difficulty, player.Name, value);
+                player = new AiPlayer(player.Difficulty, player.Name, value);
                 colorButton.BackColor = Color.FromKnownColor(value);
             }
         }
 
         /// <summary>
-        /// Accesses AI player difficulty.
+        /// Accesses Ai player difficulty.
         /// </summary>
         public Difficulty PlayerDifficulty
         {
             get { return player.Difficulty; }
             private set
             {
-                player = new AIPlayer(value, player.Name, player.Color);
+                player = new AiPlayer(value, player.Name, player.Color);
                 difficultyComboBox.SelectedIndex = (int)player.Difficulty;
             }
 
         }
 
         /// <summary>
-        /// Accesses AI player name.
+        /// Accesses Ai player name.
         /// </summary>
         public string PlayerName
         {
             get { return player.Name; }
             private set
             {
-                player = new AIPlayer(player.Difficulty, value, player.Color);
+                player = new AiPlayer(player.Difficulty, value, player.Color);
                 aiNameLabel.Text = value;
             }
         }
@@ -92,7 +92,7 @@ namespace WinformsUI.HelperControls
         /// <returns></returns>
         public Player GetPlayer()
         {
-            return new AIPlayer(player.Difficulty, player.Name, player.Color);
+            return new AiPlayer(player.Difficulty, player.Name, player.Color);
         }
     }
 }

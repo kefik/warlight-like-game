@@ -79,25 +79,25 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             aiPlayerSettingsControl.PlayersLimit = maxPlayers;
             humanPlayerSettingsControl.PlayersLimit = maxPlayers;
             
-            previousAIPlayersNumber = aiPlayersNumberNumericUpDown.Value;
+            previousAiPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
         }
 
-        public event Func<HumanPlayer, ICollection<AIPlayer>, string, int, Task> OnGameCreated;
+        public event Func<HumanPlayer, ICollection<AiPlayer>, string, int, Task> OnGameCreated;
 
-        decimal previousAIPlayersNumber;
-        private void OnNumberOfAIPlayersChanged(object sender, EventArgs e)
+        decimal previousAiPlayersNumber;
+        private void OnNumberOfAiPlayersChanged(object sender, EventArgs e)
         {
             if (!DoesSumToPlayersLimit(aiPlayersNumberNumericUpDown.Value, previousHumanPlayersNumber))
             {
-                aiPlayersNumberNumericUpDown.Value = previousAIPlayersNumber;
+                aiPlayersNumberNumericUpDown.Value = previousAiPlayersNumber;
                 return;
             }
 
             decimal difference;
-            if (previousAIPlayersNumber < aiPlayersNumberNumericUpDown.Value)
+            if (previousAiPlayersNumber < aiPlayersNumberNumericUpDown.Value)
             {
-                difference = aiPlayersNumberNumericUpDown.Value - previousAIPlayersNumber;
+                difference = aiPlayersNumberNumericUpDown.Value - previousAiPlayersNumber;
                 for (int i = 0; i < difference; i++)
                 {
                     aiPlayerSettingsControl.AddPlayer();
@@ -105,20 +105,20 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             }
             else
             {
-                difference = previousAIPlayersNumber - aiPlayersNumberNumericUpDown.Value;
+                difference = previousAiPlayersNumber - aiPlayersNumberNumericUpDown.Value;
                 for (int i = 0; i < difference; i++)
                 {
                     aiPlayerSettingsControl.RemovePlayer();
                 }
             }
 
-            previousAIPlayersNumber = aiPlayersNumberNumericUpDown.Value;
+            previousAiPlayersNumber = aiPlayersNumberNumericUpDown.Value;
         }
 
         decimal previousHumanPlayersNumber;
         private void OnNumberOfHumanPlayersChanged(object sender, EventArgs e)
         {
-            if (!DoesSumToPlayersLimit(humanPlayersNumberNumericUpDown.Value, previousAIPlayersNumber))
+            if (!DoesSumToPlayersLimit(humanPlayersNumberNumericUpDown.Value, previousAiPlayersNumber))
             {
                 humanPlayersNumberNumericUpDown.Value = previousHumanPlayersNumber;
                 return;

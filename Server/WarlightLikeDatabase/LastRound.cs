@@ -10,7 +10,7 @@
         public int Id { get; set; }
 
         [MaxLength(6144)]
-        public byte[] SerializedAITurns { get; set; }
+        public byte[] SerializedAiTurns { get; set; }
 
         public ICollection<LastTurn> LastTurns { get; set; }
     }

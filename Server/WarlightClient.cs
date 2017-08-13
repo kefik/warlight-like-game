@@ -151,7 +151,7 @@
                                     {
                                         creatingPlayer
                                     };
-                                    foreach (AIPlayer aiPlayer in message.AIPlayers)
+                                    foreach (AiPlayer aiPlayer in message.AiPlayers)
                                     {
                                         players.Add(aiPlayer);
                                     }
@@ -161,7 +161,7 @@
                                     {
                                         Id = newGameId,
                                         MapName = map.Name,
-                                        AIPlayersCount = message.AIPlayers.Count,
+                                        AiPlayersCount = message.AiPlayers.Count,
                                         HumanPlayersCount = 1,
                                         OpenedSlotsNumber = message.FreeSlotsCount,
                                         SignedUsers = new HashSet<User>()

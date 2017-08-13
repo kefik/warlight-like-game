@@ -21,7 +21,7 @@ namespace Server.WarlightLikeDatabase
         public string MapName { get; set; }
 
         [Required]
-        public int AIPlayersCount { get; set; }
+        public int AiPlayersCount { get; set; }
 
         [Required]
         public int HumanPlayersCount { get; set; }

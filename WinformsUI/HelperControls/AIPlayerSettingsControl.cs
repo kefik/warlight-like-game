@@ -7,7 +7,7 @@ using GameObjectsLib;
 
 namespace WinformsUI.HelperControls
 {
-    public partial class AIPlayerSettingsControl : UserControl
+    public partial class AiPlayerSettingsControl : UserControl
     {
         /// <summary>
         /// Property giving count of players currently in the table.
@@ -21,7 +21,7 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public int PlayersLimit { get; set; }
         
-        public AIPlayerSettingsControl()
+        public AiPlayerSettingsControl()
         {
             InitializeComponent();
 
@@ -33,7 +33,7 @@ namespace WinformsUI.HelperControls
         {
             if (PlayersCount >= PlayersLimit) throw new ArgumentException();
 
-            AIPlayerControl control = new AIPlayerControl("PC")
+            AiPlayerControl control = new AiPlayerControl("PC")
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Right
             }; // TODO: generate unique name
@@ -63,14 +63,14 @@ namespace WinformsUI.HelperControls
         /// Calculates and returns players from controls saved in the table.
         /// </summary>
         /// <returns>Returns player from controls saved in the table.</returns>
-        public IList<AIPlayer> GetPlayers()
+        public IList<AiPlayer> GetPlayers()
         {
-            IList<AIPlayer> players = new List<AIPlayer>();
+            IList<AiPlayer> players = new List<AiPlayer>();
             foreach (var control in playersTableLayoutPanel.Controls)
             {
-                AIPlayerControl aiPlayerControl = control as AIPlayerControl;
+                AiPlayerControl aiPlayerControl = control as AiPlayerControl;
 
-                players.Add(aiPlayerControl.GetPlayer() as AIPlayer); // TODO: may throw exception
+                players.Add(aiPlayerControl.GetPlayer() as AiPlayer); // TODO: may throw exception
             }
 
             return players;

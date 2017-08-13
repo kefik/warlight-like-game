@@ -77,7 +77,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.oneDayListBox.FormattingEnabled = true;
             this.oneDayListBox.Items.AddRange(new object[] {
-            "Human: 3; AI: 4; Map: World; Game-started: 26.09.2017 15:40"});
+            "Human: 3; Ai: 4; Map: World; Game-started: 26.09.2017 15:40"});
             this.oneDayListBox.Location = new System.Drawing.Point(16, 16);
             this.oneDayListBox.Name = "oneDayListBox";
             this.oneDayListBox.Size = new System.Drawing.Size(431, 82);
@@ -89,7 +89,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.multiDayListBox.FormattingEnabled = true;
             this.multiDayListBox.Items.AddRange(new object[] {
-            "Human: 3; AI: 4; Map: World; Round-started: 26.09.2017 15:40; Game-started: 26.09" +
+            "Human: 3; Ai: 4; Map: World; Round-started: 26.09.2017 15:40; Game-started: 26.09" +
                 ".2017 15:10"});
             this.multiDayListBox.Location = new System.Drawing.Point(16, 22);
             this.multiDayListBox.Name = "multiDayListBox";

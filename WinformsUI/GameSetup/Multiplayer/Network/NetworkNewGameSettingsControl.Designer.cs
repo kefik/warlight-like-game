@@ -36,7 +36,7 @@
             this.createButton = new System.Windows.Forms.Button();
             this.aiPlayersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.aiPlayersNumberLabel = new System.Windows.Forms.Label();
-            this.aiPlayerSettingsControl = new WinformsUI.HelperControls.AIPlayerSettingsControl();
+            this.aiPlayerSettingsControl = new WinformsUI.HelperControls.AiPlayerSettingsControl();
             ((System.ComponentModel.ISupportInitialize)(this.humanPlayersNumberNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.aiPlayersNumberNumericUpDown)).BeginInit();
             this.SuspendLayout();
@@ -105,7 +105,7 @@
             this.aiPlayersNumberNumericUpDown.Size = new System.Drawing.Size(45, 20);
             this.aiPlayersNumberNumericUpDown.TabIndex = 16;
             this.aiPlayersNumberNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.aiPlayersNumberNumericUpDown.ValueChanged += new System.EventHandler(this.OnNumberOfAIPlayersChanged);
+            this.aiPlayersNumberNumericUpDown.ValueChanged += new System.EventHandler(this.OnNumberOfAiPlayersChanged);
             // 
             // aiPlayersNumberLabel
             // 
@@ -115,7 +115,7 @@
             this.aiPlayersNumberLabel.Name = "aiPlayersNumberLabel";
             this.aiPlayersNumberLabel.Size = new System.Drawing.Size(105, 13);
             this.aiPlayersNumberLabel.TabIndex = 17;
-            this.aiPlayersNumberLabel.Text = "Number of AI players";
+            this.aiPlayersNumberLabel.Text = "Number of Ai players";
             // 
             // aiPlayerSettingsControl
             // 
@@ -159,6 +159,6 @@
         private System.Windows.Forms.Button createButton;
         private System.Windows.Forms.NumericUpDown aiPlayersNumberNumericUpDown;
         private System.Windows.Forms.Label aiPlayersNumberLabel;
-        private HelperControls.AIPlayerSettingsControl aiPlayerSettingsControl;
+        private HelperControls.AiPlayerSettingsControl aiPlayerSettingsControl;
     }
 }
