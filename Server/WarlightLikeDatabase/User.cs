@@ -6,7 +6,7 @@ namespace Server.WarlightLikeDatabase
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class User
+    public class User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

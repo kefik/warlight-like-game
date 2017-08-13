@@ -10,7 +10,7 @@
 
         [Required]
         [StringLength(50)]
-        [Index(IsClustered = false, IsUnique = false)]
+        [Index(IsUnique = true)]
         public string Name { get; set; }
         [Required]
         public int PlayersLimit { get; set; }

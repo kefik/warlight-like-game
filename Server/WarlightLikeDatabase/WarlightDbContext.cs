@@ -30,7 +30,7 @@ namespace Server.WarlightLikeDatabase
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            #region UserRelations
+            #region User relations
             // m : n Games - Users
             modelBuilder.Entity<User>()
                 .HasMany(user => user.StartedGames)
@@ -54,6 +54,12 @@ namespace Server.WarlightLikeDatabase
                 });
             #endregion
 
+            #region LastRound relations
+            modelBuilder.Entity<LastRound>()
+                .HasMany(x => x.LastTurns)
+                .WithRequired(x => x.LastRound)
+                .WillCascadeOnDelete(true);
+            #endregion
         }
 
         public User GetMatchingUser(string login)

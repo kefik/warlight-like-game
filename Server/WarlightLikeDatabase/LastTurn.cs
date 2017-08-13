@@ -14,5 +14,8 @@
 
         public int UserId { get; set; }
         public User User { get; set; }
+
+        public int LastRoundId { get; set; }
+        public LastRound LastRound { get; set; }
     }
 }
