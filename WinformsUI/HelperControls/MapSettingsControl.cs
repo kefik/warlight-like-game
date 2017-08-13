@@ -33,6 +33,11 @@ namespace WinformsUI.HelperControls
         {
             get { return ChosenMapInfo.PlayersLimit; }
         }
+
+        public string MapName
+        {
+            get { return ChosenMapInfo.Name; }
+        }
         
         MapInfo ChosenMapInfo
         {

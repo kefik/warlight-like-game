@@ -20,7 +20,7 @@ namespace GameObjectsLib.NetworkCommObjects.Message
         public ICollection<AiPlayer> AiPlayers { get; set; }
         [ProtoMember(3)]
         public string MapName { get; set; }
-        [ProtoMember(3)]
+        [ProtoMember(4)]
         public int FreeSlotsCount { get; set; }
     }
 }

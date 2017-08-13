@@ -133,16 +133,15 @@ namespace WinformsUI
             if (TryToLogIn())
             {
                 var networkUser = (MyNetworkUser)myUser;
-                int? idOrNull = await networkUser.CreateGameAsync(creatingPlayer, aiPlayers, mapName, freeSlotsCount);
-                if (idOrNull == null)
+                bool successful = await networkUser.CreateGameAsync(creatingPlayer, aiPlayers, mapName, freeSlotsCount);
+                if (successful == false)
                 {
-                    MessageBox.Show($"Server is unavailable.");
+                    MessageBox.Show($"The game could not be created.");
                     return;
                 }
-
-                int id = idOrNull.Value;
+                
                 // TODO: load appropriate screen
-                LoadSingleplayerControls();
+                typeGameChoiceTabControl.SelectedIndex = 0;
             }
         }
 

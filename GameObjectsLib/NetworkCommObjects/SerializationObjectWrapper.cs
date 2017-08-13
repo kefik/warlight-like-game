@@ -74,26 +74,23 @@
             await Task.Yield();
 
             int length = 0;
-            if (await Task.Factory.StartNew(
+            if (!await Task.Factory.StartNew(
                 () => Serializer.TryReadLengthPrefix(stream, PrefixStyle.Base128, out length),
-                TaskCreationOptions.DenyChildAttach))
+                TaskCreationOptions.DenyChildAttach)) throw new ArgumentException();
+
+            var buffer = new byte[length];
+            await stream.ReadAsync(buffer, 0, buffer.Length);
+
+            using (MemoryStream ms = new MemoryStream())
             {
-                var buffer = new byte[length];
-                await stream.ReadAsync(buffer, 0, buffer.Length);
+                await ms.WriteAsync(buffer, 0, buffer.Length);
 
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    await ms.WriteAsync(buffer, 0, buffer.Length);
+                ms.Position = 0;
 
-                    ms.Position = 0;
+                SerializationObjectWrapper wrapper = Serializer.Deserialize<SerializationObjectWrapper>(ms);
 
-                    SerializationObjectWrapper wrapper = Serializer.Deserialize<SerializationObjectWrapper>(ms);
-
-                    return wrapper;
-                }
+                return wrapper;
             }
-
-            throw new ArgumentException();
         }
 
         public static SerializationObjectWrapper Deserialize(Stream stream)

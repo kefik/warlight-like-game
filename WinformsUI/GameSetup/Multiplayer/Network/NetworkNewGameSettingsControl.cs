@@ -150,10 +150,16 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             return aiPlayers + humanPlayers <= Math.Max(0, TotalPlayersLimit - 1);
         }
 
-        private void Create(object sender, EventArgs e)
+        private async void Create(object sender, EventArgs e)
         {
             // TODO: mb bug in conversion
-            OnGameCreated?.Invoke(myPlayerControl.GetPlayer(), aiPlayerSettingsControl.GetPlayers(), mapSettingsControl.Name, aiPlayerSettingsControl.PlayersCount);
+            if (OnGameCreated == null) return;
+
+            var aiPlayers = aiPlayerSettingsControl.GetPlayers();
+            await OnGameCreated.Invoke(myPlayerControl.GetPlayer(),
+                aiPlayers,
+                mapSettingsControl.MapName,
+                aiPlayerSettingsControl.PlayersLimit - 1 - aiPlayers.Count);
         }
     }
 }

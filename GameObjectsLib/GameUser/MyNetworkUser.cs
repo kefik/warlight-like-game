@@ -85,11 +85,11 @@ namespace GameObjectsLib.GameUser
         /// Creates a game from the seed.
         /// </summary>
         /// <returns>New games Id or null wrapped in task.</returns>
-        public async Task<int?> CreateGameAsync(HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers, string mapName, int freeSlotsCount)
+        public async Task<bool> CreateGameAsync(HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers, string mapName, int freeSlotsCount)
         {
             if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
 
-            if (creatingPlayer.User != this) return null;
+            if (creatingPlayer.User != this) return false;
 
             var stream = client.GetStream();
             {
@@ -106,11 +106,11 @@ namespace GameObjectsLib.GameUser
                 await wrapper.SerializeAsync(stream);
             }
             {
-                var answer = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value;
+                var answer = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as CreateGameResponseMessage;
 
-                var id = answer as int?;
+                if (answer == null) return false;
 
-                return id;
+                return answer.Successful;
             }
         }
 

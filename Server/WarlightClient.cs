@@ -96,44 +96,43 @@
                                         {
                                             TypedValue = new CreateGameResponseMessage
                                             {
-                                                Id = null
+                                                Successful = false
                                             }
                                         };
                                     await response.SerializeAsync(responseStream);
                                 }
 
-                                async Task RequestSuccessfulResponse(Stream responseStream, int id)
+                                async Task RequestSuccessfulResponse(Stream responseStream)
                                 {
                                     SerializationObjectWrapper response
                                         = new SerializationObjectWrapper<CreateGameResponseMessage>
                                         {
                                             TypedValue = new CreateGameResponseMessage
                                             {
-                                                Id = id
+                                                Successful = true
                                             }
                                         };
                                     await response.SerializeAsync(responseStream);
                                 }
 
-                                if (isLoggedIn == false)
+                                if (isLoggedIn == false || message.FreeSlotsCount == 0)
                                 {
                                     await RequestUnsuccessfulResponse(stream);
                                     return;
                                 }
-
-                                // user is logged in
+                                
                                 using (WarlightDbContext db = new WarlightDbContext())
                                 {
-                                    MapInfo mapInfoInfo = db.GetMatchingMap(message.MapName);
-                                    if (mapInfoInfo == null)
+                                    MapInfo mapInfo = db.GetMatchingMap(message.MapName);
+                                    if (mapInfo == null)
                                     {
                                         await RequestUnsuccessfulResponse(stream);
                                         return;
                                     }
 
-                                    var map = GameObjectsLib.GameMap.Map.Create(mapInfoInfo.MapInfoId,
-                                        mapInfoInfo.Name,
-                                        mapInfoInfo.PlayersLimit, mapInfoInfo.TemplatePath);
+                                    var map = GameObjectsLib.GameMap.Map.Create(mapInfo.MapInfoId,
+                                        mapInfo.Name,
+                                        mapInfo.PlayersLimit, mapInfo.TemplatePath);
 
                                     var creatingPlayer = message.CreatingPlayer;
                                     var creatingUser = creatingPlayer.User;
@@ -147,21 +146,21 @@
 
                                     int newGameId = db.GetMaxOpenedGameId() + 1;
 
-                                    IList<Player> players = new List<Player>()
+                                    var players = new List<Player>()
                                     {
                                         creatingPlayer
                                     };
-                                    foreach (AiPlayer aiPlayer in message.AiPlayers)
-                                    {
-                                        players.Add(aiPlayer);
-                                    }
+
+                                    var aiPlayers = message.AiPlayers ?? new List<AiPlayer>();
+                                    players.AddRange(aiPlayers);
+
                                     var game = Game.Create(newGameId, GameType.MultiplayerNetwork, map, players);
 
                                     OpenedGame openedGame = new OpenedGame
                                     {
                                         OpenedGameId = newGameId,
                                         MapName = map.Name,
-                                        AiPlayersCount = message.AiPlayers.Count,
+                                        AiPlayersCount = aiPlayers.Count,
                                         HumanPlayersCount = 1,
                                         OpenedSlotsNumber = message.FreeSlotsCount,
                                         SignedUsers = new HashSet<User>()
@@ -175,12 +174,11 @@
                                         await db.SaveGameAsync(openedGame, ms);
                                     }
 
-                                    await RequestSuccessfulResponse(stream, newGameId);
+                                    await RequestSuccessfulResponse(stream);
                                 }
 
 
-                            }
-                        )
+                            })
                     );
 
                     // find out the type
