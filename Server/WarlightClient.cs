@@ -124,16 +124,16 @@
                                 // user is logged in
                                 using (WarlightDbContext db = new WarlightDbContext())
                                 {
-                                    Map mapInfo = db.GetMatchingMap(message.MapName);
-                                    if (mapInfo == null)
+                                    MapInfo mapInfoInfo = db.GetMatchingMap(message.MapName);
+                                    if (mapInfoInfo == null)
                                     {
                                         await RequestUnsuccessfulResponse(stream);
                                         return;
                                     }
 
-                                    var map = GameObjectsLib.GameMap.Map.Create(mapInfo.Id,
-                                        mapInfo.Name,
-                                        mapInfo.PlayersLimit, mapInfo.TemplatePath);
+                                    var map = GameObjectsLib.GameMap.Map.Create(mapInfoInfo.Id,
+                                        mapInfoInfo.Name,
+                                        mapInfoInfo.PlayersLimit, mapInfoInfo.TemplatePath);
 
                                     var creatingPlayer = message.CreatingPlayer;
                                     var creatingUser = creatingPlayer.User;

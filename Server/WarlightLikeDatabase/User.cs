@@ -14,17 +14,20 @@ namespace Server.WarlightLikeDatabase
 
         [Required]
         [StringLength(50)]
+        [EmailAddress]
+        [Index(IsUnique = true)]
         public string Email { get; set; }
 
         [Required]
         [StringLength(15)]
+        [Index(IsClustered = false, IsUnique = true)]
         public string Login { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public string PasswordHash { get; set; }
 
-        public ICollection<Game> StartedGames { get; set; }
-        public ICollection<OpenedGame> UnstartedGames { get; set; }
+        public ICollection<StartedGame> StartedGames { get; set; }
+        public ICollection<OpenedGame> OpenedGames { get; set; }
     }
 }

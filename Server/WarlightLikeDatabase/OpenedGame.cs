@@ -13,16 +13,24 @@ namespace Server.WarlightLikeDatabase
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Required]
         public int OpenedSlotsNumber { get; set; }
 
+        [Required]
+        [StringLength(50)]
         public string MapName { get; set; }
 
+        [Required]
         public int AIPlayersCount { get; set; }
 
+        [Required]
         public int HumanPlayersCount { get; set; }
 
+        [Required]
         public ICollection<User> SignedUsers { get; set; }
         
+        [Required]
+        [MaxLength(20480)]
         public byte[] SerializedGame { get; set; }
     }
 }

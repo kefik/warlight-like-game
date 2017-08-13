@@ -1,17 +1,17 @@
-namespace Server.WarlightLikeDatabase
+﻿namespace Server.WarlightLikeDatabase
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
-    public class Game
+    public class LastRound
     {
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        
-        public ICollection<User> PlayingUsers { get; set; }
+
+        [MaxLength(6144)]
+        public byte[] SerializedAITurns { get; set; }
+
+        public ICollection<LastTurn> LastTurns { get; set; }
     }
 }

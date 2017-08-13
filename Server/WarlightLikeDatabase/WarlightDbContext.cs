@@ -21,34 +21,38 @@ namespace Server.WarlightLikeDatabase
             Database.SetInitializer(new WarlightDbDropCreateIfModelChangesInitializer());
         }
 
-        public virtual DbSet<Game> Games { get; set; }
+        public virtual DbSet<StartedGame> Games { get; set; }
         public virtual DbSet<OpenedGame> OpenedGames { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Map> Maps { get; set; }
+        public virtual DbSet<MapInfo> Maps { get; set; }
+        public virtual DbSet<LastRound> LastRounds { get; set; }
+        public virtual DbSet<LastTurn> LastTurns { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            #region UserRelations
             // m : n Games - Users
             modelBuilder.Entity<User>()
                 .HasMany(user => user.StartedGames)
                 .WithMany(game => game.PlayingUsers)
                 .Map(manyToManyAssociationMappingConfiguration =>
                 {
-                    manyToManyAssociationMappingConfiguration.MapLeftKey("UserId");
-                    manyToManyAssociationMappingConfiguration.MapRightKey("GameId");
+                    manyToManyAssociationMappingConfiguration.MapLeftKey(nameof(User.Id));
+                    manyToManyAssociationMappingConfiguration.MapRightKey(nameof(Game.Id));
                     manyToManyAssociationMappingConfiguration.ToTable("GamesUsers");
                 });
 
             // m : n OpenedGames - Users
             modelBuilder.Entity<User>()
-                .HasMany(user => user.UnstartedGames)
+                .HasMany(user => user.OpenedGames)
                 .WithMany(openedGame => openedGame.SignedUsers)
                 .Map(x =>
                 {
-                    x.MapLeftKey("UserId");
-                    x.MapRightKey("OpenedGameId");
+                    x.MapLeftKey(nameof(User.Id));
+                    x.MapRightKey(nameof(OpenedGame.Id));
                     x.ToTable("OpenedGamesUsers");
                 });
+            #endregion
 
         }
 
@@ -59,7 +63,7 @@ namespace Server.WarlightLikeDatabase
                     select user).AsEnumerable().FirstOrDefault();
         }
 
-        public Map GetMatchingMap(string mapName)
+        public MapInfo GetMatchingMap(string mapName)
         {
             return (from info in Maps
                     where info.Name == mapName
@@ -73,7 +77,7 @@ namespace Server.WarlightLikeDatabase
 
         public void SaveGame(OpenedGame gameMetaInfo, Stream stream)
         {
-            gameMetaInfo.SerializedGame = ((MemoryStream) stream).GetBuffer();
+            gameMetaInfo.SerializedGame = ((MemoryStream)stream).GetBuffer();
             OpenedGames.Add(gameMetaInfo);
             SaveChanges();
         }

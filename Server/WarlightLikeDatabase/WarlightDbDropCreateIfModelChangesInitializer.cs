@@ -12,7 +12,7 @@ namespace Server.WarlightLikeDatabase
     {
         protected override void Seed(WarlightDbContext context)
         {
-            context.Maps.Add(new Map()
+            context.Maps.Add(new MapInfo()
             {
                 Id = 1,
                 ColorRegionsTemplatePath = "Maps/WorldColorRegionMapping.xml",
