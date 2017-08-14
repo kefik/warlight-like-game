@@ -15,30 +15,7 @@ namespace WinformsUI.GameSetup.Singleplayer
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
         readonly MyHumanPlayerControl myHumanPlayerControl;
-
-        Func<User> getUser;
-        public Func<User> GetUser
-        {
-            get { return getUser; }
-            set
-            {
-                getUser = value;
-                myHumanPlayerControl.GetUser = value;
-            }
-        }
-
-        Action<User> setUser;
-        public Action<User> SetUser
-        {
-            get { return setUser; }
-            set
-            {
-                setUser = value;
-                myHumanPlayerControl.SetUser = value;
-                myHumanPlayerControl.User = GetUser();
-            }
-        }
-
+        
         public event Action<Game> OnGameStarted;
         public SingleplayerNewGameSettingsControl()
         {

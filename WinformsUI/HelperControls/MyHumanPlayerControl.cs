@@ -19,42 +19,11 @@ namespace WinformsUI.HelperControls
             InitializeComponent();
 
             // initialize
-            playerNameTextBox.Text = User.Name;
+            playerNameTextBox.Text = Global.MyUser.Name;
             playerNameTextBox.Enabled = true;
             PlayerColor = KnownColor.Green;
         }
         
-        /// <summary>
-        /// Represents clients user. Cannot be null.
-        /// </summary>
-        public User User
-        {
-            get
-            {
-                if (GetUser == null) return new LocalUser("Me");
-                return GetUser();
-            }
-            set
-            {
-                if (value == null) throw new ArgumentException();
-                switch (value.UserType)
-                {
-                    case UserType.LocalUser:
-                        playerNameTextBox.Enabled = true;
-                        break;
-                    case UserType.MyNetworkUser:
-                    case UserType.NetworkUser:
-                        playerNameTextBox.Enabled = false;
-                        break;
-                }
-                playerNameTextBox.Text = value.Name;
-                SetUser?.Invoke(value);
-            }
-        }
-        public Func<User> GetUser;
-        public Action<User> SetUser;
-
-
         KnownColor playerColor;
         /// <summary>
         /// Represents clients color.
@@ -74,10 +43,10 @@ namespace WinformsUI.HelperControls
         /// </summary>
         public string PlayerName
         {
-            get { return User.Name; }
+            get { return Global.MyUser.Name; }
             private set
             {
-                User.Name = value;
+                Global.MyUser.Name = value;
                 playerNameTextBox.Text = value;
             }
         }
@@ -89,7 +58,7 @@ namespace WinformsUI.HelperControls
         /// <returns>New instance of the player represented by this control.</returns>
         public HumanPlayer GetPlayer()
         {
-            return new HumanPlayer(User, PlayerColor);
+            return new HumanPlayer(Global.MyUser, PlayerColor);
         }
 
         private void ChangeColor(object sender, MouseEventArgs e)
@@ -109,10 +78,10 @@ namespace WinformsUI.HelperControls
 
         private void NameTextBoxTextChanged(object sender, EventArgs e)
         {
-            switch (User.UserType)
+            switch (Global.MyUser.UserType)
             {
                 case UserType.LocalUser:
-                    User.Name = Name;
+                    Global.MyUser.Name = Name;
                     break;
                 case UserType.NetworkUser:
                     playerNameTextBox.Text = PlayerName;

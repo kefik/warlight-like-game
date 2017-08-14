@@ -10,7 +10,6 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
 
     public partial class MyGamesControl : UserControl
     {
-        public Func<MyNetworkUser> GetUser;
         IEnumerable<GameHeaderMessageObject> gameHeaders;
 
         public MyGamesControl()
@@ -22,7 +21,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
         {
             Task.Factory.StartNew(() =>
             {
-                var user = GetUser();
+                var user = Global.MyUser;
             });
         }
     }

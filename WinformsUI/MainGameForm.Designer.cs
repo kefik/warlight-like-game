@@ -164,6 +164,8 @@
             this.Controls.Add(this.typeGameChoiceTabControl);
             this.Name = "MainGameForm";
             this.Text = "Warlight";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormClose);
+            this.Load += new System.EventHandler(this.FormLoad);
             this.typeGameChoiceTabControl.ResumeLayout(false);
             this.settingsTabPage.ResumeLayout(false);
             this.settingsTabPage.PerformLayout();

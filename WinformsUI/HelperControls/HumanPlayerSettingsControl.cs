@@ -40,7 +40,6 @@ namespace WinformsUI.HelperControls
 
             HumanPlayerControl control = new HumanPlayerControl()
             {
-                MyUser = user,
                 Anchor = AnchorStyles.Left | AnchorStyles.Right
             }; // TODO: generate unique name
             playersTableLayoutPanel.Controls.Add(control);
@@ -74,7 +73,7 @@ namespace WinformsUI.HelperControls
         {
             var control = (HumanPlayerControl)playersTableLayoutPanel.Controls[index];
             
-            control.MyUser = user;
+            Global.MyUser = user;
         }
 
         /// <summary>

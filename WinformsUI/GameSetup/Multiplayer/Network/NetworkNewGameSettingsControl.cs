@@ -17,29 +17,6 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
 {
     public partial class NetworkNewGameSettingsControl : UserControl
     {
-        Func<User> getUser;
-        public Func<User> GetUser
-        {
-            get { return getUser; }
-            set
-            {
-                getUser = value;
-                myPlayerControl.GetUser = value;
-            }
-        }
-
-        Action<User> setUser;
-        public Action<User> SetUser
-        {
-            get { return setUser; }
-            set
-            {
-                setUser = value;
-                myPlayerControl.SetUser = value;
-                myPlayerControl.User = GetUser();
-            }
-        }
-
         readonly MyHumanPlayerControl myPlayerControl;
         /// <summary>
         /// Represents number of total players that can play this given map.

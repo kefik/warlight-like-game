@@ -12,32 +12,17 @@ using GameObjectsLib;
 
 namespace WinformsUI.HelperControls
 {
-    public partial class HumanPlayerControl : UserControl
+    public partial class HumanPlayerControl : UserControl, IDisposable
     {
         HumanPlayer player;
 
         public HumanPlayerControl()
         {
             InitializeComponent();
-
-            player = new HumanPlayer(new LocalUser(""), KnownColor.Aqua);
-            UserChanged(MyUser);
+            Global.OnUserChanged += UserChanged;
+            player = new HumanPlayer(Global.MyUser, KnownColor.Aqua);
         }
-        /// <summary>
-        /// Accesses players controlling user.
-        /// </summary>
-        public User MyUser
-        {
-            get { return player.User; }
-            set
-            {
-                if (value == null) throw new ArgumentException();
-
-                UserChanged(value);
-                player = new HumanPlayer(value, player.Color);
-            }
-        }
-
+        
         void UserChanged(User user)
         {
             player = new HumanPlayer(user, PlayerColor);
@@ -83,7 +68,7 @@ namespace WinformsUI.HelperControls
         /// <returns>Player</returns>
         public Player GetPlayer()
         {
-            return new HumanPlayer(MyUser, PlayerColor);
+            return new HumanPlayer(Global.MyUser, PlayerColor);
         }
 
         private void ChangeColor(object sender, MouseEventArgs e)
@@ -99,6 +84,12 @@ namespace WinformsUI.HelperControls
                     else PlayerColor--;
                     break;
             }
+        }
+
+        public new void Dispose()
+        {
+            base.Dispose();
+            Global.OnUserChanged -= UserChanged;
         }
     }
 }

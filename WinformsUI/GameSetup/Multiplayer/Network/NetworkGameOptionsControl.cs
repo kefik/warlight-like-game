@@ -11,28 +11,6 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
 
     public partial class NetworkGameOptionsControl : UserControl
     {
-        Func<User> getUser;
-        public Func<User> GetUser
-        {
-            get { return getUser; }
-            set
-            {
-                getUser = value;
-                networkNewGameSettingsControl.GetUser = value;
-            }
-        }
-
-        Action<User> setUser;
-        public Action<User> SetUser
-        {
-            get { return setUser; }
-            set
-            {
-                setUser = value;
-                networkNewGameSettingsControl.SetUser = value;
-            }
-        }
-
         public event Func<HumanPlayer, ICollection<AiPlayer>, string, int, Task> OnGameCreated
         {
             add { networkNewGameSettingsControl.OnGameCreated += value; }

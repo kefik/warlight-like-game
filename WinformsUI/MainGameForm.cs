@@ -24,19 +24,7 @@ namespace WinformsUI
         NetworkGameOptionsControl networkGameOptionsControl;
 
         InGameControl inGame;
-
-        User myUser = new LocalUser("Me");
-
-        User MyUser
-        {
-            get { return myUser; }
-            set
-            {
-                myUser = value;
-                UserChanged(value);
-            }
-        }
-
+        
         public MainGameForm()
         {
             InitializeComponent();
@@ -132,7 +120,7 @@ namespace WinformsUI
         {
             if (TryToLogIn())
             {
-                var networkUser = (MyNetworkUser)myUser;
+                var networkUser = (MyNetworkUser)Global.MyUser;
                 bool successful = await networkUser.CreateGameAsync(creatingPlayer, aiPlayers, mapName, freeSlotsCount);
                 if (successful == false)
                 {
@@ -155,9 +143,7 @@ namespace WinformsUI
             singleplayerGameOptionsControl = new SingleplayerGameOptionsControl
             {
                 Parent = singleplayerTabPage,
-                Dock = DockStyle.Fill,
-                GetUser = () => MyUser,
-                SetUser = user => MyUser = user
+                Dock = DockStyle.Fill
             };
             singleplayerGameOptionsControl.OnNewGameStarted += StartNewGame;
             singleplayerGameOptionsControl.OnGameLoaded += LoadGame;
@@ -177,9 +163,7 @@ namespace WinformsUI
                 hotseatGameOptionsControl = new HotseatGameOptionsControl
                 {
                     Parent = multiplayerTabPage,
-                    Dock = DockStyle.Fill,
-                    GetUser = () => MyUser,
-                    SetUser = user => MyUser = user
+                    Dock = DockStyle.Fill
                 };
                 hotseatGameOptionsControl.Show();
 
@@ -195,9 +179,7 @@ namespace WinformsUI
                 networkGameOptionsControl = new NetworkGameOptionsControl
                 {
                     Parent = multiplayerTabPage,
-                    Dock = DockStyle.Fill,
-                    GetUser = () => MyUser,
-                    SetUser = user => MyUser = user
+                    Dock = DockStyle.Fill
                 };
                 networkGameOptionsControl.OnGameCreated += CreateNewGame;
                 networkGameOptionsControl.Show();
@@ -242,9 +224,8 @@ namespace WinformsUI
 
         public void UserChanged(User newUser)
         {
-            // TODO: user changed broadcast to others
-            if (MyUser.UserType == UserType.MyNetworkUser)
-                loggedInLabel.Text = $"You are currently logged in as {MyUser.Name}.";
+            if (Global.MyUser.UserType == UserType.MyNetworkUser)
+                loggedInLabel.Text = $"You are currently logged in as {Global.MyUser.Name}.";
             else
             {
                 loggedInLabel.Text = $"You are currently logged in as a local user.";
@@ -253,14 +234,14 @@ namespace WinformsUI
 
         bool TryToLogIn()
         {
-            if (MyUser.UserType != UserType.MyNetworkUser)
+            if (Global.MyUser.UserType != UserType.MyNetworkUser)
             {
                 ServerLoggingForm serverLoggingForm = new ServerLoggingForm();
                 var dialogResult = serverLoggingForm.ShowDialog();
                 switch (dialogResult)
                 {
                     case DialogResult.OK:
-                        MyUser = serverLoggingForm.User;
+                        Global.MyUser = serverLoggingForm.User;
                         break;
                     default:
                         typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
@@ -269,7 +250,7 @@ namespace WinformsUI
             }
             else
             {
-                var converted = (MyNetworkUser)MyUser;
+                var converted = (MyNetworkUser)Global.MyUser;
                 bool amILogged = converted.IsLoggedIn();
 
                 if (!amILogged)
@@ -279,7 +260,7 @@ namespace WinformsUI
                     switch (dialogResult)
                     {
                         case DialogResult.OK:
-                            MyUser = serverLoggingForm.User;
+                            Global.MyUser = serverLoggingForm.User;
                             break;
                         default:
                             typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
@@ -293,7 +274,7 @@ namespace WinformsUI
         {
             if (TryToLogIn())
             {
-                var newUser = (MyNetworkUser)MyUser;
+                var newUser = (MyNetworkUser)Global.MyUser;
                 playerNameTextBox.Text = newUser.Name;
                 emailTextBox.Text = newUser.Email;
                 Refresh();
@@ -328,5 +309,14 @@ namespace WinformsUI
             previousTabSelectedIndex = typeGameChoiceTabControl.SelectedIndex;
         }
 
+        private void FormLoad(object sender, EventArgs e)
+        {
+            Global.OnUserChanged += UserChanged;
+        }
+
+        private void FormClose(object sender, FormClosedEventArgs e)
+        {
+            Global.OnUserChanged -= UserChanged;
+        }
     }
 }
