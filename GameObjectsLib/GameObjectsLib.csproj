@@ -54,7 +54,7 @@
     <Compile Include="NetworkCommObjects\Message\LoadGameRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\LoadGameResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\LoadMyGamesListRequestMessage.cs" />
-    <Compile Include="NetworkCommObjects\Message\LoadMyGamesResponseMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\LoadMyGamesListResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\UserLogInRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\UserLogInResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\SerializationObjectWrapper.cs" />

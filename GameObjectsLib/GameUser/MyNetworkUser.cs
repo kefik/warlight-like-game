@@ -108,12 +108,40 @@ namespace GameObjectsLib.GameUser
             {
                 var answer = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as CreateGameResponseMessage;
 
-                if (answer == null) return false;
-
-                return answer.Successful;
+                return answer != null && answer.Successful;
             }
         }
 
+        /// <summary>
+        /// Finds out list of games this user is signed to play.
+        /// </summary>
+        /// <returns>List of games this user plays.</returns>
+        public async Task<IEnumerable<GameHeaderMessageObject>> GetListOfMyGamesAsync()
+        {
+            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+
+            var stream = client.GetStream();
+            {
+                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadMyGamesListRequestMessage>()
+                {
+                    TypedValue = new LoadMyGamesListRequestMessage()
+                    {
+                        RequestingUser = this
+                    }
+                };
+                await wrapper.SerializeAsync(stream);
+            }
+            {
+                var answer = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as LoadMyGamesListResponseMessage;
+
+                return answer?.GameHeaderMessageObjects;
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously logs user out.
+        /// </summary>
+        /// <returns>True, if player was successfully logged off.</returns>
         public async Task<bool> LogOut()
         {
             if (client.Connected)

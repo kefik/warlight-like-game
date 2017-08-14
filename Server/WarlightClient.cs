@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
     using System.IO;
     using System.Linq;
     using System.Net.Sockets;
@@ -120,7 +121,7 @@
                                     await RequestUnsuccessfulResponse(stream);
                                     return;
                                 }
-                                
+
                                 using (WarlightDbContext db = new WarlightDbContext())
                                 {
                                     MapInfo mapInfo = db.GetMatchingMap(message.MapName);
@@ -178,7 +179,58 @@
                                 }
 
 
-                            })
+                            }),
+                        TypeSwitch.Case<LoadMyGamesListRequestMessage>(async message =>
+                        {
+                            var user = message.RequestingUser;
+
+                            using (var db = new WarlightDbContext())
+                            {
+                                var matchingUser = db.GetMatchingUser(user.Name);
+
+                                var openedGames = from openedGame in db.OpenedGames
+                                                  where openedGame.SignedUsers.Contains(matchingUser)
+                                                  select openedGame;
+                                var startedGames = from startedGame in db.Games
+                                                   where startedGame.PlayingUsers.Contains(matchingUser)
+                                                   select startedGame;
+
+                                var result = new List<GameHeaderMessageObject>();
+                                foreach (var openedGame in openedGames)
+                                {
+                                    result.Add(new GameHeaderMessageObject()
+                                    {
+                                        GameId = openedGame.OpenedGameId,
+                                        AiPlayersCount = openedGame.AiPlayersCount,
+                                        HumanPlayersCount = openedGame.HumanPlayersCount,
+                                        MapName = openedGame.MapName
+                                    });
+                                }
+                                foreach (var startedGame in startedGames)
+                                {
+                                    result.Add(new GameHeaderMessageObject()
+                                    {
+                                        GameId = startedGame.StartedGameId,
+                                        AiPlayersCount = startedGame.AiPlayersCount,
+                                        HumanPlayersCount = startedGame.HumanPlayersCount,
+                                        MapName = startedGame.MapName
+                                    });
+                                }
+
+                                {
+                                    SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadMyGamesListResponseMessage>()
+                                    {
+                                        TypedValue = new LoadMyGamesListResponseMessage()
+                                        {
+                                            GameHeaderMessageObjects = result
+                                        }
+                                    };
+                                    await wrapper.SerializeAsync(stream);
+                                }
+
+
+                            }
+                        })
                     );
 
                     // find out the type

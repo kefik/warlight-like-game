@@ -40,7 +40,7 @@
     [ProtoInclude(104, typeof(SerializationObjectWrapper<LoadGameRequestMessage>))]
     [ProtoInclude(105, typeof(SerializationObjectWrapper<LoadGameResponseMessage<bool>>))]
     [ProtoInclude(106, typeof(SerializationObjectWrapper<LoadMyGamesListRequestMessage>))]
-    [ProtoInclude(107, typeof(SerializationObjectWrapper<LoadMyGamesResponseMessage>))]
+    [ProtoInclude(107, typeof(SerializationObjectWrapper<LoadMyGamesListResponseMessage>))]
     [ProtoInclude(108, typeof(SerializationObjectWrapper<UserLogInRequestMessage>))]
     [ProtoInclude(109, typeof(SerializationObjectWrapper<UserLogInResponseMessage>))]
     [ProtoInclude(110, typeof(SerializationObjectWrapper<Game>))]

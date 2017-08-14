@@ -140,6 +140,7 @@
             this.Controls.Add(this.openButton);
             this.Name = "MyGamesControl";
             this.Size = new System.Drawing.Size(464, 274);
+            this.Load += new System.EventHandler(this.ControlLoad);
             this.myGamesControlTableLayoutPanel.ResumeLayout(false);
             this.oneDayGamesPanel.ResumeLayout(false);
             this.oneDayGamesPanel.PerformLayout();
