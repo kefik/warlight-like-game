@@ -71,8 +71,6 @@
         /// <returns></returns>
         public static async Task<SerializationObjectWrapper> DeserializeAsync(Stream stream)
         {
-            await Task.Yield();
-
             int length = 0;
             if (!await Task.Factory.StartNew(
                 () => Serializer.TryReadLengthPrefix(stream, PrefixStyle.Base128, out length),

@@ -27,6 +27,11 @@ namespace GameObjectsLib.GameUser
             Name = name;
         }
         protected User() { }
+        
+        public override string ToString()
+        {
+            return Name;
+        }
     }
     
 }

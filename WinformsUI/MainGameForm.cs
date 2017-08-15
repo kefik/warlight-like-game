@@ -124,12 +124,12 @@ namespace WinformsUI
                 bool successful = await networkUser.CreateGameAsync(creatingPlayer, aiPlayers, mapName, freeSlotsCount);
                 if (successful == false)
                 {
-                    MessageBox.Show($"The game could not be created.");
+                    Invoke(new Action(() => MessageBox.Show($"The game could not be created.")));
                     return;
                 }
                 
                 // TODO: load appropriate screen
-                typeGameChoiceTabControl.SelectedIndex = 0;
+                Invoke(new Action(() => typeGameChoiceTabControl.SelectedIndex = 0));
             }
         }
 
@@ -228,7 +228,7 @@ namespace WinformsUI
                 loggedInLabel.Text = $"You are currently logged in as {Global.MyUser.Name}.";
             else
             {
-                loggedInLabel.Text = $"You are currently logged in as a local user.";
+                loggedInLabel.Text = $"You are currently logged in as a local user named {Global.MyUser.Name}.";
             }
         }
 
@@ -237,14 +237,21 @@ namespace WinformsUI
             if (Global.MyUser.UserType != UserType.MyNetworkUser)
             {
                 ServerLoggingForm serverLoggingForm = new ServerLoggingForm();
-                var dialogResult = serverLoggingForm.ShowDialog();
+
+                DialogResult dialogResult;
+                if (InvokeRequired) dialogResult = (DialogResult)Invoke(new Action(() => serverLoggingForm.ShowDialog()));
+                else dialogResult = serverLoggingForm.ShowDialog();
+
                 switch (dialogResult)
                 {
                     case DialogResult.OK:
                         Global.MyUser = serverLoggingForm.User;
                         break;
                     default:
-                        typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                        if (InvokeRequired)
+                            Invoke(new Action(() => typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex));
+                        else
+                            typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
                         return false;
                 }
             }
@@ -256,14 +263,19 @@ namespace WinformsUI
                 if (!amILogged)
                 {
                     ServerLoggingForm serverLoggingForm = new ServerLoggingForm();
-                    var dialogResult = serverLoggingForm.ShowDialog();
+
+                    DialogResult dialogResult;
+                    if (InvokeRequired) dialogResult = (DialogResult)Invoke(new Action(() => serverLoggingForm.ShowDialog()));
+                    else dialogResult = serverLoggingForm.ShowDialog();
+
                     switch (dialogResult)
                     {
                         case DialogResult.OK:
                             Global.MyUser = serverLoggingForm.User;
                             break;
                         default:
-                            typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                            if (InvokeRequired) Invoke(new Action(() => typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex));
+                            else typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
                             return false;
                     }
                 }

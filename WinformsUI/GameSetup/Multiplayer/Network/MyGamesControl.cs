@@ -10,6 +10,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
 
     public partial class MyGamesControl : UserControl
     {
+        Task task;
         IEnumerable<GameHeaderMessageObject> gameHeaders;
 
         public MyGamesControl()
@@ -19,10 +20,33 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
 
         private void ControlLoad(object sender, System.EventArgs e)
         {
-            Task.Factory.StartNew(() =>
+            LoadTableAsync();
+        }
+
+        async void LoadTableAsync()
+        {
+            var user = Global.MyUser as MyNetworkUser;
+
+            if (user == null) throw new ArgumentException();
+
+            gameHeaders = await user.GetListOfMyGamesAsync() ?? new List<GameHeaderMessageObject>();
+
+            foreach (var gameHeader in gameHeaders)
             {
-                var user = Global.MyUser;
-            });
+                if (gameHeader.GetType() == typeof(OpenedGameHeaderMessageObject))
+                {
+                    Invoke(new Action(() => multiDayListBox.Items.Add(gameHeader)));
+                }
+                else if (gameHeader.GetType() == typeof(StartedGameHeaderMessageObject))
+                {
+                    Invoke(new Action(() => multiDayListBox.Items.Add(gameHeader)));
+                }
+            }
+        }
+
+        private void OpenButtonClick(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -27,6 +27,10 @@ namespace Server.WarlightLikeDatabase
         public int HumanPlayersCount { get; set; }
 
         [Required]
+        [StringLength(50)]
+        public string GameCreatedDateTime { get; set; }
+
+        [Required]
         public virtual ICollection<User> SignedUsers { get; set; }
         
         [Required]

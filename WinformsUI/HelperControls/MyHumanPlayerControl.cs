@@ -12,16 +12,13 @@ using GameObjectsLib;
 
 namespace WinformsUI.HelperControls
 {
-    public partial class MyHumanPlayerControl : UserControl
+    public partial class MyHumanPlayerControl : UserControl, IDisposable
     {
         public MyHumanPlayerControl()
         {
             InitializeComponent();
 
-            // initialize
-            playerNameTextBox.Text = Global.MyUser.Name;
-            playerNameTextBox.Enabled = true;
-            PlayerColor = KnownColor.Green;
+            Global.OnUserChanged += UserChanged;
         }
         
         KnownColor playerColor;
@@ -46,7 +43,7 @@ namespace WinformsUI.HelperControls
             get { return Global.MyUser.Name; }
             private set
             {
-                Global.MyUser.Name = value;
+                Global.MyUser = new LocalUser(value);
                 playerNameTextBox.Text = value;
             }
         }
@@ -81,12 +78,30 @@ namespace WinformsUI.HelperControls
             switch (Global.MyUser.UserType)
             {
                 case UserType.LocalUser:
-                    Global.MyUser.Name = Name;
-                    break;
-                case UserType.NetworkUser:
-                    playerNameTextBox.Text = PlayerName;
+                    Global.MyUser = new LocalUser(playerNameTextBox.Text);
                     break;
             }
+        }
+
+        private void ControlLoad(object sender, EventArgs e)
+        {
+            playerNameTextBox.Text = Global.MyUser.Name;
+            
+            UserChanged(Global.MyUser);
+
+            PlayerColor = KnownColor.Green;
+        }
+
+        public new void Dispose()
+        {
+            Global.OnUserChanged -= UserChanged;
+        }
+
+        void UserChanged(User user)
+        {
+            Invoke(user.UserType == UserType.MyNetworkUser
+                ? new Action(() => playerNameTextBox.Enabled = false)
+                : new Action(() => playerNameTextBox.Enabled = true));
         }
     }
 }

@@ -20,6 +20,14 @@ namespace Server
             {
                 server.Run(10);
             }
+            //using (var db = new WarlightDbContext())
+            //{
+            //    var users = db.Users;
+            //    foreach (User user in users)
+            //    {
+            //        Console.WriteLine(user);
+            //    }
+            //}
         }
     }
 }

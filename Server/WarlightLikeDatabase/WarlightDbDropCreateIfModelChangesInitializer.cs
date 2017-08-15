@@ -8,7 +8,7 @@ namespace Server.WarlightLikeDatabase
 {
     using System.Data.Entity;
 
-    class WarlightDbDropCreateIfModelChangesInitializer : DropCreateDatabaseIfModelChanges<WarlightDbContext>
+    class WarlightDbDropCreateIfModelChangesInitializer : DropCreateDatabaseAlways<WarlightDbContext>
     {
         protected override void Seed(WarlightDbContext context)
         {

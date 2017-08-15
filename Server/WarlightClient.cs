@@ -167,7 +167,8 @@
                                         SignedUsers = new HashSet<User>()
                                             {
                                                 userInfo
-                                            }
+                                            },
+                                        GameCreatedDateTime = DateTime.Now.ToString()
                                     };
 
                                     using (var ms = await game.GetStreamForSerializedGameAsync())
@@ -188,35 +189,38 @@
                             {
                                 var matchingUser = db.GetMatchingUser(user.Name);
 
-                                var openedGames = from openedGame in db.OpenedGames
+                                var openedGames = from openedGame in db.OpenedGames.AsEnumerable()
                                                   where openedGame.SignedUsers.Contains(matchingUser)
                                                   select openedGame;
-                                var startedGames = from startedGame in db.Games
+                                var startedGames = from startedGame in db.Games.AsEnumerable()
                                                    where startedGame.PlayingUsers.Contains(matchingUser)
                                                    select startedGame;
 
                                 var result = new List<GameHeaderMessageObject>();
                                 foreach (var openedGame in openedGames)
                                 {
-                                    result.Add(new GameHeaderMessageObject()
+                                    result.Add(new OpenedGameHeaderMessageObject()
                                     {
                                         GameId = openedGame.OpenedGameId,
                                         AiPlayersCount = openedGame.AiPlayersCount,
                                         HumanPlayersCount = openedGame.HumanPlayersCount,
-                                        MapName = openedGame.MapName
+                                        MapName = openedGame.MapName,
+                                        GameCreated = DateTime.Parse(openedGame.GameCreatedDateTime)
                                     });
                                 }
                                 foreach (var startedGame in startedGames)
                                 {
-                                    result.Add(new GameHeaderMessageObject()
+                                    result.Add(new StartedGameHeaderMessageObject()
                                     {
                                         GameId = startedGame.StartedGameId,
                                         AiPlayersCount = startedGame.AiPlayersCount,
                                         HumanPlayersCount = startedGame.HumanPlayersCount,
-                                        MapName = startedGame.MapName
+                                        MapName = startedGame.MapName,
+                                        GameStarted = DateTime.Parse(startedGame.GameStartedDateTime),
+                                        RoundStarted = DateTime.Parse(startedGame.LastRound.RoundStartedDateTime)
                                     });
                                 }
-
+                                
                                 {
                                     SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadMyGamesListResponseMessage>()
                                     {

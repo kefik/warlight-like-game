@@ -61,7 +61,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.playerNameTextBox);
             this.Controls.Add(this.colorButton);
+            this.Name = "MyHumanPlayerControl";
             this.Size = new System.Drawing.Size(282, 26);
+            this.Load += new System.EventHandler(this.ControlLoad);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -113,7 +113,7 @@
             this.aiPlayersNumberLabel.AutoSize = true;
             this.aiPlayersNumberLabel.Location = new System.Drawing.Point(3, 358);
             this.aiPlayersNumberLabel.Name = "aiPlayersNumberLabel";
-            this.aiPlayersNumberLabel.Size = new System.Drawing.Size(105, 13);
+            this.aiPlayersNumberLabel.Size = new System.Drawing.Size(104, 13);
             this.aiPlayersNumberLabel.TabIndex = 17;
             this.aiPlayersNumberLabel.Text = "Number of Ai players";
             // 
