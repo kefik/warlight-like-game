@@ -10,7 +10,6 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
 
     public partial class MyGamesControl : UserControl
     {
-        Task task;
         IEnumerable<GameHeaderMessageObject> gameHeaders;
 
         public MyGamesControl()

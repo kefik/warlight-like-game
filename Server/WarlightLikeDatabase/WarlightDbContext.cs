@@ -21,7 +21,7 @@ namespace Server.WarlightLikeDatabase
             Database.SetInitializer(new WarlightDbDropCreateIfModelChangesInitializer());
         }
 
-        public virtual DbSet<StartedGame> Games { get; set; }
+        public virtual DbSet<StartedGame> StartedGames { get; set; }
         public virtual DbSet<OpenedGame> OpenedGames { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<MapInfo> Maps { get; set; }

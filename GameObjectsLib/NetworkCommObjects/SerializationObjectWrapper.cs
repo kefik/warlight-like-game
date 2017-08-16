@@ -43,7 +43,9 @@
     [ProtoInclude(107, typeof(SerializationObjectWrapper<LoadMyGamesListResponseMessage>))]
     [ProtoInclude(108, typeof(SerializationObjectWrapper<UserLogInRequestMessage>))]
     [ProtoInclude(109, typeof(SerializationObjectWrapper<UserLogInResponseMessage>))]
-    [ProtoInclude(110, typeof(SerializationObjectWrapper<Game>))]
+    [ProtoInclude(110, typeof(SerializationObjectWrapper<LoadOpenedGamesListRequestMessage>))]
+    [ProtoInclude(111, typeof(SerializationObjectWrapper<LoadOpenedGamesListResponseMessage>))]
+    [ProtoInclude(120, typeof(SerializationObjectWrapper<Game>))]
     public abstract class SerializationObjectWrapper
     {
         public abstract object Value { get; }

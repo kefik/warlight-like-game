@@ -1,18 +1,14 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using GameObjectsLib.Game;
-using GameObjectsLib.NetworkCommObjects;
-using ProtoBuf;
-
-namespace GameObjectsLib.GameUser
+﻿namespace GameObjectsLib.GameUser
 {
+    using System;
     using System.Collections.Generic;
+    using System.Net;
+    using System.Net.Sockets;
     using System.Threading.Tasks;
+    using NetworkCommObjects;
     using NetworkCommObjects.Message;
+    using ProtoBuf;
 
-    [Serializable]
     [ProtoContract]
     public class MyNetworkUser : NetworkUser, IDisposable
     {
@@ -20,7 +16,10 @@ namespace GameObjectsLib.GameUser
         {
             get { return UserType.MyNetworkUser; }
         }
-        MyNetworkUser() : base() { }
+
+        MyNetworkUser()
+        {
+        }
 
         readonly TcpClient client;
         readonly IPEndPoint serverEndPoint;
@@ -30,12 +29,15 @@ namespace GameObjectsLib.GameUser
             this.client = client ?? throw new ArgumentException();
             this.serverEndPoint = serverEndPoint;
         }
+
         [ProtoMember(1)]
         public string Email { get; set; }
+
         [ProtoMember(2)]
         public string Password { get; set; }
+
         /// <summary>
-        /// Attempts to log to the server specified in constructor.
+        ///     Attempts to log to the server specified in constructor.
         /// </summary>
         /// <param name="password">Password.</param>
         /// <returns>True, if this client successfully logs into the server.</returns>
@@ -43,13 +45,13 @@ namespace GameObjectsLib.GameUser
         {
             if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
 
-            var stream = client.GetStream();
+            NetworkStream stream = client.GetStream();
 
             Password = password;
             SerializationObjectWrapper wrapper =
-                new SerializationObjectWrapper<UserLogInRequestMessage>()
+                new SerializationObjectWrapper<UserLogInRequestMessage>
                 {
-                    TypedValue = new UserLogInRequestMessage()
+                    TypedValue = new UserLogInRequestMessage
                     {
                         LoggingUser = this
                     }
@@ -59,20 +61,19 @@ namespace GameObjectsLib.GameUser
             Password = null;
             GC.Collect();
 
-            var responseMessage = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as UserLogInResponseMessage;
+            UserLogInResponseMessage responseMessage =
+                (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as UserLogInResponseMessage;
 
             if (responseMessage == null) return false;
 
             if (responseMessage.SuccessfullyLoggedIn)
-            {
                 Email = responseMessage.Email;
-            }
 
             return responseMessage.SuccessfullyLoggedIn;
         }
 
         /// <summary>
-        /// Based on client passed in constructor, finds out, whether client is still connected to the server.
+        ///     Based on client passed in constructor, finds out, whether client is still connected to the server.
         /// </summary>
         /// <returns>True, if client is connected to the server.</returns>
         public bool IsLoggedIn()
@@ -82,20 +83,21 @@ namespace GameObjectsLib.GameUser
         }
 
         /// <summary>
-        /// Creates a game from the seed.
+        ///     Creates a game from the seed.
         /// </summary>
         /// <returns>New games Id or null wrapped in task.</returns>
-        public async Task<bool> CreateGameAsync(HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers, string mapName, int freeSlotsCount)
+        public async Task<bool> CreateGameAsync(HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers,
+            string mapName, int freeSlotsCount)
         {
             if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
 
             if (creatingPlayer.User != this) return false;
 
-            var stream = client.GetStream();
+            NetworkStream stream = client.GetStream();
             {
-                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<CreateGameRequestMessage>()
+                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<CreateGameRequestMessage>
                 {
-                    TypedValue = new CreateGameRequestMessage()
+                    TypedValue = new CreateGameRequestMessage
                     {
                         AiPlayers = aiPlayers,
                         CreatingPlayer = creatingPlayer,
@@ -106,25 +108,26 @@ namespace GameObjectsLib.GameUser
                 await wrapper.SerializeAsync(stream);
             }
             {
-                var answer = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as CreateGameResponseMessage;
+                CreateGameResponseMessage answer =
+                    (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as CreateGameResponseMessage;
 
                 return answer != null && answer.Successful;
             }
         }
 
         /// <summary>
-        /// Finds out list of games this user is signed to play.
+        ///     Finds out list of games this user is signed to play.
         /// </summary>
         /// <returns>List of games this user plays.</returns>
         public async Task<IEnumerable<GameHeaderMessageObject>> GetListOfMyGamesAsync()
         {
             if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
 
-            var stream = client.GetStream();
+            NetworkStream stream = client.GetStream();
             {
-                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadMyGamesListRequestMessage>()
+                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadMyGamesListRequestMessage>
                 {
-                    TypedValue = new LoadMyGamesListRequestMessage()
+                    TypedValue = new LoadMyGamesListRequestMessage
                     {
                         RequestingUser = this
                     }
@@ -132,25 +135,51 @@ namespace GameObjectsLib.GameUser
                 await wrapper.SerializeAsync(stream);
             }
             {
-                var answer = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as LoadMyGamesListResponseMessage;
+                LoadMyGamesListResponseMessage answer =
+                    (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as LoadMyGamesListResponseMessage;
 
                 return answer?.GameHeaderMessageObjects;
             }
         }
 
         /// <summary>
-        /// Asynchronously logs user out.
+        /// Gets list of opened games on the server this user is connected to.
+        /// </summary>
+        /// <returns>List of opened games on the server.</returns>
+        public async Task<IEnumerable<OpenedGameHeaderMessageObject>> GetListOfOpenedGamesAsync()
+        {
+            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+
+            NetworkStream stream = client.GetStream();
+            {
+                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadOpenedGamesListRequestMessage>
+                {
+                    TypedValue = new LoadOpenedGamesListRequestMessage
+                    {
+                        RequestingUser = this
+                    }
+                };
+                await wrapper.SerializeAsync(stream);
+            }
+            {
+                var answer =
+                    (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as LoadOpenedGamesListResponseMessage;
+
+                return answer?.GameHeaderMessageObjects;
+            }
+        }
+        
+        /// <summary>
+        ///     Asynchronously logs user out.
         /// </summary>
         /// <returns>True, if player was successfully logged off.</returns>
         public async Task<bool> LogOut()
         {
             if (client.Connected)
-            {
-                return await Task.Factory.StartNew(() => client.Client.DisconnectAsync(new SocketAsyncEventArgs()
+                return await Task.Factory.StartNew(() => client.Client.DisconnectAsync(new SocketAsyncEventArgs
                 {
                     DisconnectReuseSocket = true
                 }), TaskCreationOptions.DenyChildAttach);
-            }
             return false;
         }
 
@@ -165,6 +194,7 @@ namespace GameObjectsLib.GameUser
         }
 
         bool disposed;
+
         void Dispose(bool calledFromFinalizer)
         {
             if (disposed == false)
@@ -172,9 +202,7 @@ namespace GameObjectsLib.GameUser
                 disposed = true;
                 client?.Close();
                 if (calledFromFinalizer == false)
-                {
                     GC.SuppressFinalize(this);
-                }
             }
         }
 

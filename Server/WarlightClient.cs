@@ -192,7 +192,7 @@
                                 var openedGames = from openedGame in db.OpenedGames.AsEnumerable()
                                                   where openedGame.SignedUsers.Contains(matchingUser)
                                                   select openedGame;
-                                var startedGames = from startedGame in db.Games.AsEnumerable()
+                                var startedGames = from startedGame in db.StartedGames.AsEnumerable()
                                                    where startedGame.PlayingUsers.Contains(matchingUser)
                                                    select startedGame;
 
@@ -234,6 +234,35 @@
 
 
                             }
+                        }),
+                        TypeSwitch.Case<LoadOpenedGamesListRequestMessage>(async message =>
+                        {
+                            var user = message.RequestingUser;
+                            
+                            using (var db = new WarlightDbContext())
+                            {
+                                if (db.GetMatchingUser(user.Name) == null) return;
+
+                                var openedGames = db.OpenedGames;
+                                
+                                {
+                                    SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadOpenedGamesListResponseMessage>()
+                                    {
+                                        TypedValue = new LoadOpenedGamesListResponseMessage()
+                                        {
+                                            GameHeaderMessageObjects = openedGames.AsEnumerable().Select(x => new OpenedGameHeaderMessageObject()
+                                            {
+                                                AiPlayersCount = x.AiPlayersCount,
+                                                GameCreated = DateTime.Parse(x.GameCreatedDateTime),
+                                                GameId = x.OpenedGameId,
+                                                HumanPlayersCount = x.HumanPlayersCount,
+                                                MapName = x.MapName
+                                            })
+                                        }
+                                    };
+                                    await wrapper.SerializeAsync(stream);
+                                }
+                            }
                         })
                     );
 
@@ -269,3 +298,4 @@
         }
     }
 }
+

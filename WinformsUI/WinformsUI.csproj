@@ -102,6 +102,12 @@
     <Compile Include="GameSetup\Multiplayer\Network\NetworkNewGameSettingsControl.Designer.cs">
       <DependentUpon>NetworkNewGameSettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\OpenedGamesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\OpenedGamesControl.Designer.cs">
+      <DependentUpon>OpenedGamesControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameSetup\Singleplayer\SingleplayerGameOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -248,6 +254,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GameSetup\Multiplayer\Network\NetworkNewGameSettingsControl.resx">
       <DependentUpon>NetworkNewGameSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Network\OpenedGamesControl.resx">
+      <DependentUpon>OpenedGamesControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GameSetup\Singleplayer\SingleplayerGameOptionsControl.resx">
       <DependentUpon>SingleplayerGameOptionsControl.cs</DependentUpon>
