@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Net;
     using System.Net.Sockets;
     using System.Threading.Tasks;
@@ -48,21 +49,16 @@
             NetworkStream stream = client.GetStream();
 
             Password = password;
-            SerializationObjectWrapper wrapper =
-                new SerializationObjectWrapper<UserLogInRequestMessage>
-                {
-                    TypedValue = new UserLogInRequestMessage
-                    {
-                        LoggingUser = this
-                    }
-                };
-            await wrapper.SerializeAsync(stream);
+            await Send(stream, new UserLogInRequestMessage
+            {
+                LoggingUser = this
+            });
             // remove password pointer for security
             Password = null;
             GC.Collect();
 
-            UserLogInResponseMessage responseMessage =
-                (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as UserLogInResponseMessage;
+            var responseMessage = await Receive<UserLogInResponseMessage>(stream);
+
 
             if (responseMessage == null) return false;
 
@@ -94,25 +90,18 @@
             if (creatingPlayer.User != this) return false;
 
             NetworkStream stream = client.GetStream();
+            
+            await Send(stream, new CreateGameRequestMessage
             {
-                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<CreateGameRequestMessage>
-                {
-                    TypedValue = new CreateGameRequestMessage
-                    {
-                        AiPlayers = aiPlayers,
-                        CreatingPlayer = creatingPlayer,
-                        FreeSlotsCount = freeSlotsCount,
-                        MapName = mapName
-                    }
-                };
-                await wrapper.SerializeAsync(stream);
-            }
-            {
-                CreateGameResponseMessage answer =
-                    (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as CreateGameResponseMessage;
+                AiPlayers = aiPlayers,
+                CreatingPlayer = creatingPlayer,
+                FreeSlotsCount = freeSlotsCount,
+                MapName = mapName
+            });
+            
+            var answer = await Receive<CreateGameResponseMessage>(stream);
 
-                return answer != null && answer.Successful;
-            }
+            return answer != null && answer.Successful;
         }
 
         /// <summary>
@@ -125,18 +114,13 @@
 
             NetworkStream stream = client.GetStream();
             {
-                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadMyGamesListRequestMessage>
+                await Send(stream, new LoadMyGamesListRequestMessage
                 {
-                    TypedValue = new LoadMyGamesListRequestMessage
-                    {
-                        RequestingUser = this
-                    }
-                };
-                await wrapper.SerializeAsync(stream);
+                    RequestingUser = this
+                });
             }
             {
-                LoadMyGamesListResponseMessage answer =
-                    (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as LoadMyGamesListResponseMessage;
+                var answer = await Receive<LoadMyGamesListResponseMessage>(stream);
 
                 return answer?.GameHeaderMessageObjects;
             }
@@ -151,24 +135,17 @@
             if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
 
             NetworkStream stream = client.GetStream();
-            {
-                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadOpenedGamesListRequestMessage>
-                {
-                    TypedValue = new LoadOpenedGamesListRequestMessage
-                    {
-                        RequestingUser = this
-                    }
-                };
-                await wrapper.SerializeAsync(stream);
-            }
-            {
-                var answer =
-                    (await SerializationObjectWrapper.DeserializeAsync(stream)).Value as LoadOpenedGamesListResponseMessage;
 
-                return answer?.GameHeaderMessageObjects;
-            }
+            await Send(stream, new LoadOpenedGamesListRequestMessage()
+            {
+                RequestingUser = this
+            });
+
+            var answer = await Receive<LoadOpenedGamesListResponseMessage>(stream);
+            return answer?.GameHeaderMessageObjects;
+
         }
-        
+
         /// <summary>
         ///     Asynchronously logs user out.
         /// </summary>
@@ -181,6 +158,48 @@
                     DisconnectReuseSocket = true
                 }), TaskCreationOptions.DenyChildAttach);
             return false;
+        }
+
+        public async Task LoadOpenedGame(int id)
+        {
+            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+
+            NetworkStream stream = client.GetStream();
+            {
+                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadOpenedGamesListRequestMessage>
+                {
+                    TypedValue = new LoadOpenedGamesListRequestMessage
+                    {
+                        RequestingUser = this
+                    }
+                };
+                await wrapper.SerializeAsync(stream);
+            }
+            throw new NotImplementedException();
+        }
+
+        async Task Send<T>(Stream stream, T value)
+        {
+            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<T>()
+            {
+                TypedValue = value
+            };
+            await wrapper.SerializeAsync(stream);
+        }
+
+        async Task<T> Receive<T>(Stream stream) where T: class
+        {
+            var result = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value;
+            if (result.GetType() == typeof(T))
+            {
+                return (T)result;
+            }
+            return default(T);
+        }
+
+        public async Task LoadStartedGame(int id)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> ChangePasswordAsync(string oldPassword, string newPassword)

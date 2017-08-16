@@ -53,6 +53,8 @@
     <Compile Include="NetworkCommObjects\Message\JoinGameResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\LoadGameRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\LoadGameResponseMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\LoadOpenedGameRequestMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\LoadOpenedGameResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\LoadOpenedGamesListRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\LoadOpenedGamesListResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\LoadMyGamesListRequestMessage.cs" />
