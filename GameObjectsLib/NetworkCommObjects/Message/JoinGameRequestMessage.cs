@@ -14,9 +14,12 @@ namespace GameObjectsLib.NetworkCommObjects.Message
     [ProtoContract]
     public class JoinGameRequestMessage
     {
+        /// <summary>
+        /// Represents player attempting to join the game.
+        /// </summary>
         [ProtoMember(1)]
-        public MyNetworkUser RequestingUser { get; set; }
+        public HumanPlayer RequestingPlayer { get; set; }
         [ProtoMember(2)]
-        public int GameId { get; set; }
+        public int OpenedGameId { get; set; }
     }
 }

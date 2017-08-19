@@ -243,7 +243,10 @@
                             {
                                 if (db.GetMatchingUser(user.Name) == null) return;
 
-                                var openedGames = db.OpenedGames;
+                                var openedGames = from openedGame in db.OpenedGames
+                                                  from dbUser in openedGame.SignedUsers
+                                                  where dbUser.Login != user.Name
+                                                  select openedGame;
                                 
                                 {
                                     SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadOpenedGamesListResponseMessage>()
@@ -263,6 +266,48 @@
                                     await wrapper.SerializeAsync(stream);
                                 }
                             }
+                        }),
+                        TypeSwitch.Case<JoinGameRequestMessage>(async message =>
+                        {
+                            var player = message.RequestingPlayer;
+
+                            using (var db = new WarlightDbContext())
+                            {
+                                var matchingUser = db.GetMatchingUser(player.User.Name);
+
+                                if (matchingUser == null)
+                                {
+                                    await Send(stream, new JoinGameResponseMessage
+                                    {
+                                        SuccessfullyJoined = false
+                                    });
+                                    return;
+                                }
+
+                                var matchingOpenedGame = db.GetMatchingOpenedGame(message.OpenedGameId);
+
+                                if (matchingOpenedGame == null)
+                                {
+                                    await Send(stream, new JoinGameResponseMessage
+                                    {
+                                        SuccessfullyJoined = false
+                                    });
+                                    return;
+                                }
+
+                                var openedGame = await matchingOpenedGame.GetGameAsync();
+
+                                matchingOpenedGame.SignedUsers.Add(matchingUser);
+                                openedGame.Players.Add(player);
+
+                                await matchingOpenedGame.SetGameAsync(openedGame);
+                                await db.SaveChangesAsync();
+
+                                await Send(stream, new JoinGameResponseMessage
+                                {
+                                    SuccessfullyJoined = true
+                                });
+                            }
                         })
                     );
 
@@ -273,6 +318,25 @@
             {
                 Dispose();
             }
+        }
+
+        async Task Send<T>(Stream stream, T value)
+        {
+            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<T>()
+            {
+                TypedValue = value
+            };
+            await wrapper.SerializeAsync(stream);
+        }
+
+        async Task<T> Receive<T>(Stream stream) where T : class
+        {
+            var result = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value;
+            if (result.GetType() == typeof(T))
+            {
+                return (T)result;
+            }
+            return default(T);
         }
 
         bool isDisposed;

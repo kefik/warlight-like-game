@@ -62,6 +62,13 @@ namespace Server.WarlightLikeDatabase
             #endregion
         }
 
+        public OpenedGame GetMatchingOpenedGame(int id)
+        {
+            return (from openedGame in OpenedGames
+                    where openedGame.OpenedGameId == id
+                    select openedGame).AsEnumerable().FirstOrDefault();
+        }
+
         public User GetMatchingUser(string login)
         {
             return (from user in Users
@@ -83,14 +90,14 @@ namespace Server.WarlightLikeDatabase
 
         public void SaveGame(OpenedGame gameMetaInfo, Stream stream)
         {
-            gameMetaInfo.SerializedGame = ((MemoryStream)stream).GetBuffer();
+            gameMetaInfo.SetGame(stream);
             OpenedGames.Add(gameMetaInfo);
             SaveChanges();
         }
 
         public async Task SaveGameAsync(OpenedGame gameMetaInfo, Stream stream)
         {
-            gameMetaInfo.SerializedGame = ((MemoryStream)stream).GetBuffer();
+            await gameMetaInfo.SetGameAsync(stream);
             OpenedGames.Add(gameMetaInfo);
             await SaveChangesAsync();
         }

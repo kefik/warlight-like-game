@@ -6,6 +6,10 @@ namespace Server.WarlightLikeDatabase
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.ModelConfiguration;
     using System.Data.Entity.Spatial;
+    using System.IO;
+    using System.Threading.Tasks;
+    using GameObjectsLib.Game;
+    using GameObjectsLib.NetworkCommObjects;
 
     public class OpenedGame
     {
@@ -32,9 +36,54 @@ namespace Server.WarlightLikeDatabase
 
         [Required]
         public virtual ICollection<User> SignedUsers { get; set; }
-        
+
+        public Game GetGame()
+        {
+            using (var ms = new MemoryStream(SerializedGame))
+            {
+                return SerializationObjectWrapper.Deserialize(ms).Value as Game;
+            }
+        }
+
+        public async Task<Game> GetGameAsync()
+        {
+            using (var ms = new MemoryStream(SerializedGame))
+            {
+                return (await SerializationObjectWrapper.DeserializeAsync(ms)).Value as Game;
+            }
+        }
+
+        public async Task SetGameAsync(Stream stream)
+        {
+            using (var ms = new MemoryStream())
+            {
+                await stream.CopyToAsync(ms);
+
+                ms.Position = 0;
+
+                SerializedGame = ms.GetBuffer();
+            }
+        }
+
+        public void SetGame(Stream stream)
+        {
+            using (var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+
+                ms.Position = 0;
+
+                SerializedGame = ms.GetBuffer();
+            }
+        }
+
+        public async Task SetGameAsync(Game game)
+        {
+            SerializedGame = await game.GetBytesAsync();
+        }
+
         [Required]
         [MaxLength(20480)]
-        public virtual byte[] SerializedGame { get; set; }
+        protected virtual byte[] SerializedGame { get; set; }
     }
 }

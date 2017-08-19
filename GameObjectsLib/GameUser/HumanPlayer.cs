@@ -11,21 +11,21 @@
     using ProtoBuf;
 
     [ProtoContract]
-    public class MyNetworkUser : NetworkUser, IDisposable
+    public class HumanPlayer : NetworkUser, IDisposable
     {
         public override UserType UserType
         {
             get { return UserType.MyNetworkUser; }
         }
 
-        MyNetworkUser()
+        HumanPlayer()
         {
         }
 
         readonly TcpClient client;
         readonly IPEndPoint serverEndPoint;
 
-        public MyNetworkUser(string name, TcpClient client, IPEndPoint serverEndPoint) : base(name)
+        public HumanPlayer(string name, TcpClient client, IPEndPoint serverEndPoint) : base(name)
         {
             this.client = client ?? throw new ArgumentException();
             this.serverEndPoint = serverEndPoint;
@@ -82,7 +82,7 @@
         ///     Creates a game from the seed.
         /// </summary>
         /// <returns>New games Id or null wrapped in task.</returns>
-        public async Task<bool> CreateGameAsync(HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers,
+        public async Task<bool> CreateGameAsync(GameObjectsLib.HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers,
             string mapName, int freeSlotsCount)
         {
             if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
@@ -143,30 +143,8 @@
 
             var answer = await Receive<LoadOpenedGamesListResponseMessage>(stream);
             return answer?.GameHeaderMessageObjects;
-
         }
-
-        /// <summary>
-        /// Asynchronously loads opened game request.
-        /// </summary>
-        /// <param name="player">Player.</param>
-        /// <param name="gameId">Id of the game.</param>
-        /// <returns></returns>
-        public async Task<bool> JoinOpenedGameAsync(HumanPlayer player, int gameId)
-        {
-            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
-
-            NetworkStream stream = client.GetStream();
-
-            await Send(stream, new JoinGameRequestMessage
-            {
-                OpenedGameId = gameId,
-                RequestingPlayer = player
-            });
-
-            var answer = await Receive<JoinGameResponseMessage>(stream);
-            return answer == null ? true : false;
-        }
+        
 
         /// <summary>
         ///     Asynchronously logs user out.
@@ -247,7 +225,7 @@
             }
         }
 
-        ~MyNetworkUser()
+        ~HumanPlayer()
         {
             Dispose(true);
         }

@@ -96,6 +96,12 @@
     <Compile Include="GameSetup\Multiplayer\Hotseat\HotseatNewGameSettingsControl.Designer.cs">
       <DependentUpon>HotseatNewGameSettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\JoinNetworkGameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Multiplayer\Network\JoinNetworkGameForm.Designer.cs">
+      <DependentUpon>JoinNetworkGameForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameSetup\Multiplayer\Network\NetworkNewGameSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -251,6 +257,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GameSetup\Multiplayer\Hotseat\HotseatNewGameSettingsControl.resx">
       <DependentUpon>HotseatNewGameSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Multiplayer\Network\JoinNetworkGameForm.resx">
+      <DependentUpon>JoinNetworkGameForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GameSetup\Multiplayer\Network\NetworkNewGameSettingsControl.resx">
       <DependentUpon>NetworkNewGameSettingsControl.cs</DependentUpon>

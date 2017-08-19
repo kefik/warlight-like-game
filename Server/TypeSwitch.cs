@@ -9,7 +9,7 @@ namespace Server
     /// <summary>
     /// Source = https://stackoverflow.com/questions/298976/is-there-a-better-alternative-than-this-to-switch-on-type
     /// </summary>
-    static class TypeSwitch
+    public static class TypeSwitch
     {
         public class CaseInfo
         {

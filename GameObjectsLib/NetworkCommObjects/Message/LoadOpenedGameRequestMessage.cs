@@ -7,7 +7,7 @@
     public class LoadOpenedGameRequestMessage
     {
         [ProtoMember(1)]
-        public MyNetworkUser User { get; set; }
+        public MyNetworkUser MyUser { get; set; }
         [ProtoMember(2)]
         public int GameId { get; set; }
     }
