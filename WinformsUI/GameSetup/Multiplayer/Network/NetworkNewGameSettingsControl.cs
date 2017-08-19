@@ -58,6 +58,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             
             previousAiPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
+
+            humanPlayerSettingsControl.Enabled = false;
         }
 
         public event Func<HumanPlayer, ICollection<AiPlayer>, string, int, Task> OnGameCreated;
@@ -129,7 +131,6 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
 
         private async void Create(object sender, EventArgs e)
         {
-            // TODO: mb bug in conversion
             if (OnGameCreated == null) return;
 
             var aiPlayers = aiPlayerSettingsControl.GetPlayers();

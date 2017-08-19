@@ -51,6 +51,7 @@
             this.playerNameTextBox.Name = "playerNameTextBox";
             this.playerNameTextBox.Size = new System.Drawing.Size(100, 20);
             this.playerNameTextBox.TabIndex = 3;
+            this.playerNameTextBox.TextChanged += new System.EventHandler(this.PlayerNameTextChanged);
             // 
             // HumanPlayerControl
             // 

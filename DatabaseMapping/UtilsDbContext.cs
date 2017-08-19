@@ -138,33 +138,54 @@ namespace WinformsUI
 
         public void Remove(SingleplayerSavedGameInfo savedGameInfo)
         {
-            // TODO: rebuild to transactions
-            var objectToBeRemoved = (from info in SingleplayerSavedGameInfos
-                                     where info.Id == savedGameInfo.Id
-                                     select info).First();
+            using (DbContextTransaction transaction = Database.BeginTransaction())
+            {
+                try
+                {
+                    var objectToBeRemoved = (from info in SingleplayerSavedGameInfos
+                                             where info.Id == savedGameInfo.Id
+                                             select info).First();
 
-            string path = objectToBeRemoved.Path;
+                    string path = objectToBeRemoved.Path;
 
-            SingleplayerSavedGameInfos.Remove(objectToBeRemoved);
+                    SingleplayerSavedGameInfos.Remove(objectToBeRemoved);
+                    File.Delete(path);
 
-            SaveChanges();
+                    SaveChanges();
 
-            File.Delete(path);
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
         public void Remove(HotseatSavedGameInfo savedGameInfo)
         {
-            // TODO: rebuild to transactions
-            var objectToBeRemoved = (from info in HotseatSavedGameInfos
-                                     where info.Id == savedGameInfo.Id
-                                     select info).First();
+            using (DbContextTransaction transaction = Database.BeginTransaction())
+            {
+                try
+                {
+                    var objectToBeRemoved = (from info in HotseatSavedGameInfos
+                                             where info.Id == savedGameInfo.Id
+                                             select info).First();
 
-            string path = objectToBeRemoved.Path;
+                    string path = objectToBeRemoved.Path;
 
-            HotseatSavedGameInfos.Remove(objectToBeRemoved);
+                    HotseatSavedGameInfos.Remove(objectToBeRemoved);
 
-            SaveChanges();
+                    File.Delete(path);
 
-            File.Delete(path);
+                    SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
 
 

@@ -90,7 +90,6 @@ namespace WinformsUI.InGame
             return returnValue;
         }
         
-
         void StartOverGameBeginningPhase(GameBeginningRound gameBeginningRound)
         {
             mapHandlerControl.StartOver(gameBeginningRound);
@@ -257,7 +256,7 @@ namespace WinformsUI.InGame
                                         }
                                     case GameType.MultiplayerHotseat:
                                         {
-                                            rounds.Add(new Round(game.Id, turnPhaseControl.DeployingStructure,
+                                            rounds.Add(new Round(game.RoundNumber, turnPhaseControl.DeployingStructure,
                                                 turnPhaseControl.AttackingStructure));
 
                                             if (NextPlayer())
