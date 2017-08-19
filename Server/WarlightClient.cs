@@ -164,13 +164,14 @@
                                         AiPlayersCount = aiPlayers.Count,
                                         HumanPlayersCount = 1,
                                         OpenedSlotsNumber = message.FreeSlotsCount,
-                                        Users = new HashSet<User>()
+                                        SignedUsers = new HashSet<User>()
                                             {
                                                 userInfo
                                             },
                                         GameCreatedDateTime = DateTime.Now.ToString()
                                     };
 
+                                    userInfo.OpenedGames.Add(openedGame);
                                     using (var ms = await game.GetStreamForSerializedGameAsync())
                                     {
                                         await db.SaveGameAsync(openedGame, ms);
@@ -190,10 +191,10 @@
                                 var matchingUser = db.GetMatchingUser(user.Name);
 
                                 var openedGames = from openedGame in db.OpenedGames.AsEnumerable()
-                                                  where openedGame.Users.Contains(matchingUser)
+                                                  where openedGame.SignedUsers.Contains(matchingUser)
                                                   select openedGame;
                                 var startedGames = from startedGame in db.StartedGames.AsEnumerable()
-                                                   where startedGame.Users.Contains(matchingUser)
+                                                   where startedGame.PlayingUsers.Contains(matchingUser)
                                                    select startedGame;
 
                                 var result = new List<GameHeaderMessageObject>();
@@ -212,7 +213,7 @@
                                 {
                                     result.Add(new StartedGameHeaderMessageObject()
                                     {
-                                        GameId = startedGame.StartedGameId,
+                                        GameId = startedGame.Id,
                                         AiPlayersCount = startedGame.AiPlayersCount,
                                         HumanPlayersCount = startedGame.HumanPlayersCount,
                                         MapName = startedGame.MapName,
@@ -244,7 +245,7 @@
                                 if (db.GetMatchingUser(user.Name) == null) return;
 
                                 var openedGames = from openedGame in db.OpenedGames
-                                                  from dbUser in openedGame.Users
+                                                  from dbUser in openedGame.SignedUsers
                                                   where dbUser.Name != user.Name
                                                   select openedGame;
                                 
@@ -297,7 +298,7 @@
 
                                 var openedGame = await matchingOpenedGame.GetGameAsync();
 
-                                matchingOpenedGame.Users.Add(matchingUser);
+                                matchingOpenedGame.SignedUsers.Add(matchingUser);
                                 openedGame.Players.Add(player);
 
                                 await matchingOpenedGame.SetGameAsync(openedGame);
@@ -322,7 +323,7 @@
                                         GameStartedDateTime = DateTime.Now.ToString(),
                                         HumanPlayersCount = matchingOpenedGame.HumanPlayersCount,
                                         MapName = matchingOpenedGame.MapName,
-                                        Users = matchingOpenedGame.Users
+                                        PlayingUsers = matchingOpenedGame.SignedUsers
                                     };
                                 }
                             }

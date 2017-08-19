@@ -7,13 +7,6 @@
 
     public class StartedGame : GameEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int StartedGameId { get; set; }
-
-        [Required]
-        [MaxLength(20480)]
-        public virtual byte[] SerializedGame { get; set; }
-
         [Required]
         [MaxLength(20480)]
         public virtual byte[] SerializedRounds { get; set; }
@@ -27,5 +20,8 @@
         
         [Required]
         public int RoundNumber { get; set; }
+
+        [Required]
+        public virtual ICollection<User> PlayingUsers { get; set; }
     }
 }

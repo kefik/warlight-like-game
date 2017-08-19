@@ -31,21 +31,21 @@ namespace Server.WarlightLikeDatabase
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             #region User relations
-            // m : n Games - Users
+            // m: n Games -Users
             modelBuilder.Entity<User>()
                 .HasMany(user => user.StartedGames)
-                .WithMany(game => game.Users)
+                .WithMany(game => game.PlayingUsers)
                 .Map(manyToManyAssociationMappingConfiguration =>
                 {
                     manyToManyAssociationMappingConfiguration.MapLeftKey($"{nameof(User)}{nameof(User.Id)}");
-                    manyToManyAssociationMappingConfiguration.MapRightKey($"{nameof(Game)}{nameof(Game.Id)}");
-                    manyToManyAssociationMappingConfiguration.ToTable("GamesUsers");
+                    manyToManyAssociationMappingConfiguration.MapRightKey($"{nameof(StartedGame)}{nameof(StartedGame.Id)}");
+                    manyToManyAssociationMappingConfiguration.ToTable("StartedGamesUsers");
                 });
 
-            // m : n OpenedGames - Users
+            //// m : n OpenedGames - Users
             modelBuilder.Entity<User>()
                 .HasMany(user => user.OpenedGames)
-                .WithMany(openedGame => openedGame.Users)
+                .WithMany(openedGame => openedGame.SignedUsers)
                 .Map(x =>
                 {
                     x.MapLeftKey($"{nameof(User)}{nameof(User.Id)}");

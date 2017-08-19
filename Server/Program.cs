@@ -22,10 +22,9 @@ namespace Server
             }
             //using (var db = new WarlightDbContext())
             //{
-            //    var users = db.Users;
-            //    foreach (User user in users)
+            //    foreach (var item in db.StartedGames)
             //    {
-            //        Console.WriteLine(user);
+            //        Console.WriteLine(item);
             //    }
             //}
         }

@@ -2,15 +2,23 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.IO;
+    using GameObjectsLib;
+    using GameObjectsLib.NetworkCommObjects;
 
-    public class LastTurn
+    public class LastTurn : Entity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int LastTurnId { get; set; }
-
         [MaxLength(1024)]
         [Required]
-        public byte[] SerializedTurn { get; set; }
+        protected byte[] SerializedTurn { get; set; }
+
+        public object GetLastTurn()
+        {
+            using (var ms = new MemoryStream())
+            {
+                return SerializationObjectWrapper.Deserialize(ms).Value;
+            }
+        }
 
         public int UserId { get; set; }
         public User User { get; set; }
