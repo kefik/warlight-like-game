@@ -13,7 +13,7 @@
     {
         [MaxLength(6144)]
         [Required]
-        protected virtual byte[] SerializedAiTurns { get; set; }
+        public virtual byte[] SerializedAiTurns { get; set; }
 
         public async Task<IEnumerable<Round>> GetAiTurnsAsync()
         {

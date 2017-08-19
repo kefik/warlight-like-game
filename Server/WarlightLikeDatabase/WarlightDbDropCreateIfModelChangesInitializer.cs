@@ -32,9 +32,14 @@ namespace Server.WarlightLikeDatabase
             context.Users.Add(new User()
             {
                 Email = "bimbinbiribong@seznam.cz",
-                Id = 1,
                 PasswordHash = passwordHash, // TODO
                 Name = "Hez"
+            });
+            context.Users.Add(new User()
+            {
+                Email = "bim@seznam.cz",
+                PasswordHash = passwordHash,
+                Name = "Bim"
             });
 
             context.SaveChanges();

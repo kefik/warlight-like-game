@@ -10,7 +10,7 @@
     {
         [MaxLength(1024)]
         [Required]
-        protected byte[] SerializedTurn { get; set; }
+        public byte[] SerializedTurn { get; set; }
 
         public object GetLastTurn()
         {

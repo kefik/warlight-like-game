@@ -11,6 +11,8 @@ using WinformsUI.HelperControls;
 namespace WinformsUI.GameSetup.Singleplayer
 {
     using System.Collections;
+    using System.IO;
+    using GameObjectsLib.NetworkCommObjects;
 
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
@@ -91,6 +93,8 @@ namespace WinformsUI.GameSetup.Singleplayer
 
                     game = Game.Create(gameId, GameType.SinglePlayer, map, players);
                 }
+                
+
                 OnGameStarted?.Invoke(game);
             }
             catch (UnauthorizedAccessException)

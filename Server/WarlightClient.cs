@@ -171,11 +171,11 @@
                                         GameCreatedDateTime = DateTime.Now.ToString()
                                     };
 
+                                    openedGame.SetGame(game);
                                     userInfo.OpenedGames.Add(openedGame);
-                                    using (var ms = await game.GetStreamForSerializedGameAsync())
-                                    {
-                                        await db.SaveGameAsync(openedGame, ms);
-                                    }
+                                    db.OpenedGames.Add(openedGame);
+
+                                    await db.SaveChangesAsync();
 
                                     await RequestSuccessfulResponse(stream);
                                 }
@@ -301,7 +301,7 @@
                                 matchingOpenedGame.SignedUsers.Add(matchingUser);
                                 openedGame.Players.Add(player);
 
-                                await matchingOpenedGame.SetGameAsync(openedGame);
+                                matchingOpenedGame.SetGame(openedGame);
                                 matchingOpenedGame.OpenedSlotsNumber--;
                                 matchingOpenedGame.HumanPlayersCount++;
                                 

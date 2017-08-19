@@ -49,6 +49,7 @@
             this.okButton.TabIndex = 1;
             this.okButton.Text = "Ok";
             this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this.Ok);
             // 
             // cancelButton
             // 
@@ -71,7 +72,6 @@
             this.Controls.Add(this.myHumanPlayerControl);
             this.Name = "JoinNetworkGameForm";
             this.Text = "JoinNetworkGameForm";
-            this.Click += new System.EventHandler(this.Ok);
             this.ResumeLayout(false);
 
         }

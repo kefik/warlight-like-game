@@ -18,7 +18,7 @@ namespace Server.WarlightLikeDatabase
 
         static WarlightDbContext()
         {
-            Database.SetInitializer(new WarlightDbDropCreateIfModelChangesInitializer());
+            //Database.SetInitializer(new WarlightDbDropCreateIfModelChangesInitializer());
         }
 
         public virtual DbSet<StartedGame> StartedGames { get; set; }

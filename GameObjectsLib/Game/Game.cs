@@ -207,17 +207,9 @@ namespace GameObjectsLib.Game
                 canSave.SaveGame(this, stream);
             }
         }
-
-        public async Task SaveGameAsync(IGameSaver<Game> canSave)
-        {
-            Refresh();
-            using (var ms = await GetStreamForSerializedGameAsync())
-            {
-                canSave.SaveGame(this, ms);
-            }
-        }
-
-        public async Task<byte[]> GetBytesAsync()
+        
+        
+        public byte[] GetBytes()
         {
             SerializationObjectWrapper wrapper
                 = new SerializationObjectWrapper<Game>()
@@ -226,15 +218,13 @@ namespace GameObjectsLib.Game
                 };
             using (var ms = new MemoryStream())
             {
-                await wrapper.SerializeAsync(ms);
-
+                wrapper.Serialize(ms);
                 ms.Position = 0;
-
                 return ms.GetBuffer();
             }
         }
 
-        public async Task<MemoryStream> GetStreamForSerializedGameAsync()
+        public MemoryStream GetStreamForSerializedGame()
         {
             SerializationObjectWrapper wrapper
                 = new SerializationObjectWrapper<Game>()
@@ -242,7 +232,7 @@ namespace GameObjectsLib.Game
                     TypedValue = this
                 };
             var ms = new MemoryStream();
-            await wrapper.SerializeAsync(ms);
+            wrapper.Serialize(ms);
 
             ms.Position = 0;
 

@@ -60,7 +60,20 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         }
         private void DeleteGame(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (loadedGamesListBox.SelectedIndex < 0) return;
+            var selectedFiles = loadedGamesListBox.SelectedItems.Cast<HotseatSavedGameInfo>().ToList();
+            foreach (var selectedFile in selectedFiles)
+            {
+                loadedGamesListBox.SelectedItems.Remove(selectedFile);
+            }
+
+            using (var db = new UtilsDbContext())
+            {
+                foreach (var savedGameInfo in selectedFiles)
+                {
+                    db.Remove(savedGameInfo);
+                }
+            }
         }
 
         private void FormLoad(object sender, EventArgs e)

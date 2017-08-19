@@ -7,28 +7,7 @@
     using Message;
     using ProtoBuf;
 
-    //public interface ISerializable<T>
-    //{
-    //    void Serialize(Stream stream);
-    //}
-
-    //public interface IAsynchronouslySerializable<T>
-    //{
-    //    Task SerializeAsync(Stream stream);
-    //}
-
-    //public static class SerializableExtensions
-    //{
-    //    public static void Serialize<T>(this ISerializable<T> serializable, Stream stream)
-    //    {
-    //        serializable.Serialize(stream);
-    //    }
-
-    //    public static async Task SerializeAsync<T>(this IAsynchronouslySerializable<T> serializable, Stream stream)
-    //    {
-    //        await serializable.SerializeAsync(stream);
-    //    }
-    //}
+    
     /// <summary>
     ///     Network object wrapper whose purpose is to enable network communication via objects.
     /// </summary>
@@ -59,8 +38,7 @@
         /// <returns></returns>
         public async Task SerializeAsync(Stream stream)
         {
-            await Task.Yield();
-            Serializer.SerializeWithLengthPrefix(stream, this, PrefixStyle.Base128);
+            await Task.Factory.StartNew(() => Serializer.SerializeWithLengthPrefix(stream, this, PrefixStyle.Base128), TaskCreationOptions.DenyChildAttach);
         }
 
         public void Serialize(Stream stream)

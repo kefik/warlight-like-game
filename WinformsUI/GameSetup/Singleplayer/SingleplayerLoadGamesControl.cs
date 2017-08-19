@@ -31,7 +31,7 @@ namespace WinformsUI.GameSetup.Singleplayer
                     var savedGames = from game in db.SingleplayerSavedGameInfos
                                      orderby game.SavedGameDate descending
                                      select game;
-
+                    
                     // TODO: might be too slow
                     foreach (var savedGame in savedGames)
                     {

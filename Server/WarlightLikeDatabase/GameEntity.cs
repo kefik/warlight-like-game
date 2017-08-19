@@ -16,17 +16,17 @@ namespace Server.WarlightLikeDatabase
     {
         [Required]
         [StringLength(50)]
-        public virtual string MapName { get; set; }
+        public string MapName { get; set; }
 
         [Required]
-        public virtual int AiPlayersCount { get; set; }
+        public int AiPlayersCount { get; set; }
 
         [Required]
-        public virtual int HumanPlayersCount { get; set; }
+        public int HumanPlayersCount { get; set; }
         
         [Required]
         [MaxLength(20480)]
-        protected virtual byte[] SerializedGame { get; set; }
+        public virtual byte[] SerializedGame { get; set; }
 
         public virtual Game GetGame()
         {
@@ -68,9 +68,9 @@ namespace Server.WarlightLikeDatabase
             }
         }
 
-        public virtual async Task SetGameAsync(Game game)
+        public virtual void SetGame(Game game)
         {
-            SerializedGame = await game.GetBytesAsync();
+            SerializedGame = game.GetBytes();
         }
     }
 }
