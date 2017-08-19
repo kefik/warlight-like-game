@@ -3,15 +3,13 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class MapInfo
+    public class MapInfo : NamedEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int MapInfoId { get; set; }
-
         [Required]
         [StringLength(50)]
         [Index(IsUnique = true)]
-        public string Name { get; set; }
+        public override string Name { get; set; }
+
         [Required]
         public int PlayersLimit { get; set; }
         [Required]

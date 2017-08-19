@@ -5,7 +5,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class StartedGame
+    public class StartedGame : GameEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int StartedGameId { get; set; }
@@ -24,20 +24,8 @@
         [Required]
         [StringLength(50)]
         public string GameStartedDateTime { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string MapName { get; set; }
-
-        [Required]
-        public int AiPlayersCount { get; set; }
-
-        [Required]
-        public int HumanPlayersCount { get; set; }
-
+        
         [Required]
         public int RoundNumber { get; set; }
-
-        public virtual ICollection<User> PlayingUsers { get; set; }
     }
 }

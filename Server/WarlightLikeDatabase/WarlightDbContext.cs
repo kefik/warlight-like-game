@@ -34,22 +34,22 @@ namespace Server.WarlightLikeDatabase
             // m : n Games - Users
             modelBuilder.Entity<User>()
                 .HasMany(user => user.StartedGames)
-                .WithMany(game => game.PlayingUsers)
+                .WithMany(game => game.Users)
                 .Map(manyToManyAssociationMappingConfiguration =>
                 {
-                    manyToManyAssociationMappingConfiguration.MapLeftKey(nameof(User.UserId));
-                    manyToManyAssociationMappingConfiguration.MapRightKey(nameof(Game.Id));
+                    manyToManyAssociationMappingConfiguration.MapLeftKey($"{nameof(User)}{nameof(User.Id)}");
+                    manyToManyAssociationMappingConfiguration.MapRightKey($"{nameof(Game)}{nameof(Game.Id)}");
                     manyToManyAssociationMappingConfiguration.ToTable("GamesUsers");
                 });
 
             // m : n OpenedGames - Users
             modelBuilder.Entity<User>()
                 .HasMany(user => user.OpenedGames)
-                .WithMany(openedGame => openedGame.SignedUsers)
+                .WithMany(openedGame => openedGame.Users)
                 .Map(x =>
                 {
-                    x.MapLeftKey(nameof(User.UserId));
-                    x.MapRightKey(nameof(OpenedGame.OpenedGameId));
+                    x.MapLeftKey($"{nameof(User)}{nameof(User.Id)}");
+                    x.MapRightKey($"{nameof(OpenedGame)}{nameof(OpenedGame.Id)}");
                     x.ToTable("OpenedGamesUsers");
                 });
             #endregion
@@ -65,14 +65,14 @@ namespace Server.WarlightLikeDatabase
         public OpenedGame GetMatchingOpenedGame(int id)
         {
             return (from openedGame in OpenedGames
-                    where openedGame.OpenedGameId == id
+                    where openedGame.Id == id
                     select openedGame).AsEnumerable().FirstOrDefault();
         }
 
         public User GetMatchingUser(string login)
         {
             return (from user in Users
-                    where user.Login == login
+                    where user.Name == login
                     select user).AsEnumerable().FirstOrDefault();
         }
 
@@ -85,7 +85,7 @@ namespace Server.WarlightLikeDatabase
 
         public int GetMaxOpenedGameId()
         {
-            return OpenedGames.Any() == false ? 0 : OpenedGames.Max(x => x.OpenedGameId);
+            return OpenedGames.Any() == false ? 0 : OpenedGames.Max(x => x.Id);
         }
 
         public void SaveGame(OpenedGame gameMetaInfo, Stream stream)

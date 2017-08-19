@@ -6,12 +6,8 @@ namespace Server.WarlightLikeDatabase
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public class User
+    public class User : NamedEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
-
         [Required]
         [StringLength(50)]
         [EmailAddress]
@@ -20,8 +16,8 @@ namespace Server.WarlightLikeDatabase
 
         [Required]
         [StringLength(15)]
-        [Index(IsClustered = false, IsUnique = true)]
-        public string Login { get; set; }
+        [Index(IsUnique = true)]
+        public override string Name { get; set; }
 
         [Required]
         [StringLength(100)]

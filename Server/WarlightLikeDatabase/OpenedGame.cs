@@ -11,31 +11,14 @@ namespace Server.WarlightLikeDatabase
     using GameObjectsLib.Game;
     using GameObjectsLib.NetworkCommObjects;
 
-    public class OpenedGame
+    public class OpenedGame : GameEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int OpenedGameId { get; set; }
-
         [Required]
         public int OpenedSlotsNumber { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string MapName { get; set; }
-
-        [Required]
-        public int AiPlayersCount { get; set; }
-
-        [Required]
-        public int HumanPlayersCount { get; set; }
-
+        
         [Required]
         [StringLength(50)]
         public string GameCreatedDateTime { get; set; }
-
-        [Required]
-        public virtual ICollection<User> SignedUsers { get; set; }
 
         public Game GetGame()
         {
