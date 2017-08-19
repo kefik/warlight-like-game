@@ -62,9 +62,9 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         {
             if (loadedGamesListBox.SelectedIndex < 0) return;
             var selectedFiles = loadedGamesListBox.SelectedItems.Cast<HotseatSavedGameInfo>().ToList();
-            foreach (var selectedFile in selectedFiles)
+            for(int i = 0; i < selectedFiles.Count; i++)
             {
-                loadedGamesListBox.SelectedItems.Remove(selectedFile);
+                loadedGamesListBox.Items.RemoveAt(i);
             }
 
             using (var db = new UtilsDbContext())

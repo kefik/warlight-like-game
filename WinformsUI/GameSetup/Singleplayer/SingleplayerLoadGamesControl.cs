@@ -8,6 +8,8 @@ using ProtoBuf;
 
 namespace WinformsUI.GameSetup.Singleplayer
 {
+    using System.Collections.Generic;
+
     public partial class SingleplayerLoadGamesControl : UserControl
     {
         public SingleplayerLoadGamesControl()
@@ -32,12 +34,10 @@ namespace WinformsUI.GameSetup.Singleplayer
                                      orderby game.SavedGameDate descending
                                      select game;
                     
-                    // TODO: might be too slow
                     foreach (var savedGame in savedGames)
                     {
                         Invoke(new Action(() => loadedGamesListBox.Items.Add(savedGame)));
                     }
-                    // TODO: data binding
                 }
             });
         }
@@ -72,9 +72,9 @@ namespace WinformsUI.GameSetup.Singleplayer
         {
             if (loadedGamesListBox.SelectedIndex < 0) return;
             var selectedFiles = loadedGamesListBox.SelectedItems.Cast<SingleplayerSavedGameInfo>().ToList();
-            foreach (var selectedFile in selectedFiles)
+            for(int i = 0; i < selectedFiles.Count; i++)
             {
-                loadedGamesListBox.SelectedItems.Remove(selectedFile);
+                loadedGamesListBox.Items.RemoveAt(i);
             }
 
             using (var db = new UtilsDbContext())
@@ -84,7 +84,6 @@ namespace WinformsUI.GameSetup.Singleplayer
                     db.Remove(savedGameInfo);
                 }
             }
-            // TODO: databinding
         }
     }
 }
