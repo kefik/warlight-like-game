@@ -80,8 +80,7 @@ namespace GameObjectsLib.Game
         /// <param name="round"></param>
         public void Play(Round round)
         {
-            // TODO: debug
-            // deploying
+            void PlayDeploying()
             {
                 var deploying = round.Deploying;
                 foreach (var deployedArmies in deploying.ArmiesDeployed)
@@ -92,7 +91,7 @@ namespace GameObjectsLib.Game
                     region.Army = deployedArmies.Item2;
                 }
             }
-            // attacking
+            void PlayAttacking()
             {
                 var attacks = round.Attacking.Attacks;
                 foreach (var attack in attacks)
@@ -112,27 +111,70 @@ namespace GameObjectsLib.Game
                                     select region).First();
                     // situation might have changed => recalculate attacking army
                     int realAttackingArmy = Math.Min(attack.AttackingArmy, attacker.Army);
-                    // if they have same owner
+                    // if they have same owner == just moving armies
                     if (defender.Owner == attacker.Owner)
                     {
                         // sum armies
                         defender.Army += realAttackingArmy;
+                        // units were transfered
+                        attacker.Army -= realAttackingArmy;
                     }
+                    // attacking
                     else
                     {
-                        defender.Army -= realAttackingArmy;
-                        if (defender.Army < 0) // all units were overcome and some of enemies units stayed
+                        Random random = new Random();
+
+                        // calculate how many defending units were killed
+                        int defendingArmyUnitsKilled = 0;
+                        for (int i = 0; i < realAttackingArmy && defendingArmyUnitsKilled < defender.Army; i++)
                         {
+                            double attackingUnitWillKillPercentage = random.Next(100) / 100d;
+
+                            // attacking unit has 60% chance to kill defending unit
+                            bool attackingUnitKills = attackingUnitWillKillPercentage < 0.6;
+                            if (attackingUnitKills)
+                            {
+                                defendingArmyUnitsKilled++;
+                            }
+                        }
+
+                        // calculate how many attacking army units were killed
+                        int attackingArmyUnitsKilled = 0;
+                        for (int i = 0; i < defender.Army && attackingArmyUnitsKilled < realAttackingArmy; i++)
+                        {
+
+                            double defendingUnitWillKillPercentage = random.Next(100) / 100d;
+
+                            // defending unit has 70% chance to kill attacking unit
+                            bool defendingUnitKills = defendingUnitWillKillPercentage < 0.7;
+                            if (defendingUnitKills)
+                            {
+                                attackingArmyUnitsKilled++;
+                            }
+                        }
+
+                        defender.Army -= defendingArmyUnitsKilled;
+
+                        realAttackingArmy -= attackingArmyUnitsKilled;
+                        attacker.Army -= attackingArmyUnitsKilled;
+
+                        if (realAttackingArmy > 0 && defender.Army == 0)
+                        {
+                            defender.Army -= realAttackingArmy;
                             // region was conquered
                             defender.Owner = attack.Attacker.Owner;
                             // cuz of negative units
                             defender.Army = -defender.Army;
                         }
                     }
-                    // in any way, attacker transfered units
-                    attacker.Army -= realAttackingArmy;
                 }
             }
+            
+            // deploying
+            PlayDeploying();
+            
+            // attacking
+            PlayAttacking();
             Refresh();
             RoundNumber++;
         }

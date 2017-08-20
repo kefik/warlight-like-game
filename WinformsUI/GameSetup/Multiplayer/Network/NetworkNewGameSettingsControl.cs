@@ -46,7 +46,6 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
                 humanPlayersNumberNumericUpDown.Maximum = maxOtherPlayers;
 
                 aiPlayerSettingsControl.PlayersLimit = maxOtherPlayers;
-                humanPlayerSettingsControl.PlayersLimit = maxOtherPlayers;
             };
             // initialize
             int maxPlayers = Math.Max(0, TotalPlayersLimit - 1);
@@ -54,12 +53,9 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             humanPlayersNumberNumericUpDown.Maximum = maxPlayers;
             
             aiPlayerSettingsControl.PlayersLimit = maxPlayers;
-            humanPlayerSettingsControl.PlayersLimit = maxPlayers;
             
             previousAiPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
-
-            humanPlayerSettingsControl.Enabled = false;
         }
 
         public event Func<HumanPlayer, ICollection<AiPlayer>, string, int, Task> OnGameCreated;
@@ -107,18 +103,10 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             if (previousHumanPlayersNumber < humanPlayersNumberNumericUpDown.Value)
             {
                 difference = humanPlayersNumberNumericUpDown.Value - previousHumanPlayersNumber;
-                for (int i = 0; i < difference; i++)
-                {
-                    humanPlayerSettingsControl.AddPlayer(new NetworkUser("")); // TODO: problem with users
-                }
             }
             else
             {
                 difference = previousHumanPlayersNumber - humanPlayersNumberNumericUpDown.Value;
-                for (int i = 0; i < difference; i++)
-                {
-                    humanPlayerSettingsControl.RemovePlayer(); // TODO: problem with users
-                }
             }
 
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;

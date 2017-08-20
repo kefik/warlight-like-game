@@ -32,9 +32,9 @@
             this.myGamesTabPage = new System.Windows.Forms.TabPage();
             this.myGamesControl = new WinformsUI.GameSetup.Multiplayer.Network.MyGamesControl();
             this.openedGamesTabPage = new System.Windows.Forms.TabPage();
+            this.openedGamesControl1 = new WinformsUI.GameSetup.Multiplayer.Network.OpenedGamesControl();
             this.newGameTabPage = new System.Windows.Forms.TabPage();
             this.networkNewGameSettingsControl = new WinformsUI.GameSetup.Multiplayer.Network.NetworkNewGameSettingsControl();
-            this.openedGamesControl1 = new WinformsUI.GameSetup.Multiplayer.Network.OpenedGamesControl();
             this.gameOptionsTabControl.SuspendLayout();
             this.myGamesTabPage.SuspendLayout();
             this.openedGamesTabPage.SuspendLayout();
@@ -85,6 +85,15 @@
             this.openedGamesTabPage.Text = "Opened games";
             this.openedGamesTabPage.UseVisualStyleBackColor = true;
             // 
+            // openedGamesControl1
+            // 
+            this.openedGamesControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.openedGamesControl1.Location = new System.Drawing.Point(6, 6);
+            this.openedGamesControl1.Name = "openedGamesControl1";
+            this.openedGamesControl1.Size = new System.Drawing.Size(520, 237);
+            this.openedGamesControl1.TabIndex = 0;
+            // 
             // newGameTabPage
             // 
             this.newGameTabPage.AutoScroll = true;
@@ -101,19 +110,10 @@
             // 
             this.networkNewGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.networkNewGameSettingsControl.Location = new System.Drawing.Point(3, 3);
+            this.networkNewGameSettingsControl.Location = new System.Drawing.Point(6, 6);
             this.networkNewGameSettingsControl.Name = "networkNewGameSettingsControl";
-            this.networkNewGameSettingsControl.Size = new System.Drawing.Size(455, 650);
+            this.networkNewGameSettingsControl.Size = new System.Drawing.Size(503, 411);
             this.networkNewGameSettingsControl.TabIndex = 0;
-            // 
-            // openedGamesControl1
-            // 
-            this.openedGamesControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.openedGamesControl1.Location = new System.Drawing.Point(6, 6);
-            this.openedGamesControl1.Name = "openedGamesControl1";
-            this.openedGamesControl1.Size = new System.Drawing.Size(520, 237);
-            this.openedGamesControl1.TabIndex = 0;
             // 
             // NetworkGameOptionsControl
             // 
@@ -136,8 +136,8 @@
         private System.Windows.Forms.TabPage myGamesTabPage;
         private System.Windows.Forms.TabPage openedGamesTabPage;
         private System.Windows.Forms.TabPage newGameTabPage;
-        private NetworkNewGameSettingsControl networkNewGameSettingsControl;
         private MyGamesControl myGamesControl;
         private OpenedGamesControl openedGamesControl1;
+        private NetworkNewGameSettingsControl networkNewGameSettingsControl;
     }
 }
