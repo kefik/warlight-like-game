@@ -9,12 +9,13 @@ using Region = GameObjectsLib.GameMap.Region;
 
 namespace GameObjectsLib
 {
+    
     /// <summary>
     /// Instance of this place represents a game round, which consists of each
     /// players round. Round identifies what has happened between two game states.
     /// </summary>
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    public class Round
+    public class GameRound
     {
         /// <summary>
         /// Represents number of the round in the game.
@@ -31,14 +32,14 @@ namespace GameObjectsLib
         /// </summary>
         public Attacking Attacking { get; set; }
 
-        public Round(int number, Deploying deploying, Attacking attacking)
+        public GameRound(int number, Deploying deploying, Attacking attacking)
         {
             Number = number;
             Deploying = deploying;
             Attacking = attacking;
         }
 
-        public Round(int number)
+        public GameRound(int number)
         {
             Number = number;
         }
@@ -48,7 +49,7 @@ namespace GameObjectsLib
         /// </summary>
         /// <param name="rounds">Rounds, each from one certain player.</param>
         /// <returns>Round consisting of round in parameter, ordered differently.</returns>
-        public static Round Process(IList<Round> rounds)
+        public static GameRound Process(IList<GameRound> rounds)
         {
             //if (rounds == null || rounds.Count == 0) return null;
 
@@ -83,7 +84,7 @@ namespace GameObjectsLib
                 index++;
             }
             
-            return new Round(rounds[0].Number, deploying, attacking);
+            return new GameRound(rounds[0].Number, deploying, attacking);
         }
 
         //class RoundValidator

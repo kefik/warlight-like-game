@@ -14,6 +14,8 @@ using Region = GameObjectsLib.GameMap.Region;
 
 namespace WinformsUI.InGame
 {
+    using GameObjectsLib.Game;
+
     public partial class MapHandlerControl : UserControl
     {
         MapImageProcessor processor;
@@ -95,9 +97,9 @@ namespace WinformsUI.InGame
             RefreshImage();
         }
 
-        public void StartOver(Round round)
+        public void StartOver(GameRound gameRound)
         {
-            processor.ResetRound(round);
+            processor.ResetRound(gameRound);
             RefreshImage();
         }
 

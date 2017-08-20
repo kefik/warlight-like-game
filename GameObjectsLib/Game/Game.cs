@@ -43,7 +43,7 @@ namespace GameObjectsLib.Game
         [ProtoMember(1)]
         public int Id { get; }
         [ProtoMember(2)]
-        public int RoundNumber { get; private set; }
+        public int RoundNumber { get; internal set; }
 
         protected Game()
         {
@@ -77,12 +77,12 @@ namespace GameObjectsLib.Game
         /// Plays given round, calculating everything, moving this instance of
         /// the game into position after the round was played.
         /// </summary>
-        /// <param name="round"></param>
-        public void Play(Round round)
+        /// <param name="gameRound"></param>
+        public void Play(GameRound gameRound)
         {
             void PlayDeploying()
             {
-                var deploying = round.Deploying;
+                var deploying = gameRound.Deploying;
                 foreach (var deployedArmies in deploying.ArmiesDeployed)
                 {
                     var region = (from item in Map.Regions
@@ -93,7 +93,7 @@ namespace GameObjectsLib.Game
             }
             void PlayAttacking()
             {
-                var attacks = round.Attacking.Attacks;
+                var attacks = gameRound.Attacking.Attacks;
                 foreach (var attack in attacks)
                 {
                     // TODO: real calculation according to rules
@@ -302,8 +302,6 @@ namespace GameObjectsLib.Game
             {
                 superRegion.Refresh();
             }
-            
-
         }
 
         /// <summary>

@@ -15,25 +15,25 @@
         [Required]
         public virtual byte[] SerializedAiTurns { get; set; }
 
-        public async Task<IEnumerable<Round>> GetAiTurnsAsync()
+        public async Task<IEnumerable<GameRound>> GetAiTurnsAsync()
         {
             using (var ms = new MemoryStream(SerializedAiTurns))
             {
-                return (await SerializationObjectWrapper.DeserializeAsync(ms)).Value as IEnumerable<Round>;
+                return (await SerializationObjectWrapper.DeserializeAsync(ms)).Value as IEnumerable<GameRound>;
             }
         }
 
-        public IEnumerable<Round> GetAiTurns()
+        public IEnumerable<GameRound> GetAiTurns()
         {
             using (var ms = new MemoryStream(SerializedAiTurns))
             {
-                return SerializationObjectWrapper.Deserialize(ms).Value as IEnumerable<Round>;
+                return SerializationObjectWrapper.Deserialize(ms).Value as IEnumerable<GameRound>;
             }
         }
 
-        public async Task SetAiTurns(IList<Round> rounds)
+        public async Task SetAiTurns(IList<GameRound> rounds)
         {
-            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<IList<Round>>()
+            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<IList<GameRound>>()
             {
                 TypedValue = rounds
             };

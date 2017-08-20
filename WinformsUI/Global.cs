@@ -26,7 +26,11 @@
                 var userChangedEvent = OnUserChanged;
                 if (userChangedEvent == null) return;
 
-                var invocationList = OnUserChanged.GetInvocationList().OfType<Action<User>>();
+                var onUserChanged = OnUserChanged;
+
+                if (onUserChanged == null) return;
+
+                var invocationList = onUserChanged.GetInvocationList().OfType<Action<User>>();
 
                 foreach (var eventToInvoke in invocationList)
                 {

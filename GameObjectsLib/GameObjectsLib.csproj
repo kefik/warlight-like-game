@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\GameFlowHandler.cs" />
     <Compile Include="NetworkCommObjects\Message\CreateGameRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\CreateGameResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\JoinGameRequestMessage.cs" />
@@ -85,7 +86,7 @@
     </Compile>
     <Compile Include="Game\SingleplayerGame.cs" />
     <Compile Include="GameUser\User.cs" />
-    <Compile Include="Round.cs" />
+    <Compile Include="GameRound.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">

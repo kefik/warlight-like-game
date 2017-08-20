@@ -13,15 +13,6 @@ using Region = GameObjectsLib.GameMap.Region;
 
 namespace WinformsUI.InGame
 {
-    public enum GameState : byte
-    {
-        GameBeginning,
-        RoundBeginning,
-        Deploying,
-        Attacking,
-        Committing,
-        Committed
-    }
     public partial class InGameControl : UserControl
     {
         public InGameControl()
@@ -45,7 +36,7 @@ namespace WinformsUI.InGame
         BeginRoundPhaseControl beginRoundPhaseControl;
         TurnPhaseControl turnPhaseControl;
 
-        readonly List<Round> rounds = new List<Round>();
+        readonly List<GameRound> rounds = new List<GameRound>();
 
         public Game Game
         {
@@ -66,8 +57,19 @@ namespace WinformsUI.InGame
 
                 NextPlayer();
                 // initialize game state
-                State = game.RoundNumber == 0 ? GameState.GameBeginning : GameState.RoundBeginning;
-                
+                if (game.RoundNumber == 0)
+                {
+                    GameStateChange(GameState.GameBeginning);
+                }
+                else if (game.Players.Count == 1) // TODO: not working
+                {
+                    GameStateChange(GameState.GameEnd);
+                }
+                else
+                {
+                    GameStateChange(GameState.RoundBeginning);
+                }
+
                 using (var db = new UtilsDbContext())
                 {
                     var mapInfo = (from item in db.Maps
@@ -111,7 +113,7 @@ namespace WinformsUI.InGame
                             game.Play(round);
                             game.Save(db);
                         }
-                        State = GameState.RoundBeginning;
+                        GameStateChange(GameState.RoundBeginning);
 
                         mapHandlerControl.Processor.Refresh(Game);
                         mapHandlerControl.RefreshImage();
@@ -123,7 +125,7 @@ namespace WinformsUI.InGame
                         gameBeginningRounds.Add(gameBeginningRound);
                         if (NextPlayer())
                         {
-                            State = GameState.GameBeginning;
+                            GameStateChange(GameState.GameBeginning);
                         }
                         else
                         {
@@ -133,7 +135,7 @@ namespace WinformsUI.InGame
                                 game.Play(round);
                                 game.Save(db);
                             }
-                            State = GameState.RoundBeginning;
+                            GameStateChange(GameState.RoundBeginning);
 
                             mapHandlerControl.Processor.Refresh(Game);
                             mapHandlerControl.RefreshImage();
@@ -153,7 +155,7 @@ namespace WinformsUI.InGame
 
         void PlayRound()
         {
-            var combinedRound = Round.Process(rounds);
+            var combinedRound = GameRound.Process(rounds);
             game.Play(combinedRound);
 
 
@@ -164,18 +166,8 @@ namespace WinformsUI.InGame
         
 
         GameState state;
-        GameState State
-        {
-            get { return state; }
-            set
-            {
-                GameStateChanged(value);
-                state = value;
-            }
-        }
-        
 
-        public void GameStateChanged(GameState newGameState)
+        public void GameStateChange(GameState newGameState)
         {
             // TODO: refactor
             // reset controls
@@ -208,7 +200,7 @@ namespace WinformsUI.InGame
                     };
                     beginRoundPhaseControl.OnBegin += () =>
                     {
-                        State = GameState.Deploying;
+                        GameStateChange(GameState.Deploying);
                     };
                     beginRoundPhaseControl.Show();
                     break;
@@ -236,7 +228,7 @@ namespace WinformsUI.InGame
                                 {
                                     case GameType.SinglePlayer:
                                         {
-                                            rounds.Add(new Round(game.Id, turnPhaseControl.DeployingStructure,
+                                            rounds.Add(new GameRound(game.Id, turnPhaseControl.DeployingStructure,
                                                 turnPhaseControl.AttackingStructure));
 
                                             // TODO: play bots
@@ -251,12 +243,12 @@ namespace WinformsUI.InGame
                                             
                                             turnPhaseControl?.Dispose();
                                             turnPhaseControl = null;
-                                            State = GameState.RoundBeginning;
+                                            GameStateChange(GameState.RoundBeginning);
                                             break;
                                         }
                                     case GameType.MultiplayerHotseat:
                                         {
-                                            rounds.Add(new Round(game.RoundNumber, turnPhaseControl.DeployingStructure,
+                                            rounds.Add(new GameRound(game.RoundNumber, turnPhaseControl.DeployingStructure,
                                                 turnPhaseControl.AttackingStructure));
 
                                             if (NextPlayer())
@@ -265,14 +257,14 @@ namespace WinformsUI.InGame
                                                 turnPhaseControl?.Dispose();
                                                 turnPhaseControl = null;
 
-                                                State = GameState.RoundBeginning;
+                                               GameStateChange(GameState.RoundBeginning);
                                             }
                                             else
                                             {
                                                 // play the whole round
 
                                                 // TODO: play bots
-                                                var round = Round.Process(rounds);
+                                                var round = GameRound.Process(rounds);
 
                                                 PlayRound();
                                                 rounds.Clear();
@@ -297,13 +289,14 @@ namespace WinformsUI.InGame
                                                 {
                                                     // TODO: game quit
                                                     MessageBox.Show($"Player {game.Players[0].Name} has won the game!");
+                                                    GameStateChange(GameState.GameEnd);
                                                     return;
                                                 }
 
                                                 playerOnTurn = localPlayers.GetEnumerator();
                                                 NextPlayer();
 
-                                                State = GameState.RoundBeginning;
+                                                GameStateChange(GameState.RoundBeginning);
                                             }
 
                                             break;
@@ -322,7 +315,7 @@ namespace WinformsUI.InGame
                                 case GameState.Deploying:
                                     if (state >= GameState.Attacking)
                                     {
-                                        mapHandlerControl.Processor.ResetRound(new Round(game.Id, turnPhaseControl.DeployingStructure,
+                                        mapHandlerControl.Processor.ResetRound(new GameRound(game.Id, turnPhaseControl.DeployingStructure,
                                             turnPhaseControl.AttackingStructure));
                                         turnPhaseControl.DeployingStructure.ArmiesDeployed.Clear();
                                         turnPhaseControl.AttackingStructure.Attacks.Clear();
@@ -346,9 +339,18 @@ namespace WinformsUI.InGame
                         turnPhaseControl.Show();
                     }
                     break;
+                case GameState.GameEnd:
+                    beginGamePhaseControl?.Dispose();
+                    beginGamePhaseControl = null;
+                    beginRoundPhaseControl?.Dispose();
+                    beginRoundPhaseControl = null;
+                    turnPhaseControl?.Dispose();
+                    turnPhaseControl = null;
+                    break;
 
 
             }
+            state = newGameState;
         }
 
         void SeizeAttempt(Region region)
@@ -360,6 +362,9 @@ namespace WinformsUI.InGame
                 MessageBox.Show("You have chosen enough regions.");
                 return;
             }
+
+            if (region.Owner != null) return;
+
             bool containsSameRegion = beginGamePhaseControl
                 .BeginningRound.SelectedRegions.Any(tuple => tuple.Item2 == region);
             // if he chose the very same region already, ignore this choice

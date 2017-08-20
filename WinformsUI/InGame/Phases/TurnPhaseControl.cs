@@ -8,6 +8,8 @@ using Region = GameObjectsLib.GameMap.Region;
 
 namespace WinformsUI.InGame.Phases
 {
+    using GameObjectsLib.Game;
+
     public partial class TurnPhaseControl : UserControl
     {
         GameState state = GameState.Deploying;

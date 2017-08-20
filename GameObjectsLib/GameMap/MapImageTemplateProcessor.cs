@@ -252,13 +252,13 @@ namespace GameObjectsLib.GameMap
         /// Resets round, recoloring everything to previous color, writing
         /// original numbers of armies.
         /// </summary>
-        /// <param name="round">Round to reset</param>
-        public void ResetRound(Round round)
+        /// <param name="gameRound">Round to reset</param>
+        public void ResetRound(GameRound gameRound)
         {
-            var attackingPhase = round.Attacking;
-            ResetAttackingPhase(attackingPhase, round.Deploying);
+            var attackingPhase = gameRound.Attacking;
+            ResetAttackingPhase(attackingPhase, gameRound.Deploying);
 
-            var deployingPhase = round.Deploying;
+            var deployingPhase = gameRound.Deploying;
             ResetDeployingPhase(deployingPhase);
         }
         /// <summary>
