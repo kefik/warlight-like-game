@@ -34,12 +34,9 @@
             // 
             // gameMapPictureBox
             // 
-            this.gameMapPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameMapPictureBox.Location = new System.Drawing.Point(4, 4);
+            this.gameMapPictureBox.Location = new System.Drawing.Point(0, 3);
             this.gameMapPictureBox.Name = "gameMapPictureBox";
-            this.gameMapPictureBox.Size = new System.Drawing.Size(535, 364);
+            this.gameMapPictureBox.Size = new System.Drawing.Size(536, 365);
             this.gameMapPictureBox.TabIndex = 0;
             this.gameMapPictureBox.TabStop = false;
             this.gameMapPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ImageClick);

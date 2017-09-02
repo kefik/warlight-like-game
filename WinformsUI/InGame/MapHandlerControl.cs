@@ -30,6 +30,8 @@ namespace WinformsUI.InGame
                 {
                     gameMapPictureBox.SizeMode = PictureBoxSizeMode.Normal;
                     gameMapPictureBox.Image = processor.MapImage;
+                    gameMapPictureBox.Height = gameMapPictureBox.Image.Height;
+                    gameMapPictureBox.Width = gameMapPictureBox.Image.Width;
                     gameMapPictureBox.BackgroundImage = processor.TemplateImage;
                 }
             }

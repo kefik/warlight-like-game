@@ -32,7 +32,6 @@
             this.hotseatLoadGamesControl = new WinformsUI.GameSetup.Multiplayer.Hotseat.HotseatLoadGamesControl();
             this.newGameTabPage = new System.Windows.Forms.TabPage();
             this.hotseatNewGameSettingsControl = new WinformsUI.GameSetup.Multiplayer.Hotseat.HotseatNewGameSettingsControl();
-            this.continueTabPage = new System.Windows.Forms.TabPage();
             this.gameOptionsTabControl = new System.Windows.Forms.TabControl();
             this.loadGameTabPage.SuspendLayout();
             this.newGameTabPage.SuspendLayout();
@@ -72,28 +71,17 @@
             this.newGameTabPage.Text = "New game";
             this.newGameTabPage.UseVisualStyleBackColor = true;
             // 
-            // hotseatNewGameSettingsControl1
+            // hotseatNewGameSettingsControl
             // 
             this.hotseatNewGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.hotseatNewGameSettingsControl.Location = new System.Drawing.Point(3, 6);
             this.hotseatNewGameSettingsControl.Name = "hotseatNewGameSettingsControl";
-            this.hotseatNewGameSettingsControl.Size = new System.Drawing.Size(456, 644);
+            this.hotseatNewGameSettingsControl.Size = new System.Drawing.Size(439, 644);
             this.hotseatNewGameSettingsControl.TabIndex = 0;
-            // 
-            // continueTabPage
-            // 
-            this.continueTabPage.Location = new System.Drawing.Point(4, 22);
-            this.continueTabPage.Name = "continueTabPage";
-            this.continueTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.continueTabPage.Size = new System.Drawing.Size(485, 253);
-            this.continueTabPage.TabIndex = 0;
-            this.continueTabPage.Text = "Continue";
-            this.continueTabPage.UseVisualStyleBackColor = true;
             // 
             // gameOptionsTabControl
             // 
-            this.gameOptionsTabControl.Controls.Add(this.continueTabPage);
             this.gameOptionsTabControl.Controls.Add(this.newGameTabPage);
             this.gameOptionsTabControl.Controls.Add(this.loadGameTabPage);
             this.gameOptionsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -121,7 +109,6 @@
 
         private System.Windows.Forms.TabPage loadGameTabPage;
         private System.Windows.Forms.TabPage newGameTabPage;
-        private System.Windows.Forms.TabPage continueTabPage;
         private System.Windows.Forms.TabControl gameOptionsTabControl;
         private HotseatLoadGamesControl hotseatLoadGamesControl;
         private HotseatNewGameSettingsControl hotseatNewGameSettingsControl;

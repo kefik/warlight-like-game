@@ -61,7 +61,9 @@ namespace WinformsUI.InGame
                 {
                     GameStateChange(GameState.GameBeginning);
                 }
-                else if (game.Players.Count == 1) // TODO: not working
+                else if ((from player in game.Players
+                         where player.ControlledRegions.Count != 0
+                         select player).Count() <= 1) // TODO: not working
                 {
                     GameStateChange(GameState.GameEnd);
                 }
@@ -357,13 +359,16 @@ namespace WinformsUI.InGame
         {
             if (region == null) return;
             // already selected 2 regions
+            if ((from round in gameBeginningRounds
+                 from selectedRegions in round.SelectedRegions
+                 where selectedRegions.Item2 == region
+                 select round).Any()) return;
             if (beginGamePhaseControl.BeginningRound.SelectedRegions.Count >= 2)
             {
                 MessageBox.Show("You have chosen enough regions.");
                 return;
             }
-
-            if (region.Owner != null) return;
+            
 
             bool containsSameRegion = beginGamePhaseControl
                 .BeginningRound.SelectedRegions.Any(tuple => tuple.Item2 == region);

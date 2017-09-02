@@ -14,7 +14,7 @@ using ProtoBuf;
 namespace GameObjectsLib.Game
 {
     
-    interface ISaveable<T>
+    interface ISaveable<out T>
     {
         void Save(IGameSaver<T> canSave);
     }
@@ -154,12 +154,14 @@ namespace GameObjectsLib.Game
                         }
 
                         defender.Army -= defendingArmyUnitsKilled;
-
-                        realAttackingArmy -= attackingArmyUnitsKilled;
                         attacker.Army -= attackingArmyUnitsKilled;
+                        // what remained from attacking army
+                        realAttackingArmy -= attackingArmyUnitsKilled;
 
+                        // not whole attacking army was destroyed and defending army is destroyed
                         if (realAttackingArmy > 0 && defender.Army == 0)
                         {
+                            attacker.Army -= realAttackingArmy;
                             defender.Army -= realAttackingArmy;
                             // region was conquered
                             defender.Owner = attack.Attacker.Owner;

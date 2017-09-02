@@ -28,9 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SingleplayerGameOptionsControl));
             this.gameOptionsTabControl = new System.Windows.Forms.TabControl();
-            this.continueTabPage = new System.Windows.Forms.TabPage();
             this.newGameTabPage = new System.Windows.Forms.TabPage();
             this.singleplayerNewGameSettingsControl = new WinformsUI.GameSetup.Singleplayer.SingleplayerNewGameSettingsControl();
             this.loadGameTabPage = new System.Windows.Forms.TabPage();
@@ -42,7 +40,6 @@
             // 
             // gameOptionsTabControl
             // 
-            this.gameOptionsTabControl.Controls.Add(this.continueTabPage);
             this.gameOptionsTabControl.Controls.Add(this.newGameTabPage);
             this.gameOptionsTabControl.Controls.Add(this.loadGameTabPage);
             this.gameOptionsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -51,16 +48,6 @@
             this.gameOptionsTabControl.SelectedIndex = 0;
             this.gameOptionsTabControl.Size = new System.Drawing.Size(493, 279);
             this.gameOptionsTabControl.TabIndex = 1;
-            // 
-            // continueTabPage
-            // 
-            this.continueTabPage.Location = new System.Drawing.Point(4, 22);
-            this.continueTabPage.Name = "continueTabPage";
-            this.continueTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.continueTabPage.Size = new System.Drawing.Size(485, 253);
-            this.continueTabPage.TabIndex = 0;
-            this.continueTabPage.Text = "Continue";
-            this.continueTabPage.UseVisualStyleBackColor = true;
             // 
             // newGameTabPage
             // 
@@ -81,7 +68,7 @@
             this.singleplayerNewGameSettingsControl.AutoScroll = true;
             this.singleplayerNewGameSettingsControl.Location = new System.Drawing.Point(6, 3);
             this.singleplayerNewGameSettingsControl.Name = "singleplayerNewGameSettingsControl";
-            this.singleplayerNewGameSettingsControl.Size = new System.Drawing.Size(439, 377);
+            this.singleplayerNewGameSettingsControl.Size = new System.Drawing.Size(422, 377);
             this.singleplayerNewGameSettingsControl.TabIndex = 0;
             // 
             // loadGameTabPage
@@ -121,7 +108,6 @@
 
         #endregion
         private System.Windows.Forms.TabControl gameOptionsTabControl;
-        private System.Windows.Forms.TabPage continueTabPage;
         private System.Windows.Forms.TabPage newGameTabPage;
         private System.Windows.Forms.TabPage loadGameTabPage;
         private SingleplayerLoadGamesControl singleplayerLoadGamesControl;
