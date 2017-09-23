@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProtoBuf;
-
-namespace GameObjectsLib.NetworkCommObjects.Message
+﻿namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    using ProtoBuf;
+
     /// <summary>
-    /// Binary response to the join game attempt.
+    ///     Binary response to the join game attempt.
     /// </summary>
     [ProtoContract]
     public class JoinGameResponseMessage

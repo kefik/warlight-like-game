@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GameObjectsLib.GameMap;
-using ProtoBuf;
-
-namespace GameObjectsLib
+﻿namespace GameObjectsLib
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using GameMap;
+    using ProtoBuf;
+
     /// <summary>
-    /// Represents deploying phase of the game.
+    ///     Represents deploying phase of the game.
     /// </summary>
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public struct Deploying
     {
         /// <summary>
-        /// Represents armies deployed in the deploying phase in given regions.
-        /// Int represents armies that will be occuppying this region after this stage.
+        ///     Represents armies deployed in the deploying phase in given regions.
+        ///     Int represents armies that will be occuppying this region after this stage.
         /// </summary>
         public List<Tuple<Region, int>> ArmiesDeployed { get; }
 
@@ -24,8 +22,9 @@ namespace GameObjectsLib
         {
             ArmiesDeployed = armiesDeployed;
         }
+
         /// <summary>
-        /// Calculates how many units can given player deploy to fulfill his maximum.
+        ///     Calculates how many units can given player deploy to fulfill his maximum.
         /// </summary>
         /// <param name="player">Given player.</param>
         /// <returns>Units left to deploy for given player.</returns>
@@ -38,14 +37,15 @@ namespace GameObjectsLib
             return income - alreadyDeployed;
         }
     }
+
     /// <summary>
-    /// Represents attacking phase of the game.
+    ///     Represents attacking phase of the game.
     /// </summary>
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public struct Attacking
     {
         /// <summary>
-        /// Represents attacks that happen during attacking phase.
+        ///     Represents attacks that happen during attacking phase.
         /// </summary>
         public List<Attack> Attacks { get; }
 
@@ -53,20 +53,21 @@ namespace GameObjectsLib
         {
             Attacks = attacks;
         }
+
         /// <summary>
-        /// Calculates units of given region that are left to attack.
+        ///     Calculates units of given region that are left to attack.
         /// </summary>
         /// <param name="region">Given region.</param>
         /// <param name="deployingPhase">Deploying based on which it will be calculated.</param>
         /// <returns></returns>
         public int GetUnitsLeftToAttack(Region region, Deploying deployingPhase)
         {
-            var deployRegionEnumerable = from tuple in deployingPhase.ArmiesDeployed
-                                where tuple.Item1 == region
-                                select tuple.Item2;
-            var attackRegionEnumerable = from attack in Attacks
-                                         where attack.Attacker == region
-                                         select attack.AttackingArmy;
+            IEnumerable<int> deployRegionEnumerable = from tuple in deployingPhase.ArmiesDeployed
+                                                      where tuple.Item1 == region
+                                                      select tuple.Item2;
+            IEnumerable<int> attackRegionEnumerable = from attack in Attacks
+                                                      where attack.Attacker == region
+                                                      select attack.AttackingArmy;
             // nothing was deployed in this region
             if (!deployRegionEnumerable.Any())
             {
@@ -75,44 +76,37 @@ namespace GameObjectsLib
                 {
                     return region.Army - Region.MinimumArmy;
                 }
-                else
-                {
-                    return region.Army - attackRegionEnumerable.Sum() - Region.MinimumArmy;
-                }
+                return region.Army - attackRegionEnumerable.Sum() - Region.MinimumArmy;
             }
-            else
+            // nothing was attacked with
+            if (!attackRegionEnumerable.Any())
             {
-                // nothing was attacked with
-                if (!attackRegionEnumerable.Any())
-                {
-                    return deployRegionEnumerable.Sum() - Region.MinimumArmy;
-                }
-                else
-                {
-                    return deployRegionEnumerable.Sum() - attackRegionEnumerable.Sum() - Region.MinimumArmy;
-                }
+                return deployRegionEnumerable.Sum() - Region.MinimumArmy;
             }
+            return deployRegionEnumerable.Sum() - attackRegionEnumerable.Sum() - Region.MinimumArmy;
         }
     }
-    
+
     /// <summary>
-    /// Represents one attack in the game round.
+    ///     Represents one attack in the game round.
     /// </summary>
     [ProtoContract]
     public struct Attack
     {
         /// <summary>
-        /// Represents attacking region.
+        ///     Represents attacking region.
         /// </summary>
         [ProtoMember(1, AsReference = true)]
         public Region Attacker { get; }
+
         /// <summary>
-        /// Attacking army, must be lower or equal than Attacker region army.
+        ///     Attacking army, must be lower or equal than Attacker region army.
         /// </summary>
         [ProtoMember(2)]
         public int AttackingArmy { get; }
+
         /// <summary>
-        /// Defending region.
+        ///     Defending region.
         /// </summary>
         [ProtoMember(3, AsReference = true)]
         public Region Defender { get; }
@@ -127,5 +121,4 @@ namespace GameObjectsLib
             Defender = defender;
         }
     }
-
 }

@@ -7,7 +7,6 @@
     using Message;
     using ProtoBuf;
 
-    
     /// <summary>
     ///     Network object wrapper whose purpose is to enable network communication via objects.
     /// </summary>
@@ -38,7 +37,8 @@
         /// <returns></returns>
         public async Task SerializeAsync(Stream stream)
         {
-            await Task.Factory.StartNew(() => Serializer.SerializeWithLengthPrefix(stream, this, PrefixStyle.Base128), TaskCreationOptions.DenyChildAttach);
+            await Task.Factory.StartNew(() => Serializer.SerializeWithLengthPrefix(stream, this, PrefixStyle.Base128),
+                TaskCreationOptions.DenyChildAttach);
         }
 
         public void Serialize(Stream stream)
@@ -56,7 +56,10 @@
             int length = 0;
             if (!await Task.Factory.StartNew(
                 () => Serializer.TryReadLengthPrefix(stream, PrefixStyle.Base128, out length),
-                TaskCreationOptions.DenyChildAttach)) throw new ArgumentException();
+                TaskCreationOptions.DenyChildAttach))
+            {
+                throw new ArgumentException();
+            }
 
             var buffer = new byte[length];
             await stream.ReadAsync(buffer, 0, buffer.Length);

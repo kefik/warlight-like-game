@@ -12,15 +12,19 @@
 
         [Required]
         public int PlayersLimit { get; set; }
+
         [Required]
         [StringLength(100)]
         public string TemplatePath { get; set; }
+
         [Required]
         [StringLength(100)]
         public string ImagePath { get; set; }
+
         [Required]
         [StringLength(100)]
         public string ImageColoredRegionsPath { get; set; }
+
         [Required]
         [StringLength(100)]
         public string ColorRegionsTemplatePath { get; set; }

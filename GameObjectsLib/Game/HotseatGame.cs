@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using GameObjectsLib.Game;
-using GameObjectsLib;
-using GameObjectsLib.GameMap;
-using ProtoBuf;
-
-namespace GameObjectsLib.Game
+﻿namespace GameObjectsLib.Game
 {
-   [ProtoContract]
-   class HotseatGame : Game
+    using System;
+    using System.Collections.Generic;
+    using GameMap;
+    using ProtoBuf;
+
+    [ProtoContract]
+    internal class HotseatGame : Game
     {
         public override GameType GameType
         {
@@ -19,12 +17,14 @@ namespace GameObjectsLib.Game
         {
         }
 
-        private HotseatGame() : base() { }
+        // ReSharper disable once UnusedMember.Local
+        private HotseatGame()
+        {
+        }
 
         public override void Validate()
         {
             throw new NotImplementedException();
         }
     }
-
 }

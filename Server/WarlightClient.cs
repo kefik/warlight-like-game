@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
     using System.IO;
     using System.Linq;
     using System.Net.Sockets;
@@ -12,18 +11,17 @@
     using System.Threading.Tasks;
     using GameObjectsLib;
     using GameObjectsLib.Game;
+    using GameObjectsLib.GameMap;
     using GameObjectsLib.GameUser;
     using GameObjectsLib.NetworkCommObjects;
     using GameObjectsLib.NetworkCommObjects.Message;
     using WarlightLikeDatabase;
-    using Game = GameObjectsLib.Game.Game;
     using User = WarlightLikeDatabase.User;
-    
 
-    class WarlightClient : IDisposable
+    internal class WarlightClient : IDisposable
     {
-        readonly TcpClient client;
-        CancellationToken token;
+        private readonly TcpClient client;
+        private CancellationToken token;
 
         public WarlightClient(TcpClient client, CancellationToken token)
         {
@@ -42,7 +40,8 @@
                     NetworkStream stream = client.GetStream();
 
                     Task delayTask = Task.Delay(TimeSpan.FromSeconds(50000));
-                    var deserializationTask = SerializationObjectWrapper.DeserializeAsync(stream);
+                    Task<SerializationObjectWrapper> deserializationTask =
+                        SerializationObjectWrapper.DeserializeAsync(stream);
                     Task completedTask = await Task.WhenAny(delayTask, deserializationTask);
 
                     // client didnt send anything
@@ -63,15 +62,15 @@
                             string passwordHash;
                             {
                                 // calculate hash
-                                var data = Encoding.ASCII.GetBytes(user.Password);
+                                byte[] data = Encoding.ASCII.GetBytes(user.Password);
                                 data = new SHA256Managed().ComputeHash(data);
                                 passwordHash = Encoding.ASCII.GetString(data);
                             }
                             using (WarlightDbContext db = new WarlightDbContext())
                             {
                                 User matchedUser = (from dbUser in db.Users
-                                                    where dbUser.Name == user.Name &&
-                                                          dbUser.PasswordHash == passwordHash
+                                                    where (dbUser.Name == user.Name) &&
+                                                          (dbUser.PasswordHash == passwordHash)
                                                     select dbUser).AsEnumerable().FirstOrDefault();
                                 bool existsMatchingUser = matchedUser != null;
                                 SerializationObjectWrapper userWrapper =
@@ -89,118 +88,119 @@
                             }
                         }),
                         TypeSwitch.Case<CreateGameRequestMessage>(async message =>
+                        {
+                            async Task RequestUnsuccessfulResponse(Stream responseStream)
                             {
-                                async Task RequestUnsuccessfulResponse(Stream responseStream)
-                                {
-                                    SerializationObjectWrapper response
-                                        = new SerializationObjectWrapper<CreateGameResponseMessage>
+                                SerializationObjectWrapper response
+                                    = new SerializationObjectWrapper<CreateGameResponseMessage>
+                                    {
+                                        TypedValue = new CreateGameResponseMessage
                                         {
-                                            TypedValue = new CreateGameResponseMessage
-                                            {
-                                                Successful = false
-                                            }
-                                        };
-                                    await response.SerializeAsync(responseStream);
-                                }
+                                            Successful = false
+                                        }
+                                    };
+                                await response.SerializeAsync(responseStream);
+                            }
 
-                                async Task RequestSuccessfulResponse(Stream responseStream)
-                                {
-                                    SerializationObjectWrapper response
-                                        = new SerializationObjectWrapper<CreateGameResponseMessage>
+                            async Task RequestSuccessfulResponse(Stream responseStream)
+                            {
+                                SerializationObjectWrapper response
+                                    = new SerializationObjectWrapper<CreateGameResponseMessage>
+                                    {
+                                        TypedValue = new CreateGameResponseMessage
                                         {
-                                            TypedValue = new CreateGameResponseMessage
-                                            {
-                                                Successful = true
-                                            }
-                                        };
-                                    await response.SerializeAsync(responseStream);
-                                }
+                                            Successful = true
+                                        }
+                                    };
+                                await response.SerializeAsync(responseStream);
+                            }
 
-                                if (isLoggedIn == false || message.FreeSlotsCount == 0)
+                            if ((isLoggedIn == false) || (message.FreeSlotsCount == 0))
+                            {
+                                await RequestUnsuccessfulResponse(stream);
+                                return;
+                            }
+
+                            using (WarlightDbContext db = new WarlightDbContext())
+                            {
+                                MapInfo mapInfo = db.GetMatchingMap(message.MapName);
+                                if (mapInfo == null)
                                 {
                                     await RequestUnsuccessfulResponse(stream);
                                     return;
                                 }
 
-                                using (WarlightDbContext db = new WarlightDbContext())
+                                Map map = Map.Create(mapInfo.Id,
+                                    mapInfo.Name,
+                                    mapInfo.PlayersLimit, mapInfo.TemplatePath);
+
+                                HumanPlayer creatingPlayer = message.CreatingPlayer;
+                                GameObjectsLib.GameUser.User creatingUser = creatingPlayer.User;
+
+                                User userInfo = db.GetMatchingUser(creatingUser.Name);
+                                if (userInfo == null)
                                 {
-                                    MapInfo mapInfo = db.GetMatchingMap(message.MapName);
-                                    if (mapInfo == null)
-                                    {
-                                        await RequestUnsuccessfulResponse(stream);
-                                        return;
-                                    }
-
-                                    var map = GameObjectsLib.GameMap.Map.Create(mapInfo.Id,
-                                        mapInfo.Name,
-                                        mapInfo.PlayersLimit, mapInfo.TemplatePath);
-
-                                    var creatingPlayer = message.CreatingPlayer;
-                                    var creatingUser = creatingPlayer.User;
-
-                                    var userInfo = db.GetMatchingUser(creatingUser.Name);
-                                    if (userInfo == null)
-                                    {
-                                        await RequestUnsuccessfulResponse(stream);
-                                        return;
-                                    };
-
-                                    int newGameId = db.GetMaxOpenedGameId() + 1;
-
-                                    var players = new List<Player>()
-                                    {
-                                        creatingPlayer
-                                    };
-
-                                    var aiPlayers = message.AiPlayers ?? new List<AiPlayer>();
-                                    players.AddRange(aiPlayers);
-
-                                    var game = Game.Create(newGameId, GameType.MultiplayerNetwork, map, players);
-
-                                    OpenedGame openedGame = new OpenedGame
-                                    {
-                                        Id = newGameId,
-                                        MapName = map.Name,
-                                        AiPlayersCount = aiPlayers.Count,
-                                        HumanPlayersCount = 1,
-                                        OpenedSlotsNumber = message.FreeSlotsCount,
-                                        SignedUsers = new HashSet<User>()
-                                            {
-                                                userInfo
-                                            },
-                                        GameCreatedDateTime = DateTime.Now.ToString()
-                                    };
-
-                                    openedGame.SetGame(game);
-                                    userInfo.OpenedGames.Add(openedGame);
-                                    db.OpenedGames.Add(openedGame);
-
-                                    await db.SaveChangesAsync();
-
-                                    await RequestSuccessfulResponse(stream);
+                                    await RequestUnsuccessfulResponse(stream);
+                                    return;
                                 }
+                                ;
 
+                                int newGameId = db.GetMaxOpenedGameId() + 1;
 
-                            }),
+                                var players = new List<Player>
+                                {
+                                    creatingPlayer
+                                };
+
+                                ICollection<AiPlayer> aiPlayers = message.AiPlayers ?? new List<AiPlayer>();
+                                players.AddRange(aiPlayers);
+
+                                Game game = Game.Create(newGameId, GameType.MultiplayerNetwork, map, players);
+
+                                OpenedGame openedGame = new OpenedGame
+                                {
+                                    Id = newGameId,
+                                    MapName = map.Name,
+                                    AiPlayersCount = aiPlayers.Count,
+                                    HumanPlayersCount = 1,
+                                    OpenedSlotsNumber = message.FreeSlotsCount,
+                                    SignedUsers = new HashSet<User>
+                                    {
+                                        userInfo
+                                    },
+                                    GameCreatedDateTime = DateTime.Now.ToString()
+                                };
+
+                                openedGame.SetGame(game);
+                                userInfo.OpenedGames.Add(openedGame);
+                                db.OpenedGames.Add(openedGame);
+
+                                await db.SaveChangesAsync();
+
+                                await RequestSuccessfulResponse(stream);
+                            }
+                        }),
                         TypeSwitch.Case<LoadMyGamesListRequestMessage>(async message =>
                         {
-                            var user = message.RequestingUser;
+                            MyNetworkUser user = message.RequestingUser;
 
-                            using (var db = new WarlightDbContext())
+                            using (WarlightDbContext db = new WarlightDbContext())
                             {
-                                var matchingUser = db.GetMatchingUser(user.Name);
+                                User matchingUser = db.GetMatchingUser(user.Name);
 
-                                var openedGames = from openedGame in db.OpenedGames.AsEnumerable()
-                                                  where openedGame.SignedUsers.Contains(matchingUser)
-                                                  select openedGame;
-                                var startedGames = from startedGame in db.StartedGames.AsEnumerable()
-                                                   where startedGame.PlayingUsers.Contains(matchingUser)
-                                                   select startedGame;
+                                IEnumerable<OpenedGame> openedGames = from openedGame in db.OpenedGames.AsEnumerable()
+                                                                      where openedGame.SignedUsers.Contains(
+                                                                          matchingUser)
+                                                                      select openedGame;
+                                IEnumerable<StartedGame> startedGames =
+                                    from startedGame in db.StartedGames.AsEnumerable()
+                                    where startedGame.PlayingUsers.Contains(matchingUser)
+                                    select startedGame;
 
                                 var result = new List<GameHeaderMessageObject>();
-                                foreach (var openedGame in openedGames)
+                                foreach (OpenedGame openedGame in openedGames)
                                 {
-                                    result.Add(new OpenedGameHeaderMessageObject()
+                                    result.Add(new OpenedGameHeaderMessageObject
                                     {
                                         GameId = openedGame.Id,
                                         AiPlayersCount = openedGame.AiPlayersCount,
@@ -209,9 +209,9 @@
                                         GameCreated = DateTime.Parse(openedGame.GameCreatedDateTime)
                                     });
                                 }
-                                foreach (var startedGame in startedGames)
+                                foreach (StartedGame startedGame in startedGames)
                                 {
-                                    result.Add(new StartedGameHeaderMessageObject()
+                                    result.Add(new StartedGameHeaderMessageObject
                                     {
                                         GameId = startedGame.Id,
                                         AiPlayersCount = startedGame.AiPlayersCount,
@@ -221,60 +221,64 @@
                                         RoundStarted = DateTime.Parse(startedGame.LastRound.RoundStartedDateTime)
                                     });
                                 }
-                                
+
                                 {
-                                    SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadMyGamesListResponseMessage>()
-                                    {
-                                        TypedValue = new LoadMyGamesListResponseMessage()
+                                    SerializationObjectWrapper wrapper =
+                                        new SerializationObjectWrapper<LoadMyGamesListResponseMessage>
                                         {
-                                            GameHeaderMessageObjects = result
-                                        }
-                                    };
+                                            TypedValue = new LoadMyGamesListResponseMessage
+                                            {
+                                                GameHeaderMessageObjects = result
+                                            }
+                                        };
                                     await wrapper.SerializeAsync(stream);
                                 }
-
-
                             }
                         }),
                         TypeSwitch.Case<LoadOpenedGamesListRequestMessage>(async message =>
                         {
-                            var user = message.RequestingUser;
-                            
-                            using (var db = new WarlightDbContext())
-                            {
-                                if (db.GetMatchingUser(user.Name) == null) return;
+                            MyNetworkUser user = message.RequestingUser;
 
-                                var openedGames = from openedGame in db.OpenedGames
-                                                  from dbUser in openedGame.SignedUsers
-                                                  where dbUser.Name != user.Name
-                                                  select openedGame;
-                                
+                            using (WarlightDbContext db = new WarlightDbContext())
+                            {
+                                if (db.GetMatchingUser(user.Name) == null)
                                 {
-                                    SerializationObjectWrapper wrapper = new SerializationObjectWrapper<LoadOpenedGamesListResponseMessage>()
-                                    {
-                                        TypedValue = new LoadOpenedGamesListResponseMessage()
+                                    return;
+                                }
+
+                                IQueryable<OpenedGame> openedGames = from openedGame in db.OpenedGames
+                                                                     from dbUser in openedGame.SignedUsers
+                                                                     where dbUser.Name != user.Name
+                                                                     select openedGame;
+
+                                {
+                                    SerializationObjectWrapper wrapper =
+                                        new SerializationObjectWrapper<LoadOpenedGamesListResponseMessage>
                                         {
-                                            GameHeaderMessageObjects = openedGames.AsEnumerable().Select(x => new OpenedGameHeaderMessageObject()
+                                            TypedValue = new LoadOpenedGamesListResponseMessage
                                             {
-                                                AiPlayersCount = x.AiPlayersCount,
-                                                GameCreated = DateTime.Parse(x.GameCreatedDateTime),
-                                                GameId = x.Id,
-                                                HumanPlayersCount = x.HumanPlayersCount,
-                                                MapName = x.MapName
-                                            })
-                                        }
-                                    };
+                                                GameHeaderMessageObjects = openedGames.AsEnumerable().Select(
+                                                    x => new OpenedGameHeaderMessageObject
+                                                    {
+                                                        AiPlayersCount = x.AiPlayersCount,
+                                                        GameCreated = DateTime.Parse(x.GameCreatedDateTime),
+                                                        GameId = x.Id,
+                                                        HumanPlayersCount = x.HumanPlayersCount,
+                                                        MapName = x.MapName
+                                                    })
+                                            }
+                                        };
                                     await wrapper.SerializeAsync(stream);
                                 }
                             }
                         }),
                         TypeSwitch.Case<JoinGameRequestMessage>(async message =>
                         {
-                            var player = message.RequestingPlayer;
+                            HumanPlayer player = message.RequestingPlayer;
 
-                            using (var db = new WarlightDbContext())
+                            using (WarlightDbContext db = new WarlightDbContext())
                             {
-                                var matchingUser = db.GetMatchingUser(player.User.Name);
+                                User matchingUser = db.GetMatchingUser(player.User.Name);
 
                                 if (matchingUser == null)
                                 {
@@ -285,7 +289,7 @@
                                     return;
                                 }
 
-                                var matchingOpenedGame = db.GetMatchingOpenedGame(message.OpenedGameId);
+                                OpenedGame matchingOpenedGame = db.GetMatchingOpenedGame(message.OpenedGameId);
 
                                 if (matchingOpenedGame == null)
                                 {
@@ -296,7 +300,7 @@
                                     return;
                                 }
 
-                                var openedGame = await matchingOpenedGame.GetGameAsync();
+                                Game openedGame = await matchingOpenedGame.GetGameAsync();
 
                                 matchingOpenedGame.SignedUsers.Add(matchingUser);
                                 openedGame.Players.Add(player);
@@ -304,7 +308,7 @@
                                 matchingOpenedGame.SetGame(openedGame);
                                 matchingOpenedGame.OpenedSlotsNumber--;
                                 matchingOpenedGame.HumanPlayersCount++;
-                                
+
                                 await db.SaveChangesAsync();
 
                                 await Send(stream, new JoinGameResponseMessage
@@ -317,7 +321,7 @@
                                     // TODO: start the game
                                     db.OpenedGames.Remove(matchingOpenedGame);
 
-                                    var startedGame = new StartedGame()
+                                    StartedGame startedGame = new StartedGame
                                     {
                                         AiPlayersCount = matchingOpenedGame.AiPlayersCount,
                                         GameStartedDateTime = DateTime.Now.ToString(),
@@ -338,37 +342,40 @@
                 Dispose();
             }
         }
-        
 
-        async Task Send<T>(Stream stream, T value)
+
+        private async Task Send<T>(Stream stream, T value)
         {
-            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<T>()
+            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<T>
             {
                 TypedValue = value
             };
             await wrapper.SerializeAsync(stream);
         }
 
-        async Task<T> Receive<T>(Stream stream) where T : class
+        private async Task<T> Receive<T>(Stream stream) where T : class
         {
-            var result = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value;
+            object result = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value;
             if (result.GetType() == typeof(T))
             {
-                return (T)result;
+                return (T) result;
             }
             return default(T);
         }
 
-        bool isDisposed;
+        private bool isDisposed;
 
         public void Dispose()
         {
             Dispose(false);
         }
 
-        void Dispose(bool calledFromFinalizer)
+        private void Dispose(bool calledFromFinalizer)
         {
-            if (calledFromFinalizer == false) GC.SuppressFinalize(this);
+            if (calledFromFinalizer == false)
+            {
+                GC.SuppressFinalize(this);
+            }
             if (isDisposed == false)
             {
                 client.Close();

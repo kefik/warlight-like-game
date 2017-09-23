@@ -1,48 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GameObjectsLib.Game;
-using GameObjectsLib.GameMap;
-using ProtoBuf;
-
-namespace GameObjectsLib.Game
+﻿namespace GameObjectsLib.Game
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using GameMap;
+    using ProtoBuf;
+
     /// <summary>
-    /// Instance represents one singleplayer game.
+    ///     Instance represents one singleplayer game.
     /// </summary>
     [Serializable]
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    class SingleplayerGame : Game
+    internal class SingleplayerGame : Game
     {
-        SingleplayerGame()  { }
-        /// <summary>
-        /// Instance of this class serves to validate correctness of the game before it starts.
-        /// </summary>
-        class SingleplayerGameValidator
+        private SingleplayerGame()
         {
-            readonly SingleplayerGame game;
+        }
+
+        /// <summary>
+        ///     Instance of this class serves to validate correctness of the game before it starts.
+        /// </summary>
+        private class SingleplayerGameValidator
+        {
+            private readonly SingleplayerGame game;
+
             public SingleplayerGameValidator(SingleplayerGame game)
             {
                 this.game = game;
             }
+
             /// <summary>
-            /// Decides whether the game has too many players.
+            ///     Decides whether the game has too many players.
             /// </summary>
             /// <returns>True if it has more players than the limit of the map.</returns>
             public bool HasTooManyPlayers()
             {
                 return game.Players.Count > game.Map.PlayersLimit;
             }
+
             /// <summary>
-            /// Decides whether the game at least 2 players.
+            ///     Decides whether the game at least 2 players.
             /// </summary>
             /// <returns>True if it has at least 2 players.</returns>
             public bool HasEnoughPlayers()
             {
                 return game.Players.Count >= 2;
             }
+
             /// <summary>
-            /// Decides whether the game has exactly one human player.
+            ///     Decides whether the game has exactly one human player.
             /// </summary>
             /// <returns>True if it has at least 1 human player.</returns>
             public bool HasOneHumanPlayer()
@@ -52,27 +58,35 @@ namespace GameObjectsLib.Game
                         select player).Count() == 1;
             }
         }
+
         public SingleplayerGame(int id, Map map, IList<Player> players) : base(id, map, players)
         {
         }
-        
+
 
         public override GameType GameType
         {
             get { return GameType.SinglePlayer; }
         }
-        
+
 
         public override void Validate()
         {
             SingleplayerGameValidator validator = new SingleplayerGameValidator(this);
 
             // validates the game before it starts
-            if (!validator.HasEnoughPlayers()) throw new ArgumentException();
-            if (validator.HasTooManyPlayers()) throw new ArgumentException();
-            if (!validator.HasOneHumanPlayer()) throw new ArgumentException();
-            
+            if (!validator.HasEnoughPlayers())
+            {
+                throw new ArgumentException();
+            }
+            if (validator.HasTooManyPlayers())
+            {
+                throw new ArgumentException();
+            }
+            if (!validator.HasOneHumanPlayer())
+            {
+                throw new ArgumentException();
+            }
         }
-        
     }
 }

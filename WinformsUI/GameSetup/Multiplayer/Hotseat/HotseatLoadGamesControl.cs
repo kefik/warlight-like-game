@@ -1,11 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using GameObjectsLib.Game;
-
-namespace WinformsUI.GameSetup.Multiplayer.Hotseat
+﻿namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
+    using GameObjectsLib.Game;
+
     public partial class HotseatLoadGamesControl : UserControl
     {
         public HotseatLoadGamesControl()
@@ -19,14 +20,14 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         {
             Task.Run(() =>
             {
-                using (var db = new UtilsDbContext())
+                using (UtilsDbContext db = new UtilsDbContext())
                 {
-                    var savedGames = from game in db.HotseatSavedGameInfos
-                                     orderby game.SavedGameDate descending
-                                     select game;
+                    IOrderedQueryable<HotseatSavedGameInfo> savedGames = from game in db.HotseatSavedGameInfos
+                                                                         orderby game.SavedGameDate descending
+                                                                         select game;
 
                     // TODO: might be too slow
-                    foreach (var savedGame in savedGames)
+                    foreach (HotseatSavedGameInfo savedGame in savedGames)
                     {
                         Invoke(new Action(() => loadedGamesListBox.Items.Add(savedGame)));
                     }
@@ -34,42 +35,51 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
                 }
             });
         }
+
         private void LoadGame(object sender, EventArgs e)
         {
-            if (loadedGamesListBox.SelectedIndex < 0) return;
+            if (loadedGamesListBox.SelectedIndex < 0)
+            {
+                return;
+            }
 
-            var savedGameInfo =
-                (HotseatSavedGameInfo)loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
+            HotseatSavedGameInfo savedGameInfo =
+                (HotseatSavedGameInfo) loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
 #if (!DEBUG)
             try
             {
 #endif
-                using (var db = new UtilsDbContext())
+                using (UtilsDbContext db = new UtilsDbContext())
                 {
-                    var game = Game.Load(db, savedGameInfo);
+                    Game game = Game.Load(db, savedGameInfo);
                     OnHotseatGameLoaded?.Invoke(game);
                 }
 #if (!DEBUG)
-        }
+            }
             catch (Exception)
             {
-                MessageBox.Show("Selected game save has been damaged.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
+                MessageBox.Show("Selected game save has been damaged.", "Error", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
 #endif
         }
+
         private void DeleteGame(object sender, EventArgs e)
         {
-            if (loadedGamesListBox.SelectedIndex < 0) return;
-            var selectedFiles = loadedGamesListBox.SelectedItems.Cast<HotseatSavedGameInfo>().ToList();
-            for(int i = 0; i < selectedFiles.Count; i++)
+            if (loadedGamesListBox.SelectedIndex < 0)
+            {
+                return;
+            }
+            List<HotseatSavedGameInfo> selectedFiles =
+                loadedGamesListBox.SelectedItems.Cast<HotseatSavedGameInfo>().ToList();
+            for (int i = 0; i < selectedFiles.Count; i++)
             {
                 loadedGamesListBox.Items.RemoveAt(i);
             }
 
-            using (var db = new UtilsDbContext())
+            using (UtilsDbContext db = new UtilsDbContext())
             {
-                foreach (var savedGameInfo in selectedFiles)
+                foreach (HotseatSavedGameInfo savedGameInfo in selectedFiles)
                 {
                     db.Remove(savedGameInfo);
                 }

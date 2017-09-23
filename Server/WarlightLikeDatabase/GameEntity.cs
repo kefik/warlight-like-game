@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Server.WarlightLikeDatabase
+﻿namespace Server.WarlightLikeDatabase
 {
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
     using System.IO;
+    using System.Threading.Tasks;
     using GameObjectsLib.Game;
     using GameObjectsLib.NetworkCommObjects;
-    
+
     public abstract class GameEntity : Entity
     {
         [Required]
@@ -23,14 +17,14 @@ namespace Server.WarlightLikeDatabase
 
         [Required]
         public int HumanPlayersCount { get; set; }
-        
+
         [Required]
         [MaxLength(20480)]
         public virtual byte[] SerializedGame { get; set; }
 
         public virtual Game GetGame()
         {
-            using (var ms = new MemoryStream(SerializedGame))
+            using (MemoryStream ms = new MemoryStream(SerializedGame))
             {
                 return SerializationObjectWrapper.Deserialize(ms).Value as Game;
             }
@@ -38,7 +32,7 @@ namespace Server.WarlightLikeDatabase
 
         public virtual async Task<Game> GetGameAsync()
         {
-            using (var ms = new MemoryStream(SerializedGame))
+            using (MemoryStream ms = new MemoryStream(SerializedGame))
             {
                 return (await SerializationObjectWrapper.DeserializeAsync(ms)).Value as Game;
             }
@@ -46,7 +40,7 @@ namespace Server.WarlightLikeDatabase
 
         public virtual async Task SetGameAsync(Stream stream)
         {
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 await stream.CopyToAsync(ms);
 
@@ -58,7 +52,7 @@ namespace Server.WarlightLikeDatabase
 
         public virtual void SetGame(Stream stream)
         {
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 stream.CopyTo(ms);
 

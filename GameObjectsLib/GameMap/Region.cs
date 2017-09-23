@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using GameObjectsLib;
-using GameObjectsLib.GameMap;
-using ProtoBuf;
-
-namespace GameObjectsLib.GameMap
+﻿namespace GameObjectsLib.GameMap
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using ProtoBuf;
+
     /// <summary>
-    /// Instace of this class represents region for given map in the game.
+    ///     Instace of this class represents region for given map in the game.
     /// </summary>
     [Serializable]
     [ProtoContract]
@@ -19,27 +16,30 @@ namespace GameObjectsLib.GameMap
 
         [ProtoMember(1)]
         public int Id { get; }
+
         [ProtoMember(2)]
         public string Name { get; }
+
         /// <summary>
-        /// Player owning given region. Null means no owner.
+        ///     Player owning given region. Null means no owner.
         /// </summary>
         [ProtoMember(3, AsReference = true)]
         public Player Owner { get; set; }
 
         /// <summary>
-        /// Number of units occuppying this region.
+        ///     Number of units occuppying this region.
         /// </summary>
         [ProtoMember(4)]
         public int Army { get; set; }
+
         /// <summary>
-        /// Represents region group it belongs to.
+        ///     Represents region group it belongs to.
         /// </summary>
         [ProtoMember(5, AsReference = true)]
         public SuperRegion SuperRegion { get; }
 
         /// <summary>
-        /// Represents list of regions that are neighbours to this given region.
+        ///     Represents list of regions that are neighbours to this given region.
         /// </summary>
         [ProtoMember(6, AsReference = true)]
         public IList<Region> NeighbourRegions { get; } = new List<Region>();
@@ -53,17 +53,21 @@ namespace GameObjectsLib.GameMap
         }
 
         /// <summary>
-        /// Finds out whether region in parameter is neighbour of this instance.
+        ///     Finds out whether region in parameter is neighbour of this instance.
         /// </summary>
         /// <param name="region">Region.</param>
         /// <returns>True, if it is neighbour to this instance.</returns>
         public bool IsNeighbourOf(Region region)
         {
-            if (region == null) return false;
+            if (region == null)
+            {
+                return false;
+            }
             return NeighbourRegions.Any(x => x == region);
         }
+
         /// <summary>
-        /// Finds out whether this region is neighbour of any of players controlled regions.
+        ///     Finds out whether this region is neighbour of any of players controlled regions.
         /// </summary>
         /// <param name="player">Given player.</param>
         /// <returns>True, if it is neighbour of player.</returns>
@@ -72,7 +76,9 @@ namespace GameObjectsLib.GameMap
             return player.ControlledRegions.Any(controlledRegion => controlledRegion.IsNeighbourOf(this));
         }
 
-        Region() { }
+        private Region()
+        {
+        }
 
         public override string ToString()
         {
@@ -81,17 +87,32 @@ namespace GameObjectsLib.GameMap
 
         public bool Equals(Region other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
             return Id == other.Id;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Region)obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+            return Equals((Region) obj);
         }
 
         public override int GetHashCode()
@@ -100,25 +121,33 @@ namespace GameObjectsLib.GameMap
         }
 
         /// <summary>
-        /// Refreshes situation of the game based on this regions owner.
+        ///     Refreshes situation of the game based on this regions owner.
         /// </summary>
         public void Refresh()
         {
-            if (Owner == null) return;
+            if (Owner == null)
+            {
+                return;
+            }
             // if this region has player as owner, but this player doesn't have
             // this region as controlled region, add this region to controlled regions
             // of the player
-            var ownerRegions = Owner.ControlledRegions;
+            IList<Region> ownerRegions = Owner.ControlledRegions;
             bool containsThisRegion = (from region in ownerRegions
-                            where region == this
-                            select region).Any();
-            if (!containsThisRegion) ownerRegions.Add(this);
-            
+                                       where region == this
+                                       select region).Any();
+            if (!containsThisRegion)
+            {
+                ownerRegions.Add(this);
+            }
         }
 
         public static bool operator ==(Region left, Region right)
         {
-            if (object.ReferenceEquals(left, null)) return object.ReferenceEquals(right, null);
+            if (ReferenceEquals(left, null))
+            {
+                return ReferenceEquals(right, null);
+            }
             return left.Equals(right);
         }
 
@@ -126,6 +155,5 @@ namespace GameObjectsLib.GameMap
         {
             return !(left == right);
         }
-
     }
 }

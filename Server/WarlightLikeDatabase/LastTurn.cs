@@ -1,9 +1,7 @@
 ﻿namespace Server.WarlightLikeDatabase
 {
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
     using System.IO;
-    using GameObjectsLib;
     using GameObjectsLib.NetworkCommObjects;
 
     public class LastTurn : Entity
@@ -14,7 +12,7 @@
 
         public object GetLastTurn()
         {
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 return SerializationObjectWrapper.Deserialize(ms).Value;
             }

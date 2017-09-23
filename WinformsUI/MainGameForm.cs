@@ -1,30 +1,28 @@
-﻿using System;
-using System.Windows.Forms;
-using GameObjectsLib.Game;
-using GameObjectsLib.GameUser;
-using WinformsUI.GameSetup.Multiplayer;
-using WinformsUI.GameSetup.Multiplayer.Hotseat;
-using WinformsUI.GameSetup.Multiplayer.Network;
-using WinformsUI.GameSetup.Singleplayer;
-using WinformsUI.InGame;
-
-namespace WinformsUI
+﻿namespace WinformsUI
 {
+    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
+    using System.Windows.Forms;
     using GameObjectsLib;
+    using GameObjectsLib.Game;
+    using GameObjectsLib.GameUser;
+    using GameSetup.Multiplayer;
+    using GameSetup.Multiplayer.Hotseat;
+    using GameSetup.Multiplayer.Network;
+    using GameSetup.Singleplayer;
+    using InGame;
 
     public partial class MainGameForm : Form
     {
-        int previousTabSelectedIndex;
+        private int previousTabSelectedIndex;
 
-        SingleplayerGameOptionsControl singleplayerGameOptionsControl;
-        HotseatGameOptionsControl hotseatGameOptionsControl;
-        NetworkGameOptionsControl networkGameOptionsControl;
+        private SingleplayerGameOptionsControl singleplayerGameOptionsControl;
+        private HotseatGameOptionsControl hotseatGameOptionsControl;
+        private NetworkGameOptionsControl networkGameOptionsControl;
 
-        InGameControl inGame;
-        
+        private InGameControl inGame;
+
         public MainGameForm()
         {
             InitializeComponent();
@@ -35,7 +33,7 @@ namespace WinformsUI
         }
 
         /// <summary>
-        /// Loads proper screens starting newly created game the game.
+        ///     Loads proper screens starting newly created game the game.
         /// </summary>
         /// <param name="game">Instance representing the game to be started.</param>
         private void LoadInGameScreen(Game game)
@@ -89,21 +87,20 @@ namespace WinformsUI
         }
 
 
-
         private void StartNewGame(Game game)
         {
             switch (game.GameType)
             {
                 case GameType.SinglePlayer:
                     // save the game
-                    using (var db = new UtilsDbContext())
+                    using (UtilsDbContext db = new UtilsDbContext())
                     {
                         game.Save(db);
                     }
                     break;
                 case GameType.MultiplayerHotseat:
                     // save the game
-                    using (var db = new UtilsDbContext())
+                    using (UtilsDbContext db = new UtilsDbContext())
                     {
                         game.Save(db);
                     }
@@ -116,27 +113,28 @@ namespace WinformsUI
             LoadInGameScreen(game);
         }
 
-        private async Task CreateNewGame(HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers, string mapName, int freeSlotsCount)
+        private async Task CreateNewGame(HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers, string mapName,
+            int freeSlotsCount)
         {
             if (TryToLogIn())
             {
-                var networkUser = (MyNetworkUser)Global.MyUser;
+                MyNetworkUser networkUser = (MyNetworkUser) Global.MyUser;
                 bool successful = await networkUser.CreateGameAsync(creatingPlayer, aiPlayers, mapName, freeSlotsCount);
                 if (successful == false)
                 {
                     Invoke(new Action(() => MessageBox.Show($"The game could not be created.")));
                     return;
                 }
-                
+
                 // TODO: load appropriate screen
                 Invoke(new Action(() => typeGameChoiceTabControl.SelectedIndex = 0));
             }
         }
 
         /// <summary>
-        /// Resets previously loaded singleplayer control and loads new, resetted one.
+        ///     Resets previously loaded singleplayer control and loads new, resetted one.
         /// </summary>
-        void LoadSingleplayerControls()
+        private void LoadSingleplayerControls()
         {
             singleplayerGameOptionsControl?.Dispose();
 
@@ -151,9 +149,9 @@ namespace WinformsUI
         }
 
         /// <summary>
-        /// Resets previously loaded multiplayer control and loads new, resetted one.
+        ///     Resets previously loaded multiplayer control and loads new, resetted one.
         /// </summary>
-        void LoadMultiplayerControls()
+        private void LoadMultiplayerControls()
         {
             void LoadHotseatControls()
             {
@@ -183,11 +181,10 @@ namespace WinformsUI
                 };
                 networkGameOptionsControl.OnGameCreated += CreateNewGame;
                 networkGameOptionsControl.Show();
-
             }
 
-            var gameTypeChoiceForm = new GameTypeChoiceForm();
-            var dialogResult = gameTypeChoiceForm.ShowDialog();
+            GameTypeChoiceForm gameTypeChoiceForm = new GameTypeChoiceForm();
+            DialogResult dialogResult = gameTypeChoiceForm.ShowDialog();
 
             switch (dialogResult)
             {
@@ -225,22 +222,30 @@ namespace WinformsUI
         public void UserChanged(User newUser)
         {
             if (Global.MyUser.UserType == UserType.MyNetworkUser)
+            {
                 loggedInLabel.Text = $"You are currently logged in as {Global.MyUser.Name}.";
+            }
             else
             {
                 loggedInLabel.Text = $"You are currently logged in as a local user named {Global.MyUser.Name}.";
             }
         }
 
-        bool TryToLogIn()
+        private bool TryToLogIn()
         {
             if (Global.MyUser.UserType != UserType.MyNetworkUser)
             {
                 ServerLoggingForm serverLoggingForm = new ServerLoggingForm();
 
                 DialogResult dialogResult;
-                if (InvokeRequired) dialogResult = (DialogResult)Invoke(new Action(() => serverLoggingForm.ShowDialog()));
-                else dialogResult = serverLoggingForm.ShowDialog();
+                if (InvokeRequired)
+                {
+                    dialogResult = (DialogResult) Invoke(new Action(() => serverLoggingForm.ShowDialog()));
+                }
+                else
+                {
+                    dialogResult = serverLoggingForm.ShowDialog();
+                }
 
                 switch (dialogResult)
                 {
@@ -249,15 +254,19 @@ namespace WinformsUI
                         break;
                     default:
                         if (InvokeRequired)
+                        {
                             Invoke(new Action(() => typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex));
+                        }
                         else
+                        {
                             typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                        }
                         return false;
                 }
             }
             else
             {
-                var converted = (MyNetworkUser)Global.MyUser;
+                MyNetworkUser converted = (MyNetworkUser) Global.MyUser;
                 bool amILogged = converted.IsLoggedIn();
 
                 if (!amILogged)
@@ -265,8 +274,14 @@ namespace WinformsUI
                     ServerLoggingForm serverLoggingForm = new ServerLoggingForm();
 
                     DialogResult dialogResult;
-                    if (InvokeRequired) dialogResult = (DialogResult)Invoke(new Action(() => serverLoggingForm.ShowDialog()));
-                    else dialogResult = serverLoggingForm.ShowDialog();
+                    if (InvokeRequired)
+                    {
+                        dialogResult = (DialogResult) Invoke(new Action(() => serverLoggingForm.ShowDialog()));
+                    }
+                    else
+                    {
+                        dialogResult = serverLoggingForm.ShowDialog();
+                    }
 
                     switch (dialogResult)
                     {
@@ -274,19 +289,27 @@ namespace WinformsUI
                             Global.MyUser = serverLoggingForm.User;
                             break;
                         default:
-                            if (InvokeRequired) Invoke(new Action(() => typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex));
-                            else typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                            if (InvokeRequired)
+                            {
+                                Invoke(new Action(() => typeGameChoiceTabControl.SelectedIndex =
+                                    previousTabSelectedIndex));
+                            }
+                            else
+                            {
+                                typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                            }
                             return false;
                     }
                 }
             }
             return true;
         }
-        void LoadSettingsControls()
+
+        private void LoadSettingsControls()
         {
             if (TryToLogIn())
             {
-                var newUser = (MyNetworkUser)Global.MyUser;
+                MyNetworkUser newUser = (MyNetworkUser) Global.MyUser;
                 playerNameTextBox.Text = newUser.Name;
                 emailTextBox.Text = newUser.Email;
                 Refresh();
@@ -296,6 +319,7 @@ namespace WinformsUI
                 typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
             }
         }
+
         private void TabChanged(object sender, EventArgs e)
         {
             // TODO: warnings about not saving the changes
@@ -316,7 +340,6 @@ namespace WinformsUI
                     break;
                 default:
                     return;
-
             }
             previousTabSelectedIndex = typeGameChoiceTabControl.SelectedIndex;
         }

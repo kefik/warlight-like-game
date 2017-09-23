@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Threading.Tasks;
-using GameObjectsLib;
-using GameObjectsLib.GameMap;
-using GameObjectsLib.GameUser;
-using GameObjectsLib.NetworkCommObjects;
-using ProtoBuf;
-
-namespace GameObjectsLib.Game
+﻿namespace GameObjectsLib.Game
 {
-    
-    interface ISaveable<out T>
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using GameMap;
+    using NetworkCommObjects;
+    using ProtoBuf;
+
+    internal interface ISaveable<out T>
     {
         void Save(IGameSaver<T> canSave);
     }
 
     /// <summary>
-    /// Enum containing types of game any game can have.
+    ///     Enum containing types of game any game can have.
     /// </summary>
     public enum GameType
     {
@@ -29,9 +24,9 @@ namespace GameObjectsLib.Game
         MultiplayerHotseat,
         MultiplayerNetwork
     }
-    
+
     /// <summary>
-    /// Represents one game.
+    ///     Represents one game.
     /// </summary>
     [Serializable]
     [ProtoContract]
@@ -42,6 +37,7 @@ namespace GameObjectsLib.Game
     {
         [ProtoMember(1)]
         public int Id { get; }
+
         [ProtoMember(2)]
         public int RoundNumber { get; internal set; }
 
@@ -50,65 +46,69 @@ namespace GameObjectsLib.Game
         }
 
         /// <summary>
-        /// Represents map being played in this game.
+        ///     Represents map being played in this game.
         /// </summary>
         [ProtoMember(3)]
         public Map Map { get; }
 
         /// <summary>
-        /// Represents list of players playing this game.
+        ///     Represents list of players playing this game.
         /// </summary>
         [ProtoMember(4)]
         public IList<Player> Players { get; }
-        
+
         /// <summary>
-        /// Return game type this game has.
+        ///     Return game type this game has.
         /// </summary>
         public abstract GameType GameType { get; }
 
         protected Game(int id, Map map, IList<Player> players)
         {
             Id = id;
-            this.Map = map;
-            this.Players = players;
+            Map = map;
+            Players = players;
         }
 
         /// <summary>
-        /// Plays given round, calculating everything, moving this instance of
-        /// the game into position after the round was played.
+        ///     Plays given round, calculating everything, moving this instance of
+        ///     the game into position after the round was played.
         /// </summary>
         /// <param name="gameRound"></param>
         public void Play(GameRound gameRound)
         {
             void PlayDeploying()
             {
-                var deploying = gameRound.Deploying;
-                foreach (var deployedArmies in deploying.ArmiesDeployed)
+                Deploying deploying = gameRound.Deploying;
+                foreach (Tuple<Region, int> deployedArmies in deploying.ArmiesDeployed)
                 {
-                    var region = (from item in Map.Regions
-                                  where item == deployedArmies.Item1
-                                  select item).First();
+                    Region region = (from item in Map.Regions
+                                     where item == deployedArmies.Item1
+                                     select item).First();
                     region.Army = deployedArmies.Item2;
                 }
             }
+
             void PlayAttacking()
             {
-                var attacks = gameRound.Attacking.Attacks;
-                foreach (var attack in attacks)
+                List<Attack> attacks = gameRound.Attacking.Attacks;
+                foreach (Attack attack in attacks)
                 {
                     // TODO: real calculation according to rules
                     // get real attacker
-                    var attacker = (from region in Map.Regions
-                                    where region == attack.Attacker
-                                    select region).First();
+                    Region attacker = (from region in Map.Regions
+                                       where region == attack.Attacker
+                                       select region).First();
 
                     // if attacking region changed owner, cancel attack
-                    if (attacker.Owner != attack.Attacker.Owner) continue;
+                    if (attacker.Owner != attack.Attacker.Owner)
+                    {
+                        continue;
+                    }
 
                     // get real defender
-                    var defender = (from region in Map.Regions
-                                    where region == attack.Defender
-                                    select region).First();
+                    Region defender = (from region in Map.Regions
+                                       where region == attack.Defender
+                                       select region).First();
                     // situation might have changed => recalculate attacking army
                     int realAttackingArmy = Math.Min(attack.AttackingArmy, attacker.Army);
                     // if they have same owner == just moving armies
@@ -126,7 +126,7 @@ namespace GameObjectsLib.Game
 
                         // calculate how many defending units were killed
                         int defendingArmyUnitsKilled = 0;
-                        for (int i = 0; i < realAttackingArmy && defendingArmyUnitsKilled < defender.Army; i++)
+                        for (int i = 0; (i < realAttackingArmy) && (defendingArmyUnitsKilled < defender.Army); i++)
                         {
                             double attackingUnitWillKillPercentage = random.Next(100) / 100d;
 
@@ -140,9 +140,8 @@ namespace GameObjectsLib.Game
 
                         // calculate how many attacking army units were killed
                         int attackingArmyUnitsKilled = 0;
-                        for (int i = 0; i < defender.Army && attackingArmyUnitsKilled < realAttackingArmy; i++)
+                        for (int i = 0; (i < defender.Army) && (attackingArmyUnitsKilled < realAttackingArmy); i++)
                         {
-
                             double defendingUnitWillKillPercentage = random.Next(100) / 100d;
 
                             // defending unit has 70% chance to kill attacking unit
@@ -159,7 +158,7 @@ namespace GameObjectsLib.Game
                         realAttackingArmy -= attackingArmyUnitsKilled;
 
                         // not whole attacking army was destroyed and defending army is destroyed
-                        if (realAttackingArmy > 0 && defender.Army == 0)
+                        if ((realAttackingArmy > 0) && (defender.Army == 0))
                         {
                             attacker.Army -= realAttackingArmy;
                             defender.Army -= realAttackingArmy;
@@ -171,10 +170,10 @@ namespace GameObjectsLib.Game
                     }
                 }
             }
-            
+
             // deploying
             PlayDeploying();
-            
+
             // attacking
             PlayAttacking();
             Refresh();
@@ -182,19 +181,19 @@ namespace GameObjectsLib.Game
         }
 
         /// <summary>
-        /// Plays given initial round, refreshing the situation of the game.
+        ///     Plays given initial round, refreshing the situation of the game.
         /// </summary>
         /// <param name="round">Round to be played.</param>
         public void Play(GameBeginningRound round)
         {
-            foreach (var roundSelectedRegion in round.SelectedRegions)
+            foreach (Tuple<Player, Region> roundSelectedRegion in round.SelectedRegions)
             {
-                var realRegion = (from region in Map.Regions
-                                  where region == roundSelectedRegion.Item2
-                                  select region).First();
-                var realPlayer = (from player in Players
-                                  where player == roundSelectedRegion.Item1
-                                  select player).First();
+                Region realRegion = (from region in Map.Regions
+                                     where region == roundSelectedRegion.Item2
+                                     select region).First();
+                Player realPlayer = (from player in Players
+                                     where player == roundSelectedRegion.Item1
+                                     select player).First();
 
                 realRegion.Owner = realPlayer;
             }
@@ -204,12 +203,12 @@ namespace GameObjectsLib.Game
         }
 
         /// <summary>
-        /// Starts the game if theres no error.
+        ///     Starts the game if theres no error.
         /// </summary>
         public abstract void Validate();
 
         /// <summary>
-        /// Creates an instance of new <see cref="Game"/>, validates it and returns it.
+        ///     Creates an instance of new <see cref="Game" />, validates it and returns it.
         /// </summary>
         /// <param name="id">Id of the game corresponding to Id that will be stored in the database.</param>
         /// <param name="gameType">Type of the game.</param>
@@ -221,14 +220,14 @@ namespace GameObjectsLib.Game
             switch (gameType)
             {
                 case GameType.SinglePlayer:
-                    var sp = new SingleplayerGame(id, map, players);
+                    SingleplayerGame sp = new SingleplayerGame(id, map, players);
                     sp.Validate();
                     return sp;
                 case GameType.MultiplayerHotseat:
-                    var hotseatGame = new HotseatGame(id, map, players);
+                    HotseatGame hotseatGame = new HotseatGame(id, map, players);
                     return hotseatGame;
                 case GameType.MultiplayerNetwork:
-                    var networkGame = new NetworkGame(id, map, players);
+                    NetworkGame networkGame = new NetworkGame(id, map, players);
                     return networkGame;
                 default:
                     throw new ArgumentException();
@@ -236,7 +235,7 @@ namespace GameObjectsLib.Game
         }
 
         /// <summary>
-        /// Saves the game to the object based on parameter.
+        ///     Saves the game to the object based on parameter.
         /// </summary>
         /// <param name="canSave">Object which can save the current instance of the game.</param>
         public void Save(IGameSaver<Game> canSave)
@@ -244,23 +243,23 @@ namespace GameObjectsLib.Game
             Refresh();
             using (MemoryStream stream = new MemoryStream())
             {
-                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<Game>() {TypedValue = this};
+                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<Game> {TypedValue = this};
                 wrapper.Serialize(stream);
                 // reset position to be able to read from it again
                 stream.Position = 0;
                 canSave.SaveGame(this, stream);
             }
         }
-        
-        
+
+
         public byte[] GetBytes()
         {
             SerializationObjectWrapper wrapper
-                = new SerializationObjectWrapper<Game>()
+                = new SerializationObjectWrapper<Game>
                 {
                     TypedValue = this
                 };
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 wrapper.Serialize(ms);
                 ms.Position = 0;
@@ -271,11 +270,11 @@ namespace GameObjectsLib.Game
         public MemoryStream GetStreamForSerializedGame()
         {
             SerializationObjectWrapper wrapper
-                = new SerializationObjectWrapper<Game>()
+                = new SerializationObjectWrapper<Game>
                 {
                     TypedValue = this
                 };
-            var ms = new MemoryStream();
+            MemoryStream ms = new MemoryStream();
             wrapper.Serialize(ms);
 
             ms.Position = 0;
@@ -284,18 +283,17 @@ namespace GameObjectsLib.Game
         }
 
         /// <summary>
-        /// Refreshes situation in the game.
+        ///     Refreshes situation in the game.
         /// </summary>
         public void Refresh()
         {
-            
             // refresh regions owner
-            foreach (var region in Map.Regions)
+            foreach (Region region in Map.Regions)
             {
                 region.Refresh();
             }
             // refresh
-            foreach (var player in Players)
+            foreach (Player player in Players)
             {
                 player.Refresh();
             }
@@ -307,7 +305,7 @@ namespace GameObjectsLib.Game
         }
 
         /// <summary>
-        /// Loads the game based on parameters.
+        ///     Loads the game based on parameters.
         /// </summary>
         /// <typeparam name="TLoadSource">Source type.</typeparam>
         /// <param name="canLoad">Object which can load the game.</param>
@@ -315,9 +313,9 @@ namespace GameObjectsLib.Game
         /// <returns>Loaded game.</returns>
         public static Game Load<TLoadSource>(IGameLoader<TLoadSource> canLoad, TLoadSource source)
         {
-            using (var stream = canLoad.LoadGame(source))
+            using (Stream stream = canLoad.LoadGame(source))
             {
-                Game game = (Game)(SerializationObjectWrapper.Deserialize(stream).Value);
+                Game game = (Game) SerializationObjectWrapper.Deserialize(stream).Value;
                 game.ReconstructOriginalGraph();
                 game.Refresh();
                 return game;
@@ -330,16 +328,16 @@ namespace GameObjectsLib.Game
         }
 
         /// <summary>
-        /// After deserialization we have same objects that do not match references.
-        /// Purpose of this method is to remap those references back for future
-        /// graph updating to be easy..
+        ///     After deserialization we have same objects that do not match references.
+        ///     Purpose of this method is to remap those references back for future
+        ///     graph updating to be easy..
         /// </summary>
         private void ReconstructOriginalGraph()
         {
             // TODO: IMPORTANT = check how it differs from Refresh
-            var regions = Map.Regions;
-            var superRegions = Map.SuperRegions;
-            var players = Players;
+            IList<Region> regions = Map.Regions;
+            IList<SuperRegion> superRegions = Map.SuperRegions;
+            IList<Player> players = Players;
             // reconstruct original super regions
             {
                 // SuperRegion = region.SuperRegion
@@ -348,7 +346,9 @@ namespace GameObjectsLib.Game
                     for (int j = 0; j < superRegions.Count; j++)
                     {
                         if (superRegions[j] == region.SuperRegion)
+                        {
                             superRegions[j] = region.SuperRegion;
+                        }
                     }
                 }
             }
@@ -357,9 +357,9 @@ namespace GameObjectsLib.Game
                 // superRegion.Region = region
                 foreach (Region region in regions)
                 {
-                    foreach (var superRegion in superRegions)
+                    foreach (SuperRegion superRegion in superRegions)
                     {
-                        var superRegionRegions = superRegion.Regions;
+                        IList<Region> superRegionRegions = superRegion.Regions;
                         for (int j = 0; j < superRegionRegions.Count; j++)
                         {
                             if (superRegionRegions[j] == region)
@@ -379,7 +379,7 @@ namespace GameObjectsLib.Game
             {
                 for (int i = 0; i < regions.Count; i++)
                 {
-                    var neighbours = regions[i].NeighbourRegions;
+                    IList<Region> neighbours = regions[i].NeighbourRegions;
                     foreach (Region neighbour in neighbours)
                     {
                         for (int j = 0; j < regions.Count; j++)
@@ -394,25 +394,26 @@ namespace GameObjectsLib.Game
             }
             // reconstruct owner
             {
-                foreach (var player in Players)
+                foreach (Player player in Players)
                 {
-                    var controlledRegions = player.ControlledRegions;
-                    foreach (var controlledRegion in controlledRegions)
+                    IList<Region> controlledRegions = player.ControlledRegions;
+                    foreach (Region controlledRegion in controlledRegions)
                     {
                         controlledRegion.Owner = player;
                     }
                 }
                 // other way
-                foreach (var player in players)
+                foreach (Player player in players)
                 {
                     foreach (Region region in Map.Regions)
                     {
-                        if (region.Owner == player) region.Owner = player;
+                        if (region.Owner == player)
+                        {
+                            region.Owner = player;
+                        }
                     }
                 }
             }
-
         }
     }
-    
 }

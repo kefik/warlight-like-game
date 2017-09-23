@@ -1,9 +1,7 @@
 ﻿namespace Server.WarlightLikeDatabase
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     public class StartedGame : GameEntity
     {
@@ -17,7 +15,7 @@
         [Required]
         [StringLength(50)]
         public string GameStartedDateTime { get; set; }
-        
+
         [Required]
         public int RoundNumber { get; set; }
 

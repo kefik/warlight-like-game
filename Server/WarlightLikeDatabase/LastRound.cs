@@ -1,9 +1,7 @@
 ﻿namespace Server.WarlightLikeDatabase
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
     using System.IO;
     using System.Threading.Tasks;
     using GameObjectsLib;
@@ -17,7 +15,7 @@
 
         public async Task<IEnumerable<GameRound>> GetAiTurnsAsync()
         {
-            using (var ms = new MemoryStream(SerializedAiTurns))
+            using (MemoryStream ms = new MemoryStream(SerializedAiTurns))
             {
                 return (await SerializationObjectWrapper.DeserializeAsync(ms)).Value as IEnumerable<GameRound>;
             }
@@ -25,7 +23,7 @@
 
         public IEnumerable<GameRound> GetAiTurns()
         {
-            using (var ms = new MemoryStream(SerializedAiTurns))
+            using (MemoryStream ms = new MemoryStream(SerializedAiTurns))
             {
                 return SerializationObjectWrapper.Deserialize(ms).Value as IEnumerable<GameRound>;
             }
@@ -33,11 +31,11 @@
 
         public async Task SetAiTurns(IList<GameRound> rounds)
         {
-            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<IList<GameRound>>()
+            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<IList<GameRound>>
             {
                 TypedValue = rounds
             };
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 await wrapper.SerializeAsync(ms);
 

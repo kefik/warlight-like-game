@@ -1,30 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using System.Diagnostics;
-using GameObjectsLib.Game;
-
-namespace Server
+﻿namespace Server
 {
-    
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Net;
+    using System.Net.NetworkInformation;
+    using System.Net.Sockets;
+    using System.Threading;
+    using System.Threading.Tasks;
 
-    class ConnectedUser
+    internal class ConnectedUser
     {
         public int Id { get; }
-        readonly Stopwatch stopwatch;
+        private readonly Stopwatch stopwatch;
+
         public bool IsConnected
         {
             // elapsed more than 5 minus
-            get { return ((double)stopwatch.ElapsedMilliseconds / 1000) / 60 >= 5; }
+            get { return (double) stopwatch.ElapsedMilliseconds / 1000 / 60 >= 5; }
         }
-        
+
         public ConnectedUser(int id)
         {
             Id = id;
@@ -36,20 +32,23 @@ namespace Server
             stopwatch.Restart();
         }
     }
-    class WarlightServer : IDisposable
-    {
-        readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        readonly List<WarlightClient> directlyConnectedClients = new List<WarlightClient>();
 
-        readonly Dictionary<string, WarlightClient> connectedUsers = new Dictionary<string, WarlightClient>();
-        
-        readonly TcpListener listener;
+    internal class WarlightServer : IDisposable
+    {
+        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly List<WarlightClient> directlyConnectedClients = new List<WarlightClient>();
+
+        private readonly Dictionary<string, WarlightClient> connectedUsers = new Dictionary<string, WarlightClient>();
+
+        private readonly TcpListener listener;
+
         private WarlightServer(IPEndPoint endPoint)
         {
             listener = new TcpListener(endPoint);
         }
+
         /// <summary>
-        /// Creates an instance of Warlight server on given port and given pcs inter network address.
+        ///     Creates an instance of Warlight server on given port and given pcs inter network address.
         /// </summary>
         /// <param name="port">Port number.</param>
         /// <returns>Instance of the server prepared to run.</returns>
@@ -65,7 +64,7 @@ namespace Server
         }
 
         /// <summary>
-        /// Creates instance of Warlight server based on address and port.
+        ///     Creates instance of Warlight server based on address and port.
         /// </summary>
         /// <param name="address">Address of the server.</param>
         /// <param name="port">Port where it will be listening on.</param>
@@ -77,17 +76,17 @@ namespace Server
                 IPEndPoint endPoint = new IPEndPoint(address, port);
                 server = new WarlightServer(endPoint);
             }
-            
+
             return server;
         }
-        
+
 
         public void Run(int connectionsLimit)
         {
             try
             {
                 listener.Start();
-                
+
                 AcceptClientsAsync(connectionsLimit);
 
                 Thread.Sleep(Timeout.Infinite);
@@ -98,7 +97,7 @@ namespace Server
             }
         }
 
-        async void AcceptClientsAsync(int connectionsLimit)
+        private async void AcceptClientsAsync(int connectionsLimit)
         {
             while (true)
             {
@@ -118,12 +117,16 @@ namespace Server
         {
             Dispose(false);
         }
-        void Dispose(bool calledFromFinalizer)
+
+        private void Dispose(bool calledFromFinalizer)
         {
             if (!cancellationTokenSource.IsCancellationRequested)
             {
                 cancellationTokenSource.Cancel();
-                if (calledFromFinalizer == false) GC.SuppressFinalize(this);
+                if (calledFromFinalizer == false)
+                {
+                    GC.SuppressFinalize(this);
+                }
             }
         }
 
@@ -134,7 +137,7 @@ namespace Server
 
         public static IPAddress GetLocalIPAddress()
         {
-            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 return null;
             }
@@ -147,8 +150,7 @@ namespace Server
         }
     }
 
-    class ClientNotRespondingException : Exception
+    internal class ClientNotRespondingException : Exception
     {
-        
     }
 }

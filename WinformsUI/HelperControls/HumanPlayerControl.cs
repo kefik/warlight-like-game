@@ -1,28 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using GameObjectsLib.GameUser;
-using GameObjectsLib;
-
-namespace WinformsUI.HelperControls
+﻿namespace WinformsUI.HelperControls
 {
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+    using GameObjectsLib;
+    using GameObjectsLib.GameUser;
+
     public partial class HumanPlayerControl : UserControl
     {
-        HumanPlayer player;
+        private HumanPlayer player;
 
         public HumanPlayerControl()
         {
             InitializeComponent();
             player = new HumanPlayer(new LocalUser(), KnownColor.Aqua);
         }
-        
-        void UserChanged(User user)
+
+        private void UserChanged(User user)
         {
             player = new HumanPlayer(user, PlayerColor);
             playerNameTextBox.Text = user.Name;
@@ -40,7 +34,7 @@ namespace WinformsUI.HelperControls
         }
 
         /// <summary>
-        /// Accesses player color.
+        ///     Accesses player color.
         /// </summary>
         public KnownColor PlayerColor
         {
@@ -51,9 +45,9 @@ namespace WinformsUI.HelperControls
                 colorButton.BackColor = Color.FromKnownColor(value);
             }
         }
-        
+
         /// <summary>
-        /// Accesses player name.
+        ///     Accesses player name.
         /// </summary>
         public string PlayerName
         {
@@ -66,7 +60,7 @@ namespace WinformsUI.HelperControls
         }
 
         /// <summary>
-        /// Returns new instance representing the player.
+        ///     Returns new instance representing the player.
         /// </summary>
         /// <returns>Player</returns>
         public Player GetPlayer()
@@ -79,12 +73,24 @@ namespace WinformsUI.HelperControls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if ((int)PlayerColor >= 173) PlayerColor = (KnownColor)0;
-                    else PlayerColor++;
+                    if ((int) PlayerColor >= 173)
+                    {
+                        PlayerColor = 0;
+                    }
+                    else
+                    {
+                        PlayerColor++;
+                    }
                     break;
                 case MouseButtons.Right:
-                    if ((int)PlayerColor <= 0) PlayerColor = (KnownColor)173;
-                    else PlayerColor--;
+                    if ((int) PlayerColor <= 0)
+                    {
+                        PlayerColor = (KnownColor) 173;
+                    }
+                    else
+                    {
+                        PlayerColor--;
+                    }
                     break;
             }
         }

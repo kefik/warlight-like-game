@@ -8,6 +8,7 @@
     {
         [ProtoMember(1)]
         public MyNetworkUser MyUser { get; set; }
+
         [ProtoMember(2)]
         public int GameId { get; set; }
     }

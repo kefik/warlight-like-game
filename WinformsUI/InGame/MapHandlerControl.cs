@@ -1,24 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using GameObjectsLib;
-using GameObjectsLib.GameMap;
-using WinformsUI.InGame.Phases;
-using Region = GameObjectsLib.GameMap.Region;
-
-namespace WinformsUI.InGame
+﻿namespace WinformsUI.InGame
 {
+    using System;
+    using System.Windows.Forms;
+    using GameObjectsLib;
     using GameObjectsLib.Game;
+    using GameObjectsLib.GameMap;
 
     public partial class MapHandlerControl : UserControl
     {
-        MapImageProcessor processor;
+        private MapImageProcessor processor;
 
         public MapImageProcessor Processor
         {
@@ -50,13 +40,12 @@ namespace WinformsUI.InGame
         {
             InitializeComponent();
         }
-        
 
-        
+
         private void ImageClick(object sender, MouseEventArgs e)
         {
-            var region = Processor.GetRegion(e.X, e.Y);
-            var state = GetState();
+            Region region = Processor.GetRegion(e.X, e.Y);
+            GameState state = GetState();
             if (state == GameState.Deploying)
             {
                 switch (e.Button)
@@ -77,7 +66,6 @@ namespace WinformsUI.InGame
             {
                 OnRegionSeizeAttempt?.Invoke(region);
             }
-
         }
 
         private void ImageHover(object sender, MouseEventArgs e)
@@ -85,7 +73,6 @@ namespace WinformsUI.InGame
             // TODO: fix flickering
             //if (processor.GetRegion(e.X, e.Y) != null) Cursor.Current = Cursors.Hand;
             //else Cursor.Current = Cursors.Default;
-
         }
 
         public void RefreshImage()
@@ -106,7 +93,7 @@ namespace WinformsUI.InGame
         }
 
         /// <summary>
-        /// Deploys region and its army graphically.
+        ///     Deploys region and its army graphically.
         /// </summary>
         /// <param name="region">Region.</param>
         /// <param name="army">Army that will occupy the region.</param>
@@ -117,8 +104,9 @@ namespace WinformsUI.InGame
             RefreshImage();
         }
 
-        Region previouslySelectedRegion;
-        void AttackPhaseSelectAttempt(Region region)
+        private Region previouslySelectedRegion;
+
+        private void AttackPhaseSelectAttempt(Region region)
         {
             // didnt select any correct region
             if (region == null)
@@ -127,7 +115,8 @@ namespace WinformsUI.InGame
                 if (previouslySelectedRegion != null)
                 {
                     // unhighlight my last pick
-                    processor.UnhighlightRegion(previouslySelectedRegion, GetPlayerOnTurn(), GetRegionArmy(previouslySelectedRegion));
+                    processor.UnhighlightRegion(previouslySelectedRegion, GetPlayerOnTurn(),
+                        GetRegionArmy(previouslySelectedRegion));
                 }
                 // reset
                 previouslySelectedRegion = null;
@@ -138,7 +127,10 @@ namespace WinformsUI.InGame
             // this is my first correctly selected region
             if (previouslySelectedRegion == null)
             {
-                if (region?.Owner != GetPlayerOnTurn()) return;
+                if (region?.Owner != GetPlayerOnTurn())
+                {
+                    return;
+                }
 
                 processor.HighlightRegion(region, realArmy);
             }
@@ -151,7 +143,8 @@ namespace WinformsUI.InGame
                 // calls attack attempt
                 OnAttackAttempt?.Invoke(previouslySelectedRegion, region);
                 // unhighlight what u highlighted
-                processor.UnhighlightRegion(previouslySelectedRegion, GetPlayerOnTurn(), GetRegionArmy(previouslySelectedRegion));
+                processor.UnhighlightRegion(previouslySelectedRegion, GetPlayerOnTurn(),
+                    GetRegionArmy(previouslySelectedRegion));
                 processor.UnhighlightRegion(region, GetPlayerOnTurn(), GetRegionArmy(region));
                 // reset
                 region = null;
@@ -172,18 +165,19 @@ namespace WinformsUI.InGame
         }
 
         /// <summary>
-        /// Seizes the region for the concrete player, recoloring it properly.
+        ///     Seizes the region for the concrete player, recoloring it properly.
         /// </summary>
         /// <param name="region"></param>
         /// <param name="playerOnTurn"></param>
         public void SeizeRegion(Region region, Player playerOnTurn)
         {
-            if (GetState() != GameState.GameBeginning) return;
+            if (GetState() != GameState.GameBeginning)
+            {
+                return;
+            }
 
             processor.Recolor(region, playerOnTurn.Color);
             RefreshImage();
         }
-
-
     }
 }

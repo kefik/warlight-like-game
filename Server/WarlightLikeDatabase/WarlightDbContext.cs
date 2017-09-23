@@ -1,21 +1,19 @@
 namespace Server.WarlightLikeDatabase
 {
-    using System;
     using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using GameObjectsLib.Game;
-    using GameObjectsLib.NetworkCommObjects;
 
-    public partial class WarlightDbContext : DbContext, IGameSaver<OpenedGame>, IGameSaverAsync<OpenedGame>
+    public class WarlightDbContext : DbContext, IGameSaver<OpenedGame>, IGameSaverAsync<OpenedGame>
     {
         public WarlightDbContext()
             : base("name=WarlightDbContext")
         {
         }
 
+        // ReSharper disable once EmptyConstructor
         static WarlightDbContext()
         {
             //Database.SetInitializer(new WarlightDbDropCreateIfModelChangesInitializer());
@@ -31,6 +29,7 @@ namespace Server.WarlightLikeDatabase
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             #region User relations
+
             // m: n Games -Users
             modelBuilder.Entity<User>()
                 .HasMany(user => user.StartedGames)
@@ -38,7 +37,8 @@ namespace Server.WarlightLikeDatabase
                 .Map(manyToManyAssociationMappingConfiguration =>
                 {
                     manyToManyAssociationMappingConfiguration.MapLeftKey($"{nameof(User)}{nameof(User.Id)}");
-                    manyToManyAssociationMappingConfiguration.MapRightKey($"{nameof(StartedGame)}{nameof(StartedGame.Id)}");
+                    manyToManyAssociationMappingConfiguration.MapRightKey(
+                        $"{nameof(StartedGame)}{nameof(StartedGame.Id)}");
                     manyToManyAssociationMappingConfiguration.ToTable("StartedGamesUsers");
                 });
 
@@ -52,13 +52,16 @@ namespace Server.WarlightLikeDatabase
                     x.MapRightKey($"{nameof(OpenedGame)}{nameof(OpenedGame.Id)}");
                     x.ToTable("OpenedGamesUsers");
                 });
+
             #endregion
 
             #region LastRound relations
+
             modelBuilder.Entity<LastRound>()
                 .HasMany(x => x.LastTurns)
                 .WithRequired(x => x.LastRound)
                 .WillCascadeOnDelete(true);
+
             #endregion
         }
 

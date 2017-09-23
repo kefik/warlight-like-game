@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using GameObjectsLib;
-
-namespace WinformsUI.HelperControls
+﻿namespace WinformsUI.HelperControls
 {
+    using System.Drawing;
+    using System.Windows.Forms;
+    using GameObjectsLib;
+
     public partial class AiPlayerControl : UserControl
     {
-        AiPlayer player; // dont want to give access to players regions, so I keep it private
+        private AiPlayer player; // dont want to give access to players regions, so I keep it private
+
         public AiPlayerControl(string uniqueName)
         {
             InitializeComponent();
 
-            this.player = new AiPlayer(Difficulty.Medium, "PC1", KnownColor.Blue);
+            player = new AiPlayer(Difficulty.Medium, "PC1", KnownColor.Blue);
 
-            difficultyComboBox.SelectedIndex = (int)player.Difficulty;
+            difficultyComboBox.SelectedIndex = (int) player.Difficulty;
             colorButton.BackColor = Color.FromKnownColor(player.Color);
         }
 
@@ -32,7 +26,7 @@ namespace WinformsUI.HelperControls
         }
 
         /// <summary>
-        /// Accesses Ai player color.
+        ///     Accesses Ai player color.
         /// </summary>
         public KnownColor PlayerColor
         {
@@ -45,7 +39,7 @@ namespace WinformsUI.HelperControls
         }
 
         /// <summary>
-        /// Accesses Ai player difficulty.
+        ///     Accesses Ai player difficulty.
         /// </summary>
         public Difficulty PlayerDifficulty
         {
@@ -53,13 +47,12 @@ namespace WinformsUI.HelperControls
             private set
             {
                 player = new AiPlayer(value, player.Name, player.Color);
-                difficultyComboBox.SelectedIndex = (int)player.Difficulty;
+                difficultyComboBox.SelectedIndex = (int) player.Difficulty;
             }
-
         }
 
         /// <summary>
-        /// Accesses Ai player name.
+        ///     Accesses Ai player name.
         /// </summary>
         public string PlayerName
         {
@@ -76,18 +69,30 @@ namespace WinformsUI.HelperControls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if ((int)PlayerColor >= 173) PlayerColor = (KnownColor)0;
-                    else PlayerColor++;
+                    if ((int) PlayerColor >= 173)
+                    {
+                        PlayerColor = 0;
+                    }
+                    else
+                    {
+                        PlayerColor++;
+                    }
                     break;
                 case MouseButtons.Right:
-                    if ((int)PlayerColor <= 0) PlayerColor = (KnownColor)173;
-                    else PlayerColor--;
+                    if ((int) PlayerColor <= 0)
+                    {
+                        PlayerColor = (KnownColor) 173;
+                    }
+                    else
+                    {
+                        PlayerColor--;
+                    }
                     break;
             }
         }
 
         /// <summary>
-        /// Returns copy of the player.
+        ///     Returns copy of the player.
         /// </summary>
         /// <returns></returns>
         public Player GetPlayer()

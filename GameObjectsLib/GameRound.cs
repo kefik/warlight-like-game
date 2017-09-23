@@ -1,34 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProtoBuf;
-using Region = GameObjectsLib.GameMap.Region;
-
-namespace GameObjectsLib
+﻿namespace GameObjectsLib
 {
-    
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using GameMap;
+    using ProtoBuf;
+
     /// <summary>
-    /// Instance of this place represents a game round, which consists of each
-    /// players round. Round identifies what has happened between two game states.
+    ///     Instance of this place represents a game round, which consists of each
+    ///     players round. Round identifies what has happened between two game states.
     /// </summary>
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class GameRound
     {
         /// <summary>
-        /// Represents number of the round in the game.
-        /// Round 0 represents special game round, where
-        /// players only choose their regions.
+        ///     Represents number of the round in the game.
+        ///     Round 0 represents special game round, where
+        ///     players only choose their regions.
         /// </summary>
         public int Number { get; }
+
         /// <summary>
-        /// Represents deploying phase of the game round.
+        ///     Represents deploying phase of the game round.
         /// </summary>
         public Deploying Deploying { get; set; }
+
         /// <summary>
-        /// Represents attacking phase of the game round.
+        ///     Represents attacking phase of the game round.
         /// </summary>
         public Attacking Attacking { get; set; }
 
@@ -43,9 +41,10 @@ namespace GameObjectsLib
         {
             Number = number;
         }
+
         /// <summary>
-        /// Processes the round from different players, ordering them correctly.
-        /// Rounds in parameters must always be one from the same player.
+        ///     Processes the round from different players, ordering them correctly.
+        ///     Rounds in parameters must always be one from the same player.
         /// </summary>
         /// <param name="rounds">Rounds, each from one certain player.</param>
         /// <returns>Round consisting of round in parameter, ordered differently.</returns>
@@ -53,8 +52,8 @@ namespace GameObjectsLib
         {
             //if (rounds == null || rounds.Count == 0) return null;
 
-            var deploying = new Deploying(new List<Tuple<Region, int>>());
-            var attacking = new Attacking(new List<Attack>());
+            Deploying deploying = new Deploying(new List<Tuple<Region, int>>());
+            Attacking attacking = new Attacking(new List<Attack>());
 
             int index = 0;
             while (true)
@@ -62,28 +61,31 @@ namespace GameObjectsLib
                 // true if anything in this round of cycle was added
                 // false if nothing happened => everything was solved => can break out
                 bool didSomething = false;
-                foreach (var round in rounds)
+                foreach (GameRound round in rounds)
                 {
                     if (round.Deploying.ArmiesDeployed.Count > index)
                     {
-                        var armyDeployed = round.Deploying.ArmiesDeployed[index];
+                        Tuple<Region, int> armyDeployed = round.Deploying.ArmiesDeployed[index];
                         deploying.ArmiesDeployed.Add(armyDeployed);
                         didSomething = true;
                     }
 
                     if (round.Attacking.Attacks.Count > index)
                     {
-                        var attack = round.Attacking.Attacks[index];
+                        Attack attack = round.Attacking.Attacks[index];
                         attacking.Attacks.Add(attack);
                         didSomething = true;
                     }
                 }
 
-                if (!didSomething) break;
+                if (!didSomething)
+                {
+                    break;
+                }
 
                 index++;
             }
-            
+
             return new GameRound(rounds[0].Number, deploying, attacking);
         }
 
@@ -125,7 +127,7 @@ namespace GameObjectsLib
 
         //        return true;
         //    }
-            
+
         //}
     }
 
@@ -134,14 +136,17 @@ namespace GameObjectsLib
     {
         public List<Tuple<Player, Region>> SelectedRegions { get; } = new List<Tuple<Player, Region>>();
 
-        public GameBeginningRound(List<Tuple<Player,Region>> list)
+        public GameBeginningRound(List<Tuple<Player, Region>> list)
         {
             SelectedRegions = list;
         }
-        public GameBeginningRound() { }
+
+        public GameBeginningRound()
+        {
+        }
 
         /// <summary>
-        /// Verifies correctness of game beginning rounds.
+        ///     Verifies correctness of game beginning rounds.
         /// </summary>
         /// <param name="rounds">Rounds from different players.</param>
         /// <returns>Linearized round.</returns>
@@ -150,20 +155,24 @@ namespace GameObjectsLib
             // verify if two players chose one region, if so, return null
             {
                 bool doesCollide = (from round in rounds
-                                     select round.SelectedRegions
-                                     into regions
-                                     from region in regions
-                                     group region by region.Item2).Any(g => g.Count() > 1);
+                                    select round.SelectedRegions
+                                    into regions
+                                    from region in regions
+                                    group region by region.Item2).Any(g => g.Count() > 1);
 
-                if (doesCollide) return null;
+                if (doesCollide)
+                {
+                    return null;
+                }
             }
 
-            var linearizedRegions = from round in rounds
-                         select round.SelectedRegions into regions
-                         from region in regions
-                         select region;
+            IEnumerable<Tuple<Player, Region>> linearizedRegions = from round in rounds
+                                                                   select round.SelectedRegions
+                                                                   into regions
+                                                                   from region in regions
+                                                                   select region;
 
-            var newRound = new GameBeginningRound(linearizedRegions.ToList());
+            GameBeginningRound newRound = new GameBeginningRound(linearizedRegions.ToList());
 
             return newRound;
         }

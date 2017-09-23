@@ -10,6 +10,7 @@
     using NetworkCommObjects.Message;
     using ProtoBuf;
 
+    [Serializable]
     [ProtoContract]
     public class MyNetworkUser : NetworkUser, IDisposable
     {
@@ -18,12 +19,12 @@
             get { return UserType.MyNetworkUser; }
         }
 
-        MyNetworkUser()
+        private MyNetworkUser()
         {
         }
 
-        readonly TcpClient client;
-        readonly IPEndPoint serverEndPoint;
+        private readonly TcpClient client;
+        private readonly IPEndPoint serverEndPoint;
 
         public MyNetworkUser(string name, TcpClient client, IPEndPoint serverEndPoint) : base(name)
         {
@@ -44,7 +45,10 @@
         /// <returns>True, if this client successfully logs into the server.</returns>
         public async Task<bool> LogInAsync(string password)
         {
-            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            if (!client.Connected)
+            {
+                await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            }
 
             NetworkStream stream = client.GetStream();
 
@@ -57,13 +61,18 @@
             Password = null;
             GC.Collect();
 
-            var responseMessage = await Receive<UserLogInResponseMessage>(stream);
+            UserLogInResponseMessage responseMessage = await Receive<UserLogInResponseMessage>(stream);
 
 
-            if (responseMessage == null) return false;
+            if (responseMessage == null)
+            {
+                return false;
+            }
 
             if (responseMessage.SuccessfullyLoggedIn)
+            {
                 Email = responseMessage.Email;
+            }
 
             return responseMessage.SuccessfullyLoggedIn;
         }
@@ -85,12 +94,18 @@
         public async Task<bool> CreateGameAsync(HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers,
             string mapName, int freeSlotsCount)
         {
-            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            if (!client.Connected)
+            {
+                await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            }
 
-            if (creatingPlayer.User != this) return false;
+            if (creatingPlayer.User != this)
+            {
+                return false;
+            }
 
             NetworkStream stream = client.GetStream();
-            
+
             await Send(stream, new CreateGameRequestMessage
             {
                 AiPlayers = aiPlayers,
@@ -98,8 +113,8 @@
                 FreeSlotsCount = freeSlotsCount,
                 MapName = mapName
             });
-            
-            var answer = await Receive<CreateGameResponseMessage>(stream);
+
+            CreateGameResponseMessage answer = await Receive<CreateGameResponseMessage>(stream);
 
             return answer != null && answer.Successful;
         }
@@ -110,7 +125,10 @@
         /// <returns>List of games this user plays.</returns>
         public async Task<IEnumerable<GameHeaderMessageObject>> GetListOfMyGamesAsync()
         {
-            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            if (!client.Connected)
+            {
+                await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            }
 
             NetworkStream stream = client.GetStream();
             {
@@ -120,41 +138,46 @@
                 });
             }
             {
-                var answer = await Receive<LoadMyGamesListResponseMessage>(stream);
+                LoadMyGamesListResponseMessage answer = await Receive<LoadMyGamesListResponseMessage>(stream);
 
                 return answer?.GameHeaderMessageObjects;
             }
         }
 
         /// <summary>
-        /// Gets list of opened games on the server this user is connected to.
+        ///     Gets list of opened games on the server this user is connected to.
         /// </summary>
         /// <returns>List of opened games on the server.</returns>
         public async Task<IEnumerable<OpenedGameHeaderMessageObject>> GetListOfOpenedGamesAsync()
         {
-            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            if (!client.Connected)
+            {
+                await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            }
 
             NetworkStream stream = client.GetStream();
 
-            await Send(stream, new LoadOpenedGamesListRequestMessage()
+            await Send(stream, new LoadOpenedGamesListRequestMessage
             {
                 RequestingUser = this
             });
 
-            var answer = await Receive<LoadOpenedGamesListResponseMessage>(stream);
+            LoadOpenedGamesListResponseMessage answer = await Receive<LoadOpenedGamesListResponseMessage>(stream);
             return answer?.GameHeaderMessageObjects;
-
         }
 
         /// <summary>
-        /// Asynchronously loads opened game request.
+        ///     Asynchronously loads opened game request.
         /// </summary>
         /// <param name="player">Player.</param>
         /// <param name="gameId">Id of the game.</param>
         /// <returns></returns>
         public async Task<bool> JoinOpenedGameAsync(HumanPlayer player, int gameId)
         {
-            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            if (!client.Connected)
+            {
+                await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            }
 
             NetworkStream stream = client.GetStream();
 
@@ -164,7 +187,7 @@
                 RequestingPlayer = player
             });
 
-            var answer = await Receive<JoinGameResponseMessage>(stream);
+            JoinGameResponseMessage answer = await Receive<JoinGameResponseMessage>(stream);
             return answer == null ? true : false;
         }
 
@@ -175,16 +198,21 @@
         public async Task<bool> LogOut()
         {
             if (client.Connected)
+            {
                 return await Task.Factory.StartNew(() => client.Client.DisconnectAsync(new SocketAsyncEventArgs
                 {
                     DisconnectReuseSocket = true
                 }), TaskCreationOptions.DenyChildAttach);
+            }
             return false;
         }
 
         public async Task LoadOpenedGame(int id)
         {
-            if (!client.Connected) await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            if (!client.Connected)
+            {
+                await client.ConnectAsync(serverEndPoint.Address, serverEndPoint.Port);
+            }
 
             NetworkStream stream = client.GetStream();
             {
@@ -200,21 +228,21 @@
             throw new NotImplementedException();
         }
 
-        async Task Send<T>(Stream stream, T value)
+        private async Task Send<T>(Stream stream, T value)
         {
-            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<T>()
+            SerializationObjectWrapper wrapper = new SerializationObjectWrapper<T>
             {
                 TypedValue = value
             };
             await wrapper.SerializeAsync(stream);
         }
 
-        async Task<T> Receive<T>(Stream stream) where T: class
+        private async Task<T> Receive<T>(Stream stream) where T : class
         {
-            var result = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value;
+            object result = (await SerializationObjectWrapper.DeserializeAsync(stream)).Value;
             if (result.GetType() == typeof(T))
             {
-                return (T)result;
+                return (T) result;
             }
             return default(T);
         }
@@ -234,16 +262,18 @@
             Dispose(false);
         }
 
-        bool disposed;
+        private bool disposed;
 
-        void Dispose(bool calledFromFinalizer)
+        private void Dispose(bool calledFromFinalizer)
         {
             if (disposed == false)
             {
                 disposed = true;
                 client?.Close();
                 if (calledFromFinalizer == false)
+                {
                     GC.SuppressFinalize(this);
+                }
             }
         }
 

@@ -203,5 +203,4 @@ namespace WinformsUI
             SetProviderServices("System.Data.SQLite", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
         }
     }
-
 }

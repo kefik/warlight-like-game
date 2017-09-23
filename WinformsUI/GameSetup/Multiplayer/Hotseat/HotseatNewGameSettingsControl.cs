@@ -1,28 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using GameObjectsLib;
-using GameObjectsLib.Game;
-using GameObjectsLib.GameMap;
-using GameObjectsLib.GameUser;
-using WinformsUI.HelperControls;
-
-namespace WinformsUI.GameSetup.Multiplayer.Hotseat
+﻿namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows.Forms;
+    using GameObjectsLib;
+    using GameObjectsLib.Game;
+    using GameObjectsLib.GameMap;
+    using GameObjectsLib.GameUser;
+    using HelperControls;
+
     public partial class HotseatNewGameSettingsControl : UserControl
     {
-        readonly MyHumanPlayerControl myHumanPlayerControl;
+        private readonly MyHumanPlayerControl myHumanPlayerControl;
+
         /// <summary>
-        /// Represents number of total players that can play this given map.
+        ///     Represents number of total players that can play this given map.
         /// </summary>
-        int TotalPlayersLimit
+        private int TotalPlayersLimit
         {
             get { return mapSettingsControl.PlayersLimit; }
         }
@@ -31,7 +26,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         {
             InitializeComponent();
 
-            myHumanPlayerControl = new MyHumanPlayerControl()
+            myHumanPlayerControl = new MyHumanPlayerControl
             {
                 Parent = myUserPanel,
                 Dock = DockStyle.Fill
@@ -53,7 +48,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
             int maxPlayers = Math.Max(0, TotalPlayersLimit - 1);
             aiPlayersNumberNumericUpDown.Maximum = maxPlayers;
             humanPlayersNumberNumericUpDown.Maximum = maxPlayers;
-            
+
 
             aiPlayerSettingsControl.PlayersLimit = maxPlayers;
             humanPlayerSettingsControl.PlayersLimit = maxPlayers;
@@ -65,7 +60,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
 
         public event Action<Game> OnGameStarted;
 
-        decimal previousAiPlayersNumber;
+        private decimal previousAiPlayersNumber;
+
         private void OnNumberOfAiPlayersChanged(object sender, EventArgs e)
         {
             if (!DoesSumToPlayersLimit(aiPlayersNumberNumericUpDown.Value, previousHumanPlayersNumber))
@@ -91,11 +87,12 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
                     aiPlayerSettingsControl.RemovePlayer();
                 }
             }
-            
+
             previousAiPlayersNumber = aiPlayersNumberNumericUpDown.Value;
         }
 
-        decimal previousHumanPlayersNumber;
+        private decimal previousHumanPlayersNumber;
+
         private void OnNumberOfHumanPlayersChanged(object sender, EventArgs e)
         {
             if (!DoesSumToPlayersLimit(humanPlayersNumberNumericUpDown.Value, previousAiPlayersNumber))
@@ -121,11 +118,11 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
                     humanPlayerSettingsControl.RemovePlayer(); // TODO: problem with users
                 }
             }
-            
+
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
         }
 
-        bool DoesSumToPlayersLimit(decimal aiPlayers, decimal humanPlayers)
+        private bool DoesSumToPlayersLimit(decimal aiPlayers, decimal humanPlayers)
         {
             return aiPlayers + humanPlayers <= Math.Max(0, TotalPlayersLimit - 1);
         }
@@ -134,29 +131,32 @@ namespace WinformsUI.GameSetup.Multiplayer.Hotseat
         {
             Map map = mapSettingsControl.GetMap();
 
-            var aiPlayers = aiPlayerSettingsControl.GetPlayers();
+            IList<AiPlayer> aiPlayers = aiPlayerSettingsControl.GetPlayers();
 
             IList<Player> players = new List<Player>();
-            foreach (var aiPlayer in aiPlayers)
+            foreach (AiPlayer aiPlayer in aiPlayers)
             {
                 players.Add(aiPlayer);
             }
 
             players.Add(myHumanPlayerControl.GetPlayer());
 
-            foreach (var player in humanPlayerSettingsControl.GetPlayers())
+            foreach (Player player in humanPlayerSettingsControl.GetPlayers())
             {
                 players.Add(player);
             }
 
             Game game = null;
 
-            using (var db = new UtilsDbContext())
+            using (UtilsDbContext db = new UtilsDbContext())
             {
-                var savedGamesEnum = db.HotseatSavedGameInfos.AsEnumerable();
-                var lastGame = savedGamesEnum.LastOrDefault();
+                IEnumerable<HotseatSavedGameInfo> savedGamesEnum = db.HotseatSavedGameInfos.AsEnumerable();
+                HotseatSavedGameInfo lastGame = savedGamesEnum.LastOrDefault();
                 int gameId = 1;
-                if (lastGame != null) gameId = lastGame.Id + 1;
+                if (lastGame != null)
+                {
+                    gameId = lastGame.Id + 1;
+                }
 
                 game = Game.Create(gameId, GameType.MultiplayerHotseat, map, players);
 

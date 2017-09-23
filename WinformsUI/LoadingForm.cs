@@ -1,7 +1,7 @@
-﻿using System.Windows.Forms;
-
-namespace WinformsUI
+﻿namespace WinformsUI
 {
+    using System.Windows.Forms;
+
     public partial class LoadingForm : Form
     {
         public LoadingForm()

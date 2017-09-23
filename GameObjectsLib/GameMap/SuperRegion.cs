@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GameObjectsLib.GameMap;
-using ProtoBuf;
-
-namespace GameObjectsLib.GameMap
+﻿namespace GameObjectsLib.GameMap
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using ProtoBuf;
+
     /// <summary>
-    /// Represents region group of giving size giving bonus to player who owns it all.
+    ///     Represents region group of giving size giving bonus to player who owns it all.
     /// </summary>
     [Serializable]
     [ProtoContract]
@@ -16,13 +15,15 @@ namespace GameObjectsLib.GameMap
     {
         [ProtoMember(1)]
         public int Id { get; }
+
         /// <summary>
-        /// Name given of the SuperRegion.
+        ///     Name given of the SuperRegion.
         /// </summary>
         [ProtoMember(2)]
         public string Name { get; }
+
         /// <summary>
-        /// Bonus given by the SuperRegion taken by one player.
+        ///     Bonus given by the SuperRegion taken by one player.
         /// </summary>
         [ProtoMember(3)]
         public int Bonus { get; }
@@ -32,8 +33,9 @@ namespace GameObjectsLib.GameMap
 
         [ProtoMember(5, AsReference = true)]
         public IList<Region> Regions { get; } = new List<Region>();
+
         /// <summary>
-        /// Constructs SuperRegion instance.
+        ///     Constructs SuperRegion instance.
         /// </summary>
         /// <param name="name">Name of the new SuperRegion.</param>
         /// <param name="bonus">Bonus given by SuperRegion.</param>
@@ -44,19 +46,22 @@ namespace GameObjectsLib.GameMap
             Name = name;
             Bonus = bonus;
         }
+
         /// <summary>
-        /// Calculates owner of this SuperRegion.
+        ///     Calculates owner of this SuperRegion.
         /// </summary>
         /// <returns>Owner of this SuperRegion, or null.</returns>
         private Player GetOwner()
         {
-            var firstOwner = Regions.FirstOrDefault()?.Owner;
-            return (from region in Regions where region.Owner != firstOwner select region).Any() // if there exists any such that hes not same as the first owner
-                ? null // return null
-                : firstOwner;
+            Player firstOwner = Regions.FirstOrDefault()?.Owner;
+            return (from region in Regions where region.Owner != firstOwner select region)
+                .Any() // if there exists any such that hes not same as the first owner
+                    ? null // return null
+                    : firstOwner;
         }
+
         /// <summary>
-        /// Refreshes given instance of super region.
+        ///     Refreshes given instance of super region.
         /// </summary>
         public void Refresh()
         {
@@ -64,7 +69,9 @@ namespace GameObjectsLib.GameMap
         }
 
 
-        SuperRegion() { }
+        private SuperRegion()
+        {
+        }
 
         public override string ToString()
         {
@@ -72,8 +79,8 @@ namespace GameObjectsLib.GameMap
             string bonus = string.Format($"{nameof(Bonus)}: {Bonus}");
             string regions;
             {
-                var sb = new StringBuilder();
-                foreach (var region in Regions)
+                StringBuilder sb = new StringBuilder();
+                foreach (Region region in Regions)
                 {
                     sb.Append(region.Name + ", ");
                 }
@@ -84,16 +91,31 @@ namespace GameObjectsLib.GameMap
 
         public bool Equals(SuperRegion other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
             return Id == other.Id;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
             return Equals((SuperRegion) obj);
         }
 
@@ -104,7 +126,10 @@ namespace GameObjectsLib.GameMap
 
         public static bool operator ==(SuperRegion left, SuperRegion right)
         {
-            if (object.ReferenceEquals(left, null)) return object.ReferenceEquals(right, null);
+            if (ReferenceEquals(left, null))
+            {
+                return ReferenceEquals(right, null);
+            }
             return left.Equals(right);
         }
 

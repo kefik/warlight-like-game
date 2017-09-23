@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace WinformsUI.InGame.Phases
+﻿namespace WinformsUI.InGame.Phases
 {
+    using System;
+    using System.Windows.Forms;
+
     public partial class AttackManagerForm : Form
     {
-        int armyLowerLimit;
+        private int armyLowerLimit;
 
         public int ArmyLowerLimit
         {
             get { return armyLowerLimit; }
             set
             {
-                if (value < 0) throw new ArgumentException();
+                if (value < 0)
+                {
+                    throw new ArgumentException();
+                }
 
                 armyLowerLimit = value;
                 attackArmyNumericUpDown.Minimum = value;
@@ -27,14 +23,17 @@ namespace WinformsUI.InGame.Phases
             }
         }
 
-        int armyUpperLimit;
+        private int armyUpperLimit;
 
         public int ArmyUpperLimit
         {
             get { return armyUpperLimit; }
             set
             {
-                if (value < 0) throw new ArgumentException();
+                if (value < 0)
+                {
+                    throw new ArgumentException();
+                }
 
                 armyUpperLimit = value;
                 attackArmyNumericUpDown.Maximum = value;
@@ -44,7 +43,7 @@ namespace WinformsUI.InGame.Phases
 
         public int AttackingArmy
         {
-            get { return (int)attackArmyNumericUpDown.Value; }
+            get { return (int) attackArmyNumericUpDown.Value; }
         }
 
         public AttackManagerForm()
@@ -54,7 +53,6 @@ namespace WinformsUI.InGame.Phases
 
         private void Cancel(object sender, EventArgs e)
         {
-
             Close();
 
             DialogResult = DialogResult.Cancel;
@@ -62,7 +60,6 @@ namespace WinformsUI.InGame.Phases
 
         private void Ok(object sender, EventArgs e)
         {
-
             Close();
 
             DialogResult = DialogResult.OK;

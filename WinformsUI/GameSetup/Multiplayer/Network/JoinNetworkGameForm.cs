@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace WinformsUI.GameSetup.Multiplayer.Network
+﻿namespace WinformsUI.GameSetup.Multiplayer.Network
 {
+    using System;
+    using System.Windows.Forms;
     using GameObjectsLib;
 
     public partial class JoinNetworkGameForm : Form
@@ -18,7 +10,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
         {
             InitializeComponent();
         }
-        
+
         public HumanPlayer GetPlayer()
         {
             return myHumanPlayerControl.GetPlayer();

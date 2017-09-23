@@ -1,10 +1,8 @@
 namespace Server.WarlightLikeDatabase
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     public class User : NamedEntity
     {
@@ -22,7 +20,7 @@ namespace Server.WarlightLikeDatabase
         [Required]
         [StringLength(100)]
         public string PasswordHash { get; set; }
-        
+
         public virtual ICollection<StartedGame> StartedGames { get; set; }
         public virtual ICollection<OpenedGame> OpenedGames { get; set; }
     }

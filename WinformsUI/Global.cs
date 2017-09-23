@@ -1,51 +1,57 @@
 ﻿namespace WinformsUI
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using GameObjectsLib.GameUser;
 
     /// <summary>
-    /// Represents global utils for the given client.
+    ///     Represents global utils for the given client.
     /// </summary>
-    static class Global
+    internal static class Global
     {
-        static User myUser = new LocalUser("Me");
+        private static User myUser = new LocalUser("Me");
+
         /// <summary>
-        /// Instance of this represents user instance of the client.
+        ///     Instance of this represents user instance of the client.
         /// </summary>
         public static User MyUser
         {
-            get
-            {
-                return myUser;
-            }
+            get { return myUser; }
             set
             {
                 myUser = value;
 
-                var userChangedEvent = OnUserChanged;
-                if (userChangedEvent == null) return;
+                Action<User> userChangedEvent = OnUserChanged;
+                if (userChangedEvent == null)
+                {
+                    return;
+                }
 
-                var onUserChanged = OnUserChanged;
+                Action<User> onUserChanged = OnUserChanged;
 
-                if (onUserChanged == null) return;
+                if (onUserChanged == null)
+                {
+                    return;
+                }
 
-                var invocationList = onUserChanged.GetInvocationList().OfType<Action<User>>();
+                IEnumerable<Action<User>> invocationList = onUserChanged.GetInvocationList().OfType<Action<User>>();
 
-                foreach (var eventToInvoke in invocationList)
+                foreach (Action<User> eventToInvoke in invocationList)
                 {
                     try
                     {
                         eventToInvoke(value);
                     }
-                    catch (Exception)
+                    catch
                     {
                     }
                 }
             }
         }
+
         /// <summary>
-        /// Methods invoked when value in MyUser is changed.
+        ///     Methods invoked when value in MyUser is changed.
         /// </summary>
         public static event Action<User> OnUserChanged;
     }

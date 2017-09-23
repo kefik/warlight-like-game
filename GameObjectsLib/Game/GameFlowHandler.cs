@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GameObjectsLib.Game
+﻿namespace GameObjectsLib.Game
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using GameMap;
     using GameUser;
 
@@ -19,8 +16,9 @@ namespace GameObjectsLib.Game
         Committed,
         GameEnd
     }
+
     /// <summary>
-    /// Component handling game state changes and all reactions to them.
+    ///     Component handling game state changes and all reactions to them.
     /// </summary>
     public abstract class GameFlowHandler
     {
@@ -44,6 +42,7 @@ namespace GameObjectsLib.Game
         }
 
         protected GameState gameState;
+
         public virtual void GameStateChanged(GameState newGameState)
         {
             switch (newGameState)
@@ -77,19 +76,19 @@ namespace GameObjectsLib.Game
 
 
         /// <summary>
-        /// Plays given initial round, refreshing the situation of the game.
+        ///     Plays given initial round, refreshing the situation of the game.
         /// </summary>
         /// <param name="round">Round to be played.</param>
         public virtual void PlayRound(GameBeginningRound round)
         {
-            foreach (var roundSelectedRegion in round.SelectedRegions)
+            foreach (Tuple<Player, Region> roundSelectedRegion in round.SelectedRegions)
             {
-                var realRegion = (from region in Game.Map.Regions
-                                  where region == roundSelectedRegion.Item2
-                                  select region).First();
-                var realPlayer = (from player in Game.Players
-                                  where player == roundSelectedRegion.Item1
-                                  select player).First();
+                Region realRegion = (from region in Game.Map.Regions
+                                     where region == roundSelectedRegion.Item2
+                                     select region).First();
+                Player realPlayer = (from player in Game.Players
+                                     where player == roundSelectedRegion.Item1
+                                     select player).First();
 
                 realRegion.Owner = realPlayer;
             }
@@ -99,40 +98,44 @@ namespace GameObjectsLib.Game
         }
 
         /// <summary>
-        /// Plays given round, calculating everything, moving this instance of
-        /// the game into position after the round was played.
+        ///     Plays given round, calculating everything, moving this instance of
+        ///     the game into position after the round was played.
         /// </summary>
         public virtual void PlayRound()
         {
             void PlayDeploying(GameRound round)
             {
-                var deploying = round.Deploying;
-                foreach (var deployedArmies in deploying.ArmiesDeployed)
+                Deploying deploying = round.Deploying;
+                foreach (Tuple<Region, int> deployedArmies in deploying.ArmiesDeployed)
                 {
-                    var region = (from item in Game.Map.Regions
-                                  where item == deployedArmies.Item1
-                                  select item).First();
+                    Region region = (from item in Game.Map.Regions
+                                     where item == deployedArmies.Item1
+                                     select item).First();
                     region.Army = deployedArmies.Item2;
                 }
             }
+
             void PlayAttacking(GameRound round)
             {
-                var attacks = round.Attacking.Attacks;
-                foreach (var attack in attacks)
+                List<Attack> attacks = round.Attacking.Attacks;
+                foreach (Attack attack in attacks)
                 {
                     // TODO: real calculation according to rules
                     // get real attacker
-                    var attacker = (from region in Game.Map.Regions
-                                    where region == attack.Attacker
-                                    select region).First();
+                    Region attacker = (from region in Game.Map.Regions
+                                       where region == attack.Attacker
+                                       select region).First();
 
                     // if attacking region changed owner, cancel attack
-                    if (attacker.Owner != attack.Attacker.Owner) continue;
+                    if (attacker.Owner != attack.Attacker.Owner)
+                    {
+                        continue;
+                    }
 
                     // get real defender
-                    var defender = (from region in Game.Map.Regions
-                                    where region == attack.Defender
-                                    select region).First();
+                    Region defender = (from region in Game.Map.Regions
+                                       where region == attack.Defender
+                                       select region).First();
                     // situation might have changed => recalculate attacking army
                     int realAttackingArmy = Math.Min(attack.AttackingArmy, attacker.Army);
                     // if they have same owner == just moving armies
@@ -166,7 +169,6 @@ namespace GameObjectsLib.Game
                         int attackingArmyUnitsKilled = 0;
                         for (int i = 0; i < defender.Army && attackingArmyUnitsKilled < realAttackingArmy; i++)
                         {
-
                             double defendingUnitWillKillPercentage = random.Next(100) / 100d;
 
                             // defending unit has 70% chance to kill attacking unit
@@ -194,7 +196,7 @@ namespace GameObjectsLib.Game
                 }
             }
 
-            var linearizedRound = GameRound.Process(Rounds);
+            GameRound linearizedRound = GameRound.Process(Rounds);
             Rounds.Clear();
 
             // deploying
@@ -205,12 +207,11 @@ namespace GameObjectsLib.Game
             Game.Refresh();
             Game.RoundNumber++;
         }
-
     }
 
     public sealed class HotseatGameFlowHandler : GameFlowHandler
     {
-        readonly IEnumerator<HumanPlayer> playersEnumerator;
+        private readonly IEnumerator<HumanPlayer> playersEnumerator;
 
         public HumanPlayer PlayerOnTurn
         {
@@ -219,18 +220,18 @@ namespace GameObjectsLib.Game
 
         public HotseatGameFlowHandler(Game game) : base(game)
         {
-            var localPlayers = (from player in game.Players
-                                where player.GetType() == typeof(HumanPlayer)
-                                let humanPlayer = (HumanPlayer)player
-                                where humanPlayer.User.UserType == UserType.LocalUser
-                                      || humanPlayer.User.UserType == UserType.MyNetworkUser
-                                select humanPlayer);
+            IEnumerable<HumanPlayer> localPlayers = from player in game.Players
+                                                    where player.GetType() == typeof(HumanPlayer)
+                                                    let humanPlayer = (HumanPlayer) player
+                                                    where humanPlayer.User.UserType == UserType.LocalUser
+                                                          || humanPlayer.User.UserType == UserType.MyNetworkUser
+                                                    select humanPlayer;
             playersEnumerator = localPlayers.GetEnumerator();
             NextPlayer();
         }
 
         /// <summary>
-        /// Moves to next player.
+        ///     Moves to next player.
         /// </summary>
         /// <returns>False, if player is theres no next player, true otherwise.</returns>
         public bool NextPlayer()
@@ -238,11 +239,16 @@ namespace GameObjectsLib.Game
             bool isThereNextPlayer = playersEnumerator.MoveNext();
 
             // theres no next local player
-            if (!isThereNextPlayer) return false;
+            if (!isThereNextPlayer)
+            {
+                return false;
+            }
 
             // the player was defeated
             if (PlayerOnTurn.IsDefeated(gameState))
+            {
                 return NextPlayer();
+            }
 
             return true;
         }
@@ -250,7 +256,10 @@ namespace GameObjectsLib.Game
         public override void PlayRound(GameBeginningRound round)
         {
             // cannot play round if theres any other player to play
-            if (NextPlayer()) throw new ArgumentOutOfRangeException();
+            if (NextPlayer())
+            {
+                throw new ArgumentOutOfRangeException();
+            }
 
             base.PlayRound(round);
             playersEnumerator.Reset();
@@ -259,7 +268,10 @@ namespace GameObjectsLib.Game
         public override void PlayRound()
         {
             // cannot play round if theres any other player to play
-            if (NextPlayer()) throw new ArgumentOutOfRangeException();
+            if (NextPlayer())
+            {
+                throw new ArgumentOutOfRangeException();
+            }
 
             base.PlayRound();
             playersEnumerator.Reset();
@@ -273,12 +285,11 @@ namespace GameObjectsLib.Game
         }
     }
 
-    static class PlayerExtensions
+    internal static class PlayerExtensions
     {
         public static bool IsDefeated(this Player player, GameState state)
         {
             return player.ControlledRegions.Count == 0 && state != GameState.GameBeginning;
         }
     }
-
 }

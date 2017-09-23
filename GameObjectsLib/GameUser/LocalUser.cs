@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProtoBuf;
-
-namespace GameObjectsLib.GameUser
+﻿namespace GameObjectsLib.GameUser
 {
+    using System;
+    using ProtoBuf;
+
     [Serializable]
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class LocalUser : User
@@ -15,7 +11,10 @@ namespace GameObjectsLib.GameUser
         {
             get { return UserType.LocalUser; }
         }
-        LocalUser(){ }
+
+        private LocalUser()
+        {
+        }
 
         public LocalUser(string name = "") : base(name)
         {

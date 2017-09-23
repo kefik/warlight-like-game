@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using ProtoBuf;
-
-namespace GameObjectsLib.GameUser
+﻿namespace GameObjectsLib.GameUser
 {
+    using System;
+    using ProtoBuf;
+
     [Serializable]
     [ProtoInclude(200, typeof(MyNetworkUser))]
     [ProtoContract]
     public class NetworkUser : User
     {
-        protected NetworkUser() : base() { }
+        protected NetworkUser()
+        {
+        }
 
         public override UserType UserType
         {
@@ -23,6 +20,5 @@ namespace GameObjectsLib.GameUser
         public NetworkUser(string name) : base(name)
         {
         }
-        
     }
 }

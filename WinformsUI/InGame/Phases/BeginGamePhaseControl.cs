@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using GameObjectsLib;
-using GameObjectsLib.Game;
-
-namespace WinformsUI.InGame.Phases
+﻿namespace WinformsUI.InGame.Phases
 {
+    using System;
+    using System.Windows.Forms;
+    using GameObjectsLib;
+
     public partial class BeginGamePhaseControl : UserControl
     {
         public BeginGamePhaseControl()
@@ -22,7 +14,7 @@ namespace WinformsUI.InGame.Phases
         public event Action<GameBeginningRound> OnStartOver;
         public event Action<GameBeginningRound> OnCommit;
         public GameBeginningRound BeginningRound { get; } = new GameBeginningRound();
-    
+
         private void Commit(object sender, EventArgs e)
         {
             if (BeginningRound.SelectedRegions.Count < 2)

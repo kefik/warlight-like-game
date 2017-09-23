@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProtoBuf;
-
-namespace GameObjectsLib.NetworkCommObjects.Message
+﻿namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    using System;
+    using System.Collections.Generic;
+    using ProtoBuf;
+
     [ProtoContract]
     [ProtoInclude(100, typeof(StartedGameHeaderMessageObject))]
     [ProtoInclude(101, typeof(OpenedGameHeaderMessageObject))]
@@ -14,10 +11,13 @@ namespace GameObjectsLib.NetworkCommObjects.Message
     {
         [ProtoMember(1)]
         public int GameId { get; set; }
+
         [ProtoMember(2)]
         public string MapName { get; set; }
+
         [ProtoMember(3)]
         public int AiPlayersCount { get; set; }
+
         [ProtoMember(4)]
         public int HumanPlayersCount { get; set; }
     }
@@ -27,12 +27,14 @@ namespace GameObjectsLib.NetworkCommObjects.Message
     {
         [ProtoMember(5)]
         public DateTime GameStarted { get; set; }
+
         [ProtoMember(6)]
         public DateTime RoundStarted { get; set; }
 
         public override string ToString()
         {
-            return $"Human: {HumanPlayersCount}, Ai: {AiPlayersCount}, Map: {MapName}, Game-started: {GameStarted}, Round-started: {RoundStarted}";
+            return
+                $"Human: {HumanPlayersCount}, Ai: {AiPlayersCount}, Map: {MapName}, Game-started: {GameStarted}, Round-started: {RoundStarted}";
         }
     }
 
@@ -49,9 +51,8 @@ namespace GameObjectsLib.NetworkCommObjects.Message
     }
 
 
-
     /// <summary>
-    /// Gives response whether the request was valid.
+    ///     Gives response whether the request was valid.
     /// </summary>
     [ProtoContract]
     public class LoadMyGamesListResponseMessage
@@ -59,6 +60,4 @@ namespace GameObjectsLib.NetworkCommObjects.Message
         [ProtoMember(1)]
         public IEnumerable<GameHeaderMessageObject> GameHeaderMessageObjects { get; set; }
     }
-
-
 }

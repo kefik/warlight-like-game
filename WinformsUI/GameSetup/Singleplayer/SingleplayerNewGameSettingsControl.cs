@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using GameObjectsLib;
-using GameObjectsLib.Game;
-using GameObjectsLib.GameMap;
-using GameObjectsLib.GameUser;
-using WinformsUI.HelperControls;
-
-namespace WinformsUI.GameSetup.Singleplayer
+﻿namespace WinformsUI.GameSetup.Singleplayer
 {
-    using System.Collections;
-    using System.IO;
-    using GameObjectsLib.NetworkCommObjects;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows.Forms;
+    using GameObjectsLib;
+    using GameObjectsLib.Game;
+    using GameObjectsLib.GameMap;
+    using HelperControls;
 
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
-        readonly MyHumanPlayerControl myHumanPlayerControl;
-        
+        private readonly MyHumanPlayerControl myHumanPlayerControl;
+
         public event Action<Game> OnGameStarted;
+
         public SingleplayerNewGameSettingsControl()
         {
             InitializeComponent();
@@ -42,7 +38,8 @@ namespace WinformsUI.GameSetup.Singleplayer
         }
 
 
-        decimal previousPlayersNumber;
+        private decimal previousPlayersNumber;
+
         private void PlayersNumberChanged(object sender, EventArgs e)
         {
             if (previousPlayersNumber < aiPlayersNumberNumericUpDown.Value)
@@ -72,10 +69,10 @@ namespace WinformsUI.GameSetup.Singleplayer
             {
                 Map map = mapSettingsControl.GetMap();
 
-                var aiPlayers = aiPlayerSettingsControl.GetPlayers();
+                IList<AiPlayer> aiPlayers = aiPlayerSettingsControl.GetPlayers();
 
                 IList<Player> players = new List<Player>();
-                foreach (var aiPlayer in aiPlayers)
+                foreach (AiPlayer aiPlayer in aiPlayers)
                 {
                     players.Add(aiPlayer);
                 }
@@ -84,22 +81,28 @@ namespace WinformsUI.GameSetup.Singleplayer
 
                 Game game = null;
                 // generate id for the game
-                using (var db = new UtilsDbContext())
+                using (UtilsDbContext db = new UtilsDbContext())
                 {
-                    var savedGamesEnum = db.SingleplayerSavedGameInfos.AsEnumerable();
-                    var lastGame = savedGamesEnum.LastOrDefault();
+                    IEnumerable<SingleplayerSavedGameInfo> savedGamesEnum =
+                        db.SingleplayerSavedGameInfos.AsEnumerable();
+                    SingleplayerSavedGameInfo lastGame = savedGamesEnum.LastOrDefault();
                     int gameId = 1;
-                    if (lastGame != null) gameId = lastGame.Id + 1;
+                    if (lastGame != null)
+                    {
+                        gameId = lastGame.Id + 1;
+                    }
 
                     game = Game.Create(gameId, GameType.SinglePlayer, map, players);
                 }
-                
+
 
                 OnGameStarted?.Invoke(game);
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show("One or more components required to start the game are missing! Please, reinstall the game!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "One or more components required to start the game are missing! Please, reinstall the game!",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

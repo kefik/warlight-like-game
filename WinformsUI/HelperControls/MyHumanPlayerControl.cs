@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using GameObjectsLib.GameUser;
-using GameObjectsLib;
-
-namespace WinformsUI.HelperControls
+﻿namespace WinformsUI.HelperControls
 {
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+    using GameObjectsLib;
+    using GameObjectsLib.GameUser;
+
     public partial class MyHumanPlayerControl : UserControl, IDisposable
     {
         public MyHumanPlayerControl()
@@ -20,10 +14,11 @@ namespace WinformsUI.HelperControls
 
             Global.OnUserChanged += UserChanged;
         }
-        
-        KnownColor playerColor;
+
+        private KnownColor playerColor;
+
         /// <summary>
-        /// Represents clients color.
+        ///     Represents clients color.
         /// </summary>
         public KnownColor PlayerColor
         {
@@ -31,12 +26,12 @@ namespace WinformsUI.HelperControls
             private set
             {
                 playerColor = value;
-                colorButton.BackColor = System.Drawing.Color.FromKnownColor(PlayerColor);
+                colorButton.BackColor = Color.FromKnownColor(PlayerColor);
             }
         }
 
         /// <summary>
-        /// Represents name of player this control is representing.
+        ///     Represents name of player this control is representing.
         /// </summary>
         public string PlayerName
         {
@@ -50,7 +45,7 @@ namespace WinformsUI.HelperControls
 
 
         /// <summary>
-        /// Creates and returns new instance of player represented by this control.
+        ///     Creates and returns new instance of player represented by this control.
         /// </summary>
         /// <returns>New instance of the player represented by this control.</returns>
         public HumanPlayer GetPlayer()
@@ -63,12 +58,24 @@ namespace WinformsUI.HelperControls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if ((int) PlayerColor >= 173) PlayerColor = (KnownColor) 0;
-                    else PlayerColor++;
+                    if ((int) PlayerColor >= 173)
+                    {
+                        PlayerColor = 0;
+                    }
+                    else
+                    {
+                        PlayerColor++;
+                    }
                     break;
                 case MouseButtons.Right:
-                    if ((int)PlayerColor <= 0) PlayerColor = (KnownColor)173;
-                    else PlayerColor--;
+                    if ((int) PlayerColor <= 0)
+                    {
+                        PlayerColor = (KnownColor) 173;
+                    }
+                    else
+                    {
+                        PlayerColor--;
+                    }
                     break;
             }
         }
@@ -86,7 +93,7 @@ namespace WinformsUI.HelperControls
         private void ControlLoad(object sender, EventArgs e)
         {
             playerNameTextBox.Text = Global.MyUser.Name;
-            
+
             UserChanged(Global.MyUser);
 
             PlayerColor = KnownColor.Green;
@@ -97,10 +104,10 @@ namespace WinformsUI.HelperControls
             Global.OnUserChanged -= UserChanged;
         }
 
-        void UserChanged(User user)
+        private void UserChanged(User user)
         {
             Invoke(user.UserType == UserType.MyNetworkUser
-                ? new Action(() => playerNameTextBox.Enabled = false)
+                ? (() => playerNameTextBox.Enabled = false)
                 : new Action(() => playerNameTextBox.Enabled = true));
         }
     }

@@ -1,5 +1,4 @@
-﻿
-namespace GameObjectsLib.NetworkCommObjects.Message
+﻿namespace GameObjectsLib.NetworkCommObjects.Message
 {
     using System.Collections.Generic;
     using ProtoBuf;

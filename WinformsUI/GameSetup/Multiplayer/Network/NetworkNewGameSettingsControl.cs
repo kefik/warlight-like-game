@@ -1,27 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using GameObjectsLib;
-using GameObjectsLib.Game;
-using GameObjectsLib.GameUser;
-using WinformsUI.HelperControls;
-
-namespace WinformsUI.GameSetup.Multiplayer.Network
+﻿namespace WinformsUI.GameSetup.Multiplayer.Network
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
+    using GameObjectsLib;
+    using HelperControls;
+
     public partial class NetworkNewGameSettingsControl : UserControl
     {
-        readonly MyHumanPlayerControl myPlayerControl;
+        private readonly MyHumanPlayerControl myPlayerControl;
+
         /// <summary>
-        /// Represents number of total players that can play this given map.
+        ///     Represents number of total players that can play this given map.
         /// </summary>
-        int TotalPlayersLimit
+        private int TotalPlayersLimit
         {
             get { return mapSettingsControl.PlayersLimit; }
         }
@@ -51,16 +44,17 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             int maxPlayers = Math.Max(0, TotalPlayersLimit - 1);
             aiPlayersNumberNumericUpDown.Maximum = maxPlayers;
             humanPlayersNumberNumericUpDown.Maximum = maxPlayers;
-            
+
             aiPlayerSettingsControl.PlayersLimit = maxPlayers;
-            
+
             previousAiPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
         }
 
         public event Func<HumanPlayer, ICollection<AiPlayer>, string, int, Task> OnGameCreated;
 
-        decimal previousAiPlayersNumber;
+        private decimal previousAiPlayersNumber;
+
         private void OnNumberOfAiPlayersChanged(object sender, EventArgs e)
         {
             if (!DoesSumToPlayersLimit(aiPlayersNumberNumericUpDown.Value, previousHumanPlayersNumber))
@@ -90,7 +84,8 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             previousAiPlayersNumber = aiPlayersNumberNumericUpDown.Value;
         }
 
-        decimal previousHumanPlayersNumber;
+        private decimal previousHumanPlayersNumber;
+
         private void OnNumberOfHumanPlayersChanged(object sender, EventArgs e)
         {
             if (!DoesSumToPlayersLimit(humanPlayersNumberNumericUpDown.Value, previousAiPlayersNumber))
@@ -112,16 +107,19 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
         }
 
-        bool DoesSumToPlayersLimit(decimal aiPlayers, decimal humanPlayers)
+        private bool DoesSumToPlayersLimit(decimal aiPlayers, decimal humanPlayers)
         {
             return aiPlayers + humanPlayers <= Math.Max(0, TotalPlayersLimit - 1);
         }
 
         private async void Create(object sender, EventArgs e)
         {
-            if (OnGameCreated == null) return;
+            if (OnGameCreated == null)
+            {
+                return;
+            }
 
-            var aiPlayers = aiPlayerSettingsControl.GetPlayers();
+            IList<AiPlayer> aiPlayers = aiPlayerSettingsControl.GetPlayers();
             await OnGameCreated.Invoke(myPlayerControl.GetPlayer(),
                 aiPlayers,
                 mapSettingsControl.MapName,

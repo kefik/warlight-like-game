@@ -1,12 +1,11 @@
-﻿using System;
-using System.Windows.Forms;
-using GameObjectsLib;
-using GameObjectsLib.Game;
-
-namespace WinformsUI.GameSetup.Multiplayer
+﻿namespace WinformsUI.GameSetup.Multiplayer
 {
+    using System;
+    using System.Windows.Forms;
+    using GameObjectsLib.Game;
+
     /// <summary>
-    /// In this form user decides what type of multiplayer game he wants to play. Will appear as dialog.
+    ///     In this form user decides what type of multiplayer game he wants to play. Will appear as dialog.
     /// </summary>
     public partial class GameTypeChoiceForm : Form
     {
@@ -16,8 +15,9 @@ namespace WinformsUI.GameSetup.Multiplayer
 
             multiplayerGameTypeComboBox.SelectedIndex = 0;
         }
+
         /// <summary>
-        /// Indicates type of multiplayer game selected by the user.
+        ///     Indicates type of multiplayer game selected by the user.
         /// </summary>
         public GameType MultiplayerGameType
         {
@@ -34,15 +34,15 @@ namespace WinformsUI.GameSetup.Multiplayer
                 }
             }
         }
-        
-        private void Cancel(object sender, System.EventArgs e)
+
+        private void Cancel(object sender, EventArgs e)
         {
             Close();
             DialogResult = DialogResult.Cancel;
         }
 
-        
-        private void Ok(object sender, System.EventArgs e)
+
+        private void Ok(object sender, EventArgs e)
         {
             Close();
             DialogResult = DialogResult.OK;

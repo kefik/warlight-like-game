@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Server.WarlightLikeDatabase
+﻿namespace Server.WarlightLikeDatabase
 {
     using System.Data.Entity;
+    using System.Security.Cryptography;
+    using System.Text;
 
-    class WarlightDbDropCreateIfModelChangesInitializer : DropCreateDatabaseAlways<WarlightDbContext>
+    internal class WarlightDbDropCreateIfModelChangesInitializer : DropCreateDatabaseAlways<WarlightDbContext>
     {
         protected override void Seed(WarlightDbContext context)
         {
-            context.Maps.Add(new MapInfo()
+            context.Maps.Add(new MapInfo
             {
                 Id = 1,
                 ColorRegionsTemplatePath = "Maps/WorldColorRegionMapping.xml",
@@ -25,17 +21,17 @@ namespace Server.WarlightLikeDatabase
 
             string passwordHash;
             {
-                byte[] data = System.Text.Encoding.ASCII.GetBytes("1234");
-                data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
-                passwordHash = System.Text.Encoding.ASCII.GetString(data);
+                byte[] data = Encoding.ASCII.GetBytes("1234");
+                data = new SHA256Managed().ComputeHash(data);
+                passwordHash = Encoding.ASCII.GetString(data);
             }
-            context.Users.Add(new User()
+            context.Users.Add(new User
             {
                 Email = "bimbinbiribong@seznam.cz",
                 PasswordHash = passwordHash, // TODO
                 Name = "Hez"
             });
-            context.Users.Add(new User()
+            context.Users.Add(new User
             {
                 Email = "bim@seznam.cz",
                 PasswordHash = passwordHash,

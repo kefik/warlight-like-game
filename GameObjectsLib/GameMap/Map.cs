@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Xml.Schema;
-using ProtoBuf;
-
-namespace GameObjectsLib.GameMap
+﻿namespace GameObjectsLib.GameMap
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Xml;
+    using System.Xml.Schema;
+    using ProtoBuf;
+
     /// <summary>
-    /// Instance of this class represents map of the game.
+    ///     Instance of this class represents map of the game.
     /// </summary>
     [Serializable]
     [ProtoContract]
@@ -18,38 +17,43 @@ namespace GameObjectsLib.GameMap
     {
         [ProtoMember(1)]
         public int Id { get; }
+
         [ProtoMember(2)]
         public string Name { get; }
 
         /// <summary>
-        /// Returns maximum number of players for the given map.
+        ///     Returns maximum number of players for the given map.
         /// </summary>
         [ProtoMember(3)]
         public int PlayersLimit { get; }
 
         /// <summary>
-        /// Represents regions of the map that player can conquer.
+        ///     Represents regions of the map that player can conquer.
         /// </summary>
         [ProtoMember(4)]
         public IList<Region> Regions { get; } = new List<Region>();
+
         /// <summary>
-        /// Represents region groups this map has.
+        ///     Represents region groups this map has.
         /// </summary>
         [ProtoMember(5)]
         public IList<SuperRegion> SuperRegions { get; } = new List<SuperRegion>();
-        
+
         private Map(int id, string name, int playersLimit)
         {
             Id = id;
             Name = name;
             PlayersLimit = playersLimit;
         }
-        Map() { }
+
+        private Map()
+        {
+        }
 
         /// <summary>
-        /// Creates instance of map, initializes it,
-        /// loads all objects related to its given model,
-        /// getting the map ready for the start of the game.
+        ///     Creates instance of map, initializes it,
+        ///     loads all objects related to its given model,
+        ///     getting the map ready for the start of the game.
         /// </summary>
         public static Map Create(int id, string name, int playersLimit, string templatePath)
         {
@@ -78,14 +82,17 @@ namespace GameObjectsLib.GameMap
             using (XmlReader reader = XmlReader.Create(templatePath, settings))
             {
                 #region SuperRegion stats
+
                 int superRegionCounter = 1;
                 bool isSuperRegionElement = false;
+
                 #endregion
 
                 #region Region stats
+
                 int regionCounter = 1;
                 bool isRegionElement = false;
-                
+
                 #endregion
 
                 bool isNeighbours = false;
@@ -102,7 +109,7 @@ namespace GameObjectsLib.GameMap
                                     {
                                         string superRegionName = reader.GetAttribute("Name");
                                         int superRegionBonus = int.Parse(reader.GetAttribute("Bonus"));
-                                        var superRegion = new SuperRegion(superRegionCounter++, superRegionName,
+                                        SuperRegion superRegion = new SuperRegion(superRegionCounter++, superRegionName,
                                             superRegionBonus);
                                         map.SuperRegions.Add(superRegion);
                                     }
@@ -114,7 +121,7 @@ namespace GameObjectsLib.GameMap
                                         string regionName = reader.GetAttribute("Name");
                                         // TODO: may drop
                                         int army = int.Parse(reader.GetAttribute("Army"));
-                                        var region =
+                                        Region region =
                                             new Region(regionCounter++, regionName, map.SuperRegions.Last())
                                             {
                                                 Army = army
@@ -151,7 +158,7 @@ namespace GameObjectsLib.GameMap
             using (XmlReader reader = XmlReader.Create(templatePath))
             {
                 bool isSuperRegion = false;
-                
+
                 int isRegion = 0;
                 Region givenRegion = null;
 
@@ -179,13 +186,16 @@ namespace GameObjectsLib.GameMap
                                     {
                                         // find region with this name and add it to given regions neighbours
                                         // TODO: slow
-                                        var regionsNeighbour = (from region in map.Regions
-                                                                where region.Name == reader.GetAttribute("Name")
-                                                                select region).First();
+                                        Region regionsNeighbour = (from region in map.Regions
+                                                                   where region.Name == reader.GetAttribute("Name")
+                                                                   select region).First();
                                         givenRegion.NeighbourRegions.Add(regionsNeighbour);
 
                                         // empty element doesnt invoke EndElement action, so =>
-                                        if (reader.IsEmptyElement) isRegion--;
+                                        if (reader.IsEmptyElement)
+                                        {
+                                            isRegion--;
+                                        }
                                     }
                                     break;
                                 case "Neighbours":
@@ -201,7 +211,10 @@ namespace GameObjectsLib.GameMap
                                     break;
                                 case nameof(Region):
                                     isRegion--;
-                                    if (isSuperRegion && isRegion == 0 && !isNeighbours) givenRegion = null;
+                                    if (isSuperRegion && isRegion == 0 && !isNeighbours)
+                                    {
+                                        givenRegion = null;
+                                    }
                                     break;
                                 case "Neighbours":
                                     isNeighbours = false;
@@ -213,14 +226,14 @@ namespace GameObjectsLib.GameMap
             }
             return map;
         }
-        
+
         public override string ToString()
         {
             string name = string.Format($"{nameof(Name)}: {Name}");
             string playersLimit = string.Format($"{nameof(PlayersLimit)}: {PlayersLimit}");
             string superRegions;
             {
-                var sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
                 foreach (SuperRegion superRegion in SuperRegions)
                 {
                     sb.Append(superRegion.Name + ", ");
@@ -229,7 +242,6 @@ namespace GameObjectsLib.GameMap
             }
 
             return name + ", " + playersLimit + ", " + superRegions;
-
         }
     }
 }

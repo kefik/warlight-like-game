@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Server
+﻿namespace Server
 {
+    using System;
+    using System.Threading.Tasks;
+
     /// <summary>
-    /// Source = https://stackoverflow.com/questions/298976/is-there-a-better-alternative-than-this-to-switch-on-type
+    ///     Source = https://stackoverflow.com/questions/298976/is-there-a-better-alternative-than-this-to-switch-on-type
     /// </summary>
     public static class TypeSwitch
     {
@@ -27,8 +24,8 @@ namespace Server
 
         public static void Do(object source, params CaseInfo[] cases)
         {
-            var type = source.GetType();
-            foreach (var entry in cases)
+            Type type = source.GetType();
+            foreach (CaseInfo entry in cases)
             {
                 if (entry.IsDefault || entry.Target.IsAssignableFrom(type))
                 {
@@ -37,16 +34,17 @@ namespace Server
                 }
             }
         }
+
         /// <summary>
-        /// Async alternative to Do method.
+        ///     Async alternative to Do method.
         /// </summary>
         /// <param name="source">Parameter of the switch.</param>
         /// <param name="cases">Cases of async type switch.</param>
         /// <returns></returns>
         public static async Task DoAsync(object source, params CaseInfoAsync[] cases)
         {
-            var type = source.GetType();
-            foreach (var entry in cases)
+            Type type = source.GetType();
+            foreach (CaseInfoAsync entry in cases)
             {
                 if (entry.IsDefault || entry.Target.IsAssignableFrom(type))
                 {
@@ -58,35 +56,36 @@ namespace Server
 
         public static CaseInfo Case<T>(Action action)
         {
-            return new CaseInfo()
+            return new CaseInfo
             {
                 Action = x => action(),
                 Target = typeof(T)
             };
         }
+
         /// <summary>
-        /// Async alternative to CaseInfo to support await syntax in DoAsync.
+        ///     Async alternative to CaseInfo to support await syntax in DoAsync.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="task"></param>
         /// <returns></returns>
         public static CaseInfoAsync Case<T>(Func<T, Task> task)
         {
-            return new CaseInfoAsync()
+            return new CaseInfoAsync
             {
-                Task = (parameter) => task((T)parameter),
+                Task = parameter => task((T) parameter),
                 Target = typeof(T)
             };
         }
 
         /// <summary>
-        /// Async alternative to Default method.
+        ///     Async alternative to Default method.
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
         public static CaseInfoAsync Default(Func<Task> task)
         {
-            return new CaseInfoAsync()
+            return new CaseInfoAsync
             {
                 Task = x => task(),
                 IsDefault = true
@@ -95,16 +94,16 @@ namespace Server
 
         public static CaseInfo Case<T>(Action<T> action)
         {
-            return new CaseInfo()
+            return new CaseInfo
             {
-                Action = (x) => action((T)x),
+                Action = x => action((T) x),
                 Target = typeof(T)
             };
         }
 
         public static CaseInfo Default(Action action)
         {
-            return new CaseInfo()
+            return new CaseInfo
             {
                 Action = x => action(),
                 IsDefault = true

@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using GameObjectsLib.Game;
-using System.Linq;
-using System.Reflection;
-using GameObjectsLib;
-using GameObjectsLib.GameMap;
-using GameObjectsLib.GameUser;
-using WinformsUI.InGame.Phases;
-using Region = GameObjectsLib.GameMap.Region;
-
-namespace WinformsUI.InGame
+﻿namespace WinformsUI.InGame
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows.Forms;
+    using GameObjectsLib;
+    using GameObjectsLib.Game;
+    using GameObjectsLib.GameMap;
+    using GameObjectsLib.GameUser;
+    using Phases;
+
     public partial class InGameControl : UserControl
     {
         public InGameControl()
@@ -25,33 +22,35 @@ namespace WinformsUI.InGame
             mapHandlerControl.GetState = () => state;
             mapHandlerControl.GetPlayerOnTurn = () => playerOnTurn?.Current;
             // TODO: might throw exception
-            
         }
 
-        Game game;
+        private Game game;
 
-        IEnumerable<Player> localPlayers;
-        IEnumerator<Player> playerOnTurn;
-        BeginGamePhaseControl beginGamePhaseControl;
-        BeginRoundPhaseControl beginRoundPhaseControl;
-        TurnPhaseControl turnPhaseControl;
+        private IEnumerable<Player> localPlayers;
+        private IEnumerator<Player> playerOnTurn;
+        private BeginGamePhaseControl beginGamePhaseControl;
+        private BeginRoundPhaseControl beginRoundPhaseControl;
+        private TurnPhaseControl turnPhaseControl;
 
-        readonly List<GameRound> rounds = new List<GameRound>();
+        private readonly List<GameRound> rounds = new List<GameRound>();
 
         public Game Game
         {
             get { return game; }
             set
             {
-                if (game != null) throw new ArgumentException();
+                if (game != null)
+                {
+                    throw new ArgumentException();
+                }
                 // initialize game
                 game = value;
-                localPlayers = (from player in value.Players
-                                    where player.GetType() == typeof(HumanPlayer)
-                                    let humanPlayer = (HumanPlayer)player
-                                    where humanPlayer.User.UserType == UserType.LocalUser
-                                    || humanPlayer.User.UserType == UserType.MyNetworkUser
-                                    select player);
+                localPlayers = from player in value.Players
+                               where player.GetType() == typeof(HumanPlayer)
+                               let humanPlayer = (HumanPlayer) player
+                               where humanPlayer.User.UserType == UserType.LocalUser
+                                     || humanPlayer.User.UserType == UserType.MyNetworkUser
+                               select player;
                 // initialize player whos on turn atm
                 playerOnTurn = localPlayers.GetEnumerator();
 
@@ -62,8 +61,8 @@ namespace WinformsUI.InGame
                     GameStateChange(GameState.GameBeginning);
                 }
                 else if ((from player in game.Players
-                         where player.ControlledRegions.Count != 0
-                         select player).Count() <= 1) // TODO: not working
+                          where player.ControlledRegions.Count != 0
+                          select player).Count() <= 1) // TODO: not working
                 {
                     GameStateChange(GameState.GameEnd);
                 }
@@ -72,45 +71,70 @@ namespace WinformsUI.InGame
                     GameStateChange(GameState.RoundBeginning);
                 }
 
-                using (var db = new UtilsDbContext())
+                using (UtilsDbContext db = new UtilsDbContext())
                 {
-                    var mapInfo = (from item in db.Maps
-                                   where item.Id == game.Map.Id
-                                   select item).Single();
+                    MapInfo mapInfo = (from item in db.Maps
+                                       where item.Id == game.Map.Id
+                                       select item).Single();
                     // initialize map processor
                     mapHandlerControl.Processor = MapImageProcessor.Create(Game.Map, mapInfo.ImageColoredRegionsPath,
                         mapInfo.ColorRegionsTemplatePath, mapInfo.ImagePath);
-
                 }
                 mapHandlerControl.Processor.Refresh(value);
                 Refresh();
             }
         }
 
-        bool NextPlayer()
+        private bool NextPlayer()
         {
             bool returnValue = playerOnTurn.MoveNext();
-            if (returnValue && game.GameType == GameType.MultiplayerHotseat) MessageBox.Show($"Player {playerOnTurn.Current} is on turn!");
+            if (returnValue && game.GameType == GameType.MultiplayerHotseat)
+            {
+                MessageBox.Show($"Player {playerOnTurn.Current} is on turn!");
+            }
             return returnValue;
         }
-        
-        void StartOverGameBeginningPhase(GameBeginningRound gameBeginningRound)
+
+        private void StartOverGameBeginningPhase(GameBeginningRound gameBeginningRound)
         {
             mapHandlerControl.StartOver(gameBeginningRound);
             beginGamePhaseControl.BeginningRound.SelectedRegions.Clear();
         }
 
-        readonly List<GameBeginningRound> gameBeginningRounds = new List<GameBeginningRound>();
-        void CommitGameBeginningPhase(GameBeginningRound gameBeginningRound)
+        private readonly List<GameBeginningRound> gameBeginningRounds = new List<GameBeginningRound>();
+
+        private void CommitGameBeginningPhase(GameBeginningRound gameBeginningRound)
         {
             switch (game.GameType)
             {
                 case GameType.SinglePlayer:
+                {
+                    gameBeginningRounds.Add(gameBeginningRound);
+                    // TODO: play bots
+                    GameBeginningRound round = GameBeginningRound.Process(gameBeginningRounds);
+                    using (UtilsDbContext db = new UtilsDbContext())
                     {
-                        gameBeginningRounds.Add(gameBeginningRound);
-                        // TODO: play bots
-                        var round = GameBeginningRound.Process(gameBeginningRounds);
-                        using (var db = new UtilsDbContext())
+                        game.Play(round);
+                        game.Save(db);
+                    }
+                    GameStateChange(GameState.RoundBeginning);
+
+                    mapHandlerControl.Processor.Refresh(Game);
+                    mapHandlerControl.RefreshImage();
+
+                    break;
+                }
+                case GameType.MultiplayerHotseat:
+                {
+                    gameBeginningRounds.Add(gameBeginningRound);
+                    if (NextPlayer())
+                    {
+                        GameStateChange(GameState.GameBeginning);
+                    }
+                    else
+                    {
+                        GameBeginningRound round = GameBeginningRound.Process(gameBeginningRounds);
+                        using (UtilsDbContext db = new UtilsDbContext())
                         {
                             game.Play(round);
                             game.Save(db);
@@ -120,33 +144,11 @@ namespace WinformsUI.InGame
                         mapHandlerControl.Processor.Refresh(Game);
                         mapHandlerControl.RefreshImage();
 
-                        break;
+                        playerOnTurn = localPlayers.GetEnumerator();
+                        NextPlayer();
                     }
-                case GameType.MultiplayerHotseat:
-                    {
-                        gameBeginningRounds.Add(gameBeginningRound);
-                        if (NextPlayer())
-                        {
-                            GameStateChange(GameState.GameBeginning);
-                        }
-                        else
-                        {
-                            var round = GameBeginningRound.Process(gameBeginningRounds);
-                            using (var db = new UtilsDbContext())
-                            {
-                                game.Play(round);
-                                game.Save(db);
-                            }
-                            GameStateChange(GameState.RoundBeginning);
-
-                            mapHandlerControl.Processor.Refresh(Game);
-                            mapHandlerControl.RefreshImage();
-
-                            playerOnTurn = localPlayers.GetEnumerator();
-                            NextPlayer();
-                        }
-                        break;
-                    }
+                    break;
+                }
                 case GameType.MultiplayerNetwork:
                 {
                     // TODO: send game beginning round to the database
@@ -155,9 +157,9 @@ namespace WinformsUI.InGame
             }
         }
 
-        void PlayRound()
+        private void PlayRound()
         {
-            var combinedRound = GameRound.Process(rounds);
+            GameRound combinedRound = GameRound.Process(rounds);
             game.Play(combinedRound);
 
 
@@ -165,9 +167,8 @@ namespace WinformsUI.InGame
             mapHandlerControl.RefreshImage();
         }
 
-        
 
-        GameState state;
+        private GameState state;
 
         public void GameStateChange(GameState newGameState)
         {
@@ -183,7 +184,7 @@ namespace WinformsUI.InGame
                 case GameState.GameBeginning:
                     turnPhaseControl?.Dispose();
                     turnPhaseControl = null;
-                    beginGamePhaseControl = new BeginGamePhaseControl()
+                    beginGamePhaseControl = new BeginGamePhaseControl
                     {
                         Parent = gameStateMenuPanel,
                         Dock = DockStyle.Fill
@@ -195,15 +196,12 @@ namespace WinformsUI.InGame
                 case GameState.RoundBeginning:
                     turnPhaseControl?.Dispose();
                     turnPhaseControl = null;
-                    beginRoundPhaseControl = new BeginRoundPhaseControl()
+                    beginRoundPhaseControl = new BeginRoundPhaseControl
                     {
                         Parent = gameStateMenuPanel,
                         Dock = DockStyle.Fill
                     };
-                    beginRoundPhaseControl.OnBegin += () =>
-                    {
-                        GameStateChange(GameState.Deploying);
-                    };
+                    beginRoundPhaseControl.OnBegin += () => { GameStateChange(GameState.Deploying); };
                     beginRoundPhaseControl.Show();
                     break;
                 case GameState.Committed:
@@ -215,7 +213,7 @@ namespace WinformsUI.InGame
                         && state != GameState.Committing)
                     {
                         turnPhaseControl?.Dispose();
-                        turnPhaseControl = new TurnPhaseControl()
+                        turnPhaseControl = new TurnPhaseControl
                         {
                             Parent = gameStateMenuPanel,
                             Dock = DockStyle.Fill
@@ -229,80 +227,80 @@ namespace WinformsUI.InGame
                                 switch (game.GameType)
                                 {
                                     case GameType.SinglePlayer:
+                                    {
+                                        rounds.Add(new GameRound(game.Id, turnPhaseControl.DeployingStructure,
+                                            turnPhaseControl.AttackingStructure));
+
+                                        // TODO: play bots
+
+                                        PlayRound();
+                                        rounds.Clear();
+
+                                        using (UtilsDbContext db = new UtilsDbContext())
                                         {
-                                            rounds.Add(new GameRound(game.Id, turnPhaseControl.DeployingStructure,
-                                                turnPhaseControl.AttackingStructure));
+                                            game.Save(db);
+                                        }
+
+                                        turnPhaseControl?.Dispose();
+                                        turnPhaseControl = null;
+                                        GameStateChange(GameState.RoundBeginning);
+                                        break;
+                                    }
+                                    case GameType.MultiplayerHotseat:
+                                    {
+                                        rounds.Add(new GameRound(game.RoundNumber, turnPhaseControl.DeployingStructure,
+                                            turnPhaseControl.AttackingStructure));
+
+                                        if (NextPlayer())
+                                        {
+                                            // play the next player instead
+                                            turnPhaseControl?.Dispose();
+                                            turnPhaseControl = null;
+
+                                            GameStateChange(GameState.RoundBeginning);
+                                        }
+                                        else
+                                        {
+                                            // play the whole round
 
                                             // TODO: play bots
-                                            
+                                            GameRound round = GameRound.Process(rounds);
+
                                             PlayRound();
                                             rounds.Clear();
 
-                                            using (var db = new UtilsDbContext())
+                                            using (UtilsDbContext db = new UtilsDbContext())
                                             {
                                                 game.Save(db);
                                             }
-                                            
+
                                             turnPhaseControl?.Dispose();
                                             turnPhaseControl = null;
+
+                                            for (int i = game.Players.Count - 1; i >= 0; i--)
+                                            {
+                                                if (game.Players[i].ControlledRegions.Count == 0)
+                                                {
+                                                    MessageBox.Show($"Player {game.Players[i].Name} has lost.");
+                                                    game.Players.RemoveAt(i);
+                                                }
+                                            }
+                                            if (game.Players.Count == 1)
+                                            {
+                                                // TODO: game quit
+                                                MessageBox.Show($"Player {game.Players[0].Name} has won the game!");
+                                                GameStateChange(GameState.GameEnd);
+                                                return;
+                                            }
+
+                                            playerOnTurn = localPlayers.GetEnumerator();
+                                            NextPlayer();
+
                                             GameStateChange(GameState.RoundBeginning);
-                                            break;
                                         }
-                                    case GameType.MultiplayerHotseat:
-                                        {
-                                            rounds.Add(new GameRound(game.RoundNumber, turnPhaseControl.DeployingStructure,
-                                                turnPhaseControl.AttackingStructure));
 
-                                            if (NextPlayer())
-                                            {
-                                                // play the next player instead
-                                                turnPhaseControl?.Dispose();
-                                                turnPhaseControl = null;
-
-                                               GameStateChange(GameState.RoundBeginning);
-                                            }
-                                            else
-                                            {
-                                                // play the whole round
-
-                                                // TODO: play bots
-                                                var round = GameRound.Process(rounds);
-
-                                                PlayRound();
-                                                rounds.Clear();
-
-                                                using (var db = new UtilsDbContext())
-                                                {
-                                                    game.Save(db);
-                                                }
-
-                                                turnPhaseControl?.Dispose();
-                                                turnPhaseControl = null;
-                                                
-                                                for (int i = game.Players.Count - 1; i >= 0; i--)
-                                                {
-                                                    if (game.Players[i].ControlledRegions.Count == 0)
-                                                    {
-                                                        MessageBox.Show($"Player {game.Players[i].Name} has lost.");
-                                                        game.Players.RemoveAt(i);
-                                                    }
-                                                }
-                                                if (game.Players.Count == 1)
-                                                {
-                                                    // TODO: game quit
-                                                    MessageBox.Show($"Player {game.Players[0].Name} has won the game!");
-                                                    GameStateChange(GameState.GameEnd);
-                                                    return;
-                                                }
-
-                                                playerOnTurn = localPlayers.GetEnumerator();
-                                                NextPlayer();
-
-                                                GameStateChange(GameState.RoundBeginning);
-                                            }
-
-                                            break;
-                                        }
+                                        break;
+                                    }
                                     case GameType.MultiplayerNetwork:
                                         // TODO
                                         break;
@@ -317,14 +315,16 @@ namespace WinformsUI.InGame
                                 case GameState.Deploying:
                                     if (state >= GameState.Attacking)
                                     {
-                                        mapHandlerControl.Processor.ResetRound(new GameRound(game.Id, turnPhaseControl.DeployingStructure,
+                                        mapHandlerControl.Processor.ResetRound(new GameRound(game.Id,
+                                            turnPhaseControl.DeployingStructure,
                                             turnPhaseControl.AttackingStructure));
                                         turnPhaseControl.DeployingStructure.ArmiesDeployed.Clear();
                                         turnPhaseControl.AttackingStructure.Attacks.Clear();
                                     }
                                     else
                                     {
-                                        mapHandlerControl.Processor.ResetDeployingPhase(turnPhaseControl.DeployingStructure);
+                                        mapHandlerControl.Processor.ResetDeployingPhase(turnPhaseControl
+                                            .DeployingStructure);
                                         turnPhaseControl.DeployingStructure.ArmiesDeployed.Clear();
                                     }
                                     break;
@@ -349,31 +349,38 @@ namespace WinformsUI.InGame
                     turnPhaseControl?.Dispose();
                     turnPhaseControl = null;
                     break;
-
-
             }
             state = newGameState;
         }
 
-        void SeizeAttempt(Region region)
+        private void SeizeAttempt(Region region)
         {
-            if (region == null) return;
+            if (region == null)
+            {
+                return;
+            }
             // already selected 2 regions
             if ((from round in gameBeginningRounds
                  from selectedRegions in round.SelectedRegions
                  where selectedRegions.Item2 == region
-                 select round).Any()) return;
+                 select round).Any())
+            {
+                return;
+            }
             if (beginGamePhaseControl.BeginningRound.SelectedRegions.Count >= 2)
             {
                 MessageBox.Show("You have chosen enough regions.");
                 return;
             }
-            
+
 
             bool containsSameRegion = beginGamePhaseControl
                 .BeginningRound.SelectedRegions.Any(tuple => tuple.Item2 == region);
             // if he chose the very same region already, ignore this choice
-            if (containsSameRegion) return;
+            if (containsSameRegion)
+            {
+                return;
+            }
 
             // add, recolor, refresh
             beginGamePhaseControl.BeginningRound.SelectedRegions.Add(
@@ -381,18 +388,25 @@ namespace WinformsUI.InGame
             mapHandlerControl.SeizeRegion(region, playerOnTurn.Current);
         }
 
-        void DeployAttempt(Region region, int addedArmy)
+        private void DeployAttempt(Region region, int addedArmy)
         {
-            if (region == null || region.Owner == null || region.Owner != playerOnTurn.Current) return;
+            if (region == null || region.Owner == null || region.Owner != playerOnTurn.Current)
+            {
+                return;
+            }
             // represents the already existing deployment entry
-            var regionRepresentingTuple = (from item in turnPhaseControl.DeployingStructure.ArmiesDeployed
-                                           where item.Item1 == region
-                                           select item).FirstOrDefault();
+            Tuple<Region, int> regionRepresentingTuple =
+            (from item in turnPhaseControl.DeployingStructure.ArmiesDeployed
+             where item.Item1 == region
+             select item).FirstOrDefault();
 
             if (addedArmy > 0)
             {
                 // if cant deploy anything
-                if (turnPhaseControl.DeployingStructure.GetUnitsLeftToDeploy(playerOnTurn.Current) <= 0) return;
+                if (turnPhaseControl.DeployingStructure.GetUnitsLeftToDeploy(playerOnTurn.Current) <= 0)
+                {
+                    return;
+                }
                 // if the entry exists
                 if (regionRepresentingTuple != null)
                 {
@@ -420,7 +434,10 @@ namespace WinformsUI.InGame
                         regionRepresentingTuple);
 
                     // if you want to go under regions current state, dont
-                    if (regionRepresentingTuple.Item2 <= regionRepresentingTuple.Item1.Army) return;
+                    if (regionRepresentingTuple.Item2 <= regionRepresentingTuple.Item1.Army)
+                    {
+                        return;
+                    }
 
                     // add it with army - 1
                     regionRepresentingTuple = new Tuple<Region, int>(
@@ -429,16 +446,18 @@ namespace WinformsUI.InGame
 
                     turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple);
                 }
-                else return;
+                else
+                {
+                    return;
+                }
             }
 
             mapHandlerControl.Deploy(regionRepresentingTuple.Item1, regionRepresentingTuple.Item2);
-
         }
 
-        void AttackAttempt(Region previouslySelectedRegion, Region region)
+        private void AttackAttempt(Region previouslySelectedRegion, Region region)
         {
-            AttackManagerForm attackManager = new AttackManagerForm()
+            AttackManagerForm attackManager = new AttackManagerForm
             {
                 ArmyLowerLimit = 0,
                 ArmyUpperLimit
@@ -446,7 +465,7 @@ namespace WinformsUI.InGame
                         .GetUnitsLeftToAttack(previouslySelectedRegion,
                             turnPhaseControl.DeployingStructure)
             };
-            var dialogResult = attackManager.ShowDialog();
+            DialogResult dialogResult = attackManager.ShowDialog();
             // execute the attack
             if (dialogResult == DialogResult.OK)
             {
@@ -455,7 +474,5 @@ namespace WinformsUI.InGame
                 turnPhaseControl.AttackingStructure.Attacks.Add(attack);
             }
         }
-        
-
     }
 }

@@ -1,30 +1,26 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Windows.Forms;
-using GameObjectsLib;
-using GameObjectsLib.GameUser;
-
-
-namespace WinformsUI.GameSetup.Multiplayer.Network
+﻿namespace WinformsUI.GameSetup.Multiplayer.Network
 {
-    using System.Threading.Tasks;
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Windows.Forms;
+    using GameObjectsLib.GameUser;
 
     public partial class ServerLoggingForm : Form
     {
         public User User { get; private set; }
+
         public ServerLoggingForm()
         {
             InitializeComponent();
         }
 
         /// <summary>
-        /// Handles cancellation of the token.
+        ///     Handles cancellation of the token.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Cancel(object sender, System.EventArgs e)
+        private void Cancel(object sender, EventArgs e)
         {
             // close the form
             Close();
@@ -33,11 +29,11 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
         }
 
         /// <summary>
-        /// Logs user into server.
+        ///     Logs user into server.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void Log(object sender, System.EventArgs e)
+        private async void Log(object sender, EventArgs e)
         {
             // local validation
             /*if (loginTextBox.Text.Length < 3 || loginTextBox.Text.Length > 15)
@@ -66,7 +62,7 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
                 }
 #endif
             }
-            var user = new MyNetworkUser(loginTextBox.Text, client, endPoint); // returned user
+            MyNetworkUser user = new MyNetworkUser(loginTextBox.Text, client, endPoint); // returned user
 
             // cant log in, return
             if (!await user.LogInAsync(passwordTextBox.Text))
@@ -81,9 +77,6 @@ namespace WinformsUI.GameSetup.Multiplayer.Network
             Close();
 
             DialogResult = DialogResult.OK;
-
-
         }
-
     }
 }

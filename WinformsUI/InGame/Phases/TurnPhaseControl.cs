@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using GameObjectsLib;
-using Region = GameObjectsLib.GameMap.Region;
-
-namespace WinformsUI.InGame.Phases
+﻿namespace WinformsUI.InGame.Phases
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Windows.Forms;
+    using GameObjectsLib;
     using GameObjectsLib.Game;
+    using Region = GameObjectsLib.GameMap.Region;
 
     public partial class TurnPhaseControl : UserControl
     {
-        GameState state = GameState.Deploying;
+        private GameState state = GameState.Deploying;
         public Deploying DeployingStructure { get; } = new Deploying(new List<Tuple<Region, int>>());
         public Attacking AttackingStructure { get; } = new Attacking(new List<Attack>());
 
@@ -25,17 +23,17 @@ namespace WinformsUI.InGame.Phases
 
         /// <summary>
         ///     Is invoked when state of the game is changed.
-        /// Argument is the new state.
+        ///     Argument is the new state.
         /// </summary>
         public event Action<GameState> OnStateChanged;
 
         /// <summary>
         ///     Resets everything from previous stages of this stage.
-        /// Argument is the new state.
+        ///     Argument is the new state.
         /// </summary>
         public event Action<GameState> OnReset;
 
-        void ResetStateHighlight(GameState state)
+        private void ResetStateHighlight(GameState state)
         {
             switch (state)
             {
@@ -51,7 +49,7 @@ namespace WinformsUI.InGame.Phases
             }
         }
 
-        void HighlightCorrectButton(GameState state)
+        private void HighlightCorrectButton(GameState state)
         {
             switch (state)
             {
@@ -67,7 +65,7 @@ namespace WinformsUI.InGame.Phases
             }
         }
 
-        void Committing(object sender, EventArgs e)
+        private void Committing(object sender, EventArgs e)
         {
             nextButton.Enabled = true;
             ResetStateHighlight(state);
@@ -78,12 +76,15 @@ namespace WinformsUI.InGame.Phases
             OnStateChanged?.Invoke(state);
         }
 
-        void Attacking(object sender, EventArgs e)
+        private void Attacking(object sender, EventArgs e)
         {
             nextButton.Enabled = true;
             ResetStateHighlight(state);
             // committing phase
-            if (state > GameState.Attacking) OnReset?.Invoke(GameState.Committing);
+            if (state > GameState.Attacking)
+            {
+                OnReset?.Invoke(GameState.Committing);
+            }
 
             state = GameState.Attacking;
             // highlight
@@ -92,25 +93,31 @@ namespace WinformsUI.InGame.Phases
             OnStateChanged?.Invoke(state);
         }
 
-        void Deploying(object sender, EventArgs e)
+        private void Deploying(object sender, EventArgs e)
         {
             nextButton.Enabled = true;
             ResetStateHighlight(state);
 
             // committing phase
-            if (state > GameState.Deploying) OnReset?.Invoke(GameState.Attacking);
+            if (state > GameState.Deploying)
+            {
+                OnReset?.Invoke(GameState.Attacking);
+            }
 
             state = GameState.Deploying;
-            
+
             // highlight button
             HighlightCorrectButton(state);
 
             OnStateChanged?.Invoke(state);
         }
 
-        void Next(object sender, EventArgs e)
+        private void Next(object sender, EventArgs e)
         {
-            if (state == GameState.Committing) nextButton.Enabled = false;
+            if (state == GameState.Committing)
+            {
+                nextButton.Enabled = false;
+            }
 
             ResetStateHighlight(state);
 
@@ -119,7 +126,7 @@ namespace WinformsUI.InGame.Phases
             OnStateChanged?.Invoke(state);
         }
 
-        void Repeat(object sender, EventArgs e)
+        private void Repeat(object sender, EventArgs e)
         {
             nextButton.Enabled = true;
             ResetStateHighlight(state);

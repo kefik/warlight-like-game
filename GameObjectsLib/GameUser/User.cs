@@ -1,16 +1,18 @@
-﻿using System;
-using System.Dynamic;
-using System.Runtime.Serialization;
-using ProtoBuf;
-
-namespace GameObjectsLib.GameUser
+﻿namespace GameObjectsLib.GameUser
 {
+    using System;
+    using ProtoBuf;
+
     public enum UserType
     {
-        None, LocalUser, NetworkUser, MyNetworkUser
+        None,
+        LocalUser,
+        NetworkUser,
+        MyNetworkUser
     }
+
     /// <summary>
-    /// Represents user that controls player in the game.
+    ///     Represents user that controls player in the game.
     /// </summary>
     [Serializable]
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
@@ -26,12 +28,14 @@ namespace GameObjectsLib.GameUser
         {
             Name = name;
         }
-        protected User() { }
-        
+
+        protected User()
+        {
+        }
+
         public override string ToString()
         {
             return Name;
         }
     }
-    
 }
