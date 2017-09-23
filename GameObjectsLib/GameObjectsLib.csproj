@@ -47,9 +47,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AiPlayer.cs" />
+    <Compile Include="Difficulty.cs" />
+    <Compile Include="GameMap\MapImageProcessor.cs" />
     <Compile Include="Game\GameFlowHandler.cs" />
+    <Compile Include="HumanPlayer.cs" />
     <Compile Include="NetworkCommObjects\Message\CreateGameRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\CreateGameResponseMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\GameHeaderMessageObject.cs" />
     <Compile Include="NetworkCommObjects\Message\JoinGameRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\JoinGameResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\LoadGameRequestMessage.cs" />
@@ -60,6 +65,8 @@
     <Compile Include="NetworkCommObjects\Message\LoadOpenedGamesListResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\LoadMyGamesListRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\LoadMyGamesListResponseMessage.cs" />
+    <Compile Include="NetworkCommObjects\Message\OpenedGameHeaderMessageObject.cs" />
+    <Compile Include="NetworkCommObjects\Message\StartedGameHeaderMessageObject.cs" />
     <Compile Include="NetworkCommObjects\Message\UserLogInRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\UserLogInResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\SerializationObjectWrapper.cs" />
