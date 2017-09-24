@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="AiPlayer.cs" />
     <Compile Include="Difficulty.cs" />
+    <Compile Include="GameBeginningRound.cs" />
     <Compile Include="GameMap\MapImageProcessor.cs" />
     <Compile Include="Game\GameFlowHandler.cs" />
     <Compile Include="HumanPlayer.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Game\SingleplayerGame.cs" />
     <Compile Include="GameUser\User.cs" />
     <Compile Include="GameRound.cs" />
+    <Compile Include="Round.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">

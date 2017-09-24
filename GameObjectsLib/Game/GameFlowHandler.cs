@@ -29,12 +29,20 @@
         public event Action OnCommitting;
         public event Action OnCommitted;
         public event Action OnGameEnd;
-
         public event Action OnPlayRound;
+
+        public event Action OnInGamePhaseEnter;
+        public event Action OnInGamePhaseLeave;
+
+        public event Action OnGameStateChanging; 
 
         public Game Game { get; }
 
-        public IList<GameRound> Rounds { get; set; } = new List<GameRound>();
+        public virtual HumanPlayer PlayerOnTurn { get; protected set; }
+
+        public IList<Round> Rounds { get; set; } = new List<Round>();
+
+        protected IList<Round> allRounds = new List<Round>();
 
         protected GameFlowHandler(Game game)
         {
@@ -43,8 +51,9 @@
 
         protected GameState gameState;
 
-        public virtual void GameStateChanged(GameState newGameState)
+        public virtual void GameStateChange(GameState newGameState)
         {
+            OnGameStateChanging?.Invoke();
             switch (newGameState)
             {
                 case GameState.GameBeginning:
@@ -73,30 +82,7 @@
             }
             gameState = newGameState;
         }
-
-
-        /// <summary>
-        ///     Plays given initial round, refreshing the situation of the game.
-        /// </summary>
-        /// <param name="round">Round to be played.</param>
-        public virtual void PlayRound(GameBeginningRound round)
-        {
-            foreach (Tuple<Player, Region> roundSelectedRegion in round.SelectedRegions)
-            {
-                Region realRegion = (from region in Game.Map.Regions
-                                     where region == roundSelectedRegion.Item2
-                                     select region).First();
-                Player realPlayer = (from player in Game.Players
-                                     where player == roundSelectedRegion.Item1
-                                     select player).First();
-
-                realRegion.Owner = realPlayer;
-            }
-
-            Game.Refresh();
-            Game.RoundNumber++;
-        }
-
+        
         /// <summary>
         ///     Plays given round, calculating everything, moving this instance of
         ///     the game into position after the round was played.
@@ -196,16 +182,43 @@
                 }
             }
 
-            GameRound linearizedRound = GameRound.Process(Rounds);
+            void PlayGameBeginningRound(GameBeginningRound round)
+            {
+                foreach (Tuple<Player, Region> roundSelectedRegion in round.SelectedRegions)
+                {
+                    Region realRegion = (from region in Game.Map.Regions
+                                         where region == roundSelectedRegion.Item2
+                                         select region).First();
+                    Player realPlayer = (from player in Game.Players
+                                         where player == roundSelectedRegion.Item1
+                                         select player).First();
+
+                    realRegion.Owner = realPlayer;
+                }
+            }
+
+            Round linearizedRound = Round.Process(Rounds);
             Rounds.Clear();
 
-            // deploying
-            PlayDeploying(linearizedRound);
+            if (linearizedRound.GetType() == typeof(GameRound))
+            {
+                var convertedRound = (GameRound) linearizedRound;
+                // deploying
+                PlayDeploying(convertedRound);
 
-            // attacking
-            PlayAttacking(linearizedRound);
+                // attacking
+                PlayAttacking(convertedRound);
+            }
+            else
+            {
+                var convertedRound = (GameBeginningRound) linearizedRound;
+                PlayGameBeginningRound(convertedRound);
+            }
+            
+
             Game.Refresh();
             Game.RoundNumber++;
+            allRounds.Add(linearizedRound);
         }
     }
 
@@ -213,7 +226,7 @@
     {
         private readonly IEnumerator<HumanPlayer> playersEnumerator;
 
-        public HumanPlayer PlayerOnTurn
+        public override HumanPlayer PlayerOnTurn
         {
             get { return playersEnumerator?.Current; }
         }
@@ -227,14 +240,14 @@
                                                           || humanPlayer.User.UserType == UserType.MyNetworkUser
                                                     select humanPlayer;
             playersEnumerator = localPlayers.GetEnumerator();
-            NextPlayer();
+            NextLocalPlayer();
         }
 
         /// <summary>
         ///     Moves to next player.
         /// </summary>
         /// <returns>False, if player is theres no next player, true otherwise.</returns>
-        public bool NextPlayer()
+        public bool NextLocalPlayer()
         {
             bool isThereNextPlayer = playersEnumerator.MoveNext();
 
@@ -247,28 +260,16 @@
             // the player was defeated
             if (PlayerOnTurn.IsDefeated(gameState))
             {
-                return NextPlayer();
+                return NextLocalPlayer();
             }
 
             return true;
         }
 
-        public override void PlayRound(GameBeginningRound round)
-        {
-            // cannot play round if theres any other player to play
-            if (NextPlayer())
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
-            base.PlayRound(round);
-            playersEnumerator.Reset();
-        }
-
         public override void PlayRound()
         {
             // cannot play round if theres any other player to play
-            if (NextPlayer())
+            if (NextLocalPlayer())
             {
                 throw new ArgumentOutOfRangeException();
             }
@@ -282,6 +283,7 @@
     {
         public SingleplayerGameFlowHandler(Game game) : base(game)
         {
+            PlayerOnTurn = (HumanPlayer)game.Players.First(x => x.GetType() == typeof(HumanPlayer));
         }
     }
 
