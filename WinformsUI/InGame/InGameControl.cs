@@ -34,55 +34,51 @@
 
         private readonly List<GameRound> rounds = new List<GameRound>();
 
-        public Game Game
+        public void Initialize(Game game)
         {
-            get { return game; }
-            set
+            if (game == null)
             {
-                if (game != null)
-                {
-                    throw new ArgumentException();
-                }
-                // initialize game
-                game = value;
-                localPlayers = from player in value.Players
-                               where player.GetType() == typeof(HumanPlayer)
-                               let humanPlayer = (HumanPlayer) player
-                               where humanPlayer.User.UserType == UserType.LocalUser
-                                     || humanPlayer.User.UserType == UserType.MyNetworkUser
-                               select player;
-                // initialize player whos on turn atm
-                playerOnTurn = localPlayers.GetEnumerator();
-
-                NextPlayer();
-                // initialize game state
-                if (game.RoundNumber == 0)
-                {
-                    GameStateChange(GameState.GameBeginning);
-                }
-                else if ((from player in game.Players
-                          where player.ControlledRegions.Count != 0
-                          select player).Count() <= 1) // TODO: not working
-                {
-                    GameStateChange(GameState.GameEnd);
-                }
-                else
-                {
-                    GameStateChange(GameState.RoundBeginning);
-                }
-
-                using (UtilsDbContext db = new UtilsDbContext())
-                {
-                    MapInfo mapInfo = (from item in db.Maps
-                                       where item.Id == game.Map.Id
-                                       select item).Single();
-                    // initialize map processor
-                    mapHandlerControl.Processor = MapImageProcessor.Create(Game.Map, mapInfo.ImageColoredRegionsPath,
-                        mapInfo.ColorRegionsTemplatePath, mapInfo.ImagePath);
-                }
-                mapHandlerControl.Processor.Refresh(value);
-                Refresh();
+                throw new ArgumentException();
             }
+            // initialize game
+            this.game = game;
+            localPlayers = from player in game.Players
+                           where player.GetType() == typeof(HumanPlayer)
+                           let humanPlayer = (HumanPlayer)player
+                           where humanPlayer.User.UserType == UserType.LocalUser
+                                 || humanPlayer.User.UserType == UserType.MyNetworkUser
+                           select player;
+            // initialize player whos on turn atm
+            playerOnTurn = localPlayers.GetEnumerator();
+
+            NextPlayer();
+            // initialize game state
+            if (game.RoundNumber == 0)
+            {
+                GameStateChange(GameState.GameBeginning);
+            }
+            else if ((from player in game.Players
+                      where player.ControlledRegions.Count != 0
+                      select player).Count() <= 1) // TODO: not working
+            {
+                GameStateChange(GameState.GameEnd);
+            }
+            else
+            {
+                GameStateChange(GameState.RoundBeginning);
+            }
+
+            using (UtilsDbContext db = new UtilsDbContext())
+            {
+                MapInfo mapInfo = (from item in db.Maps
+                                   where item.Id == game.Map.Id
+                                   select item).Single();
+                // initialize map processor
+                mapHandlerControl.Initialize(MapImageProcessor.Create(game.Map, mapInfo.ImageColoredRegionsPath,
+                    mapInfo.ColorRegionsTemplatePath, mapInfo.ImagePath));
+            }
+            mapHandlerControl.Refresh(game);
+            Refresh();
         }
 
         private bool NextPlayer()
@@ -119,7 +115,7 @@
                     }
                     GameStateChange(GameState.RoundBeginning);
 
-                    mapHandlerControl.Processor.Refresh(Game);
+                    mapHandlerControl.Refresh(game);
                     mapHandlerControl.RefreshImage();
 
                     break;
@@ -141,7 +137,7 @@
                         }
                         GameStateChange(GameState.RoundBeginning);
 
-                        mapHandlerControl.Processor.Refresh(Game);
+                        mapHandlerControl.Refresh(game);
                         mapHandlerControl.RefreshImage();
 
                         playerOnTurn = localPlayers.GetEnumerator();
@@ -163,8 +159,7 @@
             game.Play(combinedRound);
 
 
-            mapHandlerControl.Processor.Refresh(game);
-            mapHandlerControl.RefreshImage();
+            mapHandlerControl.Refresh(game);
         }
 
 
@@ -315,7 +310,7 @@
                                 case GameState.Deploying:
                                     if (state >= GameState.Attacking)
                                     {
-                                        mapHandlerControl.Processor.ResetRound(new GameRound(game.Id,
+                                        mapHandlerControl.ResetRound(new GameRound(game.Id,
                                             turnPhaseControl.DeployingStructure,
                                             turnPhaseControl.AttackingStructure));
                                         turnPhaseControl.DeployingStructure.ArmiesDeployed.Clear();
@@ -323,13 +318,13 @@
                                     }
                                     else
                                     {
-                                        mapHandlerControl.Processor.ResetDeployingPhase(turnPhaseControl
+                                        mapHandlerControl.ResetDeployingPhase(turnPhaseControl
                                             .DeployingStructure);
                                         turnPhaseControl.DeployingStructure.ArmiesDeployed.Clear();
                                     }
                                     break;
                                 case GameState.Attacking:
-                                    mapHandlerControl.Processor.ResetAttackingPhase(turnPhaseControl.AttackingStructure,
+                                    mapHandlerControl.ResetAttackingPhase(turnPhaseControl.AttackingStructure,
                                         turnPhaseControl.DeployingStructure);
                                     turnPhaseControl.AttackingStructure.Attacks.Clear();
                                     break;

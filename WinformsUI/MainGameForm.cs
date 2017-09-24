@@ -48,8 +48,7 @@
                     inGame = new InGameControl
                     {
                         Parent = singleplayerTabPage,
-                        Dock = DockStyle.Fill,
-                        Game = game
+                        Dock = DockStyle.Fill
                     };
                     break;
                 case GameType.MultiplayerHotseat:
@@ -60,8 +59,7 @@
                     inGame = new InGameControl
                     {
                         Parent = multiplayerTabPage,
-                        Dock = DockStyle.Fill,
-                        Game = game
+                        Dock = DockStyle.Fill
                     };
                     break;
                 case GameType.MultiplayerNetwork:
@@ -72,12 +70,11 @@
                     inGame = new InGameControl
                     {
                         Parent = multiplayerTabPage,
-                        Dock = DockStyle.Fill,
-                        Game = game
+                        Dock = DockStyle.Fill
                     };
                     break;
             }
-
+            inGame.Initialize(game);
             inGame.Show();
         }
 

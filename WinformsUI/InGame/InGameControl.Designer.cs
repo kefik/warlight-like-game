@@ -72,7 +72,6 @@
             this.mapHandlerControl.AutoScroll = true;
             this.mapHandlerControl.Location = new System.Drawing.Point(189, 3);
             this.mapHandlerControl.Name = "mapHandlerControl";
-            this.mapHandlerControl.Processor = null;
             this.mapHandlerControl.Size = new System.Drawing.Size(594, 430);
             this.mapHandlerControl.TabIndex = 1;
             // 

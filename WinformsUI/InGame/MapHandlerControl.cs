@@ -10,23 +10,6 @@
     {
         private MapImageProcessor processor;
 
-        public MapImageProcessor Processor
-        {
-            get { return processor; }
-            set
-            {
-                processor = value;
-                if (processor != null)
-                {
-                    gameMapPictureBox.SizeMode = PictureBoxSizeMode.Normal;
-                    gameMapPictureBox.Image = processor.MapImage;
-                    gameMapPictureBox.Height = gameMapPictureBox.Image.Height;
-                    gameMapPictureBox.Width = gameMapPictureBox.Image.Width;
-                    gameMapPictureBox.BackgroundImage = processor.TemplateImage;
-                }
-            }
-        }
-
         public event Action<Region> OnRegionSeizeAttempt;
 
         public Func<GameState> GetState;
@@ -41,10 +24,23 @@
             InitializeComponent();
         }
 
+        public void Initialize(MapImageProcessor processor)
+        {
+            this.processor = processor;
+            if (processor == null)
+            {
+                throw new ArgumentException();
+            }
+            gameMapPictureBox.SizeMode = PictureBoxSizeMode.Normal;
+            gameMapPictureBox.Image = processor.MapImage;
+            gameMapPictureBox.Height = gameMapPictureBox.Image.Height;
+            gameMapPictureBox.Width = gameMapPictureBox.Image.Width;
+            gameMapPictureBox.BackgroundImage = processor.TemplateImage;
+        }
 
         private void ImageClick(object sender, MouseEventArgs e)
         {
-            Region region = Processor.GetRegion(e.X, e.Y);
+            Region region = processor.GetRegion(e.X, e.Y);
             GameState state = GetState();
             if (state == GameState.Deploying)
             {
@@ -178,6 +174,34 @@
 
             processor.Recolor(region, playerOnTurn.Color);
             RefreshImage();
+        }
+
+        public void ResetRound(Round round)
+        {
+            if (round.GetType() == typeof(GameBeginningRound))
+            {
+                processor.ResetRound((GameBeginningRound) round);
+            }
+            else
+            {
+                processor.ResetRound((GameRound) round);
+            }
+        }
+
+        public void Refresh(Game game)
+        {
+            processor.Refresh(game);
+            RefreshImage();
+        }
+
+        public void ResetAttackingPhase(Attacking attackingPhase, Deploying deployingPhase)
+        {
+            processor.ResetAttackingPhase(attackingPhase, deployingPhase);
+        }
+
+        public void ResetDeployingPhase(Deploying deployingPhase)
+        {
+            processor.ResetDeployingPhase(deployingPhase);
         }
     }
 }
