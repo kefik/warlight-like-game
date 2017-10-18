@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinformsUI", "WinformsUI\WinformsUI.csproj", "{7022FF55-5AB7-467C-AF9A-BE8DCE89BA2B}"
 EndProject
@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameObjectsLib", "GameObjec
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "DatabaseMapping", "DatabaseMapping\DatabaseMapping.shproj", "{DD19A542-66A9-4019-B855-F25CEFB9E326}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAi", "GameAi\GameAi.csproj", "{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		DatabaseMapping\DatabaseMapping.projitems*{7022ff55-5ab7-467c-af9a-be8dce89ba2b}*SharedItemsImports = 4
@@ -47,6 +49,10 @@ Global
 		{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,5 +61,8 @@ Global
 		{7022FF55-5AB7-467C-AF9A-BE8DCE89BA2B} = {E1ADE0FD-F1C8-47D3-BCD8-268E1C4F226B}
 		{2D2BDB23-02D1-4FA4-9932-604A789412EE} = {2E315EA8-397F-49D5-895D-3DE24CE2EAD6}
 		{DD19A542-66A9-4019-B855-F25CEFB9E326} = {E1ADE0FD-F1C8-47D3-BCD8-268E1C4F226B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D606CDC-59E3-471D-99B3-397C7AD8F1AB}
 	EndGlobalSection
 EndGlobal

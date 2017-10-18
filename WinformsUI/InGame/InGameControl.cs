@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Forms;
+    using GameAi;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
@@ -107,6 +108,9 @@
                 {
                     gameBeginningRounds.Add(gameBeginningRound);
                     // TODO: play bots
+
+                    var bot = GameBot.FromGame(game, game.Players.FirstOrDefault(x => x.GetType() == typeof(AiPlayer)));
+
                     GameBeginningRound round = GameBeginningRound.Process(gameBeginningRounds);
                     using (UtilsDbContext db = new UtilsDbContext())
                     {
