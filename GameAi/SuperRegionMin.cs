@@ -15,19 +15,22 @@
         private class SuperRegionMinStatic
         {
             public int Id { get; }
-            public RegionMin[] Regions { get; }
+            public RegionMin[] Regions { get; set; }
             public int Bonus { get; }
 
-            public SuperRegionMinStatic(SuperRegion superRegion, Player playerPerspective)
+            public SuperRegionMinStatic(SuperRegion superRegion)
             {
                 Id = superRegion.Id;
-                Regions = superRegion.Regions.Select(x => new RegionMin(x, playerPerspective)).ToArray();
                 Bonus = superRegion.Bonus;
             }
         }
 
         private SuperRegionMinStatic Static { get; }
 
+        public int Id
+        {
+            get { return Static.Id; }
+        }
         /// <summary>
         /// Represents owner of this region.
         /// </summary>
@@ -41,9 +44,13 @@
             get { return Static.Bonus; }
         }
 
+        /// <summary>
+        /// Represents regions that belong to the given SuperRegion.
+        /// </summary>
         public RegionMin[] Regions
         {
             get { return Static.Regions; }
+            set { Static.Regions = value; }
         }
 
         public SuperRegionMin(SuperRegion superRegion, Player playerPerspective)
@@ -61,7 +68,7 @@
                 Owner = OwnershipState.Enemy;
             }
 
-            Static = new SuperRegionMinStatic(superRegion, playerPerspective);
+            Static = new SuperRegionMinStatic(superRegion);
         }
 
         /// <summary>

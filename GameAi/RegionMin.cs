@@ -14,13 +14,12 @@ namespace GameAi
         private class RegionMinStatic
         {
             public int Id { get; }
-            public RegionMin[] Neighbours { get; }
+            public RegionMin[] Neighbours { get; set; }
             public SuperRegionMin SuperRegion { get; }
 
             public RegionMinStatic(Region region, Player myPlayer)
             {
                 Id = region.Id;
-                Neighbours = region.NeighbourRegions.Select(x => new RegionMin(region, myPlayer)).ToArray();
                 SuperRegion = new SuperRegionMin(region.SuperRegion, myPlayer);
             }
 
@@ -51,6 +50,11 @@ namespace GameAi
         {
             get { return (OwnershipState)(ownerAndArmyEncoded & 0b11); }
             set { ownerAndArmyEncoded = (ushort)(((ushort.MaxValue >> 2) << 2) | (ushort)value); }
+        }
+
+        public int Id
+        {
+            get { return Static.Id; }
         }
 
         /// <summary>
@@ -100,6 +104,7 @@ namespace GameAi
         internal RegionMin[] NeighbourRegions
         {
             get { return Static.Neighbours; }
+            set { Static.Neighbours = value; }
         } 
         
         internal RegionMin(Region region, Player playerPerspective)
