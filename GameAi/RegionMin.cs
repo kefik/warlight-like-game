@@ -135,7 +135,7 @@ namespace GameAi
         /// </summary>
         /// <returns>Shallow copy of this instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegionMin Copy()
+        public RegionMin ShallowCopy()
         {
             return (RegionMin)MemberwiseClone();
         }

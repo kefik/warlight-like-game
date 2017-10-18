@@ -113,7 +113,7 @@
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SuperRegionMin Copy()
+        public SuperRegionMin ShallowCopy()
         {
             return (SuperRegionMin)MemberwiseClone();
         }
