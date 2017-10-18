@@ -109,7 +109,7 @@
                     gameBeginningRounds.Add(gameBeginningRound);
                     // TODO: play bots
 
-                    var bot = GameBot.FromGame(game, game.Players.FirstOrDefault(x => x.GetType() == typeof(AiPlayer)));
+                    var bot = GameBot.FromGame(game, game.Players.FirstOrDefault(x => x.GetType() == typeof(AiPlayer)), GameBotType.MonteCarloTreeSearchBot);
                     //bot.FindBestMove();
 
                     GameBeginningRound round = GameBeginningRound.Process(gameBeginningRounds);

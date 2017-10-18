@@ -158,7 +158,7 @@
                     gameId = lastGame.Id + 1;
                 }
 
-                game = Game.Create(gameId, GameType.MultiplayerHotseat, map, players);
+                game = Game.Create(gameId, GameType.MultiplayerHotseat, map, players, fogOfWar: true);
 
 
                 // TEST

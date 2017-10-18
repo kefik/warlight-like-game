@@ -11,21 +11,23 @@
     /// <summary>
     /// Minimized version of <see cref="Game"/> from perspective of a given <see cref="Player"/>.
     /// </summary>
-    public class GameBot : IBot<Round>
+    public abstract class GameBot : IBot<Round>
     {
-        private RegionMin[] regionsMin;
-        private SuperRegionMin[] superRegionsMin;
-        private Difficulty difficulty = Difficulty.Hard;
+        protected RegionMin[] RegionsMin { get; private set; }
+        protected SuperRegionMin[] SuperRegionsMin { get; private set; }
+        protected Difficulty Difficulty { get; private set; } = Difficulty.Hard;
+        protected internal bool IsFogOfWar { get; private set; }
 
         /// <summary>
         /// Constructs minimized version of the game.
         /// </summary>
         /// <param name="game"></param>
         /// <param name="player"></param>
+        /// <param name="gameBotType"></param>
         /// <returns></returns>
-        public static GameBot FromGame(Game game, Player player)
+        public static GameBot FromGame(Game game, Player player, GameBotType gameBotType)
         {
-            var regions = game.Map.Regions.Select(x => new RegionMin(x, player)).ToArray();
+            var regions = game.Map.Regions.Select(x => new RegionMin(x, player, game.IsFogOfWar)).ToArray();
             foreach (var region in regions)
             {
                 List<RegionMin> neighbours = new List<RegionMin>();
@@ -59,24 +61,28 @@
                 superRegion.Regions = containedRegions.ToArray();
             }
 
-            var gameBot = new GameBot()
+            GameBot gameBot;
+            switch (gameBotType)
             {
-                regionsMin = regions,
-                superRegionsMin = superRegions
-            };
-
+                case GameBotType.MonteCarloTreeSearchBot:
+                    gameBot = new MonteCarloTreeSearchBot();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
+            }
+            gameBot.RegionsMin = regions;
+            gameBot.SuperRegionsMin = superRegions;
+            gameBot.IsFogOfWar = game.IsFogOfWar;
+            
             // get difficulty from Ai player
             if (player.GetType() == typeof(AiPlayer))
             {
-                gameBot.difficulty = ((AiPlayer)player).Difficulty;
+                gameBot.Difficulty = ((AiPlayer)player).Difficulty;
             }
 
             return gameBot;
         }
 
-        public Round FindBestMove()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Round FindBestMove();
     }
 }

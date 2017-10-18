@@ -9,7 +9,7 @@ namespace GameAi
     /// <summary>
     /// Minimized version of <see cref="Region"/>.
     /// </summary>
-    internal class RegionMin
+    public class RegionMin
     {
         private class RegionMinStatic
         {
@@ -46,12 +46,15 @@ namespace GameAi
         /// <summary>
         /// Represents the owner from players perspective specified in constructor.
         /// </summary>
-        public OwnershipState Owner
+        public OwnerState Owner
         {
-            get { return (OwnershipState)(ownerAndArmyEncoded & 0b11); }
-            set { ownerAndArmyEncoded = (ushort)(((ushort.MaxValue >> 2) << 2) | (ushort)value); }
+            get { return (OwnerState)(ownerAndArmyEncoded & 0b11); }
+            internal set { ownerAndArmyEncoded = (ushort)(((ushort.MaxValue >> 2) << 2) | (ushort)value); }
         }
 
+        /// <summary>
+        /// Id of the instance.
+        /// </summary>
         public int Id
         {
             get { return Static.Id; }
@@ -63,7 +66,7 @@ namespace GameAi
         public int Army
         {
             get { return ownerAndArmyEncoded >> 3; }
-            set
+            internal set
             {
                 ownerAndArmyEncoded = (ushort)(((ushort.MaxValue >> 13) << 13) | ((ushort)value >> 3));
             }
@@ -75,7 +78,7 @@ namespace GameAi
         public bool IsVisible
         {
             get { return (ownerAndArmyEncoded & 0b100) != 0; }
-            set
+            internal set
             {
                 ushort mask;
                 if (value)
@@ -93,7 +96,7 @@ namespace GameAi
         /// <summary>
         /// SuperRegion in which this region is contained.
         /// </summary>
-        internal SuperRegionMin SuperRegion
+        public SuperRegionMin SuperRegion
         {
             get { return Static.SuperRegion; }
         }
@@ -101,33 +104,34 @@ namespace GameAi
         /// <summary>
         /// Array of neighbour regions of this given region.
         /// </summary>
-        internal RegionMin[] NeighbourRegions
+        public RegionMin[] NeighbourRegions
         {
             get { return Static.Neighbours; }
-            set { Static.Neighbours = value; }
+            internal set { Static.Neighbours = value; }
         } 
         
-        internal RegionMin(Region region, Player playerPerspective)
+        internal RegionMin(Region region, Player playerPerspective, bool isFogOfWarGame = true)
         {
             Army = region.Army;
             if (region.Owner == null)
             {
-                Owner = OwnershipState.Unoccupied;
+                Owner = OwnerState.Unoccupied;
             }
             else if (region.Owner == playerPerspective)
             {
-                Owner = OwnershipState.Mine;
+                Owner = OwnerState.Mine;
             }
             else
             {
-                Owner = OwnershipState.Enemy;
+                Owner = OwnerState.Enemy;
             }
-            if (region.IsNeighbourOf(playerPerspective))
+            
+            if (!isFogOfWarGame || region.IsNeighbourOf(playerPerspective))
             {
                 IsVisible = true;
             }
 
-            Static = new RegionMin.RegionMinStatic(region, playerPerspective);
+            Static = new RegionMinStatic(region, playerPerspective);
         }
 
         /// <summary>
@@ -135,7 +139,7 @@ namespace GameAi
         /// </summary>
         /// <returns>Shallow copy of this instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RegionMin ShallowCopy()
+        protected internal RegionMin ShallowCopy()
         {
             return (RegionMin)MemberwiseClone();
         }

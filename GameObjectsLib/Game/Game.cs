@@ -15,17 +15,6 @@
     }
 
     /// <summary>
-    ///     Enum containing types of game any game can have.
-    /// </summary>
-    public enum GameType
-    {
-        None,
-        SinglePlayer,
-        MultiplayerHotseat,
-        MultiplayerNetwork
-    }
-
-    /// <summary>
     ///     Represents one game.
     /// </summary>
     [Serializable]
@@ -41,6 +30,12 @@
         [ProtoMember(2)]
         public int RoundNumber { get; internal set; }
 
+        /// <summary>
+        /// True, if this game has a fog of war option.
+        /// </summary>
+        [ProtoMember(3)]
+        public bool IsFogOfWar { get; }
+
         protected Game()
         {
         }
@@ -48,13 +43,13 @@
         /// <summary>
         ///     Represents map being played in this game.
         /// </summary>
-        [ProtoMember(3)]
+        [ProtoMember(4)]
         public Map Map { get; }
 
         /// <summary>
         ///     Represents list of players playing this game.
         /// </summary>
-        [ProtoMember(4)]
+        [ProtoMember(5)]
         public IList<Player> Players { get; }
 
         /// <summary>
@@ -62,11 +57,12 @@
         /// </summary>
         public abstract GameType GameType { get; }
 
-        protected Game(int id, Map map, IList<Player> players)
+        protected Game(int id, Map map, IList<Player> players, bool isFogOfWar)
         {
             Id = id;
             Map = map;
             Players = players;
+            IsFogOfWar = isFogOfWar;
         }
 
         /// <summary>
@@ -214,20 +210,21 @@
         /// <param name="gameType">Type of the game.</param>
         /// <param name="map">Map of the game.</param>
         /// <param name="players">Players that will be playing the game.</param>
+        /// <param name="fogOfWar"></param>
         /// <returns>Created instance of the game.</returns>
-        public static Game Create(int id, GameType gameType, Map map, IList<Player> players)
+        public static Game Create(int id, GameType gameType, Map map, IList<Player> players, bool fogOfWar)
         {
             switch (gameType)
             {
                 case GameType.SinglePlayer:
-                    SingleplayerGame sp = new SingleplayerGame(id, map, players);
+                    SingleplayerGame sp = new SingleplayerGame(id, map, players, fogOfWar);
                     sp.Validate();
                     return sp;
                 case GameType.MultiplayerHotseat:
-                    HotseatGame hotseatGame = new HotseatGame(id, map, players);
+                    HotseatGame hotseatGame = new HotseatGame(id, map, players, fogOfWar);
                     return hotseatGame;
                 case GameType.MultiplayerNetwork:
-                    NetworkGame networkGame = new NetworkGame(id, map, players);
+                    NetworkGame networkGame = new NetworkGame(id, map, players, fogOfWar);
                     return networkGame;
                 default:
                     throw new ArgumentException();

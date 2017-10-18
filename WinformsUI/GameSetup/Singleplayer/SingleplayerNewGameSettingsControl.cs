@@ -92,7 +92,7 @@
                         gameId = lastGame.Id + 1;
                     }
 
-                    game = Game.Create(gameId, GameType.SinglePlayer, map, players);
+                    game = Game.Create(gameId, GameType.SinglePlayer, map, players, fogOfWar: true);
                 }
 
 

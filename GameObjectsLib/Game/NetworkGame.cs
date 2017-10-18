@@ -13,7 +13,7 @@
             get { return GameType.MultiplayerNetwork; }
         }
 
-        public NetworkGame(int id, Map map, IList<Player> players) : base(id, map, players)
+        public NetworkGame(int id, Map map, IList<Player> players, bool isFogOfWar) : base(id, map, players, isFogOfWar)
         {
         }
 

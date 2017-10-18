@@ -52,6 +52,7 @@
     <Compile Include="GameBeginningRound.cs" />
     <Compile Include="GameMap\MapImageProcessor.cs" />
     <Compile Include="Game\GameFlowHandler.cs" />
+    <Compile Include="Game\GameType.cs" />
     <Compile Include="HumanPlayer.cs" />
     <Compile Include="NetworkCommObjects\Message\CreateGameRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\CreateGameResponseMessage.cs" />

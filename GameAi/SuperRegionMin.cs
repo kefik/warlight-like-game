@@ -10,7 +10,7 @@
     /// <summary>
     /// Represents minimized version of SuperRegion class for the purpose of calculation
     /// </summary>
-    internal class SuperRegionMin : IRefreshable
+    public class SuperRegionMin : IRefreshable
     {
         private class SuperRegionMinStatic
         {
@@ -27,14 +27,18 @@
 
         private SuperRegionMinStatic Static { get; }
 
+        /// <summary>
+        /// Id of this super region.
+        /// </summary>
         public int Id
         {
             get { return Static.Id; }
         }
+
         /// <summary>
         /// Represents owner of this region.
         /// </summary>
-        public OwnershipState Owner { get; set; }
+        public OwnerState Owner { get; internal set; }
 
         /// <summary>
         /// Represents bonus given to the owner of this region per round.
@@ -50,22 +54,22 @@
         public RegionMin[] Regions
         {
             get { return Static.Regions; }
-            set { Static.Regions = value; }
+            internal set { Static.Regions = value; }
         }
 
-        public SuperRegionMin(SuperRegion superRegion, Player playerPerspective)
+        internal SuperRegionMin(SuperRegion superRegion, Player playerPerspective)
         {
             if (superRegion.Owner == null)
             {
-                Owner = OwnershipState.Unoccupied;
+                Owner = OwnerState.Unoccupied;
             }
             else if (superRegion.Owner == playerPerspective)
             {
-                Owner = OwnershipState.Mine;
+                Owner = OwnerState.Mine;
             }
             else
             {
-                Owner = OwnershipState.Enemy;
+                Owner = OwnerState.Enemy;
             }
 
             Static = new SuperRegionMinStatic(superRegion);
@@ -83,28 +87,28 @@
             {
                 switch (region.Owner)
                 {
-                    case OwnershipState.Unoccupied:
+                    case OwnerState.Unoccupied:
                         unoccupiedCount++;
                         break;
-                    case OwnershipState.Enemy:
+                    case OwnerState.Enemy:
                         enemyCount++;
                         break;
-                    case OwnershipState.Mine:
+                    case OwnerState.Mine:
                         mineCount++;
                         break;
                 }
             }
             if (unoccupiedCount != 0 || (mineCount != 0 && enemyCount != 0))
             {
-                Owner = OwnershipState.Unoccupied;
+                Owner = OwnerState.Unoccupied;
             }
             else if (mineCount != 0 && unoccupiedCount == 0 && enemyCount == 0)
             {
-                Owner = OwnershipState.Mine;
+                Owner = OwnerState.Mine;
             }
             else if (mineCount == 0 && unoccupiedCount == 0 && enemyCount != 0)
             {
-                Owner = OwnershipState.Enemy;
+                Owner = OwnerState.Enemy;
             }
         }
         
@@ -113,7 +117,7 @@
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SuperRegionMin ShallowCopy()
+        protected internal SuperRegionMin ShallowCopy()
         {
             return (SuperRegionMin)MemberwiseClone();
         }

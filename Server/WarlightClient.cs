@@ -155,7 +155,7 @@
                                 ICollection<AiPlayer> aiPlayers = message.AiPlayers ?? new List<AiPlayer>();
                                 players.AddRange(aiPlayers);
 
-                                Game game = Game.Create(newGameId, GameType.MultiplayerNetwork, map, players);
+                                Game game = Game.Create(newGameId, GameType.MultiplayerNetwork, map, players, fogOfWar: true);
 
                                 OpenedGame openedGame = new OpenedGame
                                 {

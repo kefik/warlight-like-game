@@ -1,0 +1,12 @@
+﻿namespace GameAi
+{
+    /// <summary>
+    /// Represents owner state given region has. It's always measured from perspective of a certain player.
+    /// </summary>
+    public enum OwnerState : byte
+    {
+        Unoccupied = 0,
+        Enemy = 1,
+        Mine = 2
+    }
+}
