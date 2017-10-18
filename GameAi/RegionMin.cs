@@ -9,7 +9,7 @@ namespace GameAi
     /// <summary>
     /// Minimized version of <see cref="Region"/>.
     /// </summary>
-    internal class RegionMin : IEquatable<RegionMin>
+    internal class RegionMin
     {
         private class RegionMinStatic
         {
@@ -149,45 +149,6 @@ namespace GameAi
         public bool IsNeighbourOf(RegionMin region)
         {
             return Static.IsNeighbourOf(region);
-        }
-        
-        public bool Equals(RegionMin other)
-        {
-            return !ReferenceEquals(null, other) && Static.Id == other.Static.Id;
-        }
-        
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
-            if (obj.GetType() != this.GetType())
-            {
-                return false;
-            }
-            return Equals((RegionMin)obj);
-        }
-        
-        public override int GetHashCode()
-        {
-            return (Static != null ? Static.GetHashCode() : 0);
-        }
-        
-        public static bool operator ==(RegionMin left, RegionMin right)
-        {
-            return left != null && !ReferenceEquals(null, right) && left.Static.Id == right.Static.Id;
-        }
-        
-        public static bool operator !=(RegionMin left, RegionMin right)
-        {
-            return !(left == right);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool ReferenceEquals(RegionMin other)
-        {
-            return ReferenceEquals(this, other);
         }
     }
 }

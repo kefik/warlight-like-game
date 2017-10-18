@@ -110,7 +110,7 @@
                     // TODO: play bots
 
                     var bot = GameBot.FromGame(game, game.Players.FirstOrDefault(x => x.GetType() == typeof(AiPlayer)));
-                    bot.FindBestMove();
+                    //bot.FindBestMove();
 
                     GameBeginningRound round = GameBeginningRound.Process(gameBeginningRounds);
                     using (UtilsDbContext db = new UtilsDbContext())

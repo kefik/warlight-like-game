@@ -23,7 +23,7 @@
         /// <param name="game"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public static IBot<Round> FromGame(Game game, Player player)
+        public static GameBot FromGame(Game game, Player player)
         {
             var regions = game.Map.Regions.Select(x => new RegionMin(x, player)).ToArray();
             foreach (var region in regions)

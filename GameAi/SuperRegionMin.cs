@@ -10,7 +10,7 @@
     /// <summary>
     /// Represents minimized version of SuperRegion class for the purpose of calculation
     /// </summary>
-    internal class SuperRegionMin : IRefreshable, IEquatable<SuperRegionMin>
+    internal class SuperRegionMin : IRefreshable
     {
         private class SuperRegionMinStatic
         {
@@ -116,42 +116,6 @@
         public SuperRegionMin Copy()
         {
             return (SuperRegionMin)MemberwiseClone();
-        }
-        
-        public bool Equals(SuperRegionMin other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(Static.Id, other.Static.Id);
-        }
-        
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((SuperRegionMin)obj);
-        }
-        
-        public override int GetHashCode()
-        {
-            return Static.Id;
-        }
-
-        public static bool operator ==(SuperRegionMin left, SuperRegionMin right)
-        {
-            return left != null && !ReferenceEquals(null, right) && left.Static.Id == right.Static.Id;
-        }
-
-        public static bool operator !=(SuperRegionMin left, SuperRegionMin right)
-        {
-            return !(left == right);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool ReferenceEquals(SuperRegionMin other)
-        {
-            return ReferenceEquals(this, other);
         }
     }
 }
