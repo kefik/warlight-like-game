@@ -176,9 +176,9 @@ namespace GameObjectsLib.GameMap
         /// <param name="gameBeginningRound">What happened in the game round.</param>
         public void ResetRound(GameBeginningRound gameBeginningRound)
         {
-            foreach (Tuple<Player, Region> tuple in gameBeginningRound.SelectedRegions)
+            foreach (var tuple in gameBeginningRound.SelectedRegions)
             {
-                Region region = tuple.Item2;
+                Region region = tuple.Region;
 
                 Recolor(region, regionNotVisibleColor);
             }

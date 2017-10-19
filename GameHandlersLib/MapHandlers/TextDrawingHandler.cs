@@ -14,9 +14,22 @@
     /// </summary>
     internal class TextDrawingHandler
     {
-        private MapImageTemplateProcessor templateProcessor;
-        private ColoringHandler coloringHandler;
-        internal Bitmap MapImage;
+        private readonly MapImageTemplateProcessor templateProcessor;
+        private readonly ColoringHandler coloringHandler;
+        //internal SelectRegionHandler selectRegionHandler;
+        private readonly Bitmap mapImage;
+
+        public TextDrawingHandler(Bitmap mapImage, MapImageTemplateProcessor templateProcessor, ColoringHandler coloringHandler)
+        {
+            if (templateProcessor == null || coloringHandler == null || mapImage == null)
+            {
+                throw new ArgumentException();
+            }
+
+            this.templateProcessor = templateProcessor;
+            this.coloringHandler = coloringHandler;
+            this.mapImage = mapImage;
+        }
 
         /// <summary>
         /// Draws army number onto screen.
@@ -78,7 +91,7 @@
                 templateProcessor.RegionHighlightedImage.UnlockBits(bmpData);
             }
 
-            Graphics gr = Graphics.FromImage(MapImage);
+            Graphics gr = Graphics.FromImage(mapImage);
             gr.SmoothingMode = SmoothingMode.AntiAlias;
             gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
             gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
@@ -113,17 +126,8 @@
             }
             else
             {
-                bool isNeighbour = (from item in region.NeighbourRegions
-                                    where item == region
-                                    select item).Any();
-                if (!isNeighbour)
-                {
-                    coloringHandler.Recolor(sourceColor, Global.RegionNotVisibleColor);
-                }
-                else
-                {
-                    coloringHandler.Recolor(sourceColor, Global.RegionVisibleUnoccupiedColor);
-                }
+                // doesnt have owner => recolor to visible color
+                coloringHandler.Recolor(sourceColor, Global.RegionVisibleUnoccupiedColor);
             }
 
             DrawArmyNumber(region, army);

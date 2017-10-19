@@ -362,7 +362,7 @@
             // already selected 2 regions
             if ((from round in gameBeginningRounds
                  from selectedRegions in round.SelectedRegions
-                 where selectedRegions.Item2 == region
+                 where selectedRegions.Region == region
                  select round).Any())
             {
                 return;
@@ -375,7 +375,7 @@
 
 
             bool containsSameRegion = beginGamePhaseControl
-                .BeginningRound.SelectedRegions.Any(tuple => tuple.Item2 == region);
+                .BeginningRound.SelectedRegions.Any(tuple => tuple.Region == region);
             // if he chose the very same region already, ignore this choice
             if (containsSameRegion)
             {
@@ -384,7 +384,7 @@
 
             // add, recolor, refresh
             beginGamePhaseControl.BeginningRound.SelectedRegions.Add(
-                new Tuple<Player, Region>(playerOnTurn.Current, region));
+                new Seize(playerOnTurn.Current, region));
             mapHandlerControl.SeizeRegion(region, playerOnTurn.Current);
         }
 

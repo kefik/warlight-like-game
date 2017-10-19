@@ -9,9 +9,9 @@ namespace GameObjectsLib
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public sealed class GameBeginningRound : Round
     {
-        public List<Tuple<Player, Region>> SelectedRegions { get; } = new List<Tuple<Player, Region>>();
+        public IList<Seize> SelectedRegions { get; } = new List<Seize>();
 
-        public GameBeginningRound(List<Tuple<Player, Region>> list)
+        public GameBeginningRound(List<Seize> list)
         {
             SelectedRegions = list;
         }
@@ -33,7 +33,7 @@ namespace GameObjectsLib
                                     select round.SelectedRegions
                                     into regions
                                     from region in regions
-                                    group region by region.Item2).Any(g => g.Count() > 1);
+                                    group region by region.Region).Any(g => g.Count() > 1);
 
                 if (doesCollide)
                 {
@@ -41,11 +41,11 @@ namespace GameObjectsLib
                 }
             }
 
-            IEnumerable<Tuple<Player, Region>> linearizedRegions = from round in rounds
-                                                                   select round.SelectedRegions
-                                                                   into regions
-                                                                   from region in regions
-                                                                   select region;
+            var linearizedRegions = from round in rounds
+                                    select round.SelectedRegions
+                                    into regions
+                                    from region in regions
+                                    select region;
 
             GameBeginningRound newRound = new GameBeginningRound(linearizedRegions.ToList());
 
@@ -55,6 +55,22 @@ namespace GameObjectsLib
         public override void Validate()
         {
             throw new NotImplementedException();
+        }
+    }
+
+    [ProtoContract]
+    public struct Seize
+    {
+        [ProtoMember(1, AsReference = true)]
+        public Player SeizingPlayer { get; }
+
+        [ProtoMember(2, AsReference = true)]
+        public Region Region { get; }
+
+        public Seize(Player player, Region region)
+        {
+            SeizingPlayer = player;
+            Region = region;
         }
     }
 }

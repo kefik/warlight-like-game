@@ -7,12 +7,23 @@
     using Region = GameObjectsLib.GameMap.Region;
 
     /// <summary>
-    /// Handler for coloring regions.
+    /// Low level control for recoloring regions to specified colors.
     /// </summary>
     internal class ColoringHandler
     {
-        private MapImageTemplateProcessor templateProcessor;
-        internal Bitmap MapImage;
+        private readonly MapImageTemplateProcessor templateProcessor;
+        private readonly Bitmap mapImage;
+
+        public ColoringHandler(Bitmap mapImage, MapImageTemplateProcessor templateProcessor)
+        {
+            if (templateProcessor == null || mapImage == null)
+            {
+                throw new ArgumentException();
+            }
+
+            this.templateProcessor = templateProcessor;
+            this.mapImage = mapImage;
+        }
 
         /// <summary>
         ///     Recolors given region to target color.
@@ -23,13 +34,13 @@
         {
             if (region == null)
             {
-                return;
+                throw new ArgumentException("Region must not be null.");
             }
 
             Color? colorOrNull = templateProcessor.GetColor(region);
             if (colorOrNull == null)
             {
-                return;
+                throw new ArgumentException("There is no color matching region passed as parameter.");
             }
 
             Recolor(colorOrNull.Value, targetColor);
@@ -49,7 +60,7 @@
         public void Recolor(Color sourceColor, Color targetColor)
         {
             Bitmap regionHighlightedImage = templateProcessor.RegionHighlightedImage;
-            Bitmap mapImage = MapImage;
+            Bitmap mapImage = this.mapImage;
 
             // lock the bits and change format to rgb 
             BitmapData regionHighlightedImageData =

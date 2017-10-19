@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using GameHandlersLib.MapHandlers;
 
     /// <summary>
     ///     Represents low level visual representation of the map template,
@@ -10,14 +11,12 @@
     /// </summary>
     internal class MapImageTemplateProcessor
     {
-        private readonly Map map;
+        Map map;
 
         /// <summary>
         ///     Image containing highlighted version of the game map.
         /// </summary>
         public Bitmap RegionHighlightedImage { get; }
-
-        private readonly Color textPlacementColor = Color.FromArgb(78, 24, 86);
 
         private readonly Dictionary<Color, Region> regionsMapped;
         private readonly Dictionary<Region, Color> colorsMapped;
@@ -71,9 +70,9 @@
         public Region GetRegion(int x, int y)
         {
             Color color = RegionHighlightedImage.GetPixel(x, y);
-            if (color.R == textPlacementColor.R
-                && color.G == textPlacementColor.G
-                && color.B == textPlacementColor.B) // its color marking army writing position
+            if (color.R == Global.TextPlacementColor.R
+                && color.G == Global.TextPlacementColor.G
+                && color.B == Global.TextPlacementColor.B) // its color marking army writing position
             {
                 // that color is only one pixel sized, so we get other pixel
                 return GetRegion(RegionHighlightedImage.GetPixel(x - 1, y));

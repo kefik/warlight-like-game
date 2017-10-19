@@ -162,14 +162,10 @@
 
             void PlayGameBeginningRound(GameBeginningRound round)
             {
-                foreach (Tuple<Player, Region> roundSelectedRegion in round.SelectedRegions)
+                foreach (var roundSelectedRegion in round.SelectedRegions)
                 {
-                    Region realRegion = (from region in Game.Map.Regions
-                                         where region == roundSelectedRegion.Item2
-                                         select region).First();
-                    Player realPlayer = (from player in Game.Players
-                                         where player == roundSelectedRegion.Item1
-                                         select player).First();
+                    Region realRegion = Game.Map.Regions.First(x => x == roundSelectedRegion.Region);
+                    Player realPlayer = Game.Players.First(x => roundSelectedRegion.SeizingPlayer == x);
 
                     realRegion.Owner = realPlayer;
                 }
@@ -204,8 +200,24 @@
         /// <param name="army"></param>
         public void Deploy(Region region, int army)
         {
+            if (region == null)
+            {
+                throw new ArgumentException($"Region cannot be null.");
+            }
+            if (region.Owner == null)
+            {
+                throw new ArgumentException($"Region {region.Name} owner cannot be null.");
+            }
+            if (army < 0)
+            {
+                throw new ArgumentException($"Invalid deployed army number.");
+            }
+
+            // TODO: more sophisticated logic
             var lastTurn = (GameRound) LastTurn.Item2;
             lastTurn.Deploying.ArmiesDeployed.Add(new Deploy(region, army));
+
+            // TODO: drawing
 
             //MapImageProcessor.Recolor(region, region.Owner.Color);
             //MapImageProcessor.DrawArmyNumber(region, army);
@@ -213,31 +225,23 @@
         }
 
         /// <summary>
-        /// Attacks from <see cref="attackingRegion"/> to <see cref="defendingRegion"/> with <see cref="army"/> units.
-        /// </summary>
-        /// <param name="attackingRegion"></param>
+        /// Attacks with <see cref="army"/> units.
+        /// </summary>>
         /// <param name="army"></param>
-        /// <param name="defendingRegion"></param>
-        public void Attack(Region attackingRegion, int army, Region defendingRegion)
+        public void Attack(int army)
         {
-            if (attackingRegion.Owner != PlayerOnTurn)
-            {
-                throw new ArgumentException("Player is not attacking with his own region");
-            }
             var lastTurn = (GameRound) LastTurn.Item2;
+            
+            // TODO: attack logic
 
-            {
-                int unitsThatCanAttack = lastTurn.Attacking.GetUnitsLeftToAttack(attackingRegion, lastTurn.Deploying);
+            // TODO: attack drawing
 
-                if (army > unitsThatCanAttack || army < 0)
-                {
-                    throw new ArgumentException("Player cannot attack with this number of units.");
-                }
-            }
+            throw new NotImplementedException();
+        }
 
-            Attack attack = new Attack(attackingRegion, army, defendingRegion);
-
-            lastTurn.Attacking.Attacks.Add(attack);
+        public int Select(int x, int y, int army)
+        {
+            return MapImageProcessor.Select(x, y, army);
         }
 
         /// <summary>
@@ -246,6 +250,17 @@
         public void RedrawToPlayersPerspective()
         {
             MapImageProcessor.Refresh(Game, PlayerOnTurn);
+        }
+
+        internal int GetRealRegionArmy(Region region)
+        {
+            var lastTurn = (GameRound)LastTurn.Item2;
+            return lastTurn.Attacking.GetUnitsLeftToAttack(region, lastTurn.Deploying) + 1;
+        }
+
+        internal int GetUnitsLeftToAttack(Region region)
+        {
+            return GetRealRegionArmy(region) - 1;
         }
     }
 

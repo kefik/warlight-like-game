@@ -41,9 +41,13 @@
     /// <summary>
     /// Represents one deploy of units.
     /// </summary>
+    [ProtoContract]
     public struct Deploy
     {
+        [ProtoMember(1, AsReference = true)]
         public Region Region { get; }
+
+        [ProtoMember(2)]
         public int Army { get; }
 
         public Deploy(Region region, int army)

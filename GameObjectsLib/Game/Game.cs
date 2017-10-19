@@ -182,13 +182,13 @@
         /// <param name="round">Round to be played.</param>
         public void Play(GameBeginningRound round)
         {
-            foreach (Tuple<Player, Region> roundSelectedRegion in round.SelectedRegions)
+            foreach (var roundSelectedRegion in round.SelectedRegions)
             {
                 Region realRegion = (from region in Map.Regions
-                                     where region == roundSelectedRegion.Item2
+                                     where region == roundSelectedRegion.Region
                                      select region).First();
                 Player realPlayer = (from player in Players
-                                     where player == roundSelectedRegion.Item1
+                                     where player == roundSelectedRegion.SeizingPlayer
                                      select player).First();
 
                 realRegion.Owner = realPlayer;
