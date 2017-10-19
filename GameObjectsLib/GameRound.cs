@@ -51,7 +51,7 @@
         {
             //if (rounds == null || rounds.Count == 0) return null;
 
-            Deploying deploying = new Deploying(new List<Tuple<Region, int>>());
+            Deploying deploying = new Deploying(new List<Deploy>());
             Attacking attacking = new Attacking(new List<Attack>());
 
             int index = 0;
@@ -64,7 +64,7 @@
                 {
                     if (round.Deploying.ArmiesDeployed.Count > index)
                     {
-                        Tuple<Region, int> armyDeployed = round.Deploying.ArmiesDeployed[index];
+                        Deploy armyDeployed = round.Deploying.ArmiesDeployed[index];
                         deploying.ArmiesDeployed.Add(armyDeployed);
                         didSomething = true;
                     }

@@ -1,86 +1,64 @@
-﻿namespace GameObjectsLib.Game
+﻿namespace GameHandlersLib.GameHandlers
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using GameMap;
-    using GameUser;
-
-    public enum GameState : byte
-    {
-        GameBeginning,
-        RoundBeginning,
-        Deploying,
-        Attacking,
-        Committing,
-        Committed,
-        GameEnd
-    }
+    using GameObjectsLib;
+    using GameObjectsLib.Game;
+    using GameObjectsLib.GameMap;
+    using MapImageProcessor = MapHandlers.MapImageProcessor;
 
     /// <summary>
     ///     Component handling game state changes and all reactions to them.
     /// </summary>
     public abstract class GameFlowHandler
     {
-        public event Action OnGameBeginning;
-        public event Action OnRoundBeginning;
-        public event Action OnDeploying;
-        public event Action OnAttacking;
-        public event Action OnCommitting;
-        public event Action OnCommitted;
-        public event Action OnGameEnd;
-        public event Action OnPlayRound;
-
-        public event Action OnInGamePhaseEnter;
-        public event Action OnInGamePhaseLeave;
-
-        public event Action OnGameStateChanging; 
-
         public Game Game { get; }
 
+        protected MapImageProcessor MapImageProcessor { get; }
+
+        /// <summary>
+        /// Represents human player that is currently on turn.
+        /// </summary>
         public virtual HumanPlayer PlayerOnTurn { get; protected set; }
 
-        public IList<Round> Rounds { get; set; } = new List<Round>();
+        /// <summary>
+        /// Represents last round.
+        /// </summary>
+        public IList<Tuple<Player, Round>> LastRound { get; protected set; } = new List<Tuple<Player, Round>>();
 
-        protected IList<Round> allRounds = new List<Round>();
-
-        protected GameFlowHandler(Game game)
+        /// <summary>
+        /// Represents last turn.
+        /// </summary>
+        public Tuple<Player, Round> LastTurn
         {
-            Game = game;
+            get
+            {
+                if (LastRound.Count - 1 < 0)
+                {
+                    return null;
+                }
+                return LastRound[LastRound.Count - 1];
+            }
+            protected set
+            {
+                LastRound.Add(value);
+            }
         }
 
-        protected GameState gameState;
+        protected IList<Round> AllRounds = new List<Round>();
+
+        protected GameFlowHandler(Game game, MapImageProcessor processor)
+        {
+            Game = game;
+            MapImageProcessor = processor;
+        }
+
+        protected GameState GameState;
 
         public virtual void GameStateChange(GameState newGameState)
         {
-            OnGameStateChanging?.Invoke();
-            switch (newGameState)
-            {
-                case GameState.GameBeginning:
-                    OnGameBeginning?.Invoke();
-                    break;
-                case GameState.RoundBeginning:
-                    OnRoundBeginning?.Invoke();
-                    break;
-                case GameState.Deploying:
-                    OnDeploying?.Invoke();
-                    break;
-                case GameState.Attacking:
-                    OnAttacking?.Invoke();
-                    break;
-                case GameState.Committing:
-                    OnCommitting?.Invoke();
-                    break;
-                case GameState.Committed:
-                    OnCommitted?.Invoke();
-                    break;
-                case GameState.GameEnd:
-                    OnGameEnd?.Invoke();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(newGameState), newGameState, null);
-            }
-            gameState = newGameState;
+            GameState = newGameState;
         }
         
         /// <summary>
@@ -92,18 +70,18 @@
             void PlayDeploying(GameRound round)
             {
                 Deploying deploying = round.Deploying;
-                foreach (Tuple<Region, int> deployedArmies in deploying.ArmiesDeployed)
+                foreach (var deployedArmies in deploying.ArmiesDeployed)
                 {
                     Region region = (from item in Game.Map.Regions
-                                     where item == deployedArmies.Item1
+                                     where item == deployedArmies.Region
                                      select item).First();
-                    region.Army = deployedArmies.Item2;
+                    region.Army = deployedArmies.Army;
                 }
             }
 
             void PlayAttacking(GameRound round)
             {
-                List<Attack> attacks = round.Attacking.Attacks;
+                var attacks = round.Attacking.Attacks;
                 foreach (Attack attack in attacks)
                 {
                     // TODO: real calculation according to rules
@@ -197,8 +175,7 @@
                 }
             }
 
-            Round linearizedRound = Round.Process(Rounds);
-            Rounds.Clear();
+            Round linearizedRound = Round.Process(LastRound.Select(x => x.Item2).ToList());
 
             if (linearizedRound.GetType() == typeof(GameRound))
             {
@@ -215,75 +192,60 @@
                 PlayGameBeginningRound(convertedRound);
             }
             
-
             Game.Refresh();
             Game.RoundNumber++;
-            allRounds.Add(linearizedRound);
-        }
-    }
-
-    public sealed class HotseatGameFlowHandler : GameFlowHandler
-    {
-        private readonly IEnumerator<HumanPlayer> playersEnumerator;
-
-        public override HumanPlayer PlayerOnTurn
-        {
-            get { return playersEnumerator?.Current; }
-        }
-
-        public HotseatGameFlowHandler(Game game) : base(game)
-        {
-            IEnumerable<HumanPlayer> localPlayers = from player in game.Players
-                                                    where player.GetType() == typeof(HumanPlayer)
-                                                    let humanPlayer = (HumanPlayer) player
-                                                    where humanPlayer.User.UserType == UserType.LocalUser
-                                                          || humanPlayer.User.UserType == UserType.MyNetworkUser
-                                                    select humanPlayer;
-            playersEnumerator = localPlayers.GetEnumerator();
-            NextLocalPlayer();
+            AllRounds.Add(linearizedRound);
         }
 
         /// <summary>
-        ///     Moves to next player.
+        /// Deploys units to the region.
         /// </summary>
-        /// <returns>False, if player is theres no next player, true otherwise.</returns>
-        public bool NextLocalPlayer()
+        /// <param name="region"></param>
+        /// <param name="army"></param>
+        public void Deploy(Region region, int army)
         {
-            bool isThereNextPlayer = playersEnumerator.MoveNext();
+            var lastTurn = (GameRound) LastTurn.Item2;
+            lastTurn.Deploying.ArmiesDeployed.Add(new Deploy(region, army));
 
-            // theres no next local player
-            if (!isThereNextPlayer)
-            {
-                return false;
-            }
-
-            // the player was defeated
-            if (PlayerOnTurn.IsDefeated(gameState))
-            {
-                return NextLocalPlayer();
-            }
-
-            return true;
+            //MapImageProcessor.Recolor(region, region.Owner.Color);
+            //MapImageProcessor.DrawArmyNumber(region, army);
+            //MapImageProcessor.Refresh(Game);
         }
 
-        public override void PlayRound()
+        /// <summary>
+        /// Attacks from <see cref="attackingRegion"/> to <see cref="defendingRegion"/> with <see cref="army"/> units.
+        /// </summary>
+        /// <param name="attackingRegion"></param>
+        /// <param name="army"></param>
+        /// <param name="defendingRegion"></param>
+        public void Attack(Region attackingRegion, int army, Region defendingRegion)
         {
-            // cannot play round if theres any other player to play
-            if (NextLocalPlayer())
+            if (attackingRegion.Owner != PlayerOnTurn)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentException("Player is not attacking with his own region");
+            }
+            var lastTurn = (GameRound) LastTurn.Item2;
+
+            {
+                int unitsThatCanAttack = lastTurn.Attacking.GetUnitsLeftToAttack(attackingRegion, lastTurn.Deploying);
+
+                if (army > unitsThatCanAttack || army < 0)
+                {
+                    throw new ArgumentException("Player cannot attack with this number of units.");
+                }
             }
 
-            base.PlayRound();
-            playersEnumerator.Reset();
-        }
-    }
+            Attack attack = new Attack(attackingRegion, army, defendingRegion);
 
-    public sealed class SingleplayerGameFlowHandler : GameFlowHandler
-    {
-        public SingleplayerGameFlowHandler(Game game) : base(game)
+            lastTurn.Attacking.Attacks.Add(attack);
+        }
+
+        /// <summary>
+        /// Redraws map to perspective of player on the turn.
+        /// </summary>
+        public void RedrawToPlayersPerspective()
         {
-            PlayerOnTurn = (HumanPlayer)game.Players.First(x => x.GetType() == typeof(HumanPlayer));
+            MapImageProcessor.Refresh(Game, PlayerOnTurn);
         }
     }
 

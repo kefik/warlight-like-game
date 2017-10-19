@@ -395,10 +395,13 @@
                 return;
             }
             // represents the already existing deployment entry
-            Tuple<Region, int> regionRepresentingTuple =
-            (from item in turnPhaseControl.DeployingStructure.ArmiesDeployed
-             where item.Item1 == region
-             select item).FirstOrDefault();
+
+            Deploy? regionRepresentingTuple =
+                turnPhaseControl.DeployingStructure.ArmiesDeployed.FirstOrDefault(x => x.Region == region);
+            if (turnPhaseControl.DeployingStructure.ArmiesDeployed.Count == 0)
+            {
+                regionRepresentingTuple = null;
+            }
 
             if (addedArmy > 0)
             {
@@ -411,18 +414,18 @@
                 if (regionRepresentingTuple != null)
                 {
                     // cuz its immutable, remove the region
-                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Remove(regionRepresentingTuple);
+                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Remove(regionRepresentingTuple.Value);
                     // add it with army + 1
-                    regionRepresentingTuple = new Tuple<Region, int>(
-                        regionRepresentingTuple.Item1, regionRepresentingTuple.Item2 + 1);
-                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple);
+                    regionRepresentingTuple = new Deploy(
+                        regionRepresentingTuple.Value.Region, regionRepresentingTuple.Value.Army + 1);
+                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple.Value);
                 }
                 else
                 {
                     // create new structure for this
-                    regionRepresentingTuple = new Tuple<Region, int>(
+                    regionRepresentingTuple = new Deploy(
                         region, region.Army + 1);
-                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple);
+                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple.Value);
                 }
             }
             else if (addedArmy < 0)
@@ -431,20 +434,20 @@
                 {
                     // cuz its immutable, remove the region
                     turnPhaseControl.DeployingStructure.ArmiesDeployed.Remove(
-                        regionRepresentingTuple);
+                        regionRepresentingTuple.Value);
 
                     // if you want to go under regions current state, dont
-                    if (regionRepresentingTuple.Item2 <= regionRepresentingTuple.Item1.Army)
+                    if (regionRepresentingTuple.Value.Army <= regionRepresentingTuple.Value.Region.Army)
                     {
                         return;
                     }
 
                     // add it with army - 1
-                    regionRepresentingTuple = new Tuple<Region, int>(
-                        regionRepresentingTuple.Item1, regionRepresentingTuple.Item2 - 1);
+                    regionRepresentingTuple = new Deploy(
+                        regionRepresentingTuple.Value.Region, regionRepresentingTuple.Value.Army - 1);
 
 
-                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple);
+                    turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple.Value);
                 }
                 else
                 {
@@ -452,7 +455,7 @@
                 }
             }
 
-            mapHandlerControl.Deploy(regionRepresentingTuple.Item1, regionRepresentingTuple.Item2);
+            mapHandlerControl.Deploy(regionRepresentingTuple.Value.Region, regionRepresentingTuple.Value.Army);
         }
 
         private void AttackAttempt(Region previouslySelectedRegion, Region region)

@@ -16,9 +16,9 @@
         ///     Represents armies deployed in the deploying phase in given regions.
         ///     Int represents armies that will be occuppying this region after this stage.
         /// </summary>
-        public List<Tuple<Region, int>> ArmiesDeployed { get; }
+        public List<Deploy> ArmiesDeployed { get; }
 
-        public Deploying(List<Tuple<Region, int>> armiesDeployed)
+        public Deploying(List<Deploy> armiesDeployed)
         {
             ArmiesDeployed = armiesDeployed;
         }
@@ -31,10 +31,25 @@
         public int GetUnitsLeftToDeploy(Player player)
         {
             int income = player.GetIncome();
-            int alreadyDeployed = (from tuple in ArmiesDeployed
-                                   where tuple.Item1.Owner == player
-                                   select tuple.Item2 - tuple.Item1.Army).Sum();
+            int alreadyDeployed = (from deploy in ArmiesDeployed
+                                   where deploy.Region.Owner == player
+                                   select deploy.Army - deploy.Army).Sum();
             return income - alreadyDeployed;
+        }
+    }
+
+    /// <summary>
+    /// Represents one deploy of units.
+    /// </summary>
+    public struct Deploy
+    {
+        public Region Region { get; }
+        public int Army { get; }
+
+        public Deploy(Region region, int army)
+        {
+            Region = region;
+            Army = army;
         }
     }
 
@@ -47,7 +62,7 @@
         /// <summary>
         ///     Represents attacks that happen during attacking phase.
         /// </summary>
-        public List<Attack> Attacks { get; }
+        public IList<Attack> Attacks { get; }
 
         public Attacking(List<Attack> attacks)
         {
@@ -63,8 +78,8 @@
         public int GetUnitsLeftToAttack(Region region, Deploying deployingPhase)
         {
             IEnumerable<int> deployRegionEnumerable = from tuple in deployingPhase.ArmiesDeployed
-                                                      where tuple.Item1 == region
-                                                      select tuple.Item2;
+                                                      where tuple.Region == region
+                                                      select tuple.Army;
             IEnumerable<int> attackRegionEnumerable = from attack in Attacks
                                                       where attack.Attacker == region
                                                       select attack.AttackingArmy;

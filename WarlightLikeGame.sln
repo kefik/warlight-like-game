@@ -27,6 +27,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "DatabaseMapping", "Database
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAi", "GameAi\GameAi.csproj", "{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameHandlersLib", "GameHandlersLib\GameHandlersLib.csproj", "{EB5F1BBB-F000-4835-86DF-F0E60B8298A6}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		DatabaseMapping\DatabaseMapping.projitems*{7022ff55-5ab7-467c-af9a-be8dce89ba2b}*SharedItemsImports = 4
@@ -53,6 +55,10 @@ Global
 		{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB5F1BBB-F000-4835-86DF-F0E60B8298A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB5F1BBB-F000-4835-86DF-F0E60B8298A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB5F1BBB-F000-4835-86DF-F0E60B8298A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB5F1BBB-F000-4835-86DF-F0E60B8298A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

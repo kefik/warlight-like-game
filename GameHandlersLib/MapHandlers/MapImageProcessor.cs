@@ -1,4 +1,4 @@
-namespace GameObjectsLib.GameMap
+namespace GameHandlersLib.MapHandlers
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,10 @@ namespace GameObjectsLib.GameMap
     using System.Runtime.InteropServices;
     using System.Xml;
     using System.Xml.Schema;
-    using Game;
+    using GameObjectsLib;
+    using GameObjectsLib.Game;
+    using GameObjectsLib.GameMap;
+    using Region = GameObjectsLib.GameMap.Region;
 
     /// <summary>
     ///     Represents visual representation of the game map and functionality linked with it.
@@ -148,17 +151,18 @@ namespace GameObjectsLib.GameMap
         ///     information player possesses.
         /// </summary>
         /// <param name="game">Game from which it has source.</param>
-        public void Refresh(Game game)
+        /// <param name="playerOnTurn"></param>
+        public void Refresh(Game game, Player playerOnTurn)
         {
             if (isFogOfWar)
             {
                 switch (game.GameType)
                 {
                     case GameType.SinglePlayer:
-                        Redraw((SingleplayerGame) game);
+                        RedrawSingleplayer(game);
                         break;
                     case GameType.MultiplayerHotseat:
-                        Redraw((HotseatGame) game);
+                        RedrawHotseat(game);
                         break;
                     case GameType.MultiplayerNetwork:
                         break;
@@ -270,7 +274,7 @@ namespace GameObjectsLib.GameMap
             }
         }
 
-        private void Redraw(SingleplayerGame game)
+        private void RedrawSingleplayer(Game game)
         {
             HumanPlayer humanPlayer = (from player in game.Players
                                        where player.GetType() == typeof(HumanPlayer)
@@ -325,7 +329,7 @@ namespace GameObjectsLib.GameMap
             }
         }
 
-        private void Redraw(HotseatGame game)
+        private void RedrawHotseat(Game game)
         {
             IEnumerable<HumanPlayer> humanPlayers = from player in game.Players
                                                     where player.GetType() == typeof(HumanPlayer)

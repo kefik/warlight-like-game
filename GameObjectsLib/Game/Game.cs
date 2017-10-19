@@ -28,7 +28,7 @@
         public int Id { get; }
 
         [ProtoMember(2)]
-        public int RoundNumber { get; internal set; }
+        public int RoundNumber { get; set; }
 
         /// <summary>
         /// True, if this game has a fog of war option.
@@ -75,18 +75,18 @@
             void PlayDeploying()
             {
                 Deploying deploying = gameRound.Deploying;
-                foreach (Tuple<Region, int> deployedArmies in deploying.ArmiesDeployed)
+                foreach (var deployedArmies in deploying.ArmiesDeployed)
                 {
                     Region region = (from item in Map.Regions
-                                     where item == deployedArmies.Item1
+                                     where item == deployedArmies.Region
                                      select item).First();
-                    region.Army = deployedArmies.Item2;
+                    region.Army = deployedArmies.Army;
                 }
             }
 
             void PlayAttacking()
             {
-                List<Attack> attacks = gameRound.Attacking.Attacks;
+                var attacks = gameRound.Attacking.Attacks;
                 foreach (Attack attack in attacks)
                 {
                     // TODO: real calculation according to rules
