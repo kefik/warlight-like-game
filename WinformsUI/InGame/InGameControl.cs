@@ -76,7 +76,7 @@
                                    select item).Single();
                 // initialize map processor
                 mapHandlerControl.Initialize(MapImageProcessor.Create(game.Map, mapInfo.ImageColoredRegionsPath,
-                    mapInfo.ColorRegionsTemplatePath, mapInfo.ImagePath));
+                    mapInfo.ColorRegionsTemplatePath, mapInfo.ImagePath, game.IsFogOfWar));
             }
             mapHandlerControl.Refresh(game);
             Refresh();

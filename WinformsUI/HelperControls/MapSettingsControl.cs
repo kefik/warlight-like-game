@@ -58,12 +58,6 @@
                 ChosenMapInfo.TemplatePath);
         }
 
-        public MapImageProcessor GetMapImageProcessor(Map map)
-        {
-            return MapImageProcessor.Create(map, ChosenMapInfo.ImageColoredRegionsPath,
-                ChosenMapInfo.ColorRegionsTemplatePath, ChosenMapInfo.ImagePath);
-        }
-
         /// <summary>
         ///     Runs when the map is chosen.
         /// </summary>

@@ -19,6 +19,7 @@ namespace GameObjectsLib.GameMap
         private readonly Color regionNotVisibleColor = Color.FromArgb(155, 150, 122);
         private readonly Color regionVisibleUnoccupiedColor = Color.White;
         private readonly Color textPlacementColor = Color.FromArgb(78, 24, 86);
+        private readonly bool isFogOfWar;
 
         public Bitmap TemplateImage
         {
@@ -28,10 +29,11 @@ namespace GameObjectsLib.GameMap
         public Bitmap MapImage { get; }
         private readonly MapImageTemplateProcessor templateProcessor;
 
-        private MapImageProcessor(MapImageTemplateProcessor mapImageTemplateProcessor, Bitmap gameMapMapImage)
+        private MapImageProcessor(MapImageTemplateProcessor mapImageTemplateProcessor, Bitmap gameMapMapImage, bool isFogOfWar)
         {
             MapImage = gameMapMapImage;
             templateProcessor = mapImageTemplateProcessor;
+            this.isFogOfWar = isFogOfWar;
         }
 
         /// <summary>
@@ -148,16 +150,23 @@ namespace GameObjectsLib.GameMap
         /// <param name="game">Game from which it has source.</param>
         public void Refresh(Game game)
         {
-            switch (game.GameType)
+            if (isFogOfWar)
             {
-                case GameType.SinglePlayer:
-                    Redraw((SingleplayerGame) game);
-                    break;
-                case GameType.MultiplayerHotseat:
-                    Redraw((HotseatGame) game);
-                    break;
-                case GameType.MultiplayerNetwork:
-                    break;
+                switch (game.GameType)
+                {
+                    case GameType.SinglePlayer:
+                        Redraw((SingleplayerGame) game);
+                        break;
+                    case GameType.MultiplayerHotseat:
+                        Redraw((HotseatGame) game);
+                        break;
+                    case GameType.MultiplayerNetwork:
+                        break;
+                }
+            }
+            else
+            {
+                RedrawWithoutFogOfWar(game);
             }
         }
 
@@ -297,6 +306,22 @@ namespace GameObjectsLib.GameMap
                     Recolor(region, ownerColor);
                 }
                 DrawArmyNumber(region, region.Army);
+            }
+        }
+
+        private void RedrawWithoutFogOfWar(Game game)
+        {
+            var regions = game.Map.Regions;
+            foreach (var region in regions)
+            {
+                if (region.Owner == null)
+                {
+                    Recolor(region, regionVisibleUnoccupiedColor);
+                }
+                else
+                {
+                    Recolor(region, region.Owner.Color);
+                }
             }
         }
 
@@ -561,9 +586,10 @@ namespace GameObjectsLib.GameMap
         /// </param>
         /// <param name="regionColorMappingPath">Path of file mapping color to certain existing map region.</param>
         /// <param name="mapImagePath">Map of image that will be used as map and displayed to the user.</param>
+        /// <param name="isFogOfWar">True, if the given map should be processed as fog of war type.</param>
         /// <returns>Initialized instance.</returns>
         public static MapImageProcessor Create(Map map, string regionHighlightedImagePath,
-            string regionColorMappingPath, string mapImagePath)
+            string regionColorMappingPath, string mapImagePath, bool isFogOfWar)
         {
             Bitmap regionHighlightedImage = new Bitmap(regionHighlightedImagePath);
             Bitmap image = new Bitmap(mapImagePath);
@@ -639,7 +665,7 @@ namespace GameObjectsLib.GameMap
                 new MapImageTemplateProcessor(map, regionHighlightedImage, dictionary);
 
 
-            return new MapImageProcessor(mapImageTemplateProcessor, image);
+            return new MapImageProcessor(mapImageTemplateProcessor, image, isFogOfWar);
         }
     }
 }
