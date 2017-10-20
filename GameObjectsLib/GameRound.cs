@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using GameMap;
     using ProtoBuf;
 
@@ -51,7 +52,7 @@
         {
             //if (rounds == null || rounds.Count == 0) return null;
 
-            Deploying deploying = new Deploying(new List<Deploy>());
+            Deploying deploying = new Deploying(new List<Deployment>());
             Attacking attacking = new Attacking(new List<Attack>());
 
             int index = 0;
@@ -64,7 +65,7 @@
                 {
                     if (round.Deploying.ArmiesDeployed.Count > index)
                     {
-                        Deploy armyDeployed = round.Deploying.ArmiesDeployed[index];
+                        Deployment armyDeployed = round.Deploying.ArmiesDeployed[index];
                         deploying.ArmiesDeployed.Add(armyDeployed);
                         didSomething = true;
                     }
@@ -131,6 +132,47 @@
         public override void Validate()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     Calculates units of given region that are left to attack.
+        /// </summary>
+        /// <param name="region">Given region.</param>
+        /// <returns></returns>
+        public int GetUnitsLeftToAttack(Region region)
+        {
+            return GetRegionArmy(region) - Region.MinimumArmy;
+        }
+
+        /// <summary>
+        /// Calculates real region army including deploying and attacking changes.
+        /// </summary>
+        /// <param name="region"></param>
+        /// <returns></returns>
+        public int GetRegionArmy(Region region)
+        {
+            var deployRegionEnumerable = (from tuple in Deploying.ArmiesDeployed
+                                          where tuple.Region == region
+                                          select tuple.Army).ToList();
+            var attackRegionEnumerable = (from attack in Attacking.Attacks
+                                          where attack.Attacker == region
+                                          select attack.AttackingArmy).ToList();
+            // nothing was deployed in this region
+            if (!deployRegionEnumerable.Any())
+            {
+                // nothing was attacked with
+                if (!attackRegionEnumerable.Any())
+                {
+                    return region.Army;
+                }
+                return region.Army - attackRegionEnumerable.Sum();
+            }
+            // nothing was attacked with
+            if (!attackRegionEnumerable.Any())
+            {
+                return deployRegionEnumerable.Sum();
+            }
+            return deployRegionEnumerable.Sum() - attackRegionEnumerable.Sum();
         }
     }
 }

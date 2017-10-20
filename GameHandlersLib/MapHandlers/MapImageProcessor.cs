@@ -29,6 +29,27 @@ namespace GameHandlersLib.MapHandlers
 
         internal Func<Player> GetPlayerOnTurn;
 
+        /// <summary>
+        /// Gets selected region by the player.
+        /// </summary>
+        public IList<Region> SelectedRegions
+        {
+            get
+            {
+                var list = new List<Region>();
+                if (selectRegionHandler.FirstSelectedRegion != null)
+                {
+                    list.Add(selectRegionHandler.FirstSelectedRegion);
+                }
+                if (selectRegionHandler.SecondSelectedRegion != null)
+                {
+                    list.Add(selectRegionHandler.SecondSelectedRegion);
+                }
+
+                return list;
+            }
+        }
+
         private MapImageProcessor(MapImageTemplateProcessor mapImageTemplateProcessor, Bitmap gameMapMapImage, TextDrawingHandler textDrawingHandler,
             ColoringHandler coloringHandler, SelectRegionHandler selectRegionHandler, bool isFogOfWar)
         {
@@ -40,10 +61,44 @@ namespace GameHandlersLib.MapHandlers
             this.selectRegionHandler = selectRegionHandler;
         }
 
-
+        internal Region GetRegion(int x, int y)
+        {
+            return templateProcessor.GetRegion(x, y);
+        }
+        /// <summary>
+        /// Selects region specified on (x,y) coordinates with army.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="army"></param>
+        /// <returns></returns>
         public int Select(int x, int y, int army)
         {
             return selectRegionHandler.SelectRegion(x, y, army);
+        }
+
+        /// <summary>
+        /// Deploys army graphically.
+        /// </summary>
+        /// <param name="region"></param>
+        /// <param name="newArmy"></param>
+        public void Deploy(Region region, int newArmy)
+        {
+            textDrawingHandler.OverDrawArmyNumber(region, newArmy);
+        }
+
+        /// <summary>
+        /// Attacks graphically.
+        /// </summary>
+        /// <param name="attackingArmy"></param>
+        public void Attack(int attackingArmy)
+        {
+            if (selectRegionHandler.HighlightedRegionsCount != 2)
+            {
+                throw new ArgumentException("2 regions must be selected in order to properly attack.");
+            }
+            textDrawingHandler.OverDrawArmyNumber(selectRegionHandler.SecondSelectedRegion, attackingArmy);
+            selectRegionHandler.ResetSelection();
         }
 
         /// <summary>
@@ -343,7 +398,7 @@ namespace GameHandlersLib.MapHandlers
             TextDrawingHandler textDrawingHandler = new TextDrawingHandler(image, mapImageTemplateProcessor, coloringHandler);
 
             SelectRegionHandler selectRegionHandler = new SelectRegionHandler(image, mapImageTemplateProcessor, coloringHandler, textDrawingHandler, isFogOfWar);
-            
+
             return new MapImageProcessor(mapImageTemplateProcessor, image, textDrawingHandler, coloringHandler, selectRegionHandler, isFogOfWar);
         }
     }

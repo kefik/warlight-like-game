@@ -16,9 +16,9 @@
         ///     Represents armies deployed in the deploying phase in given regions.
         ///     Int represents armies that will be occuppying this region after this stage.
         /// </summary>
-        public List<Deploy> ArmiesDeployed { get; }
+        public List<Deployment> ArmiesDeployed { get; }
 
-        public Deploying(List<Deploy> armiesDeployed)
+        public Deploying(List<Deployment> armiesDeployed)
         {
             ArmiesDeployed = armiesDeployed;
         }
@@ -36,108 +36,41 @@
                                    select deploy.Army - deploy.Army).Sum();
             return income - alreadyDeployed;
         }
-    }
-
-    /// <summary>
-    /// Represents one deploy of units.
-    /// </summary>
-    [ProtoContract]
-    public struct Deploy
-    {
-        [ProtoMember(1, AsReference = true)]
-        public Region Region { get; }
-
-        [ProtoMember(2)]
-        public int Army { get; }
-
-        public Deploy(Region region, int army)
-        {
-            Region = region;
-            Army = army;
-        }
-    }
-
-    /// <summary>
-    ///     Represents attacking phase of the game.
-    /// </summary>
-    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    public struct Attacking
-    {
-        /// <summary>
-        ///     Represents attacks that happen during attacking phase.
-        /// </summary>
-        public IList<Attack> Attacks { get; }
-
-        public Attacking(List<Attack> attacks)
-        {
-            Attacks = attacks;
-        }
 
         /// <summary>
-        ///     Calculates units of given region that are left to attack.
+        /// Reports whether exists deployment with the specified region.
         /// </summary>
-        /// <param name="region">Given region.</param>
-        /// <param name="deployingPhase">Deploying based on which it will be calculated.</param>
+        /// <param name="region"></param>
         /// <returns></returns>
-        public int GetUnitsLeftToAttack(Region region, Deploying deployingPhase)
+        private bool ContainsDeploymentWithThisRegion(Region region)
         {
-            IEnumerable<int> deployRegionEnumerable = from tuple in deployingPhase.ArmiesDeployed
-                                                      where tuple.Region == region
-                                                      select tuple.Army;
-            IEnumerable<int> attackRegionEnumerable = from attack in Attacks
-                                                      where attack.Attacker == region
-                                                      select attack.AttackingArmy;
-            // nothing was deployed in this region
-            if (!deployRegionEnumerable.Any())
-            {
-                // nothing was attacked with
-                if (!attackRegionEnumerable.Any())
-                {
-                    return region.Army - Region.MinimumArmy;
-                }
-                return region.Army - attackRegionEnumerable.Sum() - Region.MinimumArmy;
-            }
-            // nothing was attacked with
-            if (!attackRegionEnumerable.Any())
-            {
-                return deployRegionEnumerable.Sum() - Region.MinimumArmy;
-            }
-            return deployRegionEnumerable.Sum() - attackRegionEnumerable.Sum() - Region.MinimumArmy;
+            return ArmiesDeployed.Any(x => x.Region == region);
         }
-    }
-
-    /// <summary>
-    ///     Represents one attack in the game round.
-    /// </summary>
-    [ProtoContract]
-    public struct Attack
-    {
-        /// <summary>
-        ///     Represents attacking region.
-        /// </summary>
-        [ProtoMember(1, AsReference = true)]
-        public Region Attacker { get; }
 
         /// <summary>
-        ///     Attacking army, must be lower or equal than Attacker region army.
+        /// Returns deployment with the specified region.
         /// </summary>
-        [ProtoMember(2)]
-        public int AttackingArmy { get; }
-
-        /// <summary>
-        ///     Defending region.
-        /// </summary>
-        [ProtoMember(3, AsReference = true)]
-        public Region Defender { get; }
-
-        public Attack(Region attacker, int attackingArmy, Region defender)
+        /// <param name="region"></param>
+        /// <param name="deployment"></param>
+        /// <returns></returns>
+        private bool TryGetDeploymentWithThisRegion(Region region, out Deployment deployment)
         {
-            //if (attacker == null || attackingArmy == 0 || defender == null)
-            //    throw new ArgumentException();
+            deployment = ArmiesDeployed.FirstOrDefault(x => x.Region == region);
+            return ContainsDeploymentWithThisRegion(region);
+        }
 
-            Attacker = attacker;
-            AttackingArmy = attackingArmy;
-            Defender = defender;
+        /// <summary>
+        /// Adds deployment to the deployed list.
+        /// </summary>
+        /// <param name="region"></param>
+        /// <param name="newArmy"></param>
+        public void AddDeployment(Region region, int newArmy)
+        {
+            if (TryGetDeploymentWithThisRegion(region, out Deployment deployment))
+            {
+                ArmiesDeployed.Remove(deployment);
+            }
+            ArmiesDeployed.Add(new Deployment(region, newArmy));
         }
     }
 }

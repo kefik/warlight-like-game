@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Xml;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
@@ -15,7 +16,7 @@
     {
         public Game Game { get; }
 
-        protected MapImageProcessor MapImageProcessor { get; }
+        protected MapImageProcessor ImageProcessor { get; }
 
         /// <summary>
         /// Represents human player that is currently on turn.
@@ -51,7 +52,7 @@
         protected GameFlowHandler(Game game, MapImageProcessor processor)
         {
             Game = game;
-            MapImageProcessor = processor;
+            ImageProcessor = processor;
         }
 
         protected GameState GameState;
@@ -197,7 +198,7 @@
         /// Deploys units to the region.
         /// </summary>
         /// <param name="region"></param>
-        /// <param name="army"></param>
+        /// <param name="army">New army in the region.</param>
         public void Deploy(Region region, int army)
         {
             if (region == null)
@@ -212,16 +213,13 @@
             {
                 throw new ArgumentException($"Invalid deployed army number.");
             }
-
-            // TODO: more sophisticated logic
+            
             var lastTurn = (GameRound) LastTurn.Item2;
-            lastTurn.Deploying.ArmiesDeployed.Add(new Deploy(region, army));
 
-            // TODO: drawing
-
-            //MapImageProcessor.Recolor(region, region.Owner.Color);
-            //MapImageProcessor.DrawArmyNumber(region, army);
-            //MapImageProcessor.Refresh(Game);
+            // if there exists deployment entry => remove that entry and create new one
+            lastTurn.Deploying.AddDeployment(region, army);
+            
+            ImageProcessor.Deploy(region, army);
         }
 
         /// <summary>
@@ -232,16 +230,36 @@
         {
             var lastTurn = (GameRound) LastTurn.Item2;
             
-            // TODO: attack logic
+            // is 2 regions selected
+            if (ImageProcessor.SelectedRegions.Count != 2)
+            {
+                throw new ArgumentException("Attack cannot be performed. Not proper number of regions was selected.");
+            }
 
-            // TODO: attack drawing
+            var attacker = ImageProcessor.SelectedRegions[0];
+            var defender = ImageProcessor.SelectedRegions[1];
+            // is attacker neighbour of defender
+            if (!attacker.IsNeighbourOf(defender))
+            {
+                throw new ArgumentException($"Defender {defender.Name} is not a neighbour to attacker {attacker.Name}");
+            }
 
-            throw new NotImplementedException();
+            // add to list of attacks
+            lastTurn.Attacking.AddAttack(attacker, defender, army);
+            
+            // draw attacks
+            ImageProcessor.Attack(army);
         }
 
-        public int Select(int x, int y, int army)
+        /// <summary>
+        /// Selects region on (x,y) if possible, returns number of selected regions.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public int Select(int x, int y)
         {
-            return MapImageProcessor.Select(x, y, army);
+            return ImageProcessor.Select(x, y, GetUnitsLeftToAttack(ImageProcessor.GetRegion(x, y)));
         }
 
         /// <summary>
@@ -249,18 +267,19 @@
         /// </summary>
         public void RedrawToPlayersPerspective()
         {
-            MapImageProcessor.Refresh(Game, PlayerOnTurn);
+            ImageProcessor.Refresh(Game, PlayerOnTurn);
         }
 
         internal int GetRealRegionArmy(Region region)
         {
             var lastTurn = (GameRound)LastTurn.Item2;
-            return lastTurn.Attacking.GetUnitsLeftToAttack(region, lastTurn.Deploying) + 1;
+            return lastTurn.GetRegionArmy(region);
         }
 
         internal int GetUnitsLeftToAttack(Region region)
         {
-            return GetRealRegionArmy(region) - 1;
+            var lastTurn = (GameRound)LastTurn.Item2;
+            return lastTurn.GetUnitsLeftToAttack(region);
         }
     }
 

@@ -48,6 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AiPlayer.cs" />
+    <Compile Include="Attack.cs" />
+    <Compile Include="Attacking.cs" />
+    <Compile Include="Deployment.cs" />
     <Compile Include="Difficulty.cs" />
     <Compile Include="GameBeginningRound.cs" />
     <Compile Include="GameMap\MapImageProcessor.cs" />

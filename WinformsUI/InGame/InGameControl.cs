@@ -396,7 +396,7 @@
             }
             // represents the already existing deployment entry
 
-            Deploy? regionRepresentingTuple =
+            Deployment? regionRepresentingTuple =
                 turnPhaseControl.DeployingStructure.ArmiesDeployed.FirstOrDefault(x => x.Region == region);
             if (turnPhaseControl.DeployingStructure.ArmiesDeployed.Count == 0)
             {
@@ -416,14 +416,14 @@
                     // cuz its immutable, remove the region
                     turnPhaseControl.DeployingStructure.ArmiesDeployed.Remove(regionRepresentingTuple.Value);
                     // add it with army + 1
-                    regionRepresentingTuple = new Deploy(
+                    regionRepresentingTuple = new Deployment(
                         regionRepresentingTuple.Value.Region, regionRepresentingTuple.Value.Army + 1);
                     turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple.Value);
                 }
                 else
                 {
                     // create new structure for this
-                    regionRepresentingTuple = new Deploy(
+                    regionRepresentingTuple = new Deployment(
                         region, region.Army + 1);
                     turnPhaseControl.DeployingStructure.ArmiesDeployed.Add(regionRepresentingTuple.Value);
                 }
@@ -443,7 +443,7 @@
                     }
 
                     // add it with army - 1
-                    regionRepresentingTuple = new Deploy(
+                    regionRepresentingTuple = new Deployment(
                         regionRepresentingTuple.Value.Region, regionRepresentingTuple.Value.Army - 1);
 
 

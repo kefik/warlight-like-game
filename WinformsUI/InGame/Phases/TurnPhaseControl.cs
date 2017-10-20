@@ -11,7 +11,7 @@
     public partial class TurnPhaseControl : UserControl
     {
         private GameState state = GameState.Deploying;
-        public Deploying DeployingStructure { get; } = new Deploying(new List<Deploy>());
+        public Deploying DeployingStructure { get; } = new Deploying(new List<Deployment>());
         public Attacking AttackingStructure { get; } = new Attacking(new List<Attack>());
 
         public TurnPhaseControl()

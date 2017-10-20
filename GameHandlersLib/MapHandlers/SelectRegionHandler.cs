@@ -24,6 +24,14 @@
         public Region FirstSelectedRegion { get; private set; }
         public Region SecondSelectedRegion { get; private set; }
 
+        /// <summary>
+        /// Gets highlighted regions count.
+        /// </summary>
+        public int HighlightedRegionsCount
+        {
+            get { return highlightedRegions.Count; }
+        }
+
         private readonly bool isFogOfWar;
         internal Func<Player> GetPlayerOnTurn = () => null;
 
