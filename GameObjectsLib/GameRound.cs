@@ -42,6 +42,12 @@
             Number = number;
         }
 
+        public override void Reset()
+        {
+            Deploying.ResetDeploying();
+            Attacking.ResetAttacking();
+        }
+
         /// <summary>
         ///     Processes the round from different players, ordering them correctly.
         ///     Rounds in parameters must always be one from the same player.

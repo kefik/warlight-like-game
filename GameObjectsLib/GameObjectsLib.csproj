@@ -100,6 +100,7 @@
     <Compile Include="GameUser\User.cs" />
     <Compile Include="GameRound.cs" />
     <Compile Include="Round.cs" />
+    <Compile Include="Seize.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">

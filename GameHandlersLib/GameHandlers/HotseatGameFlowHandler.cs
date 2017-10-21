@@ -33,7 +33,7 @@
         ///     Moves to next player.
         /// </summary>
         /// <returns>False, if player is theres no next player, true otherwise.</returns>
-        public bool NextLocalPlayer()
+        private bool NextLocalPlayer()
         {
             bool isThereNextPlayer = playersEnumerator.MoveNext();
 
@@ -52,6 +52,18 @@
             return true;
         }
 
+        public override bool NextPlayer()
+        {
+            bool nextLocalPlayer = NextLocalPlayer();
+
+            if (nextLocalPlayer)
+            {
+                // there is next local player to play => redraw to his perspective
+                RedrawToPlayersPerspective();
+            }
+            return nextLocalPlayer;
+        }
+
         public override void PlayRound()
         {
             // cannot play round if theres any other player to play
@@ -62,6 +74,7 @@
 
             base.PlayRound();
             playersEnumerator.Reset();
+            NextLocalPlayer();
         }
     }
 }

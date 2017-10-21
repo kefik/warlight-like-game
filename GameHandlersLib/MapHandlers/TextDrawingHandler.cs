@@ -16,7 +16,7 @@
     {
         private readonly MapImageTemplateProcessor templateProcessor;
         private readonly ColoringHandler coloringHandler;
-        //internal SelectRegionHandler selectRegionHandler;
+        private SelectRegionHandler selectRegionHandler;
         private readonly Bitmap mapImage;
 
         public TextDrawingHandler(Bitmap mapImage, MapImageTemplateProcessor templateProcessor, ColoringHandler coloringHandler)
@@ -32,7 +32,17 @@
         }
 
         /// <summary>
-        /// Draws army number onto screen.
+        /// Initializes <see cref="TextDrawingHandler"/>.
+        /// Must be called before any other method.
+        /// </summary>
+        /// <param name="selectRegionHandler"></param>
+        public void Initialize(SelectRegionHandler selectRegionHandler)
+        {
+            this.selectRegionHandler = selectRegionHandler;
+        }
+
+        /// <summary>
+        /// Draws army number onto screen. Respects highlighting.
         /// </summary>
         /// <param name="region"></param>
         /// <param name="army"></param>

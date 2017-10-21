@@ -60,5 +60,13 @@ namespace GameObjectsLib
         {
             Attacks.Add(new Attack(attackingRegion, attackingArmy, defendingRegion));
         }
+
+        /// <summary>
+        /// Resets all attacks.
+        /// </summary>
+        public void ResetAttacking()
+        {
+            Attacks?.Clear();
+        }
     }
 }

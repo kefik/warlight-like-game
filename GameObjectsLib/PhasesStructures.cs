@@ -72,5 +72,13 @@
             }
             ArmiesDeployed.Add(new Deployment(region, newArmy));
         }
+
+        /// <summary>
+        /// Resets everything that has been deployed.
+        /// </summary>
+        public void ResetDeploying()
+        {
+            ArmiesDeployed?.Clear();
+        }
     }
 }

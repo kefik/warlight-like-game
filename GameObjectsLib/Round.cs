@@ -15,6 +15,11 @@
         public abstract void Validate();
 
         /// <summary>
+        /// Resets the round.
+        /// </summary>
+        public abstract void Reset();
+
+        /// <summary>
         /// Processes the rounds, returning one linearized round.
         /// </summary>
         /// <param name="rounds">Rounds of consistent types (either all GameRound or all GameBeginningRound).</param>

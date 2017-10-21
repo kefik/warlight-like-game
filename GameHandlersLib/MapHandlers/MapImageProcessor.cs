@@ -27,27 +27,12 @@ namespace GameHandlersLib.MapHandlers
         private readonly ColoringHandler coloringHandler;
         private readonly TextDrawingHandler textDrawingHandler;
 
-        internal Func<Player> GetPlayerOnTurn;
-
         /// <summary>
         /// Gets selected region by the player.
         /// </summary>
-        public IList<Region> SelectedRegions
+        public IReadOnlyList<Region> SelectedRegions
         {
-            get
-            {
-                var list = new List<Region>();
-                if (selectRegionHandler.FirstSelectedRegion != null)
-                {
-                    list.Add(selectRegionHandler.FirstSelectedRegion);
-                }
-                if (selectRegionHandler.SecondSelectedRegion != null)
-                {
-                    list.Add(selectRegionHandler.SecondSelectedRegion);
-                }
-
-                return list;
-            }
+            get { return selectRegionHandler.SelectedRegions; }
         }
 
         private MapImageProcessor(MapImageTemplateProcessor mapImageTemplateProcessor, Bitmap gameMapMapImage, TextDrawingHandler textDrawingHandler,
@@ -65,6 +50,17 @@ namespace GameHandlersLib.MapHandlers
         {
             return templateProcessor.GetRegion(x, y);
         }
+
+        /// <summary>
+        /// Seizes specified region for player on turn.
+        /// </summary>
+        /// <param name="region"></param>
+        /// <param name="playerPerspective"></param>
+        public void Seize(Region region, Player playerPerspective)
+        {
+            coloringHandler.Recolor(region, playerPerspective.Color);
+        }
+
         /// <summary>
         /// Selects region specified on (x,y) coordinates with army.
         /// </summary>
@@ -90,43 +86,15 @@ namespace GameHandlersLib.MapHandlers
         /// <summary>
         /// Attacks graphically.
         /// </summary>
-        /// <param name="attackingArmy"></param>
-        public void Attack(int attackingArmy)
+        /// <param name="army"></param>
+        public void Attack(int army)
         {
-            if (selectRegionHandler.HighlightedRegionsCount != 2)
+            if (SelectedRegions.Count != 2)
             {
                 throw new ArgumentException("2 regions must be selected in order to properly attack.");
             }
-            textDrawingHandler.OverDrawArmyNumber(selectRegionHandler.SecondSelectedRegion, attackingArmy);
+            textDrawingHandler.OverDrawArmyNumber(SelectedRegions[0], army);
             selectRegionHandler.ResetSelection();
-        }
-
-        /// <summary>
-        ///     Refreshes the bitmaps, redrawing all the content according to the
-        ///     information player possesses.
-        /// </summary>
-        /// <param name="game">Game from which it has source.</param>
-        /// <param name="playerOnTurn"></param>
-        public void Refresh(Game game, Player playerOnTurn)
-        {
-            if (isFogOfWar)
-            {
-                switch (game.GameType)
-                {
-                    case GameType.SinglePlayer:
-                        RedrawSingleplayer(game);
-                        break;
-                    case GameType.MultiplayerHotseat:
-                        RedrawHotseat(game);
-                        break;
-                    case GameType.MultiplayerNetwork:
-                        break;
-                }
-            }
-            else
-            {
-                RedrawWithoutFogOfWar(game);
-            }
         }
 
         /// <summary>
@@ -216,27 +184,47 @@ namespace GameHandlersLib.MapHandlers
             }
         }
 
-        private void RedrawSingleplayer(Game game)
+        /// <summary>
+        ///     Refreshes the bitmaps, redrawing all the content according to the
+        ///     information player possesses.
+        /// </summary>
+        /// <param name="game">Game from which it has source.</param>
+        /// <param name="playerPerspective">Player, from whose perspective should be image redrawed.</param>
+        public void RedrawMap(Game game, Player playerPerspective)
         {
-            HumanPlayer humanPlayer = (from player in game.Players
-                                       where player.GetType() == typeof(HumanPlayer)
-                                       select player).First() as HumanPlayer;
+            if (isFogOfWar)
+            {
+                RedrawWithFogOfWar(game, playerPerspective);
+            }
+            else
+            {
+                RedrawWithoutFogOfWar(game);
+            }
+        }
+
+        /// <summary>
+        /// Redraws game with fog of war considered.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="playerPerspective"></param>
+        private void RedrawWithFogOfWar(Game game, Player playerPerspective)
+        {
             // get owned regions
-            IList<Region> ownedRegions = humanPlayer.ControlledRegions;
+            IList<Region> ownedRegions = playerPerspective.ControlledRegions;
 
             // recolor them to players color
             foreach (Region ownedRegion in ownedRegions)
             {
-                coloringHandler.Recolor(ownedRegion, humanPlayer.Color);
+                coloringHandler.Recolor(ownedRegion, playerPerspective.Color);
 
                 textDrawingHandler.DrawArmyNumber(ownedRegion, ownedRegion.Army);
             }
 
             // recolor neighbour regions local player does not own
-            IEnumerable<Region> neighbourNotOwnedRegions = (from ownedRegion in ownedRegions
+            IList<Region> neighbourNotOwnedRegions = (from ownedRegion in ownedRegions
                                                             from neighbour in ownedRegion.NeighbourRegions
-                                                            where neighbour.Owner != humanPlayer
-                                                            select neighbour).Distinct();
+                                                            where neighbour.Owner != playerPerspective
+                                                            select neighbour).Distinct().ToList();
 
             foreach (Region region in neighbourNotOwnedRegions)
             {
@@ -253,8 +241,18 @@ namespace GameHandlersLib.MapHandlers
                 }
                 textDrawingHandler.DrawArmyNumber(region, region.Army);
             }
+
+            var allOtherRegions = game.Map.Regions.Except(neighbourNotOwnedRegions).Except(ownedRegions);
+            foreach (var region in allOtherRegions)
+            {
+                coloringHandler.Recolor(region, Global.RegionNotVisibleColor);
+            }
         }
 
+        /// <summary>
+        /// Redraws game without fog of war.
+        /// </summary>
+        /// <param name="game"></param>
         private void RedrawWithoutFogOfWar(Game game)
         {
             var regions = game.Map.Regions;
@@ -268,40 +266,6 @@ namespace GameHandlersLib.MapHandlers
                 {
                     coloringHandler.Recolor(region, region.Owner.Color);
                 }
-            }
-        }
-
-        private void RedrawHotseat(Game game)
-        {
-            var humanPlayer = GetPlayerOnTurn();
-
-            IEnumerable<Region> controlledRegions = humanPlayer.ControlledRegions;
-
-            foreach (Region ownedRegion in controlledRegions)
-            {
-                coloringHandler.Recolor(ownedRegion, ownedRegion.Owner.Color);
-
-                textDrawingHandler.DrawArmyNumber(ownedRegion, ownedRegion.Army);
-            }
-
-
-            IEnumerable<Region> neighbourNotOwnedRegions = (from ownedRegion in humanPlayer.ControlledRegions
-                                                            from neighbour in ownedRegion.NeighbourRegions
-                                                            where neighbour.Owner != humanPlayer
-                                                            select neighbour).Distinct();
-
-            foreach (Region region in neighbourNotOwnedRegions)
-            {
-                if (region.Owner == null)
-                {
-                    coloringHandler.Recolor(region, Global.RegionVisibleUnoccupiedColor);
-                }
-                else
-                {
-                    coloringHandler.Recolor(region, region.Owner.Color);
-                }
-
-                textDrawingHandler.DrawArmyNumber(region, region.Army);
             }
         }
 
@@ -397,7 +361,9 @@ namespace GameHandlersLib.MapHandlers
 
             TextDrawingHandler textDrawingHandler = new TextDrawingHandler(image, mapImageTemplateProcessor, coloringHandler);
 
-            SelectRegionHandler selectRegionHandler = new SelectRegionHandler(image, mapImageTemplateProcessor, coloringHandler, textDrawingHandler, isFogOfWar);
+            HighlightHandler highlightHandler = new HighlightHandler(image, mapImageTemplateProcessor, textDrawingHandler, coloringHandler);
+
+            SelectRegionHandler selectRegionHandler = new SelectRegionHandler(image, mapImageTemplateProcessor, coloringHandler, textDrawingHandler, highlightHandler);
 
             return new MapImageProcessor(mapImageTemplateProcessor, image, textDrawingHandler, coloringHandler, selectRegionHandler, isFogOfWar);
         }

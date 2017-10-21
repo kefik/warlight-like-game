@@ -47,6 +47,7 @@
     <Compile Include="GameHandlers\HotseatGameFlowHandler.cs" />
     <Compile Include="MapHandlers\ColoringHandler.cs" />
     <Compile Include="MapHandlers\Global.cs" />
+    <Compile Include="MapHandlers\HighlightHandler.cs" />
     <Compile Include="MapHandlers\MapImageProcessor.cs" />
     <Compile Include="MapHandlers\MapImageTemplateProcessor.cs" />
     <Compile Include="MapHandlers\SelectRegionHandler.cs" />

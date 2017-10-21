@@ -11,13 +11,40 @@ namespace GameObjectsLib
     {
         public IList<Seize> SelectedRegions { get; } = new List<Seize>();
 
-        public GameBeginningRound(List<Seize> list)
+        public GameBeginningRound(IList<Seize> list)
         {
-            SelectedRegions = list;
+            SelectedRegions = list ?? throw new ArgumentException();
         }
 
         public GameBeginningRound()
         {
+        }
+
+        /// <summary>
+        /// Adds seizingPlayer and region to Seized regions list.
+        /// </summary>
+        /// <param name="seizingPlayer"></param>
+        /// <param name="region"></param>
+        public void SeizeRegion(Player seizingPlayer, Region region)
+        {
+            if (SelectedRegions.Any(x => x.Region == region && x.SeizingPlayer == seizingPlayer))
+            {
+                throw new ArgumentException($"The region {region.Name} has already been seized by player {seizingPlayer.Name}.");
+            }
+            if (region == null)
+            {
+                throw new ArgumentException("Region cannot be null.");
+            }
+
+            SelectedRegions.Add(new Seize(seizingPlayer, region));
+        }
+
+        /// <summary>
+        /// Resets everything that has been seized.
+        /// </summary>
+        public override void Reset()
+        {
+            SelectedRegions.Clear();
         }
 
         /// <summary>
@@ -55,22 +82,6 @@ namespace GameObjectsLib
         public override void Validate()
         {
             throw new NotImplementedException();
-        }
-    }
-
-    [ProtoContract]
-    public struct Seize
-    {
-        [ProtoMember(1, AsReference = true)]
-        public Player SeizingPlayer { get; }
-
-        [ProtoMember(2, AsReference = true)]
-        public Region Region { get; }
-
-        public Seize(Player player, Region region)
-        {
-            SeizingPlayer = player;
-            Region = region;
         }
     }
 }

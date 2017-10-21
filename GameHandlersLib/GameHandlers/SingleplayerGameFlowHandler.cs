@@ -11,5 +11,10 @@ namespace GameHandlersLib.GameHandlers
         {
             PlayerOnTurn = (HumanPlayer)game.Players.First(x => x.GetType() == typeof(HumanPlayer));
         }
+        
+        public override bool NextPlayer()
+        {
+            return false;
+        }
     }
 }

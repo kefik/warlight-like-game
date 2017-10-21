@@ -252,6 +252,29 @@
         }
 
         /// <summary>
+        /// Seizes region specified in parameter.
+        /// </summary>
+        public bool Seize(int x, int y)
+        {
+            try
+            {
+                var lastTurn = (GameBeginningRound) LastTurn.Item2;
+
+                var region = ImageProcessor.GetRegion(x, y);
+                // seizes region
+                lastTurn.SeizeRegion(PlayerOnTurn, region);
+
+                ImageProcessor.Seize(region, PlayerOnTurn);
+
+                return true;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Selects region on (x,y) if possible, returns number of selected regions.
         /// </summary>
         /// <param name="x"></param>
@@ -259,15 +282,21 @@
         /// <returns></returns>
         public int Select(int x, int y)
         {
-            return ImageProcessor.Select(x, y, GetUnitsLeftToAttack(ImageProcessor.GetRegion(x, y)));
+            return ImageProcessor.Select(x, y, GetRealRegionArmy(ImageProcessor.GetRegion(x, y)));
         }
+
+        /// <summary>
+        /// Switches to the next player, redrawing contents.
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool NextPlayer();
 
         /// <summary>
         /// Redraws map to perspective of player on the turn.
         /// </summary>
-        public void RedrawToPlayersPerspective()
+        protected void RedrawToPlayersPerspective()
         {
-            ImageProcessor.Refresh(Game, PlayerOnTurn);
+            ImageProcessor.RedrawMap(Game, PlayerOnTurn);
         }
 
         internal int GetRealRegionArmy(Region region)
