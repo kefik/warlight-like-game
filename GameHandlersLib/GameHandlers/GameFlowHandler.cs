@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Xml;
     using GameObjectsLib;
@@ -198,7 +199,7 @@
         /// Deploys units to the region.
         /// </summary>
         /// <param name="region"></param>
-        /// <param name="army">New army in the region.</param>
+        /// <param name="army">New army in the region. Must be greater than 0.</param>
         public void Deploy(Region region, int army)
         {
             if (region == null)
@@ -209,7 +210,7 @@
             {
                 throw new ArgumentException($"Region {region.Name} owner cannot be null.");
             }
-            if (army < 0)
+            if (army <= 0)
             {
                 throw new ArgumentException($"Invalid deployed army number.");
             }
@@ -268,9 +269,15 @@
 
                 return true;
             }
-            catch (ArgumentException)
+            catch (ArgumentOutOfRangeException e)
             {
+                Debug.Print(e.Message);
                 return false;
+            }
+            catch (ArgumentException e)
+            {
+                Debug.Print(e.Message);
+                throw;
             }
         }
 
@@ -305,7 +312,7 @@
             return lastTurn.GetRegionArmy(region);
         }
 
-        internal int GetUnitsLeftToAttack(Region region)
+        public int GetUnitsLeftToAttack(Region region)
         {
             var lastTurn = (GameRound)LastTurn.Item2;
             return lastTurn.GetUnitsLeftToAttack(region);
