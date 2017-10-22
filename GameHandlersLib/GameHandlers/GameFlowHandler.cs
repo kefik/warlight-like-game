@@ -250,6 +250,10 @@
             {
                 throw new ArgumentException($"Region {region.Name} owner cannot be null.");
             }
+            if (region.Owner != PlayerOnTurn)
+            {
+                throw new ArgumentException("You cannot deploy to regions you do not own.");
+            }
             
             var lastTurn = (GameRound) LastTurn.Item2;
 

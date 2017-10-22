@@ -41,7 +41,7 @@
         {
             InitializeComponent();
 
-            Deploying(new object(), new EventArgs());
+            ResetControl();
         }
 
         public void Initialize(GameFlowHandler gameFlowHandler)
@@ -180,6 +180,7 @@
             ResetStateHighlight(GameState.Committing);
 
             HighlightCorrectButton(GameState.Deploying);
+            nextButton.Enabled = true;
         }
 
         private void TurnPhaseControl_VisibleChanged(object sender, EventArgs e)
