@@ -75,15 +75,11 @@
             turnPhaseControl.OnCommitted += () =>
             {
                 bool isNext = gameFlowHandler.NextPlayer();
-                if (isNext)
+                turnPhaseControl.Hide();
+                beginRoundPhaseControl.Show();
+                GameState = GameState.RoundBeginning;
+                if (!isNext)
                 {
-                    turnPhaseControl.ResetControl();
-                }
-                else
-                {
-                    turnPhaseControl.Hide();
-                    beginRoundPhaseControl.Show();
-                    GameState = GameState.RoundBeginning;
                     gameFlowHandler.PlayRound();
                 }
                 gameFlowHandler.Begin();

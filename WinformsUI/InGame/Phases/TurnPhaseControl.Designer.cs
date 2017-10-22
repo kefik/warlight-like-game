@@ -110,6 +110,7 @@
             this.Controls.Add(this.deployLabel);
             this.Name = "TurnPhaseControl";
             this.Size = new System.Drawing.Size(173, 316);
+            this.VisibleChanged += new System.EventHandler(this.TurnPhaseControl_VisibleChanged);
             this.ResumeLayout(false);
 
         }

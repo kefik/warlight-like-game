@@ -45,6 +45,9 @@
             ResetControl();
         }
 
+        /// <summary>
+        /// Resets everything, preparing control for new usage.
+        /// </summary>
         public void ResetControl()
         {
             commitButton.Enabled = true;
