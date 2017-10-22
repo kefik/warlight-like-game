@@ -69,7 +69,7 @@
         {
             var region = templateProcessor.GetRegion(x, y);
 
-            highlightRegionHandler.HighlightRegion(region, army);
+            highlightRegionHandler.HighlightRegion(x, y, army);
 
             selectedRegions.Add(region);
 

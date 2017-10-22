@@ -49,14 +49,16 @@
         {
             return highlightedRegions.Any(x => x.Item1 == region);
         }
+
         /// <summary>
         /// Highlights region.
         /// </summary>
         /// <param name="region">Region to be highlighted.</param>
+        /// <param name="originalRegionColor">Original color of region.</param>
         /// <param name="army">Army occupying the reigon. Null if the army is not visible.</param>
-        internal void HighlightRegion(Region region, int? army)
+        internal void HighlightRegion(Region region, Color originalRegionColor, int? army)
         {
-            // region color
+            // region template color
             Color color = templateProcessor.GetColor(region).Value;
 
             Bitmap regionHighlightedImage = templateProcessor.RegionHighlightedImage;
@@ -114,8 +116,19 @@
                 // draw army number
                 textDrawingHandler.DrawArmyNumber(region, army.Value);
             }
+            
+            highlightedRegions.Add(new Tuple<Region, int?, Color>(region, army, originalRegionColor));
+        }
 
-            highlightedRegions.Add(new Tuple<Region, int?, Color>(region, army, color));
+        /// <summary>
+        /// Highlights region.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="army"></param>
+        internal void HighlightRegion(int x, int y, int? army)
+        {
+            HighlightRegion(templateProcessor.GetRegion(x, y), mapImage.GetPixel(x, y), army);
         }
 
         /// <summary>
@@ -141,6 +154,16 @@
             }
 
             highlightedRegions.Remove(highlightedRegionTuple);
+        }
+
+        /// <summary>
+        /// Unhighlights region, recoloring it to previous color.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        internal void UnhighlightRegion(int x, int y)
+        {
+            UnhighlightRegion(templateProcessor.GetRegion(x, y));
         }
 
         /// <summary>

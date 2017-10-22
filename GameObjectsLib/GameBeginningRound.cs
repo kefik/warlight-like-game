@@ -29,7 +29,7 @@ namespace GameObjectsLib
         {
             if (SelectedRegions.Any(x => x.Region == region && x.SeizingPlayer == seizingPlayer))
             {
-                throw new ArgumentOutOfRangeException(nameof(SelectedRegions), $"The region {region.Name} has already been seized by player {seizingPlayer.Name}.");
+                throw new ArgumentOutOfRangeException(nameof(SelectedRegions), $"The region {region.Name} has already been seized.");
             }
             if (region == null)
             {
@@ -37,7 +37,7 @@ namespace GameObjectsLib
             }
             if (SelectedRegions.Count(x => x.SeizingPlayer == seizingPlayer) >= 2)
             {
-                throw new ArgumentOutOfRangeException(nameof(SelectedRegions), "Too many regions were selected by the player.");
+                throw new ArgumentOutOfRangeException(nameof(SelectedRegions), "Too many regions were selected..");
             }
 
             SelectedRegions.Add(new Seize(seizingPlayer, region));

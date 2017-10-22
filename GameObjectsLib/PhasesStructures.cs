@@ -55,7 +55,8 @@
         /// <returns></returns>
         private bool TryGetDeploymentWithThisRegion(Region region, out Deployment deployment)
         {
-            deployment = ArmiesDeployed.FirstOrDefault(x => x.Region == region);
+            bool existsDeployment = ArmiesDeployed.Any(x => x.Region == region);
+            deployment = !existsDeployment ? default(Deployment) : ArmiesDeployed.First(x => x.Region == region);
             return ContainsDeploymentWithThisRegion(region);
         }
 
@@ -63,7 +64,7 @@
         /// Adds deployment to the deployed list.
         /// </summary>
         /// <param name="region"></param>
-        /// <param name="newArmy"></param>
+        /// <param name="newArmy">Army that will be added to the deployment.</param>
         public void AddDeployment(Region region, int newArmy)
         {
             if (TryGetDeploymentWithThisRegion(region, out Deployment deployment))

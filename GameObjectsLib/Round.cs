@@ -37,15 +37,12 @@
                 var convertedRounds = rounds.Cast<GameRound>().ToList();
                 return GameRound.Process(convertedRounds);
             }
-            else if (firstRound.GetType() == typeof(Round))
+            if (firstRound.GetType() == typeof(GameBeginningRound))
             {
                 var convertedRounds = rounds.Cast<GameBeginningRound>().ToList();
                 return GameBeginningRound.Process(convertedRounds);
             }
-            else
-            {
-                throw new ArgumentException();
-            }
+            throw new ArgumentException();
         }
     }
 }

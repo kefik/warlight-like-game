@@ -17,7 +17,7 @@
     {
         public Game Game { get; }
 
-        protected MapImageProcessor ImageProcessor { get; }
+        public MapImageProcessor ImageProcessor { get; }
 
         /// <summary>
         /// Represents human player that is currently on turn.
@@ -56,7 +56,25 @@
             ImageProcessor = processor;
         }
 
-        protected GameState GameState;
+        public GameState GameState { get; protected set; }
+
+        /// <summary>
+        /// Is invoked when image is changed (redrawn,...)
+        /// </summary>
+        public event Action OnImageChanged
+        {
+            add { ImageProcessor.OnImageChanged += value; }
+            remove
+            {
+                // ReSharper disable once DelegateSubtraction
+                ImageProcessor.OnImageChanged -= value;
+            }
+        }
+
+        /// <summary>
+        /// Is invoked when round is played.
+        /// </summary>
+        public event Action OnRoundPlayed; 
 
         public virtual void GameStateChange(GameState newGameState)
         {
@@ -144,19 +162,31 @@
                                 attackingArmyUnitsKilled++;
                             }
                         }
+                        // attacker units were transfered
+                        attacker.Army -= realAttackingArmy;
 
-                        defender.Army -= defendingArmyUnitsKilled;
+                        // army that survived as defender
+                        int remainingDefendingArmy = defender.Army - defendingArmyUnitsKilled;
+                        // army that remains after units being killed
+                        int remainingAttackingArmy = realAttackingArmy - attackingArmyUnitsKilled;
 
-                        realAttackingArmy -= attackingArmyUnitsKilled;
-                        attacker.Army -= attackingArmyUnitsKilled;
-
-                        if (realAttackingArmy > 0 && defender.Army == 0)
+                        // if region was conquered
+                        if (remainingAttackingArmy > 0 && remainingDefendingArmy == 0)
                         {
-                            defender.Army -= realAttackingArmy;
+                            // move rest of the units
+                            remainingDefendingArmy = remainingAttackingArmy;
                             // region was conquered
                             defender.Owner = attack.Attacker.Owner;
                             // cuz of negative units
-                            defender.Army = -defender.Army;
+                            defender.Army = remainingDefendingArmy;
+                        }
+                        // region was not conquered
+                        else
+                        {
+                            // send rest of attacking units back
+                            attacker.Army += remainingAttackingArmy;
+                            // defenderArmy = what survived
+                            defender.Army = remainingDefendingArmy;
                         }
                     }
                 }
@@ -192,15 +222,19 @@
             
             Game.Refresh();
             Game.RoundNumber++;
+
             AllRounds.Add(linearizedRound);
+            LastRound.Clear();
+
+            OnRoundPlayed?.Invoke();
         }
 
         /// <summary>
         /// Deploys units to the region.
         /// </summary>
         /// <param name="region"></param>
-        /// <param name="army">New army in the region. Must be greater than 0.</param>
-        public void Deploy(Region region, int army)
+        /// <param name="bonusArmy">Bonus army to the region.</param>
+        public void Deploy(Region region, int bonusArmy)
         {
             if (region == null)
             {
@@ -210,17 +244,31 @@
             {
                 throw new ArgumentException($"Region {region.Name} owner cannot be null.");
             }
-            if (army <= 0)
-            {
-                throw new ArgumentException($"Invalid deployed army number.");
-            }
             
             var lastTurn = (GameRound) LastTurn.Item2;
 
+            int newArmy = lastTurn.GetRegionArmy(region) + bonusArmy;
+            if (bonusArmy > 0 && bonusArmy > PlayerOnTurn.GetArmyLeftToDeploy(lastTurn.Deploying)
+                || (bonusArmy < 0 && PlayerOnTurn.GetArmyLeftToDeploy(lastTurn.Deploying) == PlayerOnTurn.GetIncome()))
+            {
+                // bonus army > 0 and is more than i can deploy or bonus army < 0 and i have deployed nothing
+                throw new ArgumentException($"Cannot deploy. Your limit {PlayerOnTurn.GetIncome()} for deployed units would be exceeded.");
+            }
             // if there exists deployment entry => remove that entry and create new one
-            lastTurn.Deploying.AddDeployment(region, army);
+            lastTurn.Deploying.AddDeployment(region, newArmy);
             
-            ImageProcessor.Deploy(region, army);
+            ImageProcessor.Deploy(region, newArmy);
+        }
+
+        /// <summary>
+        /// Deploys units to region specified by (x,y) coordinates.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="army"></param>
+        public void Deploy(int x, int y, int army)
+        {
+            Deploy(ImageProcessor.GetRegion(x, y), army);
         }
 
         /// <summary>
@@ -249,13 +297,13 @@
             lastTurn.Attacking.AddAttack(attacker, defender, army);
             
             // draw attacks
-            ImageProcessor.Attack(army);
+            ImageProcessor.Attack(GetRealRegionArmy(attacker));
         }
 
         /// <summary>
         /// Seizes region specified in parameter.
         /// </summary>
-        public bool Seize(int x, int y)
+        public void Seize(int x, int y)
         {
             try
             {
@@ -266,18 +314,18 @@
                 lastTurn.SeizeRegion(PlayerOnTurn, region);
 
                 ImageProcessor.Seize(region, PlayerOnTurn);
-
-                return true;
             }
             catch (ArgumentOutOfRangeException e)
             {
                 Debug.Print(e.Message);
-                return false;
+                throw;
             }
             catch (ArgumentException e)
             {
                 Debug.Print(e.Message);
+#if DEBUG
                 throw;
+#endif
             }
         }
 
@@ -289,6 +337,18 @@
         /// <returns></returns>
         public int Select(int x, int y)
         {
+            var attacker = ImageProcessor.SelectedRegions.FirstOrDefault();
+            if (attacker == null && (ImageProcessor.GetRegion(x, y) == null ||
+                ImageProcessor.GetRegion(x, y).Owner != PlayerOnTurn))
+            {
+                // didnt select anything and select attempt is not players region
+                return 0;
+            }
+            else if (attacker != null && (ImageProcessor.GetRegion(x,y) == null || !ImageProcessor.GetRegion(x, y).IsNeighbourOf(attacker)))
+            {
+                // attacker correct, but next selected region is null or isnt neighbour
+                return 1;
+            }
             return ImageProcessor.Select(x, y, GetRealRegionArmy(ImageProcessor.GetRegion(x, y)));
         }
 
@@ -314,16 +374,120 @@
 
         public int GetUnitsLeftToAttack(Region region)
         {
+            if (region == null)
+            {
+                throw new ArgumentException("Region cannot be null.");
+            }
+
             var lastTurn = (GameRound)LastTurn.Item2;
             return lastTurn.GetUnitsLeftToAttack(region);
+        }
+
+        public int GetUnitsLeftToAttack(int x, int y)
+        {
+            return GetUnitsLeftToAttack(ImageProcessor.GetRegion(x, y));
+        }
+
+        /// <summary>
+        /// Returns currently attacking region units.
+        /// </summary>
+        /// <returns></returns>
+        public int GetUnitsLeftToAttackInAttackingRegion()
+        {
+            return GetUnitsLeftToAttack(ImageProcessor.SelectedRegions.FirstOrDefault());
+        }
+
+        /// <summary>
+        /// Resets last turn.
+        /// </summary>
+        public void ResetTurn()
+        {
+            var lastTurn = LastTurn.Item2;
+            LastTurn.Item2.Reset();
+            ImageProcessor.ResetRound(lastTurn);
+        }
+
+        /// <summary>
+        /// Resets attacking phase.
+        /// </summary>
+        public void ResetAttacking()
+        {
+            var lastTurn = (GameRound) LastTurn.Item2;
+
+            lastTurn.Attacking.ResetAttacking();
+
+            ImageProcessor.ResetAttackingPhase(lastTurn.Attacking, lastTurn.Deploying);
+        }
+
+        /// <summary>
+        /// Resets deploying phase.
+        /// </summary>
+        public void ResetDeploying()
+        {
+            var lastTurn = (GameRound)LastTurn.Item2;
+
+            lastTurn.Deploying.ResetDeploying();
+
+            ImageProcessor.ResetDeployingPhase(lastTurn.Deploying);
+        }
+
+        /// <summary>
+        /// Commits last turn. Checks if invariant match.
+        /// </summary>
+        public virtual void Commit()
+        {
+            if (LastTurn.Item2.GetType() == typeof(GameBeginningRound))
+            {
+                int seizedRegionsCount = ((GameBeginningRound) LastTurn.Item2).SelectedRegions.Count;
+                if (seizedRegionsCount < 2)
+                {
+                    throw new ArgumentException($"Only {seizedRegionsCount} regions were selected.");
+                }
+            }
+            else
+            {
+                var lastTurn = (GameRound) LastTurn.Item2;
+            }
+        }
+
+        /// <summary>
+        /// Starts the game or round. Initializes the GameFlowHandler to begin the round.
+        /// </summary>
+        public void Begin()
+        {
+            LastRound.Add(Game.RoundNumber == 0
+                ? new Tuple<Player, Round>(PlayerOnTurn, new GameBeginningRound())
+                : new Tuple<Player, Round>(PlayerOnTurn, new GameRound(Game.RoundNumber)));
+
+            RedrawToPlayersPerspective();
         }
     }
 
     internal static class PlayerExtensions
     {
+        /// <summary>
+        /// Reports whether player is defeated.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
         public static bool IsDefeated(this Player player, GameState state)
         {
             return player.ControlledRegions.Count == 0 && state != GameState.GameBeginning;
+        }
+
+        /// <summary>
+        /// Reports how much army can player deploy based on what he has deployed already.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="deploying"></param>
+        /// <returns></returns>
+        public static int GetArmyLeftToDeploy(this Player player, Deploying deploying)
+        {
+            int deployedUnitsSum = (from deployment in deploying.ArmiesDeployed
+                                      where deployment.Region.Owner == player
+                                      select deployment.Army - deployment.Region.Army).Sum();
+            return player.GetIncome() - deployedUnitsSum;
         }
     }
 }

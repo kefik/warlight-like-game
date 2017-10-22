@@ -58,8 +58,8 @@
 
             if (nextLocalPlayer)
             {
-                // there is next local player to play => redraw to his perspective
-                RedrawToPlayersPerspective();
+                // there is next local player to play => begin with next player
+                Begin();
             }
             return nextLocalPlayer;
         }
@@ -69,7 +69,7 @@
             // cannot play round if theres any other player to play
             if (NextLocalPlayer())
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("Cannot play round if there is any other player on turn this round.");
             }
 
             base.PlayRound();

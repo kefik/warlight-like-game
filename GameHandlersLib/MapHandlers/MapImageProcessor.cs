@@ -22,10 +22,21 @@ namespace GameHandlersLib.MapHandlers
         private readonly bool isFogOfWar;
 
         public Bitmap MapImage { get; }
+
+        public Bitmap TemplateImage
+        {
+            get { return templateProcessor.RegionHighlightedImage; }
+        }
+
         private readonly MapImageTemplateProcessor templateProcessor;
         private readonly SelectRegionHandler selectRegionHandler;
         private readonly ColoringHandler coloringHandler;
         private readonly TextDrawingHandler textDrawingHandler;
+
+        /// <summary>
+        /// Is invoked when image is changed (redrawn, etc...)
+        /// </summary>
+        public Action OnImageChanged;
 
         /// <summary>
         /// Gets selected region by the player.
@@ -59,6 +70,7 @@ namespace GameHandlersLib.MapHandlers
         public void Seize(Region region, Player playerPerspective)
         {
             coloringHandler.Recolor(region, playerPerspective.Color);
+            OnImageChanged?.Invoke();
         }
 
         /// <summary>
@@ -70,7 +82,9 @@ namespace GameHandlersLib.MapHandlers
         /// <returns></returns>
         public int Select(int x, int y, int army)
         {
-            return selectRegionHandler.SelectRegion(x, y, army);
+            int regionsSelectedCount = selectRegionHandler.SelectRegion(x, y, army);
+            OnImageChanged?.Invoke();
+            return regionsSelectedCount;
         }
 
         /// <summary>
@@ -81,27 +95,54 @@ namespace GameHandlersLib.MapHandlers
         public void Deploy(Region region, int newArmy)
         {
             textDrawingHandler.OverDrawArmyNumber(region, newArmy);
+
+            OnImageChanged?.Invoke();
         }
 
         /// <summary>
         /// Attacks graphically.
         /// </summary>
-        /// <param name="army"></param>
-        public void Attack(int army)
+        /// <param name="newRegionArmy"></param>
+        public void Attack(int newRegionArmy)
         {
             if (SelectedRegions.Count != 2)
             {
                 throw new ArgumentException("2 regions must be selected in order to properly attack.");
             }
-            textDrawingHandler.OverDrawArmyNumber(SelectedRegions[0], army);
+
+            var attacker = SelectedRegions[0];
+
             selectRegionHandler.ResetSelection();
+            textDrawingHandler.OverDrawArmyNumber(attacker, newRegionArmy);
+
+            OnImageChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Resets round passed as parameter
+        /// </summary>
+        public void ResetRound(Round round)
+        {
+            if (round.GetType() == typeof(GameRound))
+            {
+                ResetRound((GameRound) round);
+            }
+            else if (round.GetType() == typeof(GameBeginningRound))
+            {
+                ResetRound((GameBeginningRound) round);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            OnImageChanged?.Invoke();
         }
 
         /// <summary>
         ///     Resets round, recoloring region selected by player to the default color.
         /// </summary>
         /// <param name="gameBeginningRound">What happened in the game round.</param>
-        public void ResetRound(GameBeginningRound gameBeginningRound)
+        internal void ResetRound(GameBeginningRound gameBeginningRound)
         {
             foreach (var tuple in gameBeginningRound.SelectedRegions)
             {
@@ -116,7 +157,7 @@ namespace GameHandlersLib.MapHandlers
         ///     original numbers of armies.
         /// </summary>
         /// <param name="gameRound">Round to reset</param>
-        public void ResetRound(GameRound gameRound)
+        internal void ResetRound(GameRound gameRound)
         {
             Attacking attackingPhase = gameRound.Attacking;
             ResetAttackingPhase(attackingPhase, gameRound.Deploying);
@@ -161,6 +202,8 @@ namespace GameHandlersLib.MapHandlers
                     int army = regionDeployedArmy.First();
                     textDrawingHandler.OverDrawArmyNumber(attacker, army);
                 }
+
+                OnImageChanged?.Invoke();
             }
         }
 
@@ -171,7 +214,6 @@ namespace GameHandlersLib.MapHandlers
         /// <param name="deployingPhase"></param>
         public void ResetDeployingPhase(Deploying deployingPhase)
         {
-            // TODO: check + should not clear
             foreach (var tuple in deployingPhase.ArmiesDeployed)
             {
                 Region region = tuple.Region;
@@ -182,6 +224,8 @@ namespace GameHandlersLib.MapHandlers
                 coloringHandler.Recolor(region, Color.FromKnownColor(region.Owner.Color));
                 textDrawingHandler.DrawArmyNumber(region, region.Army);
             }
+
+            OnImageChanged?.Invoke();
         }
 
         /// <summary>
@@ -200,6 +244,8 @@ namespace GameHandlersLib.MapHandlers
             {
                 RedrawWithoutFogOfWar(game);
             }
+
+            OnImageChanged?.Invoke();
         }
 
         /// <summary>

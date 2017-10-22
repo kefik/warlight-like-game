@@ -113,8 +113,7 @@
         }
 
         /// <summary>
-        ///     Draws army number into the map. If its been drawed previously, it overdraws it
-        ///     resetting color to regions owner color. If not, it draws it.
+        ///     Draws army number into the map. TODO: respect to highlighting
         /// </summary>
         /// <param name="region">Region to draw it into.</param>
         /// <param name="army">Army number to draw.</param>

@@ -412,5 +412,15 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Is the game finished?
+        /// </summary>
+        /// <returns></returns>
+        public bool IsFinished()
+        {
+            // is round number > 0 and number of players that have regions == 1
+            return Players.Count(x => x.ControlledRegions.Count > 0) == 1 || RoundNumber > 0;
+        }
     }
 }

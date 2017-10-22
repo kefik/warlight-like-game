@@ -5,15 +5,15 @@
 
     public partial class BeginRoundPhaseControl : UserControl
     {
+        public event Action OnBegin;
+        public event Action OnWatch;
+        
         public BeginRoundPhaseControl()
         {
             InitializeComponent();
 
             beginButton.Enabled = false;
         }
-
-        public event Action OnBegin;
-        public event Action OnWatch;
 
         private void BeginRound(object sender, EventArgs e)
         {

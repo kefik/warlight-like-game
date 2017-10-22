@@ -4,15 +4,38 @@
     using System.Collections.Generic;
     using System.Drawing;
     using System.Windows.Forms;
+    using GameHandlersLib.GameHandlers;
     using GameObjectsLib;
-    using GameObjectsLib.Game;
+    using GameState = GameHandlersLib.GameHandlers.GameState;
     using Region = GameObjectsLib.GameMap.Region;
 
     public partial class TurnPhaseControl : UserControl
     {
-        private GameState state = GameState.Deploying;
-        public Deploying DeployingStructure { get; } = new Deploying(new List<Deployment>());
-        public Attacking AttackingStructure { get; } = new Attacking(new List<Attack>());
+        private GameFlowHandler gameFlowHandler;
+        
+        public event Action OnBegin;
+
+        public event Action OnDeploying;
+        public event Action OnDeployed;
+
+        public event Action OnAttacking;
+        public event Action OnAttacked;
+
+        public event Action OnCommitting;
+        public event Action OnCommitted;
+
+        private GameState State
+        {
+            get { return InGameControl.GameState; }
+            set { InGameControl.GameState = value; }
+        }
+
+
+        /// <summary>
+        ///     Resets everything from previous stages of this stage.
+        ///     Argument is the new state.
+        /// </summary>
+        public event Action<GameState> OnReset;
 
         public TurnPhaseControl()
         {
@@ -21,18 +44,11 @@
             Deploying(new object(), new EventArgs());
         }
 
-        /// <summary>
-        ///     Is invoked when state of the game is changed.
-        ///     Argument is the new state.
-        /// </summary>
-        public event Action<GameState> OnStateChanged;
-
-        /// <summary>
-        ///     Resets everything from previous stages of this stage.
-        ///     Argument is the new state.
-        /// </summary>
-        public event Action<GameState> OnReset;
-
+        public void Initialize(GameFlowHandler gameFlowHandler)
+        {
+            this.gameFlowHandler = gameFlowHandler;
+        }
+        
         private void ResetStateHighlight(GameState state)
         {
             switch (state)
@@ -68,82 +84,93 @@
         private void Committing(object sender, EventArgs e)
         {
             nextButton.Enabled = true;
-            ResetStateHighlight(state);
+            ResetStateHighlight(State);
             // committing phase
-            state = GameState.Committing;
+            State = GameState.Committing;
             // highlight
-            HighlightCorrectButton(state);
-            OnStateChanged?.Invoke(state);
+            HighlightCorrectButton(State);
+            OnCommitting?.Invoke();
         }
 
         private void Attacking(object sender, EventArgs e)
         {
             nextButton.Enabled = true;
-            ResetStateHighlight(state);
+            ResetStateHighlight(State);
             // committing phase
-            if (state > GameState.Attacking)
+            if (State > GameState.Attacking)
             {
                 OnReset?.Invoke(GameState.Committing);
             }
 
-            state = GameState.Attacking;
+            State = GameState.Attacking;
             // highlight
-            HighlightCorrectButton(state);
+            HighlightCorrectButton(State);
             // propagate into outer form
-            OnStateChanged?.Invoke(state);
+            OnAttacking?.Invoke();
         }
 
         private void Deploying(object sender, EventArgs e)
         {
             nextButton.Enabled = true;
-            ResetStateHighlight(state);
+            ResetStateHighlight(State);
 
             // committing phase
-            if (state > GameState.Deploying)
+            if (State > GameState.Deploying)
             {
-                OnReset?.Invoke(GameState.Attacking);
+                gameFlowHandler.ResetAttacking();
             }
 
-            state = GameState.Deploying;
+            State = GameState.Deploying;
 
             // highlight button
-            HighlightCorrectButton(state);
+            HighlightCorrectButton(State);
 
-            OnStateChanged?.Invoke(state);
+            OnDeploying?.Invoke();
         }
 
         private void Next(object sender, EventArgs e)
         {
-            if (state == GameState.Committing)
+            if (State == GameState.Committing)
             {
                 nextButton.Enabled = false;
             }
 
-            ResetStateHighlight(state);
+            ResetStateHighlight(State);
+            State++;
+            HighlightCorrectButton(State);
 
-            state++;
-            HighlightCorrectButton(state);
-            OnStateChanged?.Invoke(state);
+            InvokeStateEvent(State);
+        }
+
+        private void InvokeStateEvent(GameState state)
+        {
+            switch (state)
+            {
+                case GameState.Deploying:
+                    OnDeploying?.Invoke();
+                    break;
+                case GameState.Attacking:
+                    OnAttacking?.Invoke();
+                    break;
+                case GameState.Committing:
+                    OnCommitting?.Invoke();
+                    break;
+                case GameState.Committed:
+                    OnCommitted?.Invoke();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
+            }
         }
 
         private void Repeat(object sender, EventArgs e)
         {
             nextButton.Enabled = true;
-            ResetStateHighlight(state);
-            state = GameState.Deploying;
-            HighlightCorrectButton(state);
-            OnReset?.Invoke(state);
-            OnStateChanged?.Invoke(state);
-        }
-
-        /// <summary>
-        ///     Returns army currently occuppying the region.
-        /// </summary>
-        /// <param name="region">Region.</param>
-        /// <returns>Army.</returns>
-        public int GetRealArmy(Region region)
-        {
-            return AttackingStructure.GetUnitsLeftToAttack(region, DeployingStructure) + 1;
+            ResetStateHighlight(State);
+            State = GameState.Deploying;
+            HighlightCorrectButton(State);
+            gameFlowHandler.ResetTurn();
+            InvokeStateEvent(State);
         }
     }
 }

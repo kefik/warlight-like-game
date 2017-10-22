@@ -40,6 +40,8 @@
         public GameRound(int number)
         {
             Number = number;
+            Deploying = new Deploying(new List<Deployment>());
+            Attacking = new Attacking(new List<Attack>());
         }
 
         public override void Reset()
@@ -166,11 +168,6 @@
             // nothing was deployed in this region
             if (!deployRegionEnumerable.Any())
             {
-                // nothing was attacked with
-                if (!attackRegionEnumerable.Any())
-                {
-                    return region.Army;
-                }
                 return region.Army - attackRegionEnumerable.Sum();
             }
             // nothing was attacked with
