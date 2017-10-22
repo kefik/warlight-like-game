@@ -180,6 +180,12 @@
                             // cuz of negative units
                             defender.Army = remainingDefendingArmy;
                         }
+                        // none of the attackers survived
+                        else if (remainingDefendingArmy == 0)
+                        {
+                            remainingDefendingArmy = 1;
+                            defender.Army = remainingDefendingArmy;
+                        }
                         // region was not conquered
                         else
                         {
@@ -248,11 +254,14 @@
             var lastTurn = (GameRound) LastTurn.Item2;
 
             int newArmy = lastTurn.GetRegionArmy(region) + bonusArmy;
-            if (bonusArmy > 0 && bonusArmy > PlayerOnTurn.GetArmyLeftToDeploy(lastTurn.Deploying)
-                || (bonusArmy < 0 && PlayerOnTurn.GetArmyLeftToDeploy(lastTurn.Deploying) == PlayerOnTurn.GetIncome()))
+            if (bonusArmy > 0 && bonusArmy > PlayerOnTurn.GetArmyLeftToDeploy(lastTurn.Deploying))
             {
-                // bonus army > 0 and is more than i can deploy or bonus army < 0 and i have deployed nothing
+                // bonus army > 0 and is more than i can deploy
                 throw new ArgumentException($"Cannot deploy. Your limit {PlayerOnTurn.GetIncome()} for deployed units would be exceeded.");
+            }
+            else if (bonusArmy < 0 && region.Army > newArmy)
+            {
+                throw new ArgumentException("You cannot deploy less than region had at this round beginning.");
             }
             // if there exists deployment entry => remove that entry and create new one
             lastTurn.Deploying.AddDeployment(region, newArmy);
@@ -353,6 +362,15 @@
         }
 
         /// <summary>
+        /// Resets selected regions. Returns how many were resetted.
+        /// </summary>
+        /// <returns></returns>
+        public int ResetSelection()
+        {
+            return ImageProcessor.ResetSelection();
+        }
+
+        /// <summary>
         /// Switches to the next player, redrawing contents.
         /// </summary>
         /// <returns></returns>
@@ -403,8 +421,10 @@
         public void ResetTurn()
         {
             var lastTurn = LastTurn.Item2;
-            LastTurn.Item2.Reset();
+            
             ImageProcessor.ResetRound(lastTurn);
+
+            LastTurn.Item2.Reset();
         }
 
         /// <summary>

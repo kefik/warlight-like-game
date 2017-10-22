@@ -88,6 +88,17 @@ namespace GameHandlersLib.MapHandlers
         }
 
         /// <summary>
+        /// Resets selection. Returns resetted regions selected count.
+        /// </summary>
+        /// <returns></returns>
+        public int ResetSelection()
+        {
+            int resettedRegionsCount = selectRegionHandler.ResetSelection();
+            OnImageChanged?.Invoke();
+            return resettedRegionsCount;
+        }
+
+        /// <summary>
         /// Deploys army graphically.
         /// </summary>
         /// <param name="region"></param>

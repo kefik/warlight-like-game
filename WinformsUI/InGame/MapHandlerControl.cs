@@ -77,6 +77,10 @@
                     {
                         gameFlowHandler.Attack(attackManager.AttackingArmy);
                     }
+                    else
+                    {
+                        gameFlowHandler.ResetSelection();
+                    }
                 }
             }
             else if (state == GameState.GameBeginning)
