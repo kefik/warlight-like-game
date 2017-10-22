@@ -77,11 +77,11 @@
                 bool isNext = gameFlowHandler.NextPlayer();
                 if (isNext)
                 {
-                    beginGamePhaseControl.ResetControl();
+                    turnPhaseControl.ResetControl();
                 }
                 else
                 {
-                    beginGamePhaseControl.Hide();
+                    turnPhaseControl.Hide();
                     beginRoundPhaseControl.Show();
                     GameState = GameState.RoundBeginning;
                     gameFlowHandler.PlayRound();

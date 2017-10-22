@@ -10,7 +10,8 @@
 
     public sealed class HotseatGameFlowHandler : GameFlowHandler
     {
-        private readonly IEnumerator<HumanPlayer> playersEnumerator;
+        private IEnumerator<HumanPlayer> playersEnumerator;
+        private readonly IEnumerable<HumanPlayer> localPlayers;
 
         public override HumanPlayer PlayerOnTurn
         {
@@ -19,12 +20,12 @@
 
         public HotseatGameFlowHandler(Game game, MapImageProcessor processor) : base(game, processor)
         {
-            IEnumerable<HumanPlayer> localPlayers = from player in game.Players
-                                                    where player.GetType() == typeof(HumanPlayer)
-                                                    let humanPlayer = (HumanPlayer) player
-                                                    where humanPlayer.User.UserType == UserType.LocalUser
-                                                          || humanPlayer.User.UserType == UserType.MyNetworkUser
-                                                    select humanPlayer;
+            localPlayers = from player in game.Players
+                           where player.GetType() == typeof(HumanPlayer)
+                           let humanPlayer = (HumanPlayer)player
+                           where humanPlayer.User.UserType == UserType.LocalUser
+                                 || humanPlayer.User.UserType == UserType.MyNetworkUser
+                           select humanPlayer;
             playersEnumerator = localPlayers.GetEnumerator();
             NextLocalPlayer();
         }
@@ -52,6 +53,15 @@
             return true;
         }
 
+        /// <summary>
+        /// Resets players, iterating through them once more.
+        /// </summary>
+        private void Reset()
+        {
+            playersEnumerator = localPlayers.GetEnumerator();
+            playersEnumerator.MoveNext();
+        }
+
         public override bool NextPlayer()
         {
             bool nextLocalPlayer = NextLocalPlayer();
@@ -73,8 +83,7 @@
             }
 
             base.PlayRound();
-            playersEnumerator.Reset();
-            NextLocalPlayer();
+            Reset();
         }
     }
 }

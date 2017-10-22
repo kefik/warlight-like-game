@@ -40,7 +40,6 @@
         public TurnPhaseControl()
         {
             InitializeComponent();
-
             Deploying(new object(), new EventArgs());
         }
 
@@ -171,6 +170,15 @@
             HighlightCorrectButton(State);
             gameFlowHandler.ResetTurn();
             InvokeStateEvent(State);
+        }
+
+        public void ResetControl()
+        {
+            ResetStateHighlight(GameState.Deploying);
+            ResetStateHighlight(GameState.Attacking);
+            ResetStateHighlight(GameState.Committing);
+
+            Deploying(new object(), new EventArgs());
         }
     }
 }

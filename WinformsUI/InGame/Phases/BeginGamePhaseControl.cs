@@ -31,7 +31,7 @@
             {
                 gameFlowHandler.Commit();
                 OnCommitted?.Invoke();
-                commitButton.Enabled = false;
+                ResetControl();
             }
             catch (ArgumentException exception)
             {
@@ -41,8 +41,8 @@
 
         private void StartOver(object sender, EventArgs e)
         {
-            commitButton.Enabled = true;
             gameFlowHandler.ResetTurn();
+            ResetControl();
         }
 
         public void ResetControl()
