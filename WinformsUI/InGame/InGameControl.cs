@@ -128,6 +128,7 @@
             };
 
             beginGamePhaseControl.Initialize(gameFlowHandler);
+            turnPhaseControl.Initialize(gameFlowHandler);
 
             // initialize game state
             if (game.RoundNumber == 0)

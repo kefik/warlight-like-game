@@ -434,9 +434,11 @@
         {
             var lastTurn = (GameRound) LastTurn.Item2;
 
-            lastTurn.Attacking.ResetAttacking();
-
+            // redraw
             ImageProcessor.ResetAttackingPhase(lastTurn.Attacking, lastTurn.Deploying);
+
+            // reset
+            lastTurn.Attacking.ResetAttacking();
         }
 
         /// <summary>
