@@ -145,6 +145,9 @@
             else
             {
                 GameState = GameState.RoundBeginning;
+
+                beginGamePhaseControl.Hide();
+                turnPhaseControl.Hide();
                 beginRoundPhaseControl.Show();
 
                 gameFlowHandler.Begin();
