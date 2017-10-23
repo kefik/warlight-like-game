@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
@@ -13,10 +13,10 @@
     /// </summary>
     public abstract class GameBot : IBot<Round>
     {
-        protected RegionMin[] RegionsMin { get; private set; }
-        protected SuperRegionMin[] SuperRegionsMin { get; private set; }
         protected Difficulty Difficulty { get; private set; } = Difficulty.Hard;
         protected internal bool IsFogOfWar { get; private set; }
+
+        protected PlayerPerspective PlayerPerspective;
 
         /// <summary>
         /// Constructs minimized version of the game.
@@ -27,7 +27,28 @@
         /// <returns></returns>
         public static GameBot FromGame(Game game, Player player, GameBotType gameBotType)
         {
-            var regions = game.Map.Regions.Select(x => new RegionMin(x, player, game.IsFogOfWar)).ToArray();
+            if (!game.Players.Contains(player))
+            {
+                throw new ArgumentException("Incorrect player parameter.");
+            }
+
+            var dictionary = new Dictionary<Player, byte>();
+
+            for (byte i = 0; i < game.Players.Count; i++)
+            {
+                dictionary.Add(game.Players[i], (byte)(i + 1));
+            }
+
+            var regions = game.Map.Regions.Select(x =>
+            {
+                if (x.Owner == null)
+                {
+                    return new RegionMin(x, 0, player, game.IsFogOfWar);
+                }
+                dictionary.TryGetValue(x.Owner, out byte encodedOwner);
+                
+                return new RegionMin(x, encodedOwner, player, game.IsFogOfWar);
+            }).ToArray();
             foreach (var region in regions)
             {
                 List<RegionMin> neighbours = new List<RegionMin>();
@@ -70,10 +91,14 @@
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
             }
-            gameBot.RegionsMin = regions;
-            gameBot.SuperRegionsMin = superRegions;
-            gameBot.IsFogOfWar = game.IsFogOfWar;
-            
+            {
+                dictionary.TryGetValue(player, out byte playerEncoded);
+                gameBot.PlayerPerspective.PlayerEncoded = playerEncoded;
+                gameBot.PlayerPerspective.RegionsMin = regions;
+                gameBot.PlayerPerspective.SuperRegionsMin = superRegions;
+                gameBot.IsFogOfWar = game.IsFogOfWar;
+            }
+
             // get difficulty from Ai player
             if (player.GetType() == typeof(AiPlayer))
             {
@@ -83,6 +108,16 @@
             return gameBot;
         }
 
+        /// <summary>
+        /// Finds and returns best move for given bot state.
+        /// </summary>
+        /// <returns></returns>
         public abstract Round FindBestMove();
+
+        /// <summary>
+        /// Asynchronously finds best move for the bot at given state.
+        /// </summary>
+        /// <returns></returns>
+        public abstract Task<Round> FindBestMoveAsync();
     }
 }

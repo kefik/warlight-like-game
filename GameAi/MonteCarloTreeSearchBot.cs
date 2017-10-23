@@ -1,5 +1,7 @@
 ﻿namespace GameAi
 {
+    using System;
+    using System.Threading.Tasks;
     using GameObjectsLib;
 
     /// <summary>
@@ -9,7 +11,18 @@
     {
         public override Round FindBestMove()
         {
-            throw new System.NotImplementedException();
+            var playerPerspective = PlayerPerspective.ShallowCopy();
+            throw new NotImplementedException();
+        }
+
+        public override Task<Round> FindBestMoveAsync()
+        {
+            throw new NotSupportedException();
+        }
+
+        private Round FindBestMove(PlayerPerspective playerPerspective)
+        {
+            throw new NotImplementedException();
         }
     }
 }

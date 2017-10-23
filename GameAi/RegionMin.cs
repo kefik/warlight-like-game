@@ -1,6 +1,7 @@
 namespace GameAi
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using GameObjectsLib;
@@ -17,10 +18,10 @@ namespace GameAi
             public RegionMin[] Neighbours { get; set; }
             public SuperRegionMin SuperRegion { get; }
 
-            public RegionMinStatic(Region region, Player myPlayer)
+            public RegionMinStatic(Region region, Player ownerEncoded)
             {
                 Id = region.Id;
-                SuperRegion = new SuperRegionMin(region.SuperRegion, myPlayer);
+                SuperRegion = new SuperRegionMin(region.SuperRegion, ownerEncoded);
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37,19 +38,24 @@ namespace GameAi
             }
         }
         /// <summary>
-        /// First 2 bits = owner, 14 bits = army
+        /// First 5 bits = owner, 1 visibility, 12 bits = army
         /// </summary>
         private ushort ownerAndArmyEncoded;
 
         private RegionMinStatic Static { get; }
-
+        
         /// <summary>
         /// Represents the owner from players perspective specified in constructor.
         /// </summary>
-        public OwnerState Owner
+        internal byte OwnerEncoded
         {
-            get { return (OwnerState)(ownerAndArmyEncoded & 0b11); }
-            internal set { ownerAndArmyEncoded = (ushort)(((ushort.MaxValue >> 2) << 2) | (ushort)value); }
+            get { return (byte) (ownerAndArmyEncoded & 0b11111); }
+            set
+            {
+                ownerAndArmyEncoded &= 0b1111111111100000; // 5 zeros, 11 ones
+                value &= 0b00011111;
+                ownerAndArmyEncoded |= value;
+            }
         }
 
         /// <summary>
@@ -65,25 +71,25 @@ namespace GameAi
         /// </summary>
         public int Army
         {
-            get { return ownerAndArmyEncoded >> 3; }
+            get { return ownerAndArmyEncoded >> 6; }
             internal set
             {
-                ownerAndArmyEncoded = (ushort)(((ushort.MaxValue >> 13) << 13) | ((ushort)value >> 3));
+                ownerAndArmyEncoded = (ushort)(((ushort.MaxValue >> 10) << 10) | ((ushort)value >> 6));
             }
         }
-
+        
         /// <summary>
         /// True, if the region is hidden by Fog of war.
         /// </summary>
         public bool IsVisible
         {
-            get { return (ownerAndArmyEncoded & 0b100) != 0; }
+            get { return (ownerAndArmyEncoded & 0b100000) != 0; }
             internal set
             {
                 ushort mask;
                 if (value)
                 {
-                    mask = ushort.MaxValue & 0b100;
+                    mask = ushort.MaxValue & 0b100000;
                 }
                 else
                 {
@@ -110,21 +116,10 @@ namespace GameAi
             internal set { Static.Neighbours = value; }
         } 
         
-        internal RegionMin(Region region, Player playerPerspective, bool isFogOfWarGame = true)
+        internal RegionMin(Region region, byte ownerEncoded, Player playerPerspective, bool isFogOfWarGame = true)
         {
             Army = region.Army;
-            if (region.Owner == null)
-            {
-                Owner = OwnerState.Unoccupied;
-            }
-            else if (region.Owner == playerPerspective)
-            {
-                Owner = OwnerState.Mine;
-            }
-            else
-            {
-                Owner = OwnerState.Enemy;
-            }
+            OwnerEncoded = region.Owner == null ? (byte)0 : ownerEncoded;
             
             if (!isFogOfWarGame || region.IsNeighbourOf(playerPerspective))
             {
@@ -132,6 +127,22 @@ namespace GameAi
             }
 
             Static = new RegionMinStatic(region, playerPerspective);
+        }
+
+        /// <summary>
+        /// Gets OwnerPerspective of this region based on playerPerspective passed in parameter.
+        /// </summary>
+        /// <param name="playerPerspective"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public OwnerPerspective GetOwnerPerspective(byte playerPerspective)
+        {
+            if (OwnerEncoded == 0)
+            {
+                return (byte)OwnerPerspective.Unoccupied;
+            }
+
+            return playerPerspective == OwnerEncoded ? OwnerPerspective.Mine : OwnerPerspective.Enemy;
         }
 
         /// <summary>
@@ -143,7 +154,7 @@ namespace GameAi
         {
             return (RegionMin)MemberwiseClone();
         }
-
+        
         /// <summary>
         /// True, if the region is neighbour to this instance of the region.
         /// </summary>

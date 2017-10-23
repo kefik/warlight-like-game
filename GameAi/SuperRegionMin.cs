@@ -10,7 +10,7 @@
     /// <summary>
     /// Represents minimized version of SuperRegion class for the purpose of calculation
     /// </summary>
-    public class SuperRegionMin : IRefreshable
+    public class SuperRegionMin
     {
         private class SuperRegionMinStatic
         {
@@ -38,7 +38,7 @@
         /// <summary>
         /// Represents owner of this region.
         /// </summary>
-        public OwnerState Owner { get; internal set; }
+        public OwnerPerspective OwnerPerspective { get; internal set; }
 
         /// <summary>
         /// Represents bonus given to the owner of this region per round.
@@ -61,15 +61,15 @@
         {
             if (superRegion.Owner == null)
             {
-                Owner = OwnerState.Unoccupied;
+                OwnerPerspective = OwnerPerspective.Unoccupied;
             }
             else if (superRegion.Owner == playerPerspective)
             {
-                Owner = OwnerState.Mine;
+                OwnerPerspective = OwnerPerspective.Mine;
             }
             else
             {
-                Owner = OwnerState.Enemy;
+                OwnerPerspective = OwnerPerspective.Enemy;
             }
 
             Static = new SuperRegionMinStatic(superRegion);
@@ -78,37 +78,38 @@
         /// <summary>
         /// Refreshes SuperRegion, deciding whos the new owner.
         /// </summary>
-        public void Refresh()
+        public void Refresh(byte playerPerspective)
         {
             int unoccupiedCount = 0,
                 mineCount = 0,
                 enemyCount = 0;
+
             foreach (var region in Static.Regions)
             {
-                switch (region.Owner)
+                switch (region.GetOwnerPerspective(playerPerspective))
                 {
-                    case OwnerState.Unoccupied:
+                    case OwnerPerspective.Unoccupied:
                         unoccupiedCount++;
                         break;
-                    case OwnerState.Enemy:
+                    case OwnerPerspective.Enemy:
                         enemyCount++;
                         break;
-                    case OwnerState.Mine:
+                    case OwnerPerspective.Mine:
                         mineCount++;
                         break;
                 }
             }
             if (unoccupiedCount != 0 || (mineCount != 0 && enemyCount != 0))
             {
-                Owner = OwnerState.Unoccupied;
+                OwnerPerspective = OwnerPerspective.Unoccupied;
             }
             else if (mineCount != 0 && unoccupiedCount == 0 && enemyCount == 0)
             {
-                Owner = OwnerState.Mine;
+                OwnerPerspective = OwnerPerspective.Mine;
             }
             else if (mineCount == 0 && unoccupiedCount == 0 && enemyCount != 0)
             {
-                Owner = OwnerState.Enemy;
+                OwnerPerspective = OwnerPerspective.Enemy;
             }
         }
         
