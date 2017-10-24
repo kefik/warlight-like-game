@@ -363,7 +363,7 @@
                 // attacker correct, but next selected region is null or isnt neighbour
                 return 1;
             }
-            return ImageProcessor.Select(x, y, GetRealRegionArmy(ImageProcessor.GetRegion(x, y)));
+            return ImageProcessor.Select(x, y, PlayerOnTurn, GetRealRegionArmy(ImageProcessor.GetRegion(x, y)));
         }
 
         /// <summary>
@@ -489,7 +489,7 @@
             RedrawToPlayersPerspective();
 
             var bot = GameBot.FromGame(Game, PlayerOnTurn, GameBotType.MonteCarloTreeSearchBot);
-            bot.FindBestMove();
+            //bot.FindBestMove();
         }
     }
 }

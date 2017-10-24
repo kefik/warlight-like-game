@@ -119,18 +119,7 @@
             
             highlightedRegions.Add(new Tuple<Region, int?, Color>(region, army, originalRegionColor));
         }
-
-        /// <summary>
-        /// Highlights region.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="army"></param>
-        internal void HighlightRegion(int x, int y, int? army)
-        {
-            HighlightRegion(templateProcessor.GetRegion(x, y), mapImage.GetPixel(x, y), army);
-        }
-
+        
         /// <summary>
         /// Unhighlights region recoloring it to previous color.
         /// If the region was not highlighted, throws <see cref="ArgumentException"/>

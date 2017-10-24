@@ -78,11 +78,12 @@ namespace GameHandlersLib.MapHandlers
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
+        /// <param name="playerPerspective"></param>
         /// <param name="army"></param>
         /// <returns></returns>
-        public int Select(int x, int y, int army)
+        public int Select(int x, int y, Player playerPerspective, int army)
         {
-            int regionsSelectedCount = selectRegionHandler.SelectRegion(x, y, army);
+            int regionsSelectedCount = selectRegionHandler.SelectRegion(x, y, playerPerspective, army);
             OnImageChanged?.Invoke();
             return regionsSelectedCount;
         }
@@ -420,7 +421,7 @@ namespace GameHandlersLib.MapHandlers
 
             HighlightHandler highlightHandler = new HighlightHandler(image, mapImageTemplateProcessor, textDrawingHandler, coloringHandler);
 
-            SelectRegionHandler selectRegionHandler = new SelectRegionHandler(image, mapImageTemplateProcessor, coloringHandler, textDrawingHandler, highlightHandler);
+            SelectRegionHandler selectRegionHandler = new SelectRegionHandler(image, mapImageTemplateProcessor, coloringHandler, textDrawingHandler, highlightHandler, isFogOfWar);
 
             return new MapImageProcessor(mapImageTemplateProcessor, image, textDrawingHandler, coloringHandler, selectRegionHandler, isFogOfWar);
         }

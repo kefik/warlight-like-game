@@ -19,6 +19,7 @@
         private readonly TextDrawingHandler textDrawingHandler;
         private readonly Bitmap mapImage;
         private readonly HighlightHandler highlightRegionHandler;
+        private readonly bool isFogOfWar;
         
         /// <summary>
         /// List of selected regions.
@@ -44,7 +45,7 @@
         }
 
         public SelectRegionHandler(Bitmap mapImage, MapImageTemplateProcessor templateProcessor, ColoringHandler coloringHandler,
-            TextDrawingHandler textDrawingHandler, HighlightHandler highlightRegionHandler)
+            TextDrawingHandler textDrawingHandler, HighlightHandler highlightRegionHandler, bool isFogOfWar)
         {
             if (templateProcessor == null || coloringHandler == null || textDrawingHandler == null || mapImage == null)
             {
@@ -53,23 +54,54 @@
 
             this.textDrawingHandler = textDrawingHandler;
             this.highlightRegionHandler = highlightRegionHandler;
+            this.isFogOfWar = isFogOfWar;
             this.coloringHandler = coloringHandler;
             this.templateProcessor = templateProcessor;
             this.mapImage = mapImage;
         }
-        
+
         /// <summary>
         /// Selects region, highlights it. If incorrect region is selected, all previously selected regions are resetted.
         /// </summary>
-        /// <param name="x">X image coordinate</param>
-        /// <param name="y">Y image coordinate</param>
+        /// <param name="y"></param>
+        /// <param name="playerPerspective"></param>
         /// <param name="army">Army size of the (x,y) specified region.</param>
+        /// <param name="x"></param>
         /// <returns>How many regions are selected at the moment.</returns>
-        public int SelectRegion(int x, int y, int army)
+        public int SelectRegion(int x, int y, Player playerPerspective, int army)
         {
             var region = templateProcessor.GetRegion(x, y);
 
-            highlightRegionHandler.HighlightRegion(x, y, army);
+            // is it fog of war game?
+            if (isFogOfWar)
+            {
+                // owner is player and its my or neighbour region
+                if (region.Owner != null && (region.Owner == playerPerspective || region.IsNeighbourOf(playerPerspective)))
+                {
+                    highlightRegionHandler.HighlightRegion(region, Color.FromKnownColor(region.Owner.Color), army);
+                }
+                // owner is nobody and its an neighbour
+                else if (region.Owner == null && region.IsNeighbourOf(playerPerspective))
+                {
+                    highlightRegionHandler.HighlightRegion(region, Global.RegionVisibleUnoccupiedColor, army);
+                }
+                // its not an neighbour
+                else
+                {
+                    highlightRegionHandler.HighlightRegion(region, Global.RegionNotVisibleColor, army);
+                }
+            }
+            else
+            {
+                if (region.Owner != null)
+                {
+                    highlightRegionHandler.HighlightRegion(region, Color.FromKnownColor(region.Owner.Color), army);
+                }
+                else
+                {
+                    highlightRegionHandler.HighlightRegion(region, Global.RegionVisibleUnoccupiedColor, army);
+                }
+            }
 
             selectedRegions.Add(region);
 
