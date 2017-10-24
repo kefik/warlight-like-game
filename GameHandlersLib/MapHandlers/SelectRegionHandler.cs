@@ -15,9 +15,6 @@
     internal class SelectRegionHandler
     {
         private readonly MapImageTemplateProcessor templateProcessor;
-        private readonly ColoringHandler coloringHandler;
-        private readonly TextDrawingHandler textDrawingHandler;
-        private readonly Bitmap mapImage;
         private readonly HighlightHandler highlightRegionHandler;
         private readonly bool isFogOfWar;
         
@@ -44,20 +41,16 @@
             return selectedRegions.Any(x => x == region);
         }
 
-        public SelectRegionHandler(Bitmap mapImage, MapImageTemplateProcessor templateProcessor, ColoringHandler coloringHandler,
-            TextDrawingHandler textDrawingHandler, HighlightHandler highlightRegionHandler, bool isFogOfWar)
+        public SelectRegionHandler(MapImageTemplateProcessor templateProcessor, HighlightHandler highlightRegionHandler, bool isFogOfWar)
         {
-            if (templateProcessor == null || coloringHandler == null || textDrawingHandler == null || mapImage == null)
+            if (templateProcessor == null || highlightRegionHandler == null)
             {
                 throw new ArgumentException();
             }
-
-            this.textDrawingHandler = textDrawingHandler;
+            
             this.highlightRegionHandler = highlightRegionHandler;
             this.isFogOfWar = isFogOfWar;
-            this.coloringHandler = coloringHandler;
             this.templateProcessor = templateProcessor;
-            this.mapImage = mapImage;
         }
 
         /// <summary>

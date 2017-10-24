@@ -421,7 +421,7 @@ namespace GameHandlersLib.MapHandlers
 
             HighlightHandler highlightHandler = new HighlightHandler(image, mapImageTemplateProcessor, textDrawingHandler, coloringHandler);
 
-            SelectRegionHandler selectRegionHandler = new SelectRegionHandler(image, mapImageTemplateProcessor, coloringHandler, textDrawingHandler, highlightHandler, isFogOfWar);
+            SelectRegionHandler selectRegionHandler = new SelectRegionHandler(mapImageTemplateProcessor, highlightHandler, isFogOfWar);
 
             return new MapImageProcessor(mapImageTemplateProcessor, image, textDrawingHandler, coloringHandler, selectRegionHandler, isFogOfWar);
         }
