@@ -114,7 +114,7 @@ namespace WinformsUI
         
         public Stream LoadGame(SingleplayerSavedGameInfo info)
         {
-            var savedGameInfo = SingleplayerSavedGameInfos.ToList().First(x => x.Id == info.Id);
+            var savedGameInfo = SingleplayerSavedGameInfos.First(x => x.Id == info.Id);
             FileStream fs = new FileStream(savedGameInfo.Path, FileMode.Open);
 
             return fs;
