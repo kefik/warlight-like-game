@@ -7,6 +7,9 @@
     using GameObjectsLib.GameMap;
     using MapHandlers;
 
+    /// <summary>
+    /// Handler handling <see cref="Round"/> issues, like calculation of the new round.
+    /// </summary>
     internal class RoundHandler
     {
         private readonly Game game;
