@@ -46,6 +46,7 @@
     <Compile Include="GameHandlers\GameState.cs" />
     <Compile Include="GameHandlers\HotseatGameFlowHandler.cs" />
     <Compile Include="GameHandlers\PlayerExtensions.cs" />
+    <Compile Include="GameHandlers\RoundHandler.cs" />
     <Compile Include="MapHandlers\ColoringHandler.cs" />
     <Compile Include="MapHandlers\Global.cs" />
     <Compile Include="MapHandlers\HighlightHandler.cs" />

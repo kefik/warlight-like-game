@@ -12,5 +12,8 @@
         internal static readonly Color RegionNotVisibleColor = Color.FromArgb(155, 150, 122);
         internal static readonly Color RegionVisibleUnoccupiedColor = Color.White;
         internal static readonly Color TextColor = Color.Black;
+
+        internal const double AttackingUnitWillKillProbability = 0.6;
+        internal const double DefendingUnitWillKillProbability = 0.7;
     }
 }

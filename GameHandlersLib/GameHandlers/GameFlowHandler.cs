@@ -20,6 +20,8 @@
 
         public MapImageProcessor ImageProcessor { get; }
 
+        private readonly RoundHandler roundHandler;
+
         /// <summary>
         /// Represents human player that is currently on turn.
         /// </summary>
@@ -58,6 +60,7 @@
         {
             Game = game;
             ImageProcessor = processor;
+            roundHandler = new RoundHandler(game);
         }
 
         public GameState GameState { get; protected set; }
@@ -89,147 +92,11 @@
         ///     Plays given round, calculating everything, moving this instance of
         ///     the game into position after the round was played.
         /// </summary>
-        // TODO: refactor
         public virtual void PlayRound()
         {
-            void PlayDeploying(GameRound round)
-            {
-                Deploying deploying = round.Deploying;
-                foreach (var deployedArmies in deploying.ArmiesDeployed)
-                {
-                    Region region = (from item in Game.Map.Regions
-                                     where item == deployedArmies.Region
-                                     select item).First();
-                    region.Army = deployedArmies.Army;
-                }
-            }
-
-            void PlayAttacking(GameRound round)
-            {
-                var attacks = round.Attacking.Attacks;
-                foreach (Attack attack in attacks)
-                {
-                    // TODO: real calculation according to rules
-                    // get real attacker
-                    Region attacker = (from region in Game.Map.Regions
-                                       where region == attack.Attacker
-                                       select region).First();
-
-                    // if attacking region changed owner, cancel attack
-                    if (attacker.Owner != attack.Attacker.Owner)
-                    {
-                        continue;
-                    }
-
-                    // get real defender
-                    Region defender = (from region in Game.Map.Regions
-                                       where region == attack.Defender
-                                       select region).First();
-                    // situation might have changed => recalculate attacking army
-                    int realAttackingArmy = Math.Min(attack.AttackingArmy, attacker.Army);
-                    // if they have same owner == just moving armies
-                    if (defender.Owner == attacker.Owner)
-                    {
-                        // sum armies
-                        defender.Army += realAttackingArmy;
-                        // units were transfered
-                        attacker.Army -= realAttackingArmy;
-                    }
-                    // attacking
-                    else
-                    {
-                        Random random = new Random();
-
-                        // calculate how many defending units were killed
-                        int defendingArmyUnitsKilled = 0;
-                        for (int i = 0; i < realAttackingArmy && defendingArmyUnitsKilled < defender.Army; i++)
-                        {
-                            double attackingUnitWillKillPercentage = random.Next(100) / 100d;
-
-                            // attacking unit has 60% chance to kill defending unit
-                            bool attackingUnitKills = attackingUnitWillKillPercentage < 0.6;
-                            if (attackingUnitKills)
-                            {
-                                defendingArmyUnitsKilled++;
-                            }
-                        }
-
-                        // calculate how many attacking army units were killed
-                        int attackingArmyUnitsKilled = 0;
-                        for (int i = 0; i < defender.Army && attackingArmyUnitsKilled < realAttackingArmy; i++)
-                        {
-                            double defendingUnitWillKillPercentage = random.Next(100) / 100d;
-
-                            // defending unit has 70% chance to kill attacking unit
-                            bool defendingUnitKills = defendingUnitWillKillPercentage < 0.7;
-                            if (defendingUnitKills)
-                            {
-                                attackingArmyUnitsKilled++;
-                            }
-                        }
-                        // attacker units were transfered
-                        attacker.Army -= realAttackingArmy;
-
-                        // army that survived as defender
-                        int remainingDefendingArmy = defender.Army - defendingArmyUnitsKilled;
-                        // army that remains after units being killed
-                        int remainingAttackingArmy = realAttackingArmy - attackingArmyUnitsKilled;
-
-                        // if region was conquered
-                        if (remainingAttackingArmy > 0 && remainingDefendingArmy == 0)
-                        {
-                            // move rest of the units
-                            remainingDefendingArmy = remainingAttackingArmy;
-                            // region was conquered
-                            defender.Owner = attack.Attacker.Owner;
-                            // cuz of negative units
-                            defender.Army = remainingDefendingArmy;
-                        }
-                        // none of the attackers survived
-                        else if (remainingDefendingArmy == 0)
-                        {
-                            remainingDefendingArmy = 1;
-                            defender.Army = remainingDefendingArmy;
-                        }
-                        // region was not conquered
-                        else
-                        {
-                            // send rest of attacking units back
-                            attacker.Army += remainingAttackingArmy;
-                            // defenderArmy = what survived
-                            defender.Army = remainingDefendingArmy;
-                        }
-                    }
-                }
-            }
-
-            void PlayGameBeginningRound(GameBeginningRound round)
-            {
-                foreach (var roundSelectedRegion in round.SelectedRegions)
-                {
-                    Region realRegion = Game.Map.Regions.First(x => x == roundSelectedRegion.Region);
-                    Player realPlayer = Game.Players.First(x => roundSelectedRegion.SeizingPlayer == x);
-
-                    realRegion.Owner = realPlayer;
-                }
-            }
-
             Round linearizedRound = Round.Process(LastRound.Select(x => x.Item2).ToList());
 
-            if (linearizedRound.GetType() == typeof(GameRound))
-            {
-                var convertedRound = (GameRound) linearizedRound;
-                // deploying
-                PlayDeploying(convertedRound);
-
-                // attacking
-                PlayAttacking(convertedRound);
-            }
-            else
-            {
-                var convertedRound = (GameBeginningRound) linearizedRound;
-                PlayGameBeginningRound(convertedRound);
-            }
+            roundHandler.PlayRound(linearizedRound);
             
             Game.Refresh();
 
