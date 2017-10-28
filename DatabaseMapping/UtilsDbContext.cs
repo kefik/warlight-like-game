@@ -42,13 +42,10 @@ namespace WinformsUI
             {
                 case GameType.SinglePlayer:
                     {
-
                         var savedGames = SingleplayerSavedGameInfos;
                         string path = string.Format($"SavedGames/Singleplayer/{game.Id}.sav");
                         
-                        var save = (from savedGame in savedGames
-                                    where savedGame.Id == game.Id
-                                    select savedGame).AsEnumerable().FirstOrDefault();
+                        var save = savedGames.FirstOrDefault(x => x.Id == game.Id);
                         // game hasn't been saved yet
                         if (save == null)
                         {
@@ -74,10 +71,9 @@ namespace WinformsUI
                     {
                         var savedGames = HotseatSavedGameInfos;
                         string path = string.Format($"SavedGames/Hotseat/{game.Id}.sav");
+                        
+                        var save = savedGames.FirstOrDefault(x => x.Id == game.Id);
 
-                        var save = (from savedGame in savedGames
-                                    where savedGame.Id == game.Id
-                                    select savedGame).AsEnumerable().FirstOrDefault();
                         if (save == null)
                         {
                             int aiPlayerNumber = (from player in game.Players
@@ -116,21 +112,17 @@ namespace WinformsUI
             }
         }
         
-
         public Stream LoadGame(SingleplayerSavedGameInfo info)
         {
-            var savedGameInfo = (from save in SingleplayerSavedGameInfos
-                                 where save.Id == info.Id
-                                 select save).Single();
+            var savedGameInfo = SingleplayerSavedGameInfos.ToList().First(x => x.Id == info.Id);
             FileStream fs = new FileStream(savedGameInfo.Path, FileMode.Open);
 
             return fs;
         }
+
         public Stream LoadGame(HotseatSavedGameInfo info)
         {
-            var savedGameInfo = (from save in HotseatSavedGameInfos
-                                 where save.Id == info.Id
-                                 select save).Single();
+            var savedGameInfo = HotseatSavedGameInfos.First(x => x.Id == info.Id);
             FileStream fs = new FileStream(savedGameInfo.Path, FileMode.Open);
 
             return fs;
@@ -142,9 +134,7 @@ namespace WinformsUI
             {
                 try
                 {
-                    var objectToBeRemoved = (from info in SingleplayerSavedGameInfos
-                                             where info.Id == savedGameInfo.Id
-                                             select info).First();
+                    var objectToBeRemoved = SingleplayerSavedGameInfos.First(x => x.Id == savedGameInfo.Id);
 
                     string path = objectToBeRemoved.Path;
 
@@ -158,6 +148,7 @@ namespace WinformsUI
                 catch (Exception)
                 {
                     transaction.Rollback();
+                    throw;
                 }
             }
         }
@@ -167,9 +158,7 @@ namespace WinformsUI
             {
                 try
                 {
-                    var objectToBeRemoved = (from info in HotseatSavedGameInfos
-                                             where info.Id == savedGameInfo.Id
-                                             select info).First();
+                    var objectToBeRemoved = HotseatSavedGameInfos.First(x => x.Id == savedGameInfo.Id);
 
                     string path = objectToBeRemoved.Path;
 
@@ -184,11 +173,11 @@ namespace WinformsUI
                 catch (Exception)
                 {
                     transaction.Rollback();
+                    throw;
                 }
             }
         }
-
-
+        
         public virtual DbSet<MapInfo> Maps { get; set; }
         public virtual DbSet<SingleplayerSavedGameInfo> SingleplayerSavedGameInfos { get; set; }
         public virtual DbSet<HotseatSavedGameInfo> HotseatSavedGameInfos { get; set; }
