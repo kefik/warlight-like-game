@@ -5,16 +5,6 @@ VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinformsUI", "WinformsUI\WinformsUI.csproj", "{7022FF55-5AB7-467C-AF9A-BE8DCE89BA2B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maps", "Maps", "{B8663EA2-E2EE-4981-8B1F-DB7035326EA6}"
-	ProjectSection(SolutionItems) = preProject
-		WinformsUI\bin\Debug\Maps\Map.xsd = WinformsUI\bin\Debug\Maps\Map.xsd
-		WinformsUI\bin\Debug\Maps\RegionColorMapping.xsd = WinformsUI\bin\Debug\Maps\RegionColorMapping.xsd
-		WinformsUI\bin\Debug\Maps\World.png = WinformsUI\bin\Debug\Maps\World.png
-		WinformsUI\bin\Debug\Maps\World.xml = WinformsUI\bin\Debug\Maps\World.xml
-		WinformsUI\bin\Debug\Maps\WorldColorRegionMapping.xml = WinformsUI\bin\Debug\Maps\WorldColorRegionMapping.xml
-		WinformsUI\bin\Debug\Maps\WorldTemplate.png = WinformsUI\bin\Debug\Maps\WorldTemplate.png
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{E1ADE0FD-F1C8-47D3-BCD8-268E1C4F226B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{2E315EA8-397F-49D5-895D-3DE24CE2EAD6}"

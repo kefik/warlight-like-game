@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://tempuri.org/XMLSchema.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/XMLSchema.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+  <xs:element name="Region">
+    <xs:complexType>
+      <xs:attribute name="Name" type="xs:string" use="required"></xs:attribute>
+      <xs:attribute name="Army" type="xs:unsignedInt" use="optional" default="2"></xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="RegionType">
+    <xs:attribute name="Name" type="xs:string" use="required"></xs:attribute>
+    <xs:attribute name="Army" type="xs:unsignedInt" use="optional" default="2"></xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="RegionWithNeighboursType">
+    <xs:complexContent>
+      <xs:extension base="RegionType">
+        <xs:sequence>
+          <xs:element name="Neighbours">
+            <xs:complexType>
+              <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="Region" type="RegionType"></xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="Map">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="SuperRegions">
+          <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+              <xs:element name="SuperRegion">
+                <xs:complexType>
+                  <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                    <xs:element name="Region" type="RegionWithNeighboursType">
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="Name" type="xs:string" use="required"></xs:attribute>
+                  <xs:attribute name="Bonus" type="xs:int" use="required"></xs:attribute>
+                </xs:complexType>
+                <xs:key name="RegionId">
+                  <xs:selector xpath="./Region">
+                  </xs:selector>
+                  <xs:field xpath="@Name">
+                  </xs:field>
+                </xs:key>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Name" type="xs:string"></xs:attribute>
+            <xs:attribute name="PlayersLimit" type="xs:unsignedInt"></xs:attribute>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

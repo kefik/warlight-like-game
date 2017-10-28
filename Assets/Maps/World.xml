@@ -1,0 +1,361 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Map xmlns="http://tempuri.org/XMLSchema.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://tempuri.org/XMLSchema.xsd Map.xsd">
+  <SuperRegions>
+    <SuperRegion Name="North America" Bonus="5">
+      <Region Name="Alaska">
+        <Neighbours>
+          <Region Name="Kamchatka"/>
+          <Region Name="Alberta"/>
+          <Region Name="Northwest Territory"/>
+        </Neighbours>
+      </Region>
+      <!--<Region Name="Alaska">
+      <Neighbours>
+        <Region Name="string" />
+      </Neighbours>
+    </Region>-->
+      <Region Name="Northwest Territory">
+        <Neighbours>
+          <Region Name="Alaska"/>
+          <Region Name="Alberta"/>
+          <Region Name="Greenland"/>
+          <Region Name="Ontario"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Greenland">
+        <Neighbours>
+          <Region Name="Iceland"/>
+          <Region Name="Quebec"/>
+          <Region Name="Ontario"/>
+          <Region Name="Northwest Territory"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Alberta">
+        <Neighbours>
+          <Region Name="Alaska"/>
+          <Region Name="Northwest Territory"/>
+          <Region Name="Ontario"/>
+          <Region Name="Western United States"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Ontario">
+        <Neighbours>
+          <Region Name="Alberta"/>
+          <Region Name="Northwest Territory"/>
+          <Region Name="Quebec"/>
+          <Region Name="Eastern United States"/>
+          <Region Name="Western United States"/>
+          <Region Name="Greenland"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Quebec">
+        <Neighbours>
+          <Region Name="Greenland" />
+          <Region Name="Ontario"/>
+          <Region Name="Eastern United States"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Western United States">
+        <Neighbours>
+          <Region Name="Eastern United States" />
+          <Region Name="Ontario"/>
+          <Region Name="Alberta"/>
+          <Region Name="Central America"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Eastern United States">
+        <Neighbours>
+          <Region Name="Central America" />
+          <Region Name="Western United States"/>
+          <Region Name="Ontario"/>
+          <Region Name="Quebec"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Central America">
+        <Neighbours>
+          <Region Name="Western United States" />
+          <Region Name="Eastern United States"/>
+          <Region Name="Venezuela"/>
+        </Neighbours>
+      </Region>
+    </SuperRegion>
+    <SuperRegion Name="South America" Bonus="2">
+      <Region Name="Venezuela">
+        <Neighbours>
+          <Region Name="Central America" />
+          <Region Name="Brazil"/>
+          <Region Name="Peru"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Peru">
+        <Neighbours>
+          <Region Name="Brazil" />
+          <Region Name="Venezuela"/>
+          <Region Name="Argentina"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Brazil">
+        <Neighbours>
+          <Region Name="Venezuela"/>
+          <Region Name="Peru"/>
+          <Region Name="Argentina"/>
+          <Region Name="North Africa"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Argentina">
+        <Neighbours>
+          <Region Name="Peru" />
+          <Region Name="Brazil"/>
+        </Neighbours>
+      </Region>
+    </SuperRegion>
+    <SuperRegion Name="Europe" Bonus="5">
+      <Region Name="Iceland">
+        <Neighbours>
+          <Region Name="Greenland" />
+          <Region Name="Great Britain"/>
+          <Region Name="Scandinavia"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Great Britain">
+        <Neighbours>
+          <Region Name="Iceland" />
+          <Region Name="Scandinavia"/>
+          <Region Name="Western Europe"/>
+          <Region Name="Northern Europe"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Scandinavia">
+        <Neighbours>
+          <Region Name="Iceland" />
+          <Region Name="Great Britain"/>
+          <Region Name="Ukraine"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Ukraine">
+        <Neighbours>
+          <Region Name="Northern Europe" />
+          <Region Name="Southern Europe"/>
+          <Region Name="Scandinavia"/>
+          <Region Name="Ural"/>
+          <Region Name="Kazakhstan"/>
+          <Region Name="Middle East"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Western Europe">
+        <Neighbours>
+          <Region Name="Great Britain" />
+          <Region Name="Northern Europe"/>
+          <Region Name="Southern Europe"/>
+          <Region Name="North Africa"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Northern Europe">
+        <Neighbours>
+          <Region Name="Ukraine" />
+          <Region Name="Southern Europe"/>
+          <Region Name="Great Britain"/>
+          <Region Name="Western Europe"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Southern Europe">
+        <Neighbours>
+          <Region Name="Northern Europe" />
+          <Region Name="Western Europe"/>
+          <Region Name="North Africa"/>
+          <Region Name="Middle East"/>
+          <Region Name="Ukraine"/>
+        </Neighbours>
+      </Region>
+    </SuperRegion>
+    <SuperRegion Name="Africa" Bonus="3">
+      <Region Name="North Africa">
+        <Neighbours>
+          <Region Name="Brazil" />
+          <Region Name="Congo"/>
+          <Region Name="East Africa"/>
+          <Region Name="Egypt"/>
+
+          <Region Name="Western Europe"/>
+          <Region Name="Southern Europe"/>
+
+          <Region Name="Brazil"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Egypt">
+        <Neighbours>
+          <Region Name="North Africa" />
+          <Region Name="East Africa"/>
+
+          <Region Name="Middle East"/>
+
+          <Region Name="Southern Europe"/>
+        </Neighbours>
+      </Region>
+      <Region Name="East Africa">
+        <Neighbours>
+          <Region Name="Egypt" />
+          <Region Name="Congo"/>
+          <Region Name="South Africa"/>
+          <Region Name="Madagascar"/>
+          <Region Name="North Africa"/>
+
+          <Region Name="Middle East"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Congo">
+        <Neighbours>
+          <Region Name="South Africa" />
+          <Region Name="North Africa"/>
+          <Region Name="East Africa"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Madagascar">
+        <Neighbours>
+          <Region Name="South Africa" />
+          <Region Name="East Africa"/>
+        </Neighbours>
+      </Region>
+      <Region Name="South Africa">
+        <Neighbours>
+          <Region Name="Congo"/>
+          <Region Name="Madagascar"/>
+          <Region Name="East Africa"/>
+        </Neighbours>
+      </Region>
+    </SuperRegion>
+    <SuperRegion Name="Asia" Bonus="7">
+      <Region Name="Ural">
+        <Neighbours>
+          <Region Name="Siberia" />
+          <Region Name="Ukraine"/>
+          <Region Name="China"/>
+          <Region Name="Kazakhstan"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Siberia">
+        <Neighbours>
+          <Region Name="Irkutsk" />
+          <Region Name="Mongolia"/>
+          <Region Name="Ural"/>
+          <Region Name="Yakutsk"/>
+          <Region Name="China"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Yakutsk">
+        <Neighbours>
+          <Region Name="Siberia" />
+          <Region Name="Irkutsk"/>
+          <Region Name="Kamchatka"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Kamchatka">
+        <Neighbours>
+          <Region Name="Irkutsk" />
+          <Region Name="Mongolia"/>
+          <Region Name="Japan"/>
+          <Region Name="Alaska"/>
+          <Region Name="Yakutsk"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Irkutsk">
+        <Neighbours>
+          <Region Name="Mongolia" />
+          <Region Name="Siberia"/>
+          <Region Name="Yakutsk"/>
+          <Region Name="Kamchatka"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Kazakhstan">
+        <Neighbours>
+          <Region Name="Middle East" />
+          <Region Name="Ural"/>
+          <Region Name="Ukraine"/>
+          <Region Name="India"/>
+          <Region Name="China"/>
+        </Neighbours>
+      </Region>
+      <Region Name="China">
+        <Neighbours>
+          <Region Name="Mongolia" />
+          <Region Name="Ural"/>
+          <Region Name="Siberia"/>
+          <Region Name="India"/>
+          <Region Name="Siam"/>
+          <Region Name="Kazakhstan"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Mongolia">
+        <Neighbours>
+          <Region Name="Irkutsk" />
+          <Region Name="Japan"/>
+          <Region Name="Siberia"/>
+          <Region Name="China"/>
+          <Region Name="Kamchatka"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Japan">
+        <Neighbours>
+          <Region Name="Mongolia" />
+          <Region Name="Kamchatka"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Middle East">
+        <Neighbours>
+          <Region Name="Southern Europe" />
+          <Region Name="Ukraine"/>
+          <Region Name="India"/>
+          <Region Name="Egypt"/>
+          <Region Name="Kazakhstan"/>
+          <Region Name="East Africa"/>
+        </Neighbours>
+      </Region>
+      <Region Name="India">
+        <Neighbours>
+          <Region Name="Middle East" />
+          <Region Name="China"/>
+          <Region Name="Siam"/>
+          <Region Name="Kazakhstan"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Siam">
+        <Neighbours>
+          <Region Name="India" />
+          <Region Name="China"/>
+          <Region Name="Indonesia"/>
+        </Neighbours>
+      </Region>
+    </SuperRegion>
+    <SuperRegion Name="Australia" Bonus="2">
+      <Region Name="Indonesia">
+        <Neighbours>
+          <Region Name="New Guinea" />
+          <Region Name="Western Australia"/>
+          <Region Name="Siam"/>
+        </Neighbours>
+      </Region>
+      <Region Name="New Guinea">
+        <Neighbours>
+          <Region Name="Western Australia" />
+          <Region Name="Eastern Australia"/>
+          <Region Name="Indonesia"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Western Australia">
+        <Neighbours>
+          <Region Name="New Guinea" />
+          <Region Name="Eastern Australia"/>
+          <Region Name="Indonesia"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Eastern Australia">
+        <Neighbours>
+          <Region Name="New Guinea" />
+          <Region Name="Western Australia"/>
+        </Neighbours>
+      </Region>
+    </SuperRegion>
+  </SuperRegions>
+</Map>

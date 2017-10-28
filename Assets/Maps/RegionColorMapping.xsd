@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://palasekj.cz/"
+    elementFormDefault="qualified"
+    xmlns="http://palasekj.cz/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:map="http://tempuri.org/XMLSchema.xsd"
+>
+  <xs:import namespace="http://tempuri.org/XMLSchema.xsd" schemaLocation="Map.xsd"/>
+  <xs:complexType name="ColorType">
+    <xs:attribute name="Red" type="xs:unsignedByte" use="required"></xs:attribute>
+    <xs:attribute name="Green" type="xs:unsignedByte" use="required"></xs:attribute>
+    <xs:attribute name="Blue" type="xs:unsignedByte" use="required"></xs:attribute>
+    <xs:attribute name="Alpha" type="xs:unsignedByte" use="optional" default="255"></xs:attribute>
+  </xs:complexType>
+  
+  <xs:element name="Dictionary">
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded">
+        <xs:element name="Entry">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Color" type="ColorType"></xs:element>
+              <xs:element name="Region" type="map:RegionType"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
