@@ -27,19 +27,26 @@
         [ProtoMember(1)]
         public int Id { get; }
 
+        /// <summary>
+        /// Represents number of the current round.
+        /// </summary>
+        public int RoundNumber
+        {
+            get { return AllRounds.Count; }
+        }
+
+        /// <summary>
+        /// Represents list of all rounds of the game.
+        /// </summary>
         [ProtoMember(2)]
-        public int RoundNumber { get; set; }
+        public IList<Round> AllRounds { get; } = new List<Round>();
 
         /// <summary>
         /// True, if this game has a fog of war option.
         /// </summary>
         [ProtoMember(3)]
         public bool IsFogOfWar { get; }
-
-        protected Game()
-        {
-        }
-
+        
         /// <summary>
         ///     Represents map being played in this game.
         /// </summary>
@@ -56,6 +63,10 @@
         ///     Return game type this game has.
         /// </summary>
         public abstract GameType GameType { get; }
+        
+        protected Game()
+        {
+        }
 
         protected Game(int id, Map map, IList<Player> players, bool isFogOfWar)
         {

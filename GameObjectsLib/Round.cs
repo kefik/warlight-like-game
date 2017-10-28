@@ -3,12 +3,21 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using ProtoBuf;
 
     /// <summary>
     ///     Abstract predecessor of GameRound and GameBeginningRound.
     /// </summary>
+    [ProtoContract]
+    [ProtoInclude(100, typeof(GameRound))]
+    [ProtoInclude(101, typeof(GameBeginningRound))]
     public abstract class Round
     {
+        /// <summary>
+        /// For protobuf-net.
+        /// </summary>
+        protected Round() { }
+
         /// <summary>
         /// Validates the given round, returning exception if it is not valid.
         /// </summary>

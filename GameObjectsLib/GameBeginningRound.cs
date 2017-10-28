@@ -15,7 +15,7 @@ namespace GameObjectsLib
         {
             SelectedRegions = list ?? throw new ArgumentException();
         }
-
+        
         public GameBeginningRound()
         {
         }

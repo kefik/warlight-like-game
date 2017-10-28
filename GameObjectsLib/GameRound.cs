@@ -14,13 +14,6 @@
     public sealed class GameRound : Round
     {
         /// <summary>
-        ///     Represents number of the round in the game.
-        ///     Round 0 represents special game round, where
-        ///     players only choose their regions.
-        /// </summary>
-        public int Number { get; }
-
-        /// <summary>
         ///     Represents deploying phase of the game round.
         /// </summary>
         public Deploying Deploying { get; set; }
@@ -30,16 +23,14 @@
         /// </summary>
         public Attacking Attacking { get; set; }
 
-        public GameRound(int number, Deploying deploying, Attacking attacking)
+        public GameRound(Deploying deploying, Attacking attacking)
         {
-            Number = number;
             Deploying = deploying;
             Attacking = attacking;
         }
 
-        public GameRound(int number)
+        public GameRound()
         {
-            Number = number;
             Deploying = new Deploying(new List<Deployment>());
             Attacking = new Attacking(new List<Attack>());
         }
@@ -94,7 +85,7 @@
                 index++;
             }
 
-            return new GameRound(rounds[0].Number, deploying, attacking);
+            return new GameRound(deploying, attacking);
         }
 
         //class RoundValidator

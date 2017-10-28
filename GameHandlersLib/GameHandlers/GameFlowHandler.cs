@@ -49,7 +49,10 @@
             }
         }
 
-        protected IList<Round> AllRounds = new List<Round>();
+        protected IList<Round> AllRounds
+        {
+            get { return Game.AllRounds; }
+        }
 
         protected GameFlowHandler(Game game, MapImageProcessor processor)
         {
@@ -86,6 +89,7 @@
         ///     Plays given round, calculating everything, moving this instance of
         ///     the game into position after the round was played.
         /// </summary>
+        // TODO: refactor
         public virtual void PlayRound()
         {
             void PlayDeploying(GameRound round)
@@ -228,7 +232,6 @@
             }
             
             Game.Refresh();
-            Game.RoundNumber++;
 
             AllRounds.Add(linearizedRound);
             LastRound.Clear();
@@ -484,7 +487,7 @@
         {
             LastRound.Add(Game.RoundNumber == 0
                 ? new Tuple<Player, Round>(PlayerOnTurn, new GameBeginningRound())
-                : new Tuple<Player, Round>(PlayerOnTurn, new GameRound(Game.RoundNumber)));
+                : new Tuple<Player, Round>(PlayerOnTurn, new GameRound()));
 
             RedrawToPlayersPerspective();
 
