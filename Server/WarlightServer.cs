@@ -1,4 +1,4 @@
-﻿namespace Server
+﻿namespace Server.UI
 {
     using System;
     using System.Collections.Generic;

@@ -1,4 +1,4 @@
-namespace Server.WarlightLikeDatabase
+namespace Server.Entities
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;

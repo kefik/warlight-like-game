@@ -1,4 +1,4 @@
-﻿namespace Server
+﻿namespace Server.UI
 {
     using System;
     using System.Collections.Generic;
@@ -9,14 +9,14 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using Entities;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameUser;
     using GameObjectsLib.NetworkCommObjects;
     using GameObjectsLib.NetworkCommObjects.Message;
-    using WarlightLikeDatabase;
-    using User = WarlightLikeDatabase.User;
+    using User = Entities.User;
 
     internal class WarlightClient : IDisposable
     {
@@ -68,7 +68,7 @@
                             }
                             using (WarlightDbContext db = new WarlightDbContext())
                             {
-                                User matchedUser = (from dbUser in db.Users
+                                var matchedUser = (from dbUser in db.Users
                                                     where (dbUser.Name == user.Name) &&
                                                           (dbUser.PasswordHash == passwordHash)
                                                     select dbUser).AsEnumerable().FirstOrDefault();
@@ -164,7 +164,7 @@
                                     AiPlayersCount = aiPlayers.Count,
                                     HumanPlayersCount = 1,
                                     OpenedSlotsNumber = message.FreeSlotsCount,
-                                    SignedUsers = new HashSet<User>
+                                    SignedUsers = new HashSet<Entities.User>
                                     {
                                         userInfo
                                     },
@@ -186,7 +186,7 @@
 
                             using (WarlightDbContext db = new WarlightDbContext())
                             {
-                                User matchingUser = db.GetMatchingUser(user.Name);
+                                var matchingUser = db.GetMatchingUser(user.Name);
 
                                 IEnumerable<OpenedGame> openedGames = from openedGame in db.OpenedGames.AsEnumerable()
                                                                       where openedGame.SignedUsers.Contains(
@@ -278,7 +278,7 @@
 
                             using (WarlightDbContext db = new WarlightDbContext())
                             {
-                                User matchingUser = db.GetMatchingUser(player.User.Name);
+                                var matchingUser = db.GetMatchingUser(player.User.Name);
 
                                 if (matchingUser == null)
                                 {

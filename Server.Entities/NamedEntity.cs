@@ -1,4 +1,4 @@
-﻿namespace Server.WarlightLikeDatabase
+﻿namespace Server.Entities
 {
     public abstract class NamedEntity : Entity
     {
