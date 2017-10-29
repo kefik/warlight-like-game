@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Forms;
+    using Client.Entities;
     using GameAi;
     using GameHandlersLib.GameHandlers;
     using GameObjectsLib;

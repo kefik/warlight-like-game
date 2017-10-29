@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Forms;
+    using Client.Entities;
     using GameObjectsLib.GameMap;
 
     public partial class MapSettingsControl : UserControl
