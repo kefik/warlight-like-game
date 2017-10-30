@@ -2,17 +2,14 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Configuration;
 
     [Table(nameof(SingleplayerSavedGameInfo) + "s")]
-    public class SingleplayerSavedGameInfo
+    public class SingleplayerSavedGameInfo : GameEntity
     {
-        [Key]
-        public int Id { get; set; }
-        public int AiNumber { get; set; }
-        public string MapName { get; set; }
-        public string SavedGameDate { get; set; }
-        public string Path { get; set; }
-
+        protected override string SavedGamesStoragePath { get; } =
+            ConfigurationManager.AppSettings["SingleplayerSavedGamesStoragePath"];
+        
         public override string ToString()
         {
             return string.Format($"Ai: {AiNumber}; Map: {MapName}, Saved: {SavedGameDate}");

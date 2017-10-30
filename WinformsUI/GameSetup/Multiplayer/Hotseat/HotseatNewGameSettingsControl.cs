@@ -151,7 +151,7 @@
 
             using (UtilsDbContext db = new UtilsDbContext())
             {
-                IEnumerable<HotseatSavedGameInfo> savedGamesEnum = db.HotseatSavedGameInfos.AsEnumerable();
+                IEnumerable<HotseatSavedGameInfo> savedGamesEnum = db.HotseatSavedGameInfos.ToList();
                 HotseatSavedGameInfo lastGame = savedGamesEnum.LastOrDefault();
                 int gameId = 1;
                 if (lastGame != null)

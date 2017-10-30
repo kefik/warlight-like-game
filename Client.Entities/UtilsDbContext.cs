@@ -41,24 +41,25 @@
                 case GameType.SinglePlayer:
                     {
                         var savedGames = SingleplayerSavedGameInfos;
-                        string path = string.Format($"SavedGames/Singleplayer/{game.Id}.sav");
+                        string name = $"{game.Id}.sav";
                         
                         var save = savedGames.FirstOrDefault(x => x.Id == game.Id);
+                        var saveInfo = new SingleplayerSavedGameInfo()
+                        {
+                            AiNumber = game.Players.Count - 1,
+                            MapName = game.Map.Name,
+                            SavedGameDate = DateTime.Now.ToString(),
+                            Name = name
+                        };
                         // game hasn't been saved yet
                         if (save == null)
                         {
-                            savedGames.Add(new SingleplayerSavedGameInfo()
-                            {
-                                AiNumber = game.Players.Count - 1,
-                                MapName = game.Map.Name,
-                                SavedGameDate = DateTime.Now.ToString(),
-                                Path = path
-                            });
+                            savedGames.Add(saveInfo);
                         }
                         else save.SavedGameDate = DateTime.Now.ToString();
                         
                         // write the game into file
-                        using (FileStream fs = new FileStream(path, FileMode.Create))
+                        using (FileStream fs = new FileStream(saveInfo.Path, FileMode.Create))
                         {
                             stream.CopyTo(fs);
                         }
@@ -68,10 +69,17 @@
                 case GameType.MultiplayerHotseat:
                     {
                         var savedGames = HotseatSavedGameInfos;
-                        string path = string.Format($"SavedGames/Hotseat/{game.Id}.sav");
+                        string name = $"{game.Id}.sav";
                         
                         var save = savedGames.FirstOrDefault(x => x.Id == game.Id);
 
+                        var saveInfo = new HotseatSavedGameInfo()
+                        {
+                            Id = game.Id,
+                            MapName = game.Map.Name,
+                            SavedGameDate = DateTime.Now.ToString(),
+                            Name = name
+                        };
                         if (save == null)
                         {
                             int aiPlayerNumber = (from player in game.Players
@@ -79,21 +87,15 @@
                                                   select player).Count();
                             int humanPlayersNumber = game.Players.Count - aiPlayerNumber;
 
-                            savedGames.Add(new HotseatSavedGameInfo()
-                            {
-                                Id = game.Id,
-                                AiNumber = aiPlayerNumber,
-                                HumanNumber = humanPlayersNumber,
-                                MapName = game.Map.Name,
-                                SavedGameDate = DateTime.Now.ToString(),
-                                Path = path
-                            });
+                            saveInfo.AiNumber = aiPlayerNumber;
+                            saveInfo.HumanNumber = humanPlayersNumber;
+                            savedGames.Add(saveInfo);
                         }
                         else save.SavedGameDate = DateTime.Now.ToString();
                         
                         
 
-                        using (var fs = new FileStream(path, FileMode.Create))
+                        using (var fs = new FileStream(saveInfo.Path, FileMode.Create))
                         {
                             stream.CopyTo(fs);
                         }

@@ -2,17 +2,15 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Configuration;
 
     [Table(nameof(HotseatSavedGameInfo) + "s")]
-    public class HotseatSavedGameInfo
+    public class HotseatSavedGameInfo : GameEntity
     {
-        [Key]
-        public int Id { get; set; }
-        public int AiNumber { get; set; }
-        public int HumanNumber { get; set; }
-        public string MapName { get; set; }
-        public string SavedGameDate { get; set; }
-        public string Path { get; set; }
+        protected override string SavedGamesStoragePath { get; } =
+            ConfigurationManager.AppSettings["HotseatSavedGamesStoragePath"];
+
+        public virtual int HumanNumber { get; set; }
 
         public override string ToString()
         {
