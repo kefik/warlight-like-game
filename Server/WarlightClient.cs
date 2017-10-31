@@ -130,7 +130,7 @@
                                     return;
                                 }
 
-                                Map map = Map.Create(mapInfo.Id,
+                                Map map = new Map(mapInfo.Id,
                                     mapInfo.Name,
                                     mapInfo.PlayersLimit, mapInfo.TemplatePath);
 
@@ -143,7 +143,6 @@
                                     await RequestUnsuccessfulResponse(stream);
                                     return;
                                 }
-                                ;
 
                                 int newGameId = db.GetMaxOpenedGameId() + 1;
 
@@ -155,7 +154,8 @@
                                 ICollection<AiPlayer> aiPlayers = message.AiPlayers ?? new List<AiPlayer>();
                                 players.AddRange(aiPlayers);
 
-                                Game game = Game.Create(newGameId, GameType.MultiplayerNetwork, map, players, fogOfWar: true);
+                                GameFactory factory = new GameFactory();
+                                Game game =factory.CreateGame(newGameId, GameType.MultiplayerNetwork, map, players, fogOfWar: true);
 
                                 OpenedGame openedGame = new OpenedGame
                                 {

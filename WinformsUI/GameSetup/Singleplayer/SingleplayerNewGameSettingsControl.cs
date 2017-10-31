@@ -93,7 +93,8 @@
                         gameId = lastGame.Id + 1;
                     }
 
-                    game = Game.Create(gameId, GameType.SinglePlayer, map, players, fogOfWar: true);
+                    var factory = new GameFactory();
+                    game = factory.CreateGame(gameId, GameType.SinglePlayer, map, players, fogOfWar: true);
                 }
 
 

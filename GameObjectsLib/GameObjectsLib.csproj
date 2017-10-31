@@ -54,7 +54,7 @@
     <Compile Include="Deployment.cs" />
     <Compile Include="Difficulty.cs" />
     <Compile Include="GameBeginningRound.cs" />
-    <Compile Include="GameMap\MapImageProcessor.cs" />
+    <Compile Include="Game\GameFactory.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\GameType.cs" />
     <Compile Include="HumanPlayer.cs" />
@@ -81,7 +81,6 @@
     <Compile Include="GameUser\NetworkUser.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="GameMap\Map.cs" />
-    <Compile Include="GameMap\MapImageTemplateProcessor.cs" />
     <Compile Include="GameMap\SuperRegion.cs" />
     <Compile Include="Game\HotseatGame.cs" />
     <Compile Include="Game\IGameLoader.cs" />

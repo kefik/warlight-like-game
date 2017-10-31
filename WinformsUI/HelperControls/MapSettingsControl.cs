@@ -55,7 +55,7 @@
         /// <returns>New instance of the map.</returns>
         public Map GetMap()
         {
-            return Map.Create(ChosenMapInfo.Id, ChosenMapInfo.Name, ChosenMapInfo.PlayersLimit,
+            return new Map(ChosenMapInfo.Id, ChosenMapInfo.Name, ChosenMapInfo.PlayersLimit,
                 ChosenMapInfo.TemplatePath);
         }
 

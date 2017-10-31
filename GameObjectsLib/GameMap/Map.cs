@@ -31,19 +31,26 @@
         ///     Represents regions of the map that player can conquer.
         /// </summary>
         [ProtoMember(4)]
-        public IList<Region> Regions { get; } = new List<Region>();
+        public IList<Region> Regions { get; private set; } = new List<Region>();
 
         /// <summary>
         ///     Represents region groups this map has.
         /// </summary>
         [ProtoMember(5)]
-        public IList<SuperRegion> SuperRegions { get; } = new List<SuperRegion>();
+        public IList<SuperRegion> SuperRegions { get; private set; } = new List<SuperRegion>();
 
-        private Map(int id, string name, int playersLimit)
+        /// <summary>
+        ///     Creates instance of map, initializes it,
+        ///     loads all objects related to its given model,
+        ///     getting the map ready for the start of the game.
+        /// </summary>
+        public Map(int id, string name, int playersLimit, string templatePath)
         {
             Id = id;
             Name = name;
             PlayersLimit = playersLimit;
+
+            Initialize(templatePath);
         }
 
         private Map()
@@ -51,13 +58,14 @@
         }
 
         /// <summary>
-        ///     Creates instance of map, initializes it,
-        ///     loads all objects related to its given model,
-        ///     getting the map ready for the start of the game.
+        /// Initializes map instance.
         /// </summary>
-        public static Map Create(int id, string name, int playersLimit, string templatePath)
+        /// <param name="templatePath"></param>
+        private void Initialize(string templatePath)
         {
-            Map map = new Map(id, name, playersLimit);
+            IList<SuperRegion> superRegions = new List<SuperRegion>();
+            IList<Region> regions = new List<Region>();
+
             // set validation against xsd settings
             XmlReaderSettings settings = new XmlReaderSettings
             {
@@ -111,7 +119,7 @@
                                         int superRegionBonus = int.Parse(reader.GetAttribute("Bonus"));
                                         SuperRegion superRegion = new SuperRegion(superRegionCounter++, superRegionName,
                                             superRegionBonus);
-                                        map.SuperRegions.Add(superRegion);
+                                        superRegions.Add(superRegion);
                                     }
                                     break;
                                 case nameof(Region):
@@ -122,12 +130,12 @@
                                         // TODO: may drop
                                         int army = int.Parse(reader.GetAttribute("Army"));
                                         Region region =
-                                            new Region(regionCounter++, regionName, map.SuperRegions.Last())
+                                            new Region(regionCounter++, regionName, superRegions.Last())
                                             {
                                                 Army = army
                                             };
-                                        map.Regions.Add(region);
-                                        map.SuperRegions.Last().Regions.Add(region);
+                                        regions.Add(region);
+                                        superRegions.Last().Regions.Add(region);
                                     }
                                     break;
                                 case "Neighbours":
@@ -178,7 +186,7 @@
                                     isRegion++;
                                     if (isSuperRegion && isRegion == 1 && !isNeighbours)
                                     {
-                                        givenRegion = (from region in map.Regions
+                                        givenRegion = (from region in regions
                                                        where region.Name == reader.GetAttribute("Name")
                                                        select region).First();
                                     }
@@ -186,7 +194,7 @@
                                     {
                                         // find region with this name and add it to given regions neighbours
                                         // TODO: slow
-                                        Region regionsNeighbour = (from region in map.Regions
+                                        Region regionsNeighbour = (from region in regions
                                                                    where region.Name == reader.GetAttribute("Name")
                                                                    select region).First();
                                         givenRegion.NeighbourRegions.Add(regionsNeighbour);
@@ -224,7 +232,9 @@
                     }
                 }
             }
-            return map;
+
+            SuperRegions = superRegions;
+            Regions = regions;
         }
 
         public override string ToString()
