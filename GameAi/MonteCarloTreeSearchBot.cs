@@ -7,8 +7,12 @@
     /// <summary>
     /// Bot using Monte-Carlo tree search algorithm.
     /// </summary>
-    public class MonteCarloTreeSearchBot : GameBot
+    internal class MonteCarloTreeSearchBot : GameBot
     {
+        public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective, Difficulty difficulty) : base(playerPerspective, difficulty)
+        {
+        }
+
         public override Round FindBestMove()
         {
             var playerPerspective = PlayerPerspective.ShallowCopy();

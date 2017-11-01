@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameBotFactory.cs" />
     <Compile Include="GameBotType.cs" />
     <Compile Include="GameBot.cs" />
     <Compile Include="IBot.cs" />

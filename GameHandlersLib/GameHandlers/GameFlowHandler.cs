@@ -358,7 +358,9 @@
 
             RedrawToPlayersPerspective();
 
-            var bot = GameBot.FromGame(Game, PlayerOnTurn, GameBotType.MonteCarloTreeSearchBot);
+            var factory = new GameBotFactory();
+            var bot = factory.CreateFromGame(Game, PlayerOnTurn, GameBotType.MonteCarloTreeSearchBot);
+
             //bot.FindBestMove();
         }
     }
