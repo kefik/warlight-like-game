@@ -79,6 +79,11 @@
         }
 
         /// <summary>
+        /// Invoked when player is on turn.
+        /// </summary>
+        public event Action OnBegin; 
+
+        /// <summary>
         /// Is invoked when round is played.
         /// </summary>
         public event Action OnRoundPlayed; 
@@ -357,6 +362,8 @@
                 : new Tuple<Player, Round>(PlayerOnTurn, new GameRound()));
 
             RedrawToPlayersPerspective();
+
+            OnBegin?.Invoke();
 
             var factory = new GameBotFactory();
             var bot = factory.CreateFromGame(Game, PlayerOnTurn, GameBotType.MonteCarloTreeSearchBot);

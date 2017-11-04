@@ -127,6 +127,10 @@
                     gameFlowHandler.Game.Save(db);
                 }
             };
+            gameFlowHandler.OnBegin += () =>
+            {
+                MessageBox.Show($"Player {gameFlowHandler.PlayerOnTurn.Name} is on turn.");
+            };
 
             beginGamePhaseControl.Initialize(gameFlowHandler);
             turnPhaseControl.Initialize(gameFlowHandler);

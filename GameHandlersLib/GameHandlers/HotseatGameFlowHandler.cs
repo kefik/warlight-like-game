@@ -64,14 +64,7 @@
 
         public override bool NextPlayer()
         {
-            bool nextLocalPlayer = NextLocalPlayer();
-
-            if (nextLocalPlayer)
-            {
-                // there is next local player to play => begin with next player
-                Begin();
-            }
-            return nextLocalPlayer;
+            return NextLocalPlayer();
         }
 
         public override void PlayRound()
