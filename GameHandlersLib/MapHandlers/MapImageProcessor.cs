@@ -70,6 +70,12 @@ namespace GameHandlersLib.MapHandlers
         public void Seize(Region region, Player playerPerspective)
         {
             coloringHandler.Recolor(region, playerPerspective.Color);
+
+            if (!isFogOfWar)
+            {
+                textDrawingHandler.DrawArmyNumber(region, region.Army);
+            }
+
             OnImageChanged?.Invoke();
         }
 
