@@ -58,7 +58,12 @@ namespace GameObjectsLib
         /// </summary>
         public void AddAttack(Region attackingRegion, Region defendingRegion, int attackingArmy)
         {
-            Attacks.Add(new Attack(attackingRegion, attackingArmy, defendingRegion));
+            AddAttack(attackingRegion.Owner, attackingRegion, defendingRegion, attackingArmy);
+        }
+
+        public void AddAttack(Player attackingPlayer, Region attackingRegion, Region defendingRegion, int attackingArmy)
+        {
+            Attacks.Add(new Attack(attackingPlayer, attackingRegion, attackingArmy, defendingRegion));
         }
 
         /// <summary>

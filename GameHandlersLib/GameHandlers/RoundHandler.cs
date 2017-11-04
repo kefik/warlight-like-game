@@ -46,7 +46,7 @@
                 Region attacker = game.Map.Regions.First(region => region == attack.Attacker);
 
                 // if attacking region changed owner, cancel attack
-                if (attacker.Owner != attack.Attacker.Owner)
+                if (attack.AttackingPlayer != attack.Attacker.Owner)
                 {
                     continue;
                 }
