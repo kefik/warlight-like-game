@@ -75,12 +75,17 @@
             {
                 return;
             }
+
+            deleteButton.Enabled = false;
             List<SingleplayerSavedGameInfo> selectedFiles =
                 loadedGamesListBox.SelectedItems.Cast<SingleplayerSavedGameInfo>().ToList();
-            for (int i = 0; i < selectedFiles.Count; i++)
+
+            for (int i = selectedFiles.Count - 1; i >= 0; i--)
             {
-                loadedGamesListBox.Items.RemoveAt(i);
+                int selectedIndex = loadedGamesListBox.SelectedIndices[i];
+                loadedGamesListBox.Items.RemoveAt(selectedIndex);
             }
+
 
             using (UtilsDbContext db = new UtilsDbContext())
             {
@@ -89,6 +94,7 @@
                     db.Remove(savedGameInfo);
                 }
             }
+            deleteButton.Enabled = true;
         }
     }
 }

@@ -23,9 +23,9 @@
             {
                 using (UtilsDbContext db = new UtilsDbContext())
                 {
-                    IOrderedQueryable<HotseatSavedGameInfo> savedGames = from game in db.HotseatSavedGameInfos
-                                                                         orderby game.SavedGameDate descending
-                                                                         select game;
+                    var savedGames = (from game in db.HotseatSavedGameInfos
+                                     orderby game.SavedGameDate descending
+                                     select game).ToList();
 
                     // TODO: might be too slow
                     foreach (HotseatSavedGameInfo savedGame in savedGames)
@@ -45,16 +45,16 @@
             }
 
             HotseatSavedGameInfo savedGameInfo =
-                (HotseatSavedGameInfo) loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
+                (HotseatSavedGameInfo)loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
 #if (!DEBUG)
             try
             {
 #endif
-                using (UtilsDbContext db = new UtilsDbContext())
-                {
-                    Game game = Game.Load(db, savedGameInfo);
-                    OnHotseatGameLoaded?.Invoke(game);
-                }
+            using (UtilsDbContext db = new UtilsDbContext())
+            {
+                Game game = Game.Load(db, savedGameInfo);
+                OnHotseatGameLoaded?.Invoke(game);
+            }
 #if (!DEBUG)
             }
             catch (Exception)
@@ -71,11 +71,14 @@
             {
                 return;
             }
-            List<HotseatSavedGameInfo> selectedFiles =
-                loadedGamesListBox.SelectedItems.Cast<HotseatSavedGameInfo>().ToList();
-            for (int i = 0; i < selectedFiles.Count; i++)
+
+            deleteButton.Enabled = false;
+            var selectedFiles = loadedGamesListBox.SelectedItems.Cast<HotseatSavedGameInfo>().ToList();
+
+            for (int i = selectedFiles.Count - 1; i >= 0; i--)
             {
-                loadedGamesListBox.Items.RemoveAt(i);
+                int selectedIndex = loadedGamesListBox.SelectedIndices[i];
+                loadedGamesListBox.Items.RemoveAt(selectedIndex);
             }
 
             using (UtilsDbContext db = new UtilsDbContext())
@@ -85,6 +88,7 @@
                     db.Remove(savedGameInfo);
                 }
             }
+            deleteButton.Enabled = true;
         }
 
         private void FormLoad(object sender, EventArgs e)
