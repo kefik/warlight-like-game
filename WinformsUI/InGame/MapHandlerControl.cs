@@ -57,7 +57,9 @@
                 }
                 catch (ArgumentException exception)
                 {
+#if (DEBUG)
                     MessageBox.Show(exception.Message);
+#endif
                 }
             }
             else if (state == GameState.Attacking)
