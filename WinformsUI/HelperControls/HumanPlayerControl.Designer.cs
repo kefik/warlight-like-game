@@ -35,7 +35,7 @@
             // colorButton
             // 
             this.colorButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.colorButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.colorButton.BackColor = System.Drawing.Color.Aqua;
             this.colorButton.FlatAppearance.BorderSize = 0;
             this.colorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.colorButton.Location = new System.Drawing.Point(203, 5);

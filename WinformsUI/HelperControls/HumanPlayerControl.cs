@@ -13,7 +13,10 @@
         public HumanPlayerControl()
         {
             InitializeComponent();
-            player = new HumanPlayer(new LocalUser(), KnownColor.Aqua);
+
+            const KnownColor playerColor = KnownColor.Aqua;
+            player = new HumanPlayer(new LocalUser(), playerColor);
+            colorButton.BackColor = Color.FromKnownColor(playerColor);
         }
 
         private void UserChanged(User user)
