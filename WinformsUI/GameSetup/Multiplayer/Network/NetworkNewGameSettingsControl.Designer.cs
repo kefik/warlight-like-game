@@ -36,6 +36,7 @@
             this.aiPlayersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.aiPlayersNumberLabel = new System.Windows.Forms.Label();
             this.aiPlayerSettingsControl = new WinformsUI.HelperControls.AiPlayerSettingsControl();
+            this.fogOfWarCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.humanPlayersNumberNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.aiPlayersNumberNumericUpDown)).BeginInit();
             this.SuspendLayout();
@@ -53,7 +54,7 @@
             // 
             this.myUserPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.myUserPanel.Location = new System.Drawing.Point(3, 39);
+            this.myUserPanel.Location = new System.Drawing.Point(3, 63);
             this.myUserPanel.Name = "myUserPanel";
             this.myUserPanel.Size = new System.Drawing.Size(371, 37);
             this.myUserPanel.TabIndex = 12;
@@ -61,7 +62,7 @@
             // humanPlayersLabel
             // 
             this.humanPlayersLabel.AutoSize = true;
-            this.humanPlayersLabel.Location = new System.Drawing.Point(14, 92);
+            this.humanPlayersLabel.Location = new System.Drawing.Point(14, 106);
             this.humanPlayersLabel.Name = "humanPlayersLabel";
             this.humanPlayersLabel.Size = new System.Drawing.Size(127, 13);
             this.humanPlayersLabel.TabIndex = 14;
@@ -70,7 +71,7 @@
             // humanPlayersNumberNumericUpDown
             // 
             this.humanPlayersNumberNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.humanPlayersNumberNumericUpDown.Location = new System.Drawing.Point(329, 92);
+            this.humanPlayersNumberNumericUpDown.Location = new System.Drawing.Point(329, 106);
             this.humanPlayersNumberNumericUpDown.Name = "humanPlayersNumberNumericUpDown";
             this.humanPlayersNumberNumericUpDown.Size = new System.Drawing.Size(45, 20);
             this.humanPlayersNumberNumericUpDown.TabIndex = 13;
@@ -80,7 +81,7 @@
             // createButton
             // 
             this.createButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.createButton.Location = new System.Drawing.Point(305, 385);
+            this.createButton.Location = new System.Drawing.Point(305, 396);
             this.createButton.Name = "createButton";
             this.createButton.Size = new System.Drawing.Size(75, 23);
             this.createButton.TabIndex = 19;
@@ -91,7 +92,7 @@
             // aiPlayersNumberNumericUpDown
             // 
             this.aiPlayersNumberNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.aiPlayersNumberNumericUpDown.Location = new System.Drawing.Point(329, 121);
+            this.aiPlayersNumberNumericUpDown.Location = new System.Drawing.Point(329, 132);
             this.aiPlayersNumberNumericUpDown.Name = "aiPlayersNumberNumericUpDown";
             this.aiPlayersNumberNumericUpDown.Size = new System.Drawing.Size(45, 20);
             this.aiPlayersNumberNumericUpDown.TabIndex = 16;
@@ -102,7 +103,7 @@
             // 
             this.aiPlayersNumberLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.aiPlayersNumberLabel.AutoSize = true;
-            this.aiPlayersNumberLabel.Location = new System.Drawing.Point(14, 123);
+            this.aiPlayersNumberLabel.Location = new System.Drawing.Point(14, 134);
             this.aiPlayersNumberLabel.Name = "aiPlayersNumberLabel";
             this.aiPlayersNumberLabel.Size = new System.Drawing.Size(104, 13);
             this.aiPlayersNumberLabel.TabIndex = 17;
@@ -112,16 +113,29 @@
             // 
             this.aiPlayerSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.aiPlayerSettingsControl.Location = new System.Drawing.Point(3, 147);
+            this.aiPlayerSettingsControl.Location = new System.Drawing.Point(3, 158);
             this.aiPlayerSettingsControl.Name = "aiPlayerSettingsControl";
             this.aiPlayerSettingsControl.PlayersLimit = 0;
             this.aiPlayerSettingsControl.Size = new System.Drawing.Size(371, 232);
             this.aiPlayerSettingsControl.TabIndex = 18;
             // 
+            // fogOfWarCheckBox
+            // 
+            this.fogOfWarCheckBox.AutoSize = true;
+            this.fogOfWarCheckBox.Checked = true;
+            this.fogOfWarCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.fogOfWarCheckBox.Location = new System.Drawing.Point(298, 40);
+            this.fogOfWarCheckBox.Name = "fogOfWarCheckBox";
+            this.fogOfWarCheckBox.Size = new System.Drawing.Size(76, 17);
+            this.fogOfWarCheckBox.TabIndex = 20;
+            this.fogOfWarCheckBox.Text = "Fog of war";
+            this.fogOfWarCheckBox.UseVisualStyleBackColor = true;
+            // 
             // NetworkNewGameSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.fogOfWarCheckBox);
             this.Controls.Add(this.createButton);
             this.Controls.Add(this.aiPlayerSettingsControl);
             this.Controls.Add(this.aiPlayersNumberLabel);
@@ -131,7 +145,7 @@
             this.Controls.Add(this.myUserPanel);
             this.Controls.Add(this.mapSettingsControl);
             this.Name = "NetworkNewGameSettingsControl";
-            this.Size = new System.Drawing.Size(383, 411);
+            this.Size = new System.Drawing.Size(383, 422);
             ((System.ComponentModel.ISupportInitialize)(this.humanPlayersNumberNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.aiPlayersNumberNumericUpDown)).EndInit();
             this.ResumeLayout(false);
@@ -149,5 +163,6 @@
         private System.Windows.Forms.NumericUpDown aiPlayersNumberNumericUpDown;
         private System.Windows.Forms.Label aiPlayersNumberLabel;
         private HelperControls.AiPlayerSettingsControl aiPlayerSettingsControl;
+        private System.Windows.Forms.CheckBox fogOfWarCheckBox;
     }
 }

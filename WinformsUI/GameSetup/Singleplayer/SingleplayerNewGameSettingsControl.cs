@@ -94,7 +94,7 @@
                     }
 
                     var factory = new GameFactory();
-                    game = factory.CreateGame(gameId, GameType.SinglePlayer, map, players, fogOfWar: true);
+                    game = factory.CreateGame(gameId, GameType.SinglePlayer, map, players, fogOfWar: fogOfWarCheckBox.Checked);
                 }
 
 

@@ -160,7 +160,7 @@
                 }
 
                 var factory = new GameFactory();
-                game = factory.CreateGame(gameId, GameType.MultiplayerHotseat, map, players, fogOfWar: true);
+                game = factory.CreateGame(gameId, GameType.MultiplayerHotseat, map, players, fogOfWar: fogOfWarCheckBox.Checked);
 
 
                 // TEST

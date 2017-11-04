@@ -34,6 +34,7 @@
             this.aiPlayersNumberLabel = new System.Windows.Forms.Label();
             this.startButton = new System.Windows.Forms.Button();
             this.myPlayerPanel = new System.Windows.Forms.Panel();
+            this.fogOfWarCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.aiPlayersNumberNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,7 +71,7 @@
             this.aiPlayersNumberLabel.AutoSize = true;
             this.aiPlayersNumberLabel.Location = new System.Drawing.Point(24, 40);
             this.aiPlayersNumberLabel.Name = "aiPlayersNumberLabel";
-            this.aiPlayersNumberLabel.Size = new System.Drawing.Size(105, 13);
+            this.aiPlayersNumberLabel.Size = new System.Drawing.Size(104, 13);
             this.aiPlayersNumberLabel.TabIndex = 3;
             this.aiPlayersNumberLabel.Text = "Number of Ai players";
             // 
@@ -93,10 +94,24 @@
             this.myPlayerPanel.Size = new System.Drawing.Size(371, 33);
             this.myPlayerPanel.TabIndex = 5;
             // 
+            // fogOfWarCheckBox
+            // 
+            this.fogOfWarCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.fogOfWarCheckBox.AutoSize = true;
+            this.fogOfWarCheckBox.Checked = true;
+            this.fogOfWarCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.fogOfWarCheckBox.Location = new System.Drawing.Point(294, 81);
+            this.fogOfWarCheckBox.Name = "fogOfWarCheckBox";
+            this.fogOfWarCheckBox.Size = new System.Drawing.Size(76, 17);
+            this.fogOfWarCheckBox.TabIndex = 6;
+            this.fogOfWarCheckBox.Text = "Fog of war";
+            this.fogOfWarCheckBox.UseVisualStyleBackColor = true;
+            // 
             // SingleplayerNewGameSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.fogOfWarCheckBox);
             this.Controls.Add(this.myPlayerPanel);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.aiPlayersNumberLabel);
@@ -119,5 +134,6 @@
         private System.Windows.Forms.Label aiPlayersNumberLabel;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Panel myPlayerPanel;
+        private System.Windows.Forms.CheckBox fogOfWarCheckBox;
     }
 }

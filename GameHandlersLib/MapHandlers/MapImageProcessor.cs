@@ -324,6 +324,7 @@ namespace GameHandlersLib.MapHandlers
                 {
                     coloringHandler.Recolor(region, region.Owner.Color);
                 }
+                textDrawingHandler.DrawArmyNumber(region, region.Army);
             }
         }
 
