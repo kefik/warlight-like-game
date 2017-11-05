@@ -86,7 +86,12 @@
         /// <summary>
         /// Is invoked when round is played.
         /// </summary>
-        public event Action OnRoundPlayed; 
+        public event Action OnRoundPlayed;
+
+        /// <summary>
+        /// Is invoked on game end.
+        /// </summary>
+        public event Action<Player> OnEnd;
 
         public virtual void GameStateChange(GameState newGameState)
         {
@@ -355,7 +360,7 @@
         /// <summary>
         /// Starts the game or round. Initializes the GameFlowHandler to begin the round.
         /// </summary>
-        public void Begin()
+        public virtual void Begin()
         {
             LastRound.Add(Game.RoundNumber == 0
                 ? new Tuple<Player, Round>(PlayerOnTurn, new GameBeginningRound())
@@ -369,6 +374,23 @@
             var bot = factory.CreateFromGame(Game, PlayerOnTurn, GameBotType.MonteCarloTreeSearchBot);
 
             //bot.FindBestMove();
+        }
+
+        /// <summary>
+        /// Ends the game.
+        /// </summary>
+        public virtual void End()
+        {
+            if (!Game.IsFinished())
+            {
+                throw new ArgumentException("Function End() cannot be invoked if the game is not finished.");
+            }
+
+            var player = Game.Players.FirstOrDefault(x => x.ControlledRegions.Count != 0);
+            
+            RedrawToPlayersPerspective();
+
+            OnEnd?.Invoke(player);
         }
     }
 }

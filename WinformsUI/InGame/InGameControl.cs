@@ -83,8 +83,19 @@
                 {
                     gameFlowHandler.PlayRound();
                 }
-                gameFlowHandler.Begin();
+                if (Game.IsFinished())
+                {
+                    gameFlowHandler.End();
+                }
+                else
+                {
+                    gameFlowHandler.Begin();
+                }
             };
+
+            beginGamePhaseControl.Hide();
+            beginRoundPhaseControl.Hide();
+            turnPhaseControl.Hide();
         }
 
         public void Initialize(Game game)
@@ -131,6 +142,14 @@
             {
                 MessageBox.Show($"Player {gameFlowHandler.PlayerOnTurn.Name} is on turn.");
             };
+            gameFlowHandler.OnEnd += player =>
+            {
+                MessageBox.Show($"Player {player.Name} has won the game!");
+                beginGamePhaseControl.Hide();
+                turnPhaseControl.Hide();
+                beginRoundPhaseControl.Hide();
+                GameState = GameState.GameEnd;
+            };
 
             beginGamePhaseControl.Initialize(gameFlowHandler);
             turnPhaseControl.Initialize(gameFlowHandler);
@@ -145,14 +164,12 @@
             }
             else if (game.IsFinished())
             {
-                GameState = GameState.GameEnd;
+                gameFlowHandler.End();
             }
             else
             {
                 GameState = GameState.RoundBeginning;
-
-                beginGamePhaseControl.Hide();
-                turnPhaseControl.Hide();
+                
                 beginRoundPhaseControl.Show();
 
                 gameFlowHandler.Begin();
