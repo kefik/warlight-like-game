@@ -167,6 +167,7 @@
           <Region Name="North Africa"/>
           <Region Name="Middle East"/>
           <Region Name="Ukraine"/>
+          <Region Name="Egypt" />
         </Neighbours>
       </Region>
     </SuperRegion>
