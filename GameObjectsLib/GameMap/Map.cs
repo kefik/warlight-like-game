@@ -235,6 +235,36 @@
 
             SuperRegions = superRegions;
             Regions = regions;
+
+#if DEBUG
+            var exceptions = ValidateRegionsSymmetry().ToList();
+            if (exceptions.Any())
+            {
+                throw new AggregateException(exceptions);
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Checks symmetricity, returns exceptions reporting which regions is not symmetric.
+        /// </summary>
+        /// <returns>Non-symmetric relationed regions</returns>
+        private IEnumerable<Exception> ValidateRegionsSymmetry()
+        {
+            // get relations such that region -> NeighbourRegion exists, but NeighbourRegions -> region does not
+            var nonSymmetricRelations = from region in Regions
+                                        from neighbour in region.NeighbourRegions
+                                        where !neighbour.NeighbourRegions.Contains(region)
+                                        select new
+                                        {
+                                            Region = region,
+                                            NeighbourRegion = neighbour
+                                        };
+
+            foreach (var relation in nonSymmetricRelations)
+            {
+                yield return new ArgumentException($"Relation {relation.Region}-{relation.NeighbourRegion} is not symmetric because relation {relation.NeighbourRegion}->{relation.Region} is not defined.");
+            }
         }
 
         public override string ToString()
