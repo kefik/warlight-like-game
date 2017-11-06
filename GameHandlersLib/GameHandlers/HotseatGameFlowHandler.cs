@@ -6,6 +6,7 @@
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameUser;
+    using GameObjectsLib.Player;
     using MapHandlers;
 
     public sealed class HotseatGameFlowHandler : GameFlowHandler

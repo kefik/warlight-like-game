@@ -28,7 +28,7 @@
         /// </summary>
         /// <param name="player">Given player.</param>
         /// <returns>Units left to deploy for given player.</returns>
-        public int GetUnitsLeftToDeploy(Player player)
+        public int GetUnitsLeftToDeploy(Player.Player player)
         {
             int income = player.GetIncome();
             int alreadyDeployed = (from deploy in ArmiesDeployed

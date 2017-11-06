@@ -9,6 +9,7 @@
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameUser;
+    using GameObjectsLib.Player;
     using HelperControls;
 
     public partial class HotseatNewGameSettingsControl : UserControl

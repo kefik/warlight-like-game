@@ -7,6 +7,7 @@
     using GameObjectsLib;
     using GameObjectsLib.GameUser;
     using GameObjectsLib.NetworkCommObjects.Message;
+    using GameObjectsLib.Player;
 
     public partial class OpenedGamesControl : UserControl
     {

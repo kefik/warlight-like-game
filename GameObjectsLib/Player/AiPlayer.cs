@@ -1,4 +1,4 @@
-﻿namespace GameObjectsLib
+﻿namespace GameObjectsLib.Player
 {
     using System;
     using System.Drawing;

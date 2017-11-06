@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using NetworkCommObjects;
     using NetworkCommObjects.Message;
+    using Player;
     using ProtoBuf;
 
     [Serializable]

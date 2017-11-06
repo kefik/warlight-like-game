@@ -3,6 +3,7 @@
     using System.Drawing;
     using System.Windows.Forms;
     using GameObjectsLib;
+    using GameObjectsLib.Player;
 
     public partial class AiPlayerControl : UserControl
     {

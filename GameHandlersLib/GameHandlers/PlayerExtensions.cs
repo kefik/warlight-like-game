@@ -2,6 +2,7 @@ namespace GameHandlersLib.GameHandlers
 {
     using System.Linq;
     using GameObjectsLib;
+    using GameObjectsLib.Player;
 
     internal static class PlayerExtensions
     {

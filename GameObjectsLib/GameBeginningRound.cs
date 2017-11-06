@@ -25,7 +25,7 @@ namespace GameObjectsLib
         /// </summary>
         /// <param name="seizingPlayer"></param>
         /// <param name="region"></param>
-        public void SeizeRegion(Player seizingPlayer, Region region)
+        public void SeizeRegion(Player.Player seizingPlayer, Region region)
         {
             if (SelectedRegions.Any(x => x.Region == region && x.SeizingPlayer == seizingPlayer))
             {

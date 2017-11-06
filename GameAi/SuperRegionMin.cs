@@ -6,6 +6,7 @@
     using System.Runtime.CompilerServices;
     using GameObjectsLib;
     using GameObjectsLib.GameMap;
+    using GameObjectsLib.Player;
 
     /// <summary>
     /// Represents minimized version of SuperRegion class for the purpose of calculation

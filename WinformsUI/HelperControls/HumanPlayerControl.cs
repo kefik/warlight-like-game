@@ -5,6 +5,7 @@
     using System.Windows.Forms;
     using GameObjectsLib;
     using GameObjectsLib.GameUser;
+    using GameObjectsLib.Player;
 
     public partial class HumanPlayerControl : UserControl
     {

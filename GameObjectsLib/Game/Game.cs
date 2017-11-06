@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using GameMap;
     using NetworkCommObjects;
+    using Player;
     using ProtoBuf;
 
     internal interface ISaveable<out T>

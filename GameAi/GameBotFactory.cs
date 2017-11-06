@@ -5,6 +5,7 @@
     using System.Linq;
     using GameObjectsLib;
     using GameObjectsLib.Game;
+    using GameObjectsLib.Player;
 
     public class GameBotFactory
     {

@@ -6,6 +6,7 @@ namespace GameAi
     using System.Runtime.CompilerServices;
     using GameObjectsLib;
     using GameObjectsLib.GameMap;
+    using GameObjectsLib.Player;
 
     /// <summary>
     /// Minimized version of <see cref="Region"/>.

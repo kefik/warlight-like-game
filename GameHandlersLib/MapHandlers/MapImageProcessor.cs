@@ -12,6 +12,7 @@ namespace GameHandlersLib.MapHandlers
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
+    using GameObjectsLib.Player;
     using Region = GameObjectsLib.GameMap.Region;
 
     /// <summary>

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using GameMap;
+    using Player;
     using ProtoBuf;
 
     /// <summary>

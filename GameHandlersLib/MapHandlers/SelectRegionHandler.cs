@@ -7,6 +7,7 @@
     using System.Linq;
     using GameObjectsLib;
     using GameObjectsLib.GameMap;
+    using GameObjectsLib.Player;
     using Region = GameObjectsLib.GameMap.Region;
 
     /// <summary>

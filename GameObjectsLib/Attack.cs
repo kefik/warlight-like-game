@@ -13,7 +13,7 @@ namespace GameObjectsLib
         /// Represents attacking player in this attack.
         /// </summary>
         [ProtoMember(1, AsReference = true)]
-        public Player AttackingPlayer { get; }
+        public Player.Player AttackingPlayer { get; }
 
         /// <summary>
         ///     Represents attacking region.
@@ -33,7 +33,7 @@ namespace GameObjectsLib
         [ProtoMember(4, AsReference = true)]
         public Region Defender { get; }
 
-        public Attack(Player attackingPlayer, Region attacker, int attackingArmy, Region defender)
+        public Attack(Player.Player attackingPlayer, Region attacker, int attackingArmy, Region defender)
         {
             //if (attacker == null || attackingArmy == 0 || defender == null)
             //    throw new ArgumentException();

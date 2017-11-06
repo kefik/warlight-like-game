@@ -3,6 +3,7 @@
     using System;
     using System.Windows.Forms;
     using GameObjectsLib;
+    using GameObjectsLib.Player;
 
     public partial class JoinNetworkGameForm : Form
     {

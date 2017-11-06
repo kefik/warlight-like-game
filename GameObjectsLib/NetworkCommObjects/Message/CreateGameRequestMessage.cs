@@ -1,6 +1,7 @@
 ﻿namespace GameObjectsLib.NetworkCommObjects.Message
 {
     using System.Collections.Generic;
+    using Player;
     using ProtoBuf;
 
     /// <summary>
