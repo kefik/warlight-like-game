@@ -9,6 +9,7 @@
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
+    using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
     using MapImageProcessor = MapHandlers.MapImageProcessor;
 

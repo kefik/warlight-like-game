@@ -5,6 +5,7 @@
     using System.IO;
     using System.Threading.Tasks;
     using GameObjectsLib;
+    using GameObjectsLib.GameRecording;
     using GameObjectsLib.NetworkCommObjects;
 
     public class LastRound : Entity

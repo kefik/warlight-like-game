@@ -48,17 +48,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameBeginningTurn.cs" />
-    <Compile Include="GameTurn.cs" />
-    <Compile Include="LinearizedGameBeginningRound.cs" />
-    <Compile Include="LinearizedGameRound.cs" />
-    <Compile Include="ILinearizedRound.cs" />
+    <Compile Include="GameRecording\GameBeginningTurn.cs" />
+    <Compile Include="GameRecording\GameTurn.cs" />
+    <Compile Include="GameRecording\LinearizedGameBeginningRound.cs" />
+    <Compile Include="GameRecording\LinearizedGameRound.cs" />
+    <Compile Include="GameRecording\ILinearizedRound.cs" />
     <Compile Include="Players\AiPlayer.cs" />
-    <Compile Include="Attack.cs" />
-    <Compile Include="Attacking.cs" />
-    <Compile Include="Deployment.cs" />
+    <Compile Include="GameRecording\Attack.cs" />
+    <Compile Include="GameRecording\Attacking.cs" />
+    <Compile Include="GameRecording\Deployment.cs" />
     <Compile Include="Difficulty.cs" />
-    <Compile Include="GameBeginningRound.cs" />
+    <Compile Include="GameRecording\GameBeginningRound.cs" />
     <Compile Include="Game\GameFactory.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\GameType.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="NetworkCommObjects\Message\UserLogInRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\UserLogInResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\SerializationObjectWrapper.cs" />
-    <Compile Include="Deploying.cs" />
+    <Compile Include="GameRecording\Deploying.cs" />
     <Compile Include="GameUser\LocalUser.cs" />
     <Compile Include="GameUser\NetworkUser.cs" />
     <Compile Include="Game\Game.cs" />
@@ -103,10 +103,10 @@
     </Compile>
     <Compile Include="Game\SingleplayerGame.cs" />
     <Compile Include="GameUser\User.cs" />
-    <Compile Include="GameRound.cs" />
-    <Compile Include="Round.cs" />
-    <Compile Include="Seize.cs" />
-    <Compile Include="Turn.cs" />
+    <Compile Include="GameRecording\GameRound.cs" />
+    <Compile Include="GameRecording\Round.cs" />
+    <Compile Include="GameRecording\Seize.cs" />
+    <Compile Include="GameRecording\Turn.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">

@@ -1,4 +1,4 @@
-namespace GameObjectsLib
+namespace GameObjectsLib.GameRecording
 {
     using GameMap;
     using Players;

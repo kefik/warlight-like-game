@@ -1,9 +1,6 @@
-namespace GameObjectsLib
+namespace GameObjectsLib.GameRecording
 {
-    using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using GameMap;
     using ProtoBuf;
 
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]

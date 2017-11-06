@@ -1,5 +1,6 @@
 ﻿namespace GameObjectsLib.NetworkCommObjects.Message
 {
+    using GameRecording;
     using ProtoBuf;
 
     /// <summary>

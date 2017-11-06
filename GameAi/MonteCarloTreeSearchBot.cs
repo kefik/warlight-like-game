@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using GameObjectsLib;
+    using GameObjectsLib.GameRecording;
 
     /// <summary>
     /// Bot using Monte-Carlo tree search algorithm.
