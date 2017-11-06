@@ -7,7 +7,7 @@
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
-    using GameObjectsLib.Player;
+    using GameObjectsLib.Players;
 
     /// <summary>
     /// Minimized version of <see cref="Game"/> from perspective of a given <see cref="Player"/>.

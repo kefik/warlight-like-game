@@ -9,7 +9,7 @@
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
-    using GameObjectsLib.Player;
+    using GameObjectsLib.Players;
     using MapImageProcessor = MapHandlers.MapImageProcessor;
 
     /// <summary>
@@ -31,28 +31,28 @@
         /// <summary>
         /// Represents last round.
         /// </summary>
-        public IList<Tuple<Player, Round>> LastRound { get; protected set; } = new List<Tuple<Player, Round>>();
+        public Round LastRound { get; protected set; } = new GameBeginningRound();
 
         /// <summary>
         /// Represents last turn.
         /// </summary>
-        public Tuple<Player, Round> LastTurn
+        public Turn LastTurn
         {
             get
             {
-                if (LastRound.Count - 1 < 0)
+                if (LastRound.Turns.Count - 1 < 0)
                 {
                     return null;
                 }
-                return LastRound[LastRound.Count - 1];
+                return LastRound.Turns[LastRound.Turns.Count - 1];
             }
             protected set
             {
-                LastRound.Add(value);
+                LastRound.Turns.Add(value);
             }
         }
 
-        protected IList<Round> AllRounds
+        protected IList<ILinearizedRound> AllRounds
         {
             get { return Game.AllRounds; }
         }
@@ -105,14 +105,16 @@
         /// </summary>
         public virtual void PlayRound()
         {
-            Round linearizedRound = Round.Process(LastRound.Select(x => x.Item2).ToList());
+            var linearizedRound = LastRound.Linearize();
 
             roundHandler.PlayRound(linearizedRound);
             
             Game.Refresh();
 
             AllRounds.Add(linearizedRound);
-            LastRound.Clear();
+
+            // if I played a round it means that next round will surelly wont be GameBeginningRound
+            LastRound = new GameRound();
 
             OnRoundPlayed?.Invoke();
         }
@@ -137,7 +139,7 @@
                 throw new ArgumentException("You cannot deploy to regions you do not own.");
             }
             
-            var lastTurn = (GameRound) LastTurn.Item2;
+            var lastTurn = (GameTurn) LastTurn;
 
             int newArmy = lastTurn.GetRegionArmy(region) + bonusArmy;
             if (bonusArmy > 0 && bonusArmy > PlayerOnTurn.GetArmyLeftToDeploy(lastTurn.Deploying))
@@ -172,7 +174,7 @@
         /// <param name="army"></param>
         public void Attack(int army)
         {
-            var lastTurn = (GameRound) LastTurn.Item2;
+            var lastTurn = (GameTurn) LastTurn;
             
             // is 2 regions selected
             if (ImageProcessor.SelectedRegions.Count != 2)
@@ -202,7 +204,7 @@
         {
             try
             {
-                var lastTurn = (GameBeginningRound) LastTurn.Item2;
+                var lastTurn = (GameBeginningTurn) LastTurn;
 
                 var region = ImageProcessor.GetRegion(x, y);
                 // seizes region
@@ -272,7 +274,7 @@
 
         internal int GetRealRegionArmy(Region region)
         {
-            var lastTurn = (GameRound)LastTurn.Item2;
+            var lastTurn = (GameTurn)LastTurn;
             return lastTurn.GetRegionArmy(region);
         }
 
@@ -283,7 +285,7 @@
                 throw new ArgumentException("Region cannot be null.");
             }
 
-            var lastTurn = (GameRound)LastTurn.Item2;
+            var lastTurn = (GameTurn)LastTurn;
             return lastTurn.GetUnitsLeftToAttack(region);
         }
 
@@ -306,11 +308,11 @@
         /// </summary>
         public void ResetTurn()
         {
-            var lastTurn = LastTurn.Item2;
+            var lastTurn = LastTurn;
             
             ImageProcessor.ResetRound(lastTurn);
 
-            LastTurn.Item2.Reset();
+            LastTurn.Reset();
         }
 
         /// <summary>
@@ -318,7 +320,7 @@
         /// </summary>
         public void ResetAttacking()
         {
-            var lastTurn = (GameRound) LastTurn.Item2;
+            var lastTurn = (GameTurn) LastTurn;
 
             // redraw
             ImageProcessor.ResetAttackingPhase(lastTurn.Attacking, lastTurn.Deploying);
@@ -332,7 +334,7 @@
         /// </summary>
         public void ResetDeploying()
         {
-            var lastTurn = (GameRound)LastTurn.Item2;
+            var lastTurn = (GameTurn)LastTurn;
 
             lastTurn.Deploying.ResetDeploying();
 
@@ -344,9 +346,9 @@
         /// </summary>
         public virtual void Commit()
         {
-            if (LastTurn.Item2.GetType() == typeof(GameBeginningRound))
+            if (LastTurn.GetType() == typeof(GameBeginningTurn))
             {
-                int seizedRegionsCount = ((GameBeginningRound) LastTurn.Item2).SelectedRegions.Count;
+                int seizedRegionsCount = ((GameBeginningTurn) LastTurn).SelectedRegions.Count;
                 if (seizedRegionsCount < 2)
                 {
                     throw new ArgumentException($"Only {seizedRegionsCount} regions were selected.");
@@ -354,7 +356,7 @@
             }
             else
             {
-                var lastTurn = (GameRound) LastTurn.Item2;
+                var lastTurn = (GameTurn) LastTurn;
             }
         }
 
@@ -363,9 +365,14 @@
         /// </summary>
         public virtual void Begin()
         {
-            LastRound.Add(Game.RoundNumber == 0
-                ? new Tuple<Player, Round>(PlayerOnTurn, new GameBeginningRound())
-                : new Tuple<Player, Round>(PlayerOnTurn, new GameRound()));
+            if (Game.RoundNumber == 0)
+            {
+                LastTurn = new GameBeginningTurn(PlayerOnTurn);
+            }
+            else
+            {
+                LastTurn = new GameTurn(PlayerOnTurn);
+            }
 
             RedrawToPlayersPerspective();
 

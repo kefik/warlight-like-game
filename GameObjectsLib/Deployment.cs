@@ -7,13 +7,16 @@ namespace GameObjectsLib
     /// Represents one deploy of units.
     /// </summary>
     [ProtoContract]
-    public struct Deployment
+    public class Deployment
     {
         [ProtoMember(1, AsReference = true)]
         public Region Region { get; }
 
         [ProtoMember(2)]
         public int Army { get; }
+
+        // ReSharper disable once UnusedMember.Local
+        private Deployment() { }
 
         public Deployment(Region region, int army)
         {

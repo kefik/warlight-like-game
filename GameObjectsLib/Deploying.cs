@@ -4,19 +4,23 @@
     using System.Collections.Generic;
     using System.Linq;
     using GameMap;
+    using Players;
     using ProtoBuf;
 
     /// <summary>
     ///     Represents deploying phase of the game.
     /// </summary>
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    public struct Deploying
+    public class Deploying
     {
         /// <summary>
         ///     Represents armies deployed in the deploying phase in given regions.
         ///     Int represents armies that will be occuppying this region after this stage.
         /// </summary>
         public List<Deployment> ArmiesDeployed { get; }
+
+        // ReSharper disable once UnusedMember.Local
+        private Deploying() { }
 
         public Deploying(List<Deployment> armiesDeployed)
         {
@@ -28,7 +32,7 @@
         /// </summary>
         /// <param name="player">Given player.</param>
         /// <returns>Units left to deploy for given player.</returns>
-        public int GetUnitsLeftToDeploy(Player.Player player)
+        public int GetUnitsLeftToDeploy(Player player)
         {
             int income = player.GetIncome();
             int alreadyDeployed = (from deploy in ArmiesDeployed

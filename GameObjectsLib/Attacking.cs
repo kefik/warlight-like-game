@@ -3,13 +3,14 @@ namespace GameObjectsLib
     using System.Collections.Generic;
     using System.Linq;
     using GameMap;
+    using Players;
     using ProtoBuf;
 
     /// <summary>
     ///     Represents attacking phase of the game.
     /// </summary>
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    public struct Attacking
+    public class Attacking
     {
         /// <summary>
         ///     Represents attacks that happen during attacking phase.
@@ -20,6 +21,9 @@ namespace GameObjectsLib
         {
             Attacks = attacks;
         }
+
+        // ReSharper disable once UnusedMember.Local
+        private Attacking() { }
 
         /// <summary>
         ///     Calculates units of given region that are left to attack.
@@ -61,7 +65,7 @@ namespace GameObjectsLib
             AddAttack(attackingRegion.Owner, attackingRegion, defendingRegion, attackingArmy);
         }
 
-        public void AddAttack(Player.Player attackingPlayer, Region attackingRegion, Region defendingRegion, int attackingArmy)
+        public void AddAttack(Player attackingPlayer, Region attackingRegion, Region defendingRegion, int attackingArmy)
         {
             Attacks.Add(new Attack(attackingPlayer, attackingRegion, attackingArmy, defendingRegion));
         }

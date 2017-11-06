@@ -16,7 +16,7 @@
     using GameObjectsLib.GameUser;
     using GameObjectsLib.NetworkCommObjects;
     using GameObjectsLib.NetworkCommObjects.Message;
-    using GameObjectsLib.Player;
+    using GameObjectsLib.Players;
     using User = Entities.User;
 
     internal class WarlightClient : IDisposable

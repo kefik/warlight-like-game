@@ -8,7 +8,7 @@
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameUser;
-    using GameObjectsLib.Player;
+    using GameObjectsLib.Players;
     using GameSetup.Multiplayer;
     using GameSetup.Multiplayer.Hotseat;
     using GameSetup.Multiplayer.Network;

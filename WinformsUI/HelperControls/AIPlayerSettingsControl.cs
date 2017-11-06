@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Windows.Forms;
     using GameObjectsLib;
-    using GameObjectsLib.Player;
+    using GameObjectsLib.Players;
 
     public partial class AiPlayerSettingsControl : UserControl
     {

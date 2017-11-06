@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using Player;
+    using Players;
     using ProtoBuf;
 
     /// <summary>

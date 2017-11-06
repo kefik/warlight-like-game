@@ -48,7 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Player\AiPlayer.cs" />
+    <Compile Include="GameBeginningTurn.cs" />
+    <Compile Include="GameTurn.cs" />
+    <Compile Include="LinearizedGameBeginningRound.cs" />
+    <Compile Include="LinearizedGameRound.cs" />
+    <Compile Include="ILinearizedRound.cs" />
+    <Compile Include="Players\AiPlayer.cs" />
     <Compile Include="Attack.cs" />
     <Compile Include="Attacking.cs" />
     <Compile Include="Deployment.cs" />
@@ -57,7 +62,7 @@
     <Compile Include="Game\GameFactory.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\GameType.cs" />
-    <Compile Include="Player\HumanPlayer.cs" />
+    <Compile Include="Players\HumanPlayer.cs" />
     <Compile Include="NetworkCommObjects\Message\CreateGameRequestMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\CreateGameResponseMessage.cs" />
     <Compile Include="NetworkCommObjects\Message\GameHeaderMessageObject.cs" />
@@ -88,7 +93,7 @@
     <Compile Include="IRefreshable.cs" />
     <Compile Include="Game\NetworkGame.cs" />
     <Compile Include="GameUser\MyNetworkUser.cs" />
-    <Compile Include="Player\Player.cs" />
+    <Compile Include="Players\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameMap\Region.cs" />
     <Compile Include="Properties\Resource.Designer.cs">
@@ -101,6 +106,7 @@
     <Compile Include="GameRound.cs" />
     <Compile Include="Round.cs" />
     <Compile Include="Seize.cs" />
+    <Compile Include="Turn.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">

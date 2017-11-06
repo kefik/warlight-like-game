@@ -5,7 +5,7 @@
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
-    using GameObjectsLib.Player;
+    using GameObjectsLib.Players;
     using MapHandlers;
 
     /// <summary>
@@ -26,7 +26,7 @@
             random = new Random();
         }
 
-        private void PlayGameBeginningRound(GameBeginningRound round)
+        private void PlayGameBeginningRound(LinearizedGameBeginningRound round)
         {
             foreach (var roundSelectedRegion in round.SelectedRegions)
             {
@@ -37,7 +37,7 @@
             }
         }
 
-        private void PlayAttacking(GameRound round)
+        private void PlayAttacking(LinearizedGameRound round)
         {
             var attacks = round.Attacking.Attacks;
             foreach (Attack attack in attacks)
@@ -137,7 +137,7 @@
             return unitsKilled;
         }
 
-        private void PlayDeploying(GameRound round)
+        private void PlayDeploying(LinearizedGameRound round)
         {
             Deploying deploying = round.Deploying;
             foreach (var deployedArmies in deploying.ArmiesDeployed)
@@ -151,11 +151,11 @@
         /// Plays round passed in parameter, changing regions,... in game instance specified in constructor.
         /// </summary>
         /// <param name="linearizedRound"></param>
-        public void PlayRound(Round linearizedRound)
+        public void PlayRound(ILinearizedRound linearizedRound)
         {
-            if (linearizedRound.GetType() == typeof(GameRound))
+            if (linearizedRound.GetType() == typeof(LinearizedGameRound))
             {
-                var gameRound = (GameRound) linearizedRound;
+                var gameRound = (LinearizedGameRound) linearizedRound;
 
                 PlayDeploying(gameRound);
 
@@ -163,7 +163,7 @@
             }
             else
             {
-                var gameBeginningRound = (GameBeginningRound) linearizedRound;
+                var gameBeginningRound = (LinearizedGameBeginningRound) linearizedRound;
 
                 PlayGameBeginningRound(gameBeginningRound);
             }

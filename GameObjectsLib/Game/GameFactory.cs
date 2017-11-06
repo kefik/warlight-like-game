@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using GameMap;
-    using Player;
+    using Players;
 
     /// <summary>
     /// Factory for creating game.

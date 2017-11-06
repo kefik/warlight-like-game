@@ -3,7 +3,7 @@ namespace GameHandlersLib.GameHandlers
     using System.Linq;
     using GameObjectsLib;
     using GameObjectsLib.Game;
-    using GameObjectsLib.Player;
+    using GameObjectsLib.Players;
     using MapHandlers;
 
     public sealed class SingleplayerGameFlowHandler : GameFlowHandler

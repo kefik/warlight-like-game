@@ -8,7 +8,7 @@
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
-    using GameObjectsLib.Player;
+    using GameObjectsLib.Players;
     using HelperControls;
 
     public partial class SingleplayerNewGameSettingsControl : UserControl

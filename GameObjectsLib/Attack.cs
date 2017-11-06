@@ -1,19 +1,20 @@
 namespace GameObjectsLib
 {
     using GameMap;
+    using Players;
     using ProtoBuf;
 
     /// <summary>
     ///     Represents one attack in the game round.
     /// </summary>
     [ProtoContract]
-    public struct Attack
+    public class Attack
     {
         /// <summary>
         /// Represents attacking player in this attack.
         /// </summary>
         [ProtoMember(1, AsReference = true)]
-        public Player.Player AttackingPlayer { get; }
+        public Player AttackingPlayer { get; }
 
         /// <summary>
         ///     Represents attacking region.
@@ -33,7 +34,13 @@ namespace GameObjectsLib
         [ProtoMember(4, AsReference = true)]
         public Region Defender { get; }
 
-        public Attack(Player.Player attackingPlayer, Region attacker, int attackingArmy, Region defender)
+        // ReSharper disable once UnusedMember.Local
+        private Attack()
+        {
+            
+        }
+
+        public Attack(Player attackingPlayer, Region attacker, int attackingArmy, Region defender)
         {
             //if (attacker == null || attackingArmy == 0 || defender == null)
             //    throw new ArgumentException();

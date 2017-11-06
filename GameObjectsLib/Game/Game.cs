@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
     using GameMap;
     using NetworkCommObjects;
-    using Player;
+    using Players;
     using ProtoBuf;
 
     internal interface ISaveable<out T>
@@ -40,7 +40,7 @@
         /// Represents list of all rounds of the game.
         /// </summary>
         [ProtoMember(2)]
-        public IList<Round> AllRounds { get; } = new List<Round>();
+        public IList<ILinearizedRound> AllRounds { get; } = new List<ILinearizedRound>();
 
         /// <summary>
         /// True, if this game has a fog of war option.

@@ -12,7 +12,7 @@ namespace GameHandlersLib.MapHandlers
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
-    using GameObjectsLib.Player;
+    using GameObjectsLib.Players;
     using Region = GameObjectsLib.GameMap.Region;
 
     /// <summary>
@@ -140,15 +140,15 @@ namespace GameHandlersLib.MapHandlers
         /// <summary>
         /// Resets round passed as parameter
         /// </summary>
-        public void ResetRound(Round round)
+        public void ResetRound(Turn round)
         {
-            if (round.GetType() == typeof(GameRound))
+            if (round.GetType() == typeof(GameTurn))
             {
-                ResetRound((GameRound) round);
+                ResetRound((GameTurn) round);
             }
-            else if (round.GetType() == typeof(GameBeginningRound))
+            else if (round.GetType() == typeof(GameBeginningTurn))
             {
-                ResetRound((GameBeginningRound) round);
+                ResetRound((GameBeginningTurn) round);
             }
             else
             {
@@ -161,7 +161,7 @@ namespace GameHandlersLib.MapHandlers
         ///     Resets round, recoloring region selected by player to the default color.
         /// </summary>
         /// <param name="gameBeginningRound">What happened in the game round.</param>
-        internal void ResetRound(GameBeginningRound gameBeginningRound)
+        internal void ResetRound(GameBeginningTurn gameBeginningRound)
         {
             foreach (var tuple in gameBeginningRound.SelectedRegions)
             {
@@ -176,7 +176,7 @@ namespace GameHandlersLib.MapHandlers
         ///     original numbers of armies.
         /// </summary>
         /// <param name="gameRound">Round to reset</param>
-        internal void ResetRound(GameRound gameRound)
+        internal void ResetRound(GameTurn gameRound)
         {
             Attacking attackingPhase = gameRound.Attacking;
             ResetAttackingPhase(attackingPhase, gameRound.Deploying);

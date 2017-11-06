@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using GameObjectsLib;
-    using GameObjectsLib.Player;
+    using GameObjectsLib.Players;
     using HelperControls;
 
     public partial class NetworkNewGameSettingsControl : UserControl
