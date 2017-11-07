@@ -60,6 +60,8 @@
     <Compile Include="Entity.cs" />
     <Compile Include="GameEntity.cs" />
     <Compile Include="HotseatSavedGameInfo.cs" />
+    <Compile Include="IDeleted.cs" />
+    <Compile Include="IInserted.cs" />
     <Compile Include="MapInfo.cs" />
     <Compile Include="NamedEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

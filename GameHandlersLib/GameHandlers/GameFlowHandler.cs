@@ -32,7 +32,7 @@
         /// <summary>
         /// Represents last round.
         /// </summary>
-        public Round LastRound { get; protected set; } = new GameBeginningRound();
+        public Round LastRound { get; protected set; }
 
         /// <summary>
         /// Represents last turn.
@@ -63,6 +63,15 @@
             Game = game;
             ImageProcessor = processor;
             roundHandler = new RoundHandler(game);
+
+            if (Game.RoundNumber == 0)
+            {
+                LastRound = new GameBeginningRound();
+            }
+            else
+            {
+                LastRound = new GameRound();
+            }
         }
 
         public GameState GameState { get; protected set; }

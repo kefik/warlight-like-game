@@ -13,6 +13,6 @@
         /// </summary>
         /// <param name="source">Source from which can the game be loaded.</param>
         /// <returns>The serialized game.</returns>
-        Stream LoadGame(T source);
+        byte[] LoadGame(T source);
     }
 }

@@ -6,7 +6,7 @@
     using System.Data.Entity.ModelConfiguration;
     using System.IO;
 
-    public abstract class GameEntity : NamedEntity
+    public abstract class GameEntity : NamedEntity, IInserted, IDeleted
     {
         public class GameEntityMapper : EntityTypeConfiguration<GameEntity>
         {
@@ -17,6 +17,8 @@
             }
         }
         protected abstract string SavedGamesStoragePath { get; }
+
+        protected byte[] Data { get; set; }
 
         public virtual int AiNumber { get; set; }
 
@@ -39,7 +41,7 @@
         public override string Name { get; set; }
         
         [NotMapped]
-        public string Path
+        internal virtual string Path
         {
             get { return $"{SavedGamesStoragePath}/{Name}"; }
         }
@@ -53,15 +55,21 @@
             return File.Exists(Path) ? File.ReadAllBytes(Path) : null;
         }
 
+        /// <summary>
+        /// Writes data into <see cref="Path"/> location from <seealso cref="Data"/>, if there
+        /// is any.
+        /// </summary>
         public virtual void Inserted()
         {
-            using (FileStream fs = new FileStream(Path, FileMode.Create))
+            if (Data != null)
             {
-                // TODO: serialize game
-                // fs.Write();
+                File.WriteAllBytes(Path, Data);
             }
         }
 
+        /// <summary>
+        /// Deletes file described by <see cref="Path"/>.
+        /// </summary>
         public virtual void Deleted()
         {
             File.Delete(Path);

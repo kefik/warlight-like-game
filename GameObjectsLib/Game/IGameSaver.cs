@@ -14,12 +14,11 @@
         /// </summary>
         /// B
         /// <param name="gameMetaInfo">Game to be saved (needed for header).</param>
-        /// <param name="stream">Stream where the game is represented in serialized form.</param>
-        void SaveGame(T gameMetaInfo, Stream stream);
+        void SaveGame(T gameMetaInfo);
     }
 
     public interface IGameSaverAsync<in T>
     {
-        Task SaveGameAsync(T gameMetaInfo, Stream stream);
+        Task SaveGameAsync(T gameMetaInfo);
     }
 }

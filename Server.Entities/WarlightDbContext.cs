@@ -6,7 +6,7 @@ namespace Server.Entities
     using System.Threading.Tasks;
     using GameObjectsLib.Game;
 
-    public class WarlightDbContext : DbContext, IGameSaver<OpenedGame>, IGameSaverAsync<OpenedGame>
+    public class WarlightDbContext : DbContext
     {
         public WarlightDbContext()
             : base("name=WarlightDbContext")
@@ -89,20 +89,6 @@ namespace Server.Entities
         public int GetMaxOpenedGameId()
         {
             return OpenedGames.Any() == false ? 0 : OpenedGames.Max(x => x.Id);
-        }
-
-        public void SaveGame(OpenedGame gameMetaInfo, Stream stream)
-        {
-            gameMetaInfo.SetGame(stream);
-            OpenedGames.Add(gameMetaInfo);
-            SaveChanges();
-        }
-
-        public async Task SaveGameAsync(OpenedGame gameMetaInfo, Stream stream)
-        {
-            await gameMetaInfo.SetGameAsync(stream);
-            OpenedGames.Add(gameMetaInfo);
-            await SaveChangesAsync();
         }
     }
 }

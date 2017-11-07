@@ -3,6 +3,7 @@
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Core.Common;
+    using System.Data.Entity.Infrastructure;
     using System.Data.Entity.ModelConfiguration.Conventions;
     using System.Data.SQLite;
     using System.Data.SQLite.EF6;
@@ -52,8 +53,28 @@
 
             base.OnModelCreating(modelBuilder);
         }
+        
+        public override int SaveChanges()
+        {
+            // calls deleted method on each entry deleted of type GameEntity
+            var deletedEntries = ChangeTracker.Entries().Where(x => x.State == EntityState.Deleted).Select(x => x.Entity)
+                .OfType<IDeleted>();
+            foreach (var entry in deletedEntries)
+            {
+                entry.Deleted();
+            }
 
-        public void SaveGame(Game game, Stream stream)
+            // calls inserted method on each entry added of type GameEntity
+            var addedEntries = ChangeTracker.Entries().Where(x => x.State == EntityState.Added).Select(x => x.Entity).OfType<IInserted>();
+            foreach (var entry in addedEntries)
+            {
+                entry.Inserted();
+            }
+
+            return base.SaveChanges();
+        }
+
+        public void SaveGame(Game game)
         {
             switch (game.GameType)
             {
@@ -63,7 +84,7 @@
                         string name = $"{game.Id}.sav";
                         
                         var save = savedGames.FirstOrDefault(x => x.Id == game.Id);
-                        var saveInfo = new SingleplayerSavedGameInfo()
+                        var saveInfo = new SingleplayerSavedGameInfo(game.GetBytes())
                         {
                             AiNumber = game.Players.Count - 1,
                             MapName = game.Map.Name,
@@ -71,17 +92,13 @@
                             Name = name
                         };
                         // game hasn't been saved yet
-                        if (save == null)
-                        {
-                            savedGames.Add(saveInfo);
-                        }
-                        else save.SavedGameDate = DateTime.Now;
                         
-                        // write the game into file
-                        using (FileStream fs = new FileStream(saveInfo.Path, FileMode.Create))
+                        if (save != null)
                         {
-                            stream.CopyTo(fs);
+                            savedGames.Remove(save);
                         }
+                        savedGames.Add(saveInfo);
+                        
                         SaveChanges();
                         break;
                     }
@@ -92,32 +109,25 @@
                         
                         var save = savedGames.FirstOrDefault(x => x.Id == game.Id);
 
-                        var saveInfo = new HotseatSavedGameInfo()
+                        var saveInfo = new HotseatSavedGameInfo(game.GetBytes())
                         {
                             Id = game.Id,
                             MapName = game.Map.Name,
                             SavedGameDate = DateTime.Now,
                             Name = name
                         };
-                        if (save == null)
+                        if (save != null)
                         {
-                            int aiPlayerNumber = (from player in game.Players
-                                                  where player.GetType() == typeof(AiPlayer)
-                                                  select player).Count();
-                            int humanPlayersNumber = game.Players.Count - aiPlayerNumber;
-
-                            saveInfo.AiNumber = aiPlayerNumber;
-                            saveInfo.HumanNumber = humanPlayersNumber;
-                            savedGames.Add(saveInfo);
+                            savedGames.Remove(save);
                         }
-                        else save.SavedGameDate = DateTime.Now;
-                        
-                        
+                        int aiPlayerNumber = (from player in game.Players
+                                              where player.GetType() == typeof(AiPlayer)
+                                              select player).Count();
+                        int humanPlayersNumber = game.Players.Count - aiPlayerNumber;
 
-                        using (var fs = new FileStream(saveInfo.Path, FileMode.Create))
-                        {
-                            stream.CopyTo(fs);
-                        }
+                        saveInfo.AiNumber = aiPlayerNumber;
+                        saveInfo.HumanNumber = humanPlayersNumber;
+                        savedGames.Add(saveInfo);
 
                         SaveChanges();
 
@@ -131,20 +141,18 @@
             }
         }
         
-        public Stream LoadGame(SingleplayerSavedGameInfo info)
+        public byte[] LoadGame(SingleplayerSavedGameInfo info)
         {
             var savedGameInfo = SingleplayerSavedGameInfos.First(x => x.Id == info.Id);
-            FileStream fs = new FileStream(savedGameInfo.Path, FileMode.Open);
 
-            return fs;
+            return savedGameInfo.GetFileBytes();
         }
 
-        public Stream LoadGame(HotseatSavedGameInfo info)
+        public byte[] LoadGame(HotseatSavedGameInfo info)
         {
             var savedGameInfo = HotseatSavedGameInfos.First(x => x.Id == info.Id);
-            FileStream fs = new FileStream(savedGameInfo.Path, FileMode.Open);
 
-            return fs;
+            return savedGameInfo.GetFileBytes();
         }
 
         public void Remove(SingleplayerSavedGameInfo savedGameInfo)

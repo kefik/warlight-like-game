@@ -98,6 +98,16 @@
 
             throw new ArgumentException();
         }
+
+        public static SerializationObjectWrapper Deserialize(byte[] serializedObject)
+        {
+            using (var ms = new MemoryStream(serializedObject))
+            {
+                ms.Position = 0;
+
+                return Deserialize(ms);
+            }
+        }
     }
 
     /// <summary>

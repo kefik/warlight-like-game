@@ -48,7 +48,7 @@
         /// </summary>
         [ProtoMember(3)]
         public bool IsFogOfWar { get; }
-        
+
         /// <summary>
         ///     Represents map being played in this game.
         /// </summary>
@@ -65,7 +65,7 @@
         ///     Return game type this game has.
         /// </summary>
         public abstract GameType GameType { get; }
-        
+
         protected Game()
         {
         }
@@ -77,12 +77,12 @@
             Players = players;
             IsFogOfWar = isFogOfWar;
         }
-        
+
         /// <summary>
         ///     Starts the game if theres no error.
         /// </summary>
         public abstract void Validate();
-        
+
         /// <summary>
         ///     Saves the game to the object based on parameter.
         /// </summary>
@@ -90,16 +90,9 @@
         public void Save(IGameSaver<Game> canSave)
         {
             Refresh();
-            using (MemoryStream stream = new MemoryStream())
-            {
-                SerializationObjectWrapper wrapper = new SerializationObjectWrapper<Game> {TypedValue = this};
-                wrapper.Serialize(stream);
-                // reset position to be able to read from it again
-                stream.Position = 0;
-                canSave.SaveGame(this, stream);
-            }
+            canSave.SaveGame(this);
         }
-        
+
         public byte[] GetBytes()
         {
             SerializationObjectWrapper wrapper
@@ -161,13 +154,11 @@
         /// <returns>Loaded game.</returns>
         public static Game Load<TLoadSource>(IGameLoader<TLoadSource> canLoad, TLoadSource source)
         {
-            using (Stream stream = canLoad.LoadGame(source))
-            {
-                Game game = (Game) SerializationObjectWrapper.Deserialize(stream).Value;
-                game.ReconstructOriginalGraph();
-                game.Refresh();
-                return game;
-            }
+            byte[] serializedGame = canLoad.LoadGame(source);
+            Game game = (Game)SerializationObjectWrapper.Deserialize(serializedGame).Value;
+            game.ReconstructOriginalGraph();
+            game.Refresh();
+            return game;
         }
 
         public static async Task<Game> LoadAsync<TLoadSource>(IGameLoader<TLoadSource> canLoad, TLoadSource source)
