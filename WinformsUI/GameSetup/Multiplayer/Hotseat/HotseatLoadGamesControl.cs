@@ -23,7 +23,7 @@
             {
                 using (UtilsDbContext db = new UtilsDbContext())
                 {
-                    var savedGames = (from game in db.HotseatSavedGameInfos
+                    var savedGames = (from game in db.HotseatSavedGameInfos.AsParallel()
                                      orderby game.SavedGameDate descending
                                      select game).ToList();
 

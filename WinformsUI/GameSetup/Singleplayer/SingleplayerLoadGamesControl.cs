@@ -28,9 +28,9 @@
             {
                 using (UtilsDbContext db = new UtilsDbContext())
                 {
-                    IOrderedQueryable<SingleplayerSavedGameInfo> savedGames = from game in db.SingleplayerSavedGameInfos
-                                                                              orderby game.SavedGameDate descending
-                                                                              select game;
+                    var savedGames = (from game in db.SingleplayerSavedGameInfos.AsParallel()
+                                     orderby game.SavedGameDate descending
+                                     select game).ToList();
 
                     foreach (SingleplayerSavedGameInfo savedGame in savedGames)
                     {
@@ -49,16 +49,16 @@
             }
 
             SingleplayerSavedGameInfo savedGameInfo =
-                (SingleplayerSavedGameInfo) loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
+                (SingleplayerSavedGameInfo)loadedGamesListBox.Items[loadedGamesListBox.SelectedIndex];
 #if (!DEBUG)
             try
             {
 #endif
-                using (UtilsDbContext db = new UtilsDbContext())
-                {
-                    Game game = Game.Load(db, savedGameInfo);
-                    OnSingleplayerGameLoaded?.Invoke(game);
-                }
+            using (UtilsDbContext db = new UtilsDbContext())
+            {
+                Game game = Game.Load(db, savedGameInfo);
+                OnSingleplayerGameLoaded?.Invoke(game);
+            }
 #if (!DEBUG)
             }
             catch (Exception)

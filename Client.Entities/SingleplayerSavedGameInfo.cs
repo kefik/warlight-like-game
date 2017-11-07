@@ -3,8 +3,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Configuration;
-
-    [Table(nameof(SingleplayerSavedGameInfo) + "s")]
+    
     public class SingleplayerSavedGameInfo : GameEntity
     {
         protected override string SavedGamesStoragePath { get; } =

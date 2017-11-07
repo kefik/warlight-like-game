@@ -32,6 +32,24 @@
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+            modelBuilder.Entity<SingleplayerSavedGameInfo>().Map(m =>
+            {
+                m.MapInheritedProperties();
+                m.ToTable(nameof(SingleplayerSavedGameInfo) + "s");
+            });
+            modelBuilder.Entity<HotseatSavedGameInfo>().Map(m =>
+            {
+                m.MapInheritedProperties();
+                m.ToTable(nameof(HotseatSavedGameInfo) + "s");
+            });
+            modelBuilder.Entity<MapInfo>().Map(m =>
+            {
+                m.MapInheritedProperties();
+                m.ToTable(nameof(MapInfo) + "s");
+            });
+            modelBuilder.Configurations.Add(new GameEntity.GameEntityMapper());
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -49,7 +67,7 @@
                         {
                             AiNumber = game.Players.Count - 1,
                             MapName = game.Map.Name,
-                            SavedGameDate = DateTime.Now.ToString(),
+                            SavedGameDate = DateTime.Now,
                             Name = name
                         };
                         // game hasn't been saved yet
@@ -57,7 +75,7 @@
                         {
                             savedGames.Add(saveInfo);
                         }
-                        else save.SavedGameDate = DateTime.Now.ToString();
+                        else save.SavedGameDate = DateTime.Now;
                         
                         // write the game into file
                         using (FileStream fs = new FileStream(saveInfo.Path, FileMode.Create))
@@ -78,7 +96,7 @@
                         {
                             Id = game.Id,
                             MapName = game.Map.Name,
-                            SavedGameDate = DateTime.Now.ToString(),
+                            SavedGameDate = DateTime.Now,
                             Name = name
                         };
                         if (save == null)
@@ -92,7 +110,7 @@
                             saveInfo.HumanNumber = humanPlayersNumber;
                             savedGames.Add(saveInfo);
                         }
-                        else save.SavedGameDate = DateTime.Now.ToString();
+                        else save.SavedGameDate = DateTime.Now;
                         
                         
 
