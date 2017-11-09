@@ -15,14 +15,14 @@
     internal class HighlightHandler
     {
         private readonly Bitmap mapImage;
-        private MapImageTemplateProcessor templateProcessor;
-        private TextDrawingHandler textDrawingHandler;
-        private ColoringHandler coloringHandler;
+        private readonly MapImageTemplateProcessor templateProcessor;
+        private readonly TextDrawingHandler textDrawingHandler;
+        private readonly ColoringHandler coloringHandler;
 
         /// <summary>
         /// List of region, its army and its previous color.
         /// </summary>
-        private readonly IList<Tuple<Region, int?, Color>> highlightedRegions = new List<Tuple<Region, int?, Color>>();
+        private readonly IList<(Region Region, int? Army, Color Color)> highlightedRegions = new List<(Region Region, int? Army, Color Color)>();
 
         public HighlightHandler(Bitmap mapImage, MapImageTemplateProcessor templateProcessor, TextDrawingHandler textDrawingHandler, ColoringHandler coloringHandler)
         {
@@ -47,7 +47,7 @@
         /// <returns></returns>
         public bool IsRegionHighlighted(Region region)
         {
-            return highlightedRegions.Any(x => x.Item1 == region);
+            return highlightedRegions.Any(x => x.Region == region);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@
                 textDrawingHandler.DrawArmyNumber(region, army.Value);
             }
             
-            highlightedRegions.Add(new Tuple<Region, int?, Color>(region, army, originalRegionColor));
+            highlightedRegions.Add((region, army, originalRegionColor));
         }
         
         /// <summary>
@@ -128,18 +128,20 @@
         internal void UnhighlightRegion(Region region)
         {
             var highlightedRegionTuple =
-                highlightedRegions.FirstOrDefault(x => x.Item1 == region);
-            if (highlightedRegionTuple == null)
+                highlightedRegions.FirstOrDefault(x => x.Region == region);
+
+            if (highlightedRegionTuple.Equals(default((Region, int?, Color))))
             {
                 throw new ArgumentException($"Region {region.Name} was not highlighted previously, cannot be unhighlighted.");
             }
+
             // is neighbour to player on turn => recolor to visible color
-            coloringHandler.Recolor(region, highlightedRegionTuple.Item3);
+            coloringHandler.Recolor(region, highlightedRegionTuple.Color);
 
             // draw army if there was any
-            if (highlightedRegionTuple.Item2 != null)
+            if (highlightedRegionTuple.Army != null)
             {
-                textDrawingHandler.DrawArmyNumber(region, highlightedRegionTuple.Item2.Value);
+                textDrawingHandler.DrawArmyNumber(region, highlightedRegionTuple.Army.Value);
             }
 
             highlightedRegions.Remove(highlightedRegionTuple);
@@ -162,7 +164,7 @@
         {
             for (int i = HighlightedRegionsCount - 1; i >= 0; i--)
             {
-                UnhighlightRegion(highlightedRegions[i].Item1);
+                UnhighlightRegion(highlightedRegions[i].Region);
             }
         }
     }
