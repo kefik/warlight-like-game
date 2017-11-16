@@ -37,7 +37,7 @@
         ///     Represents region group it belongs to.
         /// </summary>
         [ProtoMember(5, AsReference = true)]
-        public SuperRegion SuperRegion { get; }
+        public SuperRegion SuperRegion { get; internal set; }
 
         /// <summary>
         ///     Represents list of regions that are neighbours to this given region.

@@ -173,7 +173,7 @@
         /// </summary>
         private void ReconstructOriginalGraph()
         {
-            // TODO: IMPORTANT = check how it differs from Refresh
+            // TODO: IMPORTANT = does not work
             IList<Region> regions = Map.Regions;
             IList<SuperRegion> superRegions = Map.SuperRegions;
             IList<Player> players = Players;
