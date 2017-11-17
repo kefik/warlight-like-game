@@ -174,83 +174,47 @@
         private void ReconstructOriginalGraph()
         {
             // TODO: IMPORTANT = does not work
-            IList<Region> regions = Map.Regions;
-            IList<SuperRegion> superRegions = Map.SuperRegions;
-            IList<Player> players = Players;
-            // reconstruct original super regions
+            
+            // SuperRegions and its regions
+            foreach (var superRegion in Map.SuperRegions)
             {
-                // SuperRegion = region.SuperRegion
-                foreach (Region region in regions)
+                foreach (var superRegionRegion in superRegion.Regions)
                 {
-                    for (int j = 0; j < superRegions.Count; j++)
+                    // map superRegion according to main
+                    superRegionRegion.SuperRegion = superRegion;
+
+                    // map Map.Regions = superRegion.Regions
+                    for (int i = 0; i < Map.Regions.Count; i++)
                     {
-                        if (superRegions[j] == region.SuperRegion)
+                        if (Map.Regions[i] == superRegionRegion)
                         {
-                            superRegions[j] = region.SuperRegion;
+                            Map.Regions[i] = superRegionRegion;
+                            break;
                         }
                     }
                 }
             }
-            // reconstruct super regions and regions
+
+            // remap Regions and neighbour regions
+            foreach (var region in Map.Regions)
             {
-                // superRegion.Region = region
-                foreach (Region region in regions)
+                // iterate through neighbours and connect them to Map.Region
+                for (int i = 0; i < region.NeighbourRegions.Count; i++)
                 {
-                    foreach (SuperRegion superRegion in superRegions)
-                    {
-                        IList<Region> superRegionRegions = superRegion.Regions;
-                        for (int j = 0; j < superRegionRegions.Count; j++)
-                        {
-                            if (superRegionRegions[j] == region)
-                            {
-                                superRegionRegions[j] = region;
-                            }
-                        }
-                    }
-                }
-
-                // region = superRegion.Region
-                // should be fine
-            }
-
-
-            // reconstruct neighbour regions
-            {
-                for (int i = 0; i < regions.Count; i++)
-                {
-                    IList<Region> neighbours = regions[i].NeighbourRegions;
-                    foreach (Region neighbour in neighbours)
-                    {
-                        for (int j = 0; j < regions.Count; j++)
-                        {
-                            if (regions[j] == neighbour)
-                            {
-                                regions[j] = neighbour;
-                            }
-                        }
-                    }
+                    var realRegion = Map.Regions.First(x => x == region.NeighbourRegions[i]);
+                    region.NeighbourRegions[i] = realRegion;
                 }
             }
-            // reconstruct owner
+
+            // remap player owned regions
+            foreach (var player in Players)
             {
-                foreach (Player player in Players)
+                // remap region to real region
+                for (int i = 0; i < player.ControlledRegions.Count; i++)
                 {
-                    IList<Region> controlledRegions = player.ControlledRegions;
-                    foreach (Region controlledRegion in controlledRegions)
-                    {
-                        controlledRegion.Owner = player;
-                    }
-                }
-                // other way
-                foreach (Player player in players)
-                {
-                    foreach (Region region in Map.Regions)
-                    {
-                        if (region.Owner == player)
-                        {
-                            region.Owner = player;
-                        }
-                    }
+                    var realRegion = Map.Regions.First(x => x == player.ControlledRegions[i]);
+                    realRegion.Owner = player;
+                    player.ControlledRegions[i] = realRegion;
                 }
             }
         }
