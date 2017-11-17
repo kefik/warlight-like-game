@@ -222,17 +222,17 @@
 
                 ImageProcessor.Seize(region, PlayerOnTurn);
             }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Debug.Print(e.Message);
-                throw;
-            }
-            catch (ArgumentException e)
+            catch (ArgumentNullException e)
             {
                 Debug.Print(e.Message);
 #if DEBUG
                 throw;
 #endif
+            }
+            catch (ArgumentException e)
+            {
+                Debug.Print(e.Message);
+                throw;
             }
         }
 

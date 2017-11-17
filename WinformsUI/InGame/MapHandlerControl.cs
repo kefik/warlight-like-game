@@ -91,7 +91,7 @@
                 {
                     gameFlowHandler.Seize(e.X, e.Y);
                 }
-                catch (ArgumentOutOfRangeException error)
+                catch (ArgumentNullException error)
                 {
                     MessageBox.Show(error.Message);
                 }
