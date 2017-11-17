@@ -73,6 +73,15 @@
                 Parent = gameStateMenuPanel,
                 Dock = DockStyle.Fill
             };
+            // reset selection when any other stage than attacking is invoked
+            turnPhaseControl.OnCommitting += () =>
+            {
+                gameFlowHandler.ResetSelection();
+            };
+            turnPhaseControl.OnDeploying += () =>
+            {
+                gameFlowHandler.ResetSelection();
+            };
             turnPhaseControl.OnCommitted += () =>
             {
                 bool isNext = gameFlowHandler.NextPlayer();
