@@ -47,7 +47,7 @@
 
         public override void Reset()
         {
-            throw new System.NotImplementedException();
+            SelectedRegions.Clear();
         }
     }
 }
