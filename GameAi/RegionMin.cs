@@ -147,9 +147,9 @@ namespace GameAi
             Static = new RegionMinStatic(region, playerPerspective);
         }
 
-        public RegionMin(int regionId, SuperRegionMin superRegion, int army, bool isFogOfWarGame = true)
+        public RegionMin(int regionId, SuperRegionMin superRegion, int army, bool isFogOfWarGame = true, bool isWasteland = false)
         {
-            Static = new RegionMinStatic(regionId, superRegion);
+            Static = new RegionMinStatic(regionId, superRegion, isWasteland);
             Army = army;
 
             IsVisible = !isFogOfWarGame;

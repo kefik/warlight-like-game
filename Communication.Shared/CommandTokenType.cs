@@ -10,13 +10,16 @@
         SetupNeighbours,
         SetupWastelands,
         /// <summary>
-        /// TimeBank that the player has for the game tkoen type.
+        /// TimeBank that the player has for the game token type.
         /// </summary>
         SettingsTimeBank,
         /// <summary>
         /// Time that will be added to players time bank token type.
         /// </summary>
         SettingsTimePerMove,
+        /// <summary>
+        /// Round limit that the games has token type.
+        /// </summary>
         SettingsMaxRounds,
         SettingsBot,
         SettingsStartingArmies,

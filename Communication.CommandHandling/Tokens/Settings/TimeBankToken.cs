@@ -2,6 +2,9 @@
 {
     using Shared;
 
+    /// <summary>
+    /// Represents how much time does player have.
+    /// </summary>
     public class TimeBankToken : ICommandToken
     {
         public CommandTokenType CommandTokenType

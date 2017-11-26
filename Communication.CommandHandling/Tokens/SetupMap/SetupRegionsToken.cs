@@ -2,6 +2,10 @@
 {
     using System.Collections.Generic;
     using Shared;
+
+    /// <summary>
+    /// Token which contains region inicialization data.
+    /// </summary>
     public class SetupRegionsToken : ICommandToken
     {
         public CommandTokenType CommandTokenType

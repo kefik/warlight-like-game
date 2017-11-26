@@ -14,6 +14,8 @@
         private const string OpponentMoves = "opponent_moves";
         private const string PickStartingRegion = "pick_starting_region";
         private const string Go = "go";
+
+        protected IDictionary<string, int> NameIdsMappingDictionary { get; } = new Dictionary<string, int>();
         
         private readonly SettingsTranslationUnit settingsTranslationUnit;
 
@@ -40,7 +42,15 @@
 
         public string Translate(ICommandToken commandToken)
         {
-            throw new System.NotImplementedException();
+            switch (commandToken.CommandTokenType)
+            {
+                case CommandTokenType.PlaceArmiesResponse:
+                    throw new NotImplementedException();
+                case CommandTokenType.AttackReponse:
+                    throw new NotImplementedException();
+                default:
+                    return null;
+            }
         }
 
         private UpdateMapToken TranslateUpdateMap(IEnumerable<string> tokens)

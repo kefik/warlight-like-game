@@ -10,7 +10,8 @@
 
     public class MapController
     {
-        private bool isFogOfWar;
+        private readonly bool isFogOfWar;
+        private readonly int defaultArmy;
 
         private Map map;
 
@@ -21,11 +22,19 @@
         private SetupNeighboursToken setupNeighboursToken;
         private SetupWastelandsToken setupWastelandsToken;
 
-        public MapController(bool isFogOfWar)
+        public MapController(bool isFogOfWar, int defaultArmy = 2)
         {
             this.isFogOfWar = isFogOfWar;
+            this.defaultArmy = defaultArmy;
         }
 
+        /// <summary>
+        /// Adds something to map settings.
+        /// </summary>
+        /// <remarks>
+        /// Token in parameter must be Setup token.
+        /// </remarks>
+        /// <param name="commandToken">Token.</param>
         public void SetupMap(ICommandToken commandToken)
         {
             if (HasStarted)
@@ -52,6 +61,10 @@
             }
         }
 
+        /// <summary>
+        /// Updates map based on token passed in parameter.
+        /// </summary>
+        /// <param name="commandToken"></param>
         public void UpdateMapToken(ICommandToken commandToken)
         {
             if (commandToken.CommandTokenType != CommandTokenType.UpdateMap)
@@ -78,9 +91,17 @@
         /// <returns></returns>
         public Map GetMap()
         {
+            if (!HasStarted)
+            {
+                throw new ArgumentException($"You cannot get map because the game has not started.");
+            }
+
             return map;
         }
 
+        /// <summary>
+        /// Runs all map settings, starting the game.
+        /// </summary>
         public void Start()
         {
             if (HasStarted)
@@ -92,20 +113,39 @@
 
             ICollection<RegionMin> regionsMin = new List<RegionMin>();
             ICollection<SuperRegionMin> superRegionsMin = new List<SuperRegionMin>();
+            
+            SetupSuperRegions(superRegionsMin);
+            
+            SetupRegions(regionsMin, superRegionsMin);
+            
+            SetupNeighbours(regionsMin);
 
-            #region Setup SuperRegions
-            foreach (var initialChange in setupSuperRegionsToken.InitialChanges)
+            // add regions to super region
+            foreach (SuperRegionMin superRegionMin in superRegionsMin)
             {
-                if (superRegionsMin.Any(x => x.Id == initialChange.SuperRegionId))
-                {
-                    throw new ArgumentException($"SuperRegion with id {initialChange.SuperRegionId} has already been initialized.");
-                }
-
-                superRegionsMin.Add(new SuperRegionMin(initialChange.SuperRegionId, initialChange.BonusArmy));
+                var regionsUnderSuperRegion = regionsMin.Where(x => x.SuperRegion?.Id == superRegionMin.Id);
+                superRegionMin.Regions = regionsUnderSuperRegion.ToArray();
             }
-            #endregion
 
-            #region Setup Regions
+            map = new Map(regionsMin.ToArray(), superRegionsMin.ToArray());
+
+            map.ReconstructGraph();
+        }
+
+        private void SetupNeighbours(ICollection<RegionMin> regionsMin)
+        {
+            foreach (var neighbourInitialization in setupNeighboursToken.NeighboursInitialization)
+            {
+                var region = regionsMin.First(x => x.Id == neighbourInitialization.RegionId);
+
+                var regionNeighbours = regionsMin.Where(x => neighbourInitialization.NeighboursIds.Contains(x.Id));
+
+                region.NeighbourRegions = regionNeighbours.ToArray();
+            }
+        }
+
+        private void SetupRegions(ICollection<RegionMin> regionsMin, ICollection<SuperRegionMin> superRegionsMin)
+        {
             foreach (var setupRegionsInstruction in setupRegionsToken.SetupRegionsInstructions)
             {
                 (int regionId, int superRegionId) = setupRegionsInstruction;
@@ -122,34 +162,32 @@
                     throw new ArgumentException($"SuperRegions must be initialized before regions");
                 }
 
-                // TODO: 2 fix
-                RegionMin regionMin = new RegionMin(regionId, superRegion, 2, isFogOfWar);
+                RegionMin regionMin;
+                if (setupWastelandsToken == null || !setupWastelandsToken.Regions.Contains(regionId))
+                {
+                    regionMin = new RegionMin(regionId, superRegion, defaultArmy, isFogOfWar);
+                }
+                else
+                {
+                    regionMin = new RegionMin(regionId, superRegion, defaultArmy, isFogOfWar, true);
+                }
 
                 regionsMin.Add(regionMin);
             }
-            #endregion
+        }
 
-            #region Setup Neighbours
-            foreach (var neighbourInitialization in setupNeighboursToken.NeighboursInitialization)
+        private void SetupSuperRegions(ICollection<SuperRegionMin> superRegionsMin)
+        {
+            foreach (var initialChange in setupSuperRegionsToken.InitialChanges)
             {
-                var region = regionsMin.First(x => x.Id == neighbourInitialization.RegionId);
+                if (superRegionsMin.Any(x => x.Id == initialChange.SuperRegionId))
+                {
+                    throw new ArgumentException(
+                        $"SuperRegion with id {initialChange.SuperRegionId} has already been initialized.");
+                }
 
-                var regionNeighbours = regionsMin.Where(x => neighbourInitialization.NeighboursIds.Contains(x.Id));
-
-                region.NeighbourRegions = regionNeighbours.ToArray();
+                superRegionsMin.Add(new SuperRegionMin(initialChange.SuperRegionId, initialChange.BonusArmy));
             }
-            #endregion
-
-            // add regions to super region
-            foreach (SuperRegionMin superRegionMin in superRegionsMin)
-            {
-                var regionsUnderSuperRegion = regionsMin.Where(x => x.SuperRegion?.Id == superRegionMin.Id);
-                superRegionMin.Regions = regionsUnderSuperRegion.ToArray();
-            }
-
-            map = new Map(regionsMin.ToArray(), superRegionsMin.ToArray());
-
-            map.ReconstructGraph();
         }
     }
 }

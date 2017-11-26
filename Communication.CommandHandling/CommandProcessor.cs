@@ -1,6 +1,7 @@
 ﻿namespace Communication.CommandHandling
 {
     using Shared;
+
     public class CommandProcessor : ICommandProcessor
     {
         private readonly ITranslator translator;

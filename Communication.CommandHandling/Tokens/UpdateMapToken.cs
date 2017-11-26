@@ -3,6 +3,9 @@
     using System.Collections.Generic;
     using Shared;
 
+    /// <summary>
+    /// Token containing information about changes happening between turns.
+    /// </summary>
     public class UpdateMapToken : ICommandToken
     {
         public CommandTokenType CommandTokenType

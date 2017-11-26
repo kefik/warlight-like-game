@@ -4,7 +4,13 @@
 
     public class PlaceArmiesRequestToken : ICommandToken
     {
-        public CommandTokenType CommandTokenType { get; }
+        public CommandTokenType CommandTokenType
+        {
+            get
+            {
+                return CommandTokenType.PlaceArmiesRequest;
+            }
+        }
 
         public int TimeOut { get; }
 

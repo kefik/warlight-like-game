@@ -2,6 +2,9 @@
 {
     using Shared;
 
+    /// <summary>
+    /// Token specifying attack request.
+    /// </summary>
     public class AttackRequestToken : ICommandToken
     {
         public CommandTokenType CommandTokenType

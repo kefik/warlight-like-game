@@ -3,6 +3,9 @@
     using System.Collections.Generic;
     using Shared;
 
+    /// <summary>
+    /// Token which contains neighbour inicialization data.
+    /// </summary>
     public class SetupNeighboursToken : ICommandToken
     {
         public CommandTokenType CommandTokenType
