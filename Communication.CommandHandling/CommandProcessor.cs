@@ -6,10 +6,10 @@
         private readonly ITranslator translator;
         private readonly ICommandHandler commandHandler;
 
-        public CommandProcessor(ITranslator translator, ICommandHandler commandHandler)
+        public CommandProcessor(ITranslator translator)
         {
             this.translator = translator;
-            this.commandHandler = commandHandler;
+            this.commandHandler = new CommandHandler();
         }
 
         public string Process(string input)
