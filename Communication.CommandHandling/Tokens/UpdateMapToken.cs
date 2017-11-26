@@ -13,9 +13,9 @@
             }
         }
 
-        public IList<(int RegionId, string Owner, int Army)> Changes { get; }
+        public ICollection<(int RegionId, int Owner, int Army)> Changes { get; }
 
-        public UpdateMapToken(IList<(int RegionId, string Owner, int Army)> changes)
+        public UpdateMapToken(ICollection<(int RegionId, int Owner, int Army)> changes)
         {
             Changes = changes;
         }

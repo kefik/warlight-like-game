@@ -4,7 +4,13 @@
 
     public class AttackRequestToken : ICommandToken
     {
-        public CommandTokenType CommandTokenType { get; }
+        public CommandTokenType CommandTokenType
+        {
+            get
+            {
+                return CommandTokenType.AttackRequest;
+            }
+        }
 
         public int TimeOut { get; }
 
