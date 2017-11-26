@@ -17,12 +17,20 @@ namespace GameAi
         {
             public int Id { get; }
             public RegionMin[] Neighbours { get; set; }
-            public SuperRegionMin SuperRegion { get; }
+            public SuperRegionMin SuperRegion { get; set; }
+            public bool IsWasteland { get; }
 
             public RegionMinStatic(Region region, Player ownerEncoded)
             {
                 Id = region.Id;
                 SuperRegion = new SuperRegionMin(region.SuperRegion, ownerEncoded);
+            }
+
+            public RegionMinStatic(int regionId, SuperRegionMin superRegion, bool isWasteland = false)
+            {
+                Id = regionId;
+                SuperRegion = superRegion;
+                IsWasteland = isWasteland;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -48,7 +56,7 @@ namespace GameAi
         /// <summary>
         /// Represents the owner from players perspective specified in constructor.
         /// </summary>
-        internal byte OwnerEncoded
+        public byte OwnerEncoded
         {
             get { return (byte) (ownerAndArmyEncoded & 0b11111); }
             set
@@ -68,12 +76,20 @@ namespace GameAi
         }
 
         /// <summary>
+        /// Reports whether the region is wasteland (more armies at the game beginning in it).
+        /// </summary>
+        public bool IsWasteland
+        {
+            get { return Static.IsWasteland; }
+        }
+
+        /// <summary>
         /// Represents size of army of the region.
         /// </summary>
         public int Army
         {
             get { return ownerAndArmyEncoded >> 6; }
-            internal set
+            set
             {
                 ownerAndArmyEncoded = (ushort)(((ushort.MaxValue >> 10) << 10) | ((ushort)value >> 6));
             }
@@ -85,7 +101,7 @@ namespace GameAi
         public bool IsVisible
         {
             get { return (ownerAndArmyEncoded & 0b100000) != 0; }
-            internal set
+            set
             {
                 ushort mask;
                 if (value)
@@ -106,6 +122,7 @@ namespace GameAi
         public SuperRegionMin SuperRegion
         {
             get { return Static.SuperRegion; }
+            internal set { Static.SuperRegion = value; }
         }
 
         /// <summary>
@@ -114,7 +131,7 @@ namespace GameAi
         public RegionMin[] NeighbourRegions
         {
             get { return Static.Neighbours; }
-            internal set { Static.Neighbours = value; }
+            set { Static.Neighbours = value; }
         } 
         
         internal RegionMin(Region region, byte ownerEncoded, Player playerPerspective, bool isFogOfWarGame = true)
@@ -128,6 +145,14 @@ namespace GameAi
             }
 
             Static = new RegionMinStatic(region, playerPerspective);
+        }
+
+        public RegionMin(int regionId, SuperRegionMin superRegion, int army, bool isFogOfWarGame = true)
+        {
+            Static = new RegionMinStatic(regionId, superRegion);
+            Army = army;
+
+            IsVisible = !isFogOfWarGame;
         }
 
         /// <summary>

@@ -2,17 +2,31 @@ namespace GameAi
 {
     using System;
     using System.Runtime.CompilerServices;
+    using GameObjectsLib.GameMap;
 
     /// <summary>
     /// Represents bot from perspective of certain player.
     /// </summary>
     public struct PlayerPerspective
     {
-        public RegionMin[] RegionsMin { get; internal set; }
-        public SuperRegionMin[] SuperRegionsMin { get; internal set; }
+        public Map Map;
         public byte PlayerEncoded { get; internal set; }
+        
+        public PlayerPerspective(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, byte playerEncoded)
+        {
+            Map = new Map()
+            {
+                RegionsMin = regionsMin,
+                SuperRegionsMin = superRegionsMin
+            };
+            PlayerEncoded = playerEncoded;
+        }
 
-        //internal PlayerPerspective() { }
+        public PlayerPerspective(Map map, byte playerEncoded)
+        {
+            Map = map;
+            PlayerEncoded = playerEncoded;
+        }
 
         /// <summary>
         /// Shallow-copies players perspective structure.
@@ -21,17 +35,20 @@ namespace GameAi
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal PlayerPerspective ShallowCopy()
         {
-            RegionMin[] regionsMin = new RegionMin[RegionsMin.Length];
-            Array.Copy(RegionsMin, regionsMin, RegionsMin.Length);
+            RegionMin[] regionsMin = new RegionMin[Map.RegionsMin.Length];
+            Array.Copy(Map.RegionsMin, regionsMin, Map.RegionsMin.Length);
 
-            SuperRegionMin[] superRegionsMin = new SuperRegionMin[SuperRegionsMin.Length];
-            Array.Copy(SuperRegionsMin, superRegionsMin, SuperRegionsMin.Length);
+            SuperRegionMin[] superRegionsMin = new SuperRegionMin[Map.SuperRegionsMin.Length];
+            Array.Copy(Map.SuperRegionsMin, superRegionsMin, Map.SuperRegionsMin.Length);
 
             return new PlayerPerspective
             {
                 PlayerEncoded = PlayerEncoded,
-                RegionsMin = regionsMin,
-                SuperRegionsMin = superRegionsMin
+                Map = new Map()
+                {
+                    RegionsMin = regionsMin,
+                    SuperRegionsMin = superRegionsMin
+                }
             };
         }
     }

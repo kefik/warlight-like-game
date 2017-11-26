@@ -24,6 +24,10 @@
                 dictionary.Add(game.Players[i], (byte)(i + 1));
             }
 
+            // setup super regions
+            var superRegions = game.Map.SuperRegions.Select(x => new SuperRegionMin(x, player)).ToArray();
+
+            // setup regions
             var regions = game.Map.Regions.Select(x =>
             {
                 if (x.Owner == null)
@@ -34,6 +38,8 @@
 
                 return new RegionMin(x, encodedOwner, player, game.IsFogOfWar);
             }).ToArray();
+
+            // setup neighbours to those regions
             foreach (var region in regions)
             {
                 List<RegionMin> neighbours = new List<RegionMin>();
@@ -51,7 +57,6 @@
                 region.NeighbourRegions = neighbours.ToArray();
             }
 
-            var superRegions = game.Map.SuperRegions.Select(x => new SuperRegionMin(x, player)).ToArray();
             foreach (var superRegion in superRegions)
             {
                 List<RegionMin> containedRegions = new List<RegionMin>();
@@ -67,12 +72,19 @@
                 superRegion.Regions = containedRegions.ToArray();
             }
 
+            var map = new Map()
+            {
+                RegionsMin = regions,
+                SuperRegionsMin = superRegions
+            };
+
+            map.ReconstructGraph();
+
             dictionary.TryGetValue(player, out byte playerEncoded);
             var playerPerspective = new PlayerPerspective()
             {
                 PlayerEncoded = playerEncoded,
-                RegionsMin = regions,
-                SuperRegionsMin = superRegions
+                Map = map
             };
 
             Difficulty difficulty = Difficulty.Hard;

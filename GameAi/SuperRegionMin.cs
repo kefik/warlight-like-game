@@ -24,6 +24,12 @@
                 Id = superRegion.Id;
                 Bonus = superRegion.Bonus;
             }
+
+            public SuperRegionMinStatic(int id, int bonus)
+            {
+                Id = id;
+                Bonus = bonus;
+            }
         }
 
         private SuperRegionMinStatic Static { get; }
@@ -39,7 +45,7 @@
         /// <summary>
         /// Represents owner of this region.
         /// </summary>
-        public OwnerPerspective OwnerPerspective { get; internal set; }
+        public OwnerPerspective OwnerPerspective { get; set; }
 
         /// <summary>
         /// Represents bonus given to the owner of this region per round.
@@ -55,7 +61,7 @@
         public RegionMin[] Regions
         {
             get { return Static.Regions; }
-            internal set { Static.Regions = value; }
+            set { Static.Regions = value; }
         }
 
         internal SuperRegionMin(SuperRegion superRegion, Player playerPerspective)
@@ -74,6 +80,12 @@
             }
 
             Static = new SuperRegionMinStatic(superRegion);
+        }
+
+        public SuperRegionMin(int superRegionId, int bonusArmy)
+        {
+            Static = new SuperRegionMinStatic(superRegionId, bonusArmy);
+            OwnerPerspective = OwnerPerspective.Unoccupied;
         }
 
         /// <summary>

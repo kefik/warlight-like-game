@@ -24,7 +24,7 @@
         protected internal Difficulty Difficulty { get; }
         protected internal bool IsFogOfWar { get; set; }
 
-        protected PlayerPerspective PlayerPerspective { get; }
+        public PlayerPerspective PlayerPerspective;
         
         /// <summary>
         /// Finds and returns best move for given bot state.
