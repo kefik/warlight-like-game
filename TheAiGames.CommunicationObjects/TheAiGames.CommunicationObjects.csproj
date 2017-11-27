@@ -57,6 +57,10 @@
       <Project>{402F06CF-1819-4CCE-9E31-A07B560BD0FA}</Project>
       <Name>Communication.Shared</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameAi\GameAi.csproj">
+      <Project>{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}</Project>
+      <Name>GameAi</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

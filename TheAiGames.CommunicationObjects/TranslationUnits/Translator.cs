@@ -35,8 +35,7 @@
                 case UpdateMap:
                     return TranslateUpdateMap(tokens.Skip(1));
             }
-
-
+            
             throw new NotImplementedException();
         }
 

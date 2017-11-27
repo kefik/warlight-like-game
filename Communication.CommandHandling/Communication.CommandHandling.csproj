@@ -50,7 +50,13 @@
     <Compile Include="Tokens\CommandTokenFactory.cs" />
     <Compile Include="Tokens\PlaceArmiesRequestToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tokens\Settings\MaxRoundsToken.cs" />
+    <Compile Include="Tokens\Settings\SetupBotToken.cs" />
+    <Compile Include="Tokens\Settings\StartingArmiesToken.cs" />
+    <Compile Include="Tokens\Settings\StartingPickRegionsCountToken.cs" />
+    <Compile Include="Tokens\Settings\StartingRegionsToken.cs" />
     <Compile Include="Tokens\Settings\TimeBankToken.cs" />
+    <Compile Include="Tokens\Settings\TimePerMoveToken.cs" />
     <Compile Include="Tokens\SetupMap\SetupNeighboursToken.cs" />
     <Compile Include="Tokens\SetupMap\SetupRegionsToken.cs" />
     <Compile Include="Tokens\SetupMap\SetupSuperRegionsToken.cs" />

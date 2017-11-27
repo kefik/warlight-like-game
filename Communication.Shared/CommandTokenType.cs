@@ -21,6 +21,9 @@
         /// Round limit that the games has token type.
         /// </summary>
         SettingsMaxRounds,
+        /// <summary>
+        /// Settings for bot player-id mapping.
+        /// </summary>
         SettingsBot,
         SettingsStartingArmies,
         SettingsStartingRegions,
