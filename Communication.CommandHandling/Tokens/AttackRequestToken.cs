@@ -1,5 +1,6 @@
 ﻿namespace Communication.CommandHandling.Tokens
 {
+    using System;
     using Shared;
 
     /// <summary>
@@ -15,11 +16,11 @@
             }
         }
 
-        public int TimeOut { get; }
+        public TimeSpan? Timeout { get; }
 
-        public AttackRequestToken(int timeOut = 0)
+        public AttackRequestToken(TimeSpan? timeout = null)
         {
-            TimeOut = timeOut;
+            Timeout = timeout;
         }
     }
 }

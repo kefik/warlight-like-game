@@ -14,9 +14,11 @@
         private const string OpponentMoves = "opponent_moves";
         private const string PickStartingRegion = "pick_starting_region";
         private const string Go = "go";
+        private const string PlaceArmies = "place_armies";
+        private const string AttackOrTransfer = "attack/transfer";
 
         protected IDictionary<string, int> NameIdsMappingDictionary { get; } = new Dictionary<string, int>();
-        
+
         private readonly SettingsTranslationUnit settingsTranslationUnit;
 
         public Translator(SettingsTranslationUnit settingsTranslationUnit)
@@ -26,7 +28,7 @@
 
         public ICommandToken Translate(string input)
         {
-            string[] tokens = input.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+            string[] tokens = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             switch (tokens[0])
             {
@@ -34,9 +36,11 @@
                     return settingsTranslationUnit.Translate(tokens.Skip(1));
                 case UpdateMap:
                     return TranslateUpdateMap(tokens.Skip(1));
+                case Go:
+                    return TranslateGo(tokens.Skip(1));
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(tokens));
             }
-            
-            throw new NotImplementedException();
         }
 
         public string Translate(ICommandToken commandToken)
@@ -54,7 +58,67 @@
 
         private UpdateMapToken TranslateUpdateMap(IEnumerable<string> tokens)
         {
-            throw new NotImplementedException();
+            int counter = 0;
+
+            // create tokens with counters so we know indexes
+            var tokensWithCounter = from token in tokens
+                                    select new { Token = token, Counter = counter++ };
+
+            // take groups by 3 elements
+            var groupedTokens = from tokenWithCounter in tokensWithCounter
+                                group tokenWithCounter.Token by tokenWithCounter.Counter / 3;
+
+            var changes = new List<(int RegionId, int Owner, int Army)>();
+
+            foreach (var group in groupedTokens)
+            {
+                int regionId = -1;
+                int owner = -1;
+                int army = -1;
+
+                int i = 0;
+                // initialize region, owner and army
+                foreach (var token in group)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            regionId = int.Parse(token);
+                            break;
+                        case 1:
+                            owner = int.Parse(token);
+                            break;
+                        case 2:
+                            army = int.Parse(token);
+                            break;
+                        default:
+                            throw new ArgumentException();
+                    }
+                    i++;
+                }
+
+                if (i != 3)
+                {
+                    throw new ArgumentException();
+                }
+
+                changes.Add((regionId, owner, army));
+            }
+
+            return new UpdateMapToken(changes);
+        }
+
+        private ICommandToken TranslateGo(IEnumerable<string> tokens)
+        {
+            switch (tokens.First())
+            {
+                case PlaceArmies:
+                    return new PlaceArmiesRequestToken(new TimeSpan(0, 0, 0, 0, milliseconds: int.Parse(tokens.First())));
+                case AttackOrTransfer:
+                    return new AttackRequestToken(new TimeSpan(0, 0, 0, 0, milliseconds: int.Parse(tokens.First())));
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(tokens));
+            }
         }
     }
 }

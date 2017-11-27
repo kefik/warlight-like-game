@@ -7,7 +7,7 @@
 
     internal class CommandHandler : ICommandHandler
     {
-        public int TimeBank { get; private set; }
+        public TimeSpan? TimeBank { get; private set; }
 
         public ICommandToken Execute(ICommandToken commandToken)
         {
@@ -40,7 +40,7 @@
                     break;
                 case CommandTokenType.OpponentMoves:
                     break;
-                case CommandTokenType.PickStartingRegion:
+                case CommandTokenType.PickStartingRegionsRequest:
                     break;
                 case CommandTokenType.PlaceArmiesRequest:
                     break;

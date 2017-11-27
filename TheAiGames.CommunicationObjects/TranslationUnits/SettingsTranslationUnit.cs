@@ -62,8 +62,8 @@
 
         private TimeBankToken CreateTimeBankToken(IEnumerable<string> tokens)
         {
-            int timeBankInterval = int.Parse(tokens.First());
-            return new TimeBankToken(timeBankInterval);
+            int timeBankInterval = int.Parse(tokens.First()); // in ms
+            return new TimeBankToken(new TimeSpan(0, 0, 0, 0, timeBankInterval));
         }
 
         private SetupBotToken SetupYourBot(IEnumerable<string> tokens)
@@ -100,7 +100,8 @@
 
         private TimePerMoveToken SetupTimePerMove(IEnumerable<string> tokens)
         {
-            return new TimePerMoveToken(int.Parse(tokens.First()));
+            int timeInMs = int.Parse(tokens.First());
+            return new TimePerMoveToken(new TimeSpan(0, 0, 0, 0, timeInMs));
         }
 
         private StartingRegionsToken SetupStartingRegions(IEnumerable<string> tokens)

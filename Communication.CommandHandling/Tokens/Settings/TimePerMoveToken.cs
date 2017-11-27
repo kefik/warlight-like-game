@@ -1,5 +1,6 @@
 ﻿namespace Communication.CommandHandling.Tokens.Settings
 {
+    using System;
     using Shared;
     public class TimePerMoveToken : ICommandToken
     {
@@ -8,9 +9,9 @@
             get { return CommandTokenType.SettingsTimePerMove; }
         }
 
-        public int Time { get; }
+        public TimeSpan Time { get; }
 
-        public TimePerMoveToken(int time)
+        public TimePerMoveToken(TimeSpan time)
         {
             Time = time;
         }

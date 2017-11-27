@@ -1,5 +1,6 @@
 ﻿namespace Communication.CommandHandling.Tokens.Settings
 {
+    using System;
     using Shared;
 
     /// <summary>
@@ -12,9 +13,9 @@
             get { return CommandTokenType.SettingsTimeBank; }
         }
 
-        public int TimeBankInterval { get; }
+        public TimeSpan? TimeBankInterval { get; }
 
-        public TimeBankToken(int timeBankInterval)
+        public TimeBankToken(TimeSpan? timeBankInterval = null)
         {
             TimeBankInterval = timeBankInterval;
         }

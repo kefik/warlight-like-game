@@ -1,5 +1,6 @@
 ﻿namespace Communication.CommandHandling.Tokens
 {
+    using System;
     using Shared;
 
     public class PlaceArmiesRequestToken : ICommandToken
@@ -12,11 +13,11 @@
             }
         }
 
-        public int TimeOut { get; }
+        public TimeSpan? Timeout { get; }
 
-        public PlaceArmiesRequestToken(int timeOut = 0)
+        public PlaceArmiesRequestToken(TimeSpan? timeOut = null)
         {
-            TimeOut = timeOut;
+            Timeout = timeOut;
         }
     }
 }

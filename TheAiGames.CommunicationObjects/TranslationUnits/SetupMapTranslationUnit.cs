@@ -10,14 +10,16 @@
     {
         private const string Regions = "regions";
         private const string SuperRegions = "super_regions";
-
-
+        private const string Neighbours = "neighbors";
+        
         public ICommandToken Translate(IEnumerable<string> tokens)
         {
             switch (tokens.First())
             {
                 case SuperRegions:
                     return CreateSuperRegionsToken(tokens.Skip(1));
+                case Regions:
+                    return CreateRegionsToken(tokens.Skip(1));
             }
 
             throw new NotImplementedException();
@@ -54,7 +56,26 @@
         {
             var changes = new List<(int RegionId, int SuperRegionId)>();
 
-            throw new NotImplementedException();
+            bool odd = true;
+            int regionId = -1, superRegionId = -1;
+
+            foreach (var token in tokens)
+            {
+                if (odd)
+                {
+                    regionId = int.Parse(token);
+                }
+                else
+                {
+                    superRegionId = int.Parse(token);
+
+                    changes.Add((regionId, superRegionId));
+                }
+
+                odd = !odd;
+            }
+
+            return new SetupRegionsToken(changes);
         }
     }
 }
