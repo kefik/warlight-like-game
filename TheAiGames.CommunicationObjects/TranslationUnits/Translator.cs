@@ -3,10 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Common.Collections;
     using Communication.CommandHandling.Tokens;
     using Communication.Shared;
 
-    public class Translator : ITranslator
+    /// <summary>
+    /// Translates commands in TheAiGames syntax into tokens defined by my syntax.
+    /// </summary>
+    internal class Translator : ITranslator
     {
         private const string Settings = "settings";
         private const string SetupMap = "setup_map";
@@ -17,17 +21,20 @@
         private const string PlaceArmies = "place_armies";
         private const string AttackOrTransfer = "attack/transfer";
 
-        protected IDictionary<string, int> NameIdsMappingDictionary { get; } = new Dictionary<string, int>();
-
         private readonly SettingsTranslationUnit settingsTranslationUnit;
+        private readonly SetupMapTranslationUnit setupMapTranslationUnit;
 
-        public Translator(SettingsTranslationUnit settingsTranslationUnit)
+        protected BidirectionalDictionary<string,int> NamesIdsMappingDictionary { get; } = new BidirectionalDictionary<string, int>();
+
+        public Translator(SettingsTranslationUnit settingsTranslationUnit, SetupMapTranslationUnit setupMapTranslationUnit)
         {
             this.settingsTranslationUnit = settingsTranslationUnit;
+            this.setupMapTranslationUnit = setupMapTranslationUnit;
         }
 
         public ICommandToken Translate(string input)
         {
+            // split input by space => tokens
             string[] tokens = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             switch (tokens[0])
@@ -36,6 +43,8 @@
                     return settingsTranslationUnit.Translate(tokens.Skip(1));
                 case UpdateMap:
                     return TranslateUpdateMap(tokens.Skip(1));
+                case SetupMap:
+                    return setupMapTranslationUnit.Translate(tokens.Skip(1));
                 case Go:
                     return TranslateGo(tokens.Skip(1));
                 default:
@@ -45,14 +54,16 @@
 
         public string Translate(ICommandToken commandToken)
         {
-            switch (commandToken.CommandTokenType)
+            switch (commandToken?.CommandTokenType)
             {
                 case CommandTokenType.PlaceArmiesResponse:
                     throw new NotImplementedException();
                 case CommandTokenType.AttackReponse:
                     throw new NotImplementedException();
-                default:
+                case null:
                     return null;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(commandToken));
             }
         }
 

@@ -13,9 +13,9 @@
             get { return CommandTokenType.SetupNeighbours; }
         }
 
-        public ICollection<(int RegionId, int[] NeighboursIds)> NeighboursInitialization { get; }
+        public ICollection<(int RegionId, IList<int> NeighboursIds)> NeighboursInitialization { get; }
 
-        public SetupNeighboursToken(ICollection<(int RegionId, int[] NeighboursIds)> neighboursInitialization)
+        public SetupNeighboursToken(ICollection<(int RegionId, IList<int> NeighboursIds)> neighboursInitialization)
         {
             NeighboursInitialization = neighboursInitialization;
         }

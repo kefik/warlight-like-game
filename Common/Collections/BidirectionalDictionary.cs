@@ -95,7 +95,7 @@
         {
             if (first == null || second == null)
             {
-                throw new ArgumentException($"Null cannot be added.");
+                throw new ArgumentNullException();
             }
 
             firstToSecondMap.Add(first, second);

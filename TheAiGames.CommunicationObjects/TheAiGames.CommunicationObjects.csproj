@@ -49,6 +49,10 @@
     <Compile Include="TranslationUnits\Translator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{E4CBE100-724B-4097-9EBD-DB0CFBE41375}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Communication.CommandHandling\Communication.CommandHandling.csproj">
       <Project>{762984CC-0E48-4762-B05A-00F48742E863}</Project>
       <Name>Communication.CommandHandling</Name>

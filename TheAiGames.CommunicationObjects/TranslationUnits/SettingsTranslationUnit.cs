@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Common.Collections;
     using Communication.CommandHandling.Tokens.Settings;
     using Communication.Shared;
     using GameAi;
@@ -10,7 +11,7 @@
     /// <summary>
     /// Handles translation of settings commands at the beginning of the game.
     /// </summary>
-    public class SettingsTranslationUnit
+    internal class SettingsTranslationUnit
     {
         private const string TimeBank = "timebank";
         private const string YourBot = "your_bot";
@@ -21,13 +22,13 @@
         private const string StartingRegions = "starting_regions";
         private const string StartingPickAmount = "starting_pick_amount";
 
-        private readonly IDictionary<string, int> nameIdsMappingDictionary;
+        private readonly BidirectionalDictionary<string, int> namesIdsMappingDictionary;
 
         private int lastPlayerNumber;
 
-        public SettingsTranslationUnit(IDictionary<string, int> nameIdsMappingDictionary)
+        public SettingsTranslationUnit(BidirectionalDictionary<string, int> namesIdsMappingDictionary)
         {
-            this.nameIdsMappingDictionary = nameIdsMappingDictionary;
+            this.namesIdsMappingDictionary = namesIdsMappingDictionary;
         }
 
         /// <summary>
@@ -63,14 +64,14 @@
         private TimeBankToken CreateTimeBankToken(IEnumerable<string> tokens)
         {
             int timeBankInterval = int.Parse(tokens.First()); // in ms
-            return new TimeBankToken(new TimeSpan(0, 0, 0, 0, timeBankInterval));
+            return new TimeBankToken(new TimeSpan(0, 0, 0, 0, milliseconds: timeBankInterval));
         }
 
         private SetupBotToken SetupYourBot(IEnumerable<string> tokens)
         {
             string name = tokens.First();
 
-            nameIdsMappingDictionary.Add(new KeyValuePair<string, int>(name, ++lastPlayerNumber));
+            namesIdsMappingDictionary.Add(new KeyValuePair<string, int>(name, ++lastPlayerNumber));
 
             SetupBotToken setupBotToken = new SetupBotToken(lastPlayerNumber, OwnerPerspective.Mine);
 
@@ -81,7 +82,7 @@
         {
             string name = tokens.First();
 
-            nameIdsMappingDictionary.Add(new KeyValuePair<string, int>(name, ++lastPlayerNumber));
+            namesIdsMappingDictionary.Add(new KeyValuePair<string, int>(name, ++lastPlayerNumber));
 
             SetupBotToken setupBotToken = new SetupBotToken(lastPlayerNumber, OwnerPerspective.Enemy);
 
@@ -101,7 +102,7 @@
         private TimePerMoveToken SetupTimePerMove(IEnumerable<string> tokens)
         {
             int timeInMs = int.Parse(tokens.First());
-            return new TimePerMoveToken(new TimeSpan(0, 0, 0, 0, timeInMs));
+            return new TimePerMoveToken(new TimeSpan(0, 0, 0, 0, milliseconds: timeInMs));
         }
 
         private StartingRegionsToken SetupStartingRegions(IEnumerable<string> tokens)
