@@ -88,7 +88,17 @@
         public void ForEachTest()
         {
             foreach (var keyValuePair in testDictionary)
-            { }
+            {
+                if (keyValuePair.Value == 1 && keyValuePair.Key == "test1")
+                { }
+                else if (keyValuePair.Key == "test2" && keyValuePair.Value == 2) { }
+                else if (keyValuePair.Key == "test3" && keyValuePair.Value == 3)
+                { }
+                else
+                {
+                    throw new ArgumentException();
+                }
+            }
         }
     }
 }
