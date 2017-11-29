@@ -113,8 +113,8 @@
             }
 
             AddSymmetricRelations(neighbourRelationCollection);
-
-            return new SetupNeighboursToken(neighbourRelationCollection);
+            
+            return new SetupNeighboursToken(neighbourRelationCollection.OrderBy(x => x.RegionId).ToList());
         }
 
         /// <summary>
@@ -127,7 +127,7 @@
             var allNeighboursIds = (from region in regionsWithNeighbours
                                     select region.NeighbourIds into neighbours
                                     from neighbour in neighbours
-                                    select neighbour).Distinct();
+                                    select neighbour).Distinct().ToList();
 
             foreach (int neighbourId in allNeighboursIds)
             {
@@ -152,6 +152,8 @@
 
                 // currently defined neighbours united with those regions that have current region defined as neighbour = new neighbours
                 regionWithNeighbours.NeighbourIds = regionWithNeighbours.NeighbourIds.Union(allRegionNeighbours).ToList();
+
+                regionsWithNeighbours[i] = regionWithNeighbours;
             }
         }
 

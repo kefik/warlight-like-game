@@ -47,6 +47,7 @@
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="MapController.cs" />
     <Compile Include="Tokens\AttackRequestToken.cs" />
+    <Compile Include="Tokens\OpponentMovesToken.cs" />
     <Compile Include="Tokens\PickStartingRegionsRequestToken.cs" />
     <Compile Include="Tokens\PlaceArmiesRequestToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -26,10 +26,10 @@
 
         protected BidirectionalDictionary<string,int> NamesIdsMappingDictionary { get; } = new BidirectionalDictionary<string, int>();
 
-        public Translator(SettingsTranslationUnit settingsTranslationUnit, SetupMapTranslationUnit setupMapTranslationUnit)
+        public Translator()
         {
-            this.settingsTranslationUnit = settingsTranslationUnit;
-            this.setupMapTranslationUnit = setupMapTranslationUnit;
+            settingsTranslationUnit = new SettingsTranslationUnit(NamesIdsMappingDictionary);
+            this.setupMapTranslationUnit = new SetupMapTranslationUnit();
         }
 
         public ICommandToken Translate(string input)
@@ -47,6 +47,10 @@
                     return setupMapTranslationUnit.Translate(tokens.Skip(1));
                 case Go:
                     return TranslateGo(tokens.Skip(1));
+                case PickStartingRegion:
+                    return TranslatePickStartingRegion(tokens.Skip(1));
+                case OpponentMoves:
+                    return TranslateOpponentMoves(tokens.Skip(1));
                 default:
                     throw new ArgumentOutOfRangeException(nameof(tokens));
             }
@@ -97,7 +101,11 @@
                             regionId = int.Parse(token);
                             break;
                         case 1:
-                            owner = int.Parse(token);
+                            bool tryGetValue = NamesIdsMappingDictionary.TryGetValue(token, out owner);
+                            if (!tryGetValue)
+                            {
+                                throw new ArgumentOutOfRangeException($"Invalid token {token}.");
+                            }
                             break;
                         case 2:
                             army = int.Parse(token);
@@ -130,6 +138,27 @@
                 default:
                     throw new ArgumentOutOfRangeException(nameof(tokens));
             }
+        }
+
+        private PickStartingRegionsRequestToken TranslatePickStartingRegion(IEnumerable<string> tokens)
+        {
+            TimeSpan timeOut = new TimeSpan(0, 0, 0, 0, milliseconds: int.Parse(tokens.First()));
+
+            tokens = tokens.Skip(1);
+
+            var regionsIds = new List<int>();
+
+            foreach (var token in tokens)
+            {
+                regionsIds.Add(int.Parse(token));
+            }
+
+            return new PickStartingRegionsRequestToken(regionsIds, timeOut);
+        }
+
+        private OpponentMovesToken TranslateOpponentMoves(IEnumerable<string> tokens)
+        {
+            throw new NotImplementedException();
         }
     }
 }

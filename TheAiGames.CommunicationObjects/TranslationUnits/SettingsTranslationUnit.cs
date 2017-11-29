@@ -29,6 +29,9 @@
         public SettingsTranslationUnit(BidirectionalDictionary<string, int> namesIdsMappingDictionary)
         {
             this.namesIdsMappingDictionary = namesIdsMappingDictionary;
+
+            // player with id 0 will be defined as neutral
+            namesIdsMappingDictionary.Add("neutral", 0);
         }
 
         /// <summary>
