@@ -18,10 +18,16 @@
 
         public ICollection<int> RegionIds { get; }
 
-        public PickStartingRegionsRequestToken(ICollection<int> regionIds, TimeSpan? timeOut = null)
+        /// <summary>
+        /// Number of regions player can pick.
+        /// </summary>
+        public int PickLimit { get; set; }
+
+        public PickStartingRegionsRequestToken(ICollection<int> regionIds, int pickLimit, TimeSpan? timeOut = null)
         {
             RegionIds = regionIds;
             Timeout = timeOut;
+            PickLimit = pickLimit;
         }
     }
 }

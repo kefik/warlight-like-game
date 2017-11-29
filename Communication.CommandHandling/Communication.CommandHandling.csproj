@@ -47,10 +47,13 @@
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="MapController.cs" />
     <Compile Include="Tokens\AttackRequestToken.cs" />
+    <Compile Include="Tokens\AttackResponseToken.cs" />
     <Compile Include="Tokens\OpponentMovesToken.cs" />
+    <Compile Include="Tokens\PickStartingRegionsResponseToken.cs" />
     <Compile Include="Tokens\PickStartingRegionsRequestToken.cs" />
     <Compile Include="Tokens\PlaceArmiesRequestToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tokens\PlaceArmiesResponseToken.cs" />
     <Compile Include="Tokens\Settings\MaxRoundsToken.cs" />
     <Compile Include="Tokens\Settings\SetupBotToken.cs" />
     <Compile Include="Tokens\Settings\StartingArmiesToken.cs" />

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using Common.Collections;
     using Communication.CommandHandling.Tokens;
     using Communication.Shared;
@@ -20,6 +21,8 @@
         private const string Go = "go";
         private const string PlaceArmies = "place_armies";
         private const string AttackOrTransfer = "attack/transfer";
+
+        private const string NoMoves = "No moves";
 
         private readonly SettingsTranslationUnit settingsTranslationUnit;
         private readonly SetupMapTranslationUnit setupMapTranslationUnit;
@@ -61,9 +64,11 @@
             switch (commandToken?.CommandTokenType)
             {
                 case CommandTokenType.PlaceArmiesResponse:
-                    throw new NotImplementedException();
-                case CommandTokenType.AttackReponse:
-                    throw new NotImplementedException();
+                    return TranslatePlaceArmiesResponse((PlaceArmiesResponseToken) commandToken);
+                case CommandTokenType.AttackResponse:
+                    return TranslateAttackResponse((AttackResponseToken) commandToken);
+                case CommandTokenType.PickStartingRegionsResponse:
+                    return TranslatePickStartingRegions((PickStartingRegionsResponseToken) commandToken);
                 case null:
                     return null;
                 default:
@@ -153,12 +158,72 @@
                 regionsIds.Add(int.Parse(token));
             }
 
-            return new PickStartingRegionsRequestToken(regionsIds, timeOut);
+            return new PickStartingRegionsRequestToken(regionsIds, 1, timeOut);
         }
 
         private OpponentMovesToken TranslateOpponentMoves(IEnumerable<string> tokens)
         {
             throw new NotImplementedException();
+        }
+
+        private string TranslatePlaceArmiesResponse(PlaceArmiesResponseToken token)
+        {
+            if (token.Changes == null || token.Changes.Count == 0)
+            {
+                return NoMoves;
+            }
+
+            StringBuilder sb = new StringBuilder();
+
+            if (!NamesIdsMappingDictionary.TryGetValue(token.PlayerId, out string playerName))
+            {
+                throw new ArgumentException($"Player with id {token.PlayerId} is not defined");
+            }
+            
+            foreach (var deployment in token.Changes)
+            {
+                sb.Append($"{playerName} {PlaceArmies} {deployment.RegionId} {deployment.Army}, ");
+            }
+
+            // remove last comma and space
+            sb.Remove(sb.Length - 2, 2);
+
+            return sb.ToString();
+        }
+
+        private string TranslateAttackResponse(AttackResponseToken token)
+        {
+            if (token.Attacks == null || token.Attacks.Count == 0)
+            {
+                return NoMoves;
+            }
+
+            if (!NamesIdsMappingDictionary.TryGetValue(token.PlayerId, out string playerName))
+            {
+                throw new ArgumentException($"Player with id {token.PlayerId} is not defined");
+            }
+
+            StringBuilder sb = new StringBuilder();
+            
+            foreach (var attack in token.Attacks)
+            {
+                sb.Append($"{playerName} {AttackOrTransfer} {attack.AttackingRegionId} {attack.DefendingRegionId} {attack.Army}, ");
+            }
+
+            // remove last comma and space
+            sb.Remove(sb.Length - 2, 2);
+
+            return sb.ToString();
+        }
+
+        private string TranslatePickStartingRegions(PickStartingRegionsResponseToken token)
+        {
+            if (token.RegionIds == null || token.RegionIds.Count > 1)
+            {
+                throw new ArgumentException("Player must pick a region.");
+            }
+
+            return token.RegionIds.First().ToString();
         }
     }
 }

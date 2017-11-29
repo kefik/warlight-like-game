@@ -48,7 +48,7 @@
                     break;
                 case CommandTokenType.AttackRequest:
                     break;
-                case CommandTokenType.AttackReponse:
+                case CommandTokenType.AttackResponse:
                     break;
                 default:
                     break;

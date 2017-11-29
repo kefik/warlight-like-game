@@ -35,6 +35,6 @@
         PlaceArmiesRequest,
         PlaceArmiesResponse,
         AttackRequest,
-        AttackReponse
+        AttackResponse
     }
 }
