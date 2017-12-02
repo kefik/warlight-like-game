@@ -61,6 +61,7 @@
     <Compile Include="Tokens\Settings\StartingRegionsToken.cs" />
     <Compile Include="Tokens\Settings\TimeBankToken.cs" />
     <Compile Include="Tokens\Settings\TimePerMoveToken.cs" />
+    <Compile Include="Tokens\SetupMap\ISetupMapToken.cs" />
     <Compile Include="Tokens\SetupMap\SetupNeighboursToken.cs" />
     <Compile Include="Tokens\SetupMap\SetupRegionsToken.cs" />
     <Compile Include="Tokens\SetupMap\SetupSuperRegionsToken.cs" />
@@ -75,6 +76,10 @@
     <ProjectReference Include="..\GameAi\GameAi.csproj">
       <Project>{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}</Project>
       <Name>GameAi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameObjectsLib\GameObjectsLib.csproj">
+      <Project>{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}</Project>
+      <Name>GameObjectsLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

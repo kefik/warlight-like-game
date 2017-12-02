@@ -6,7 +6,7 @@
     /// <summary>
     /// Token which contains region inicialization data.
     /// </summary>
-    public class SetupRegionsToken : ICommandToken
+    public class SetupRegionsToken : ISetupMapToken
     {
         public CommandTokenType CommandTokenType
         {

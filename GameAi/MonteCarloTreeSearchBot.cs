@@ -14,13 +14,13 @@
         {
         }
 
-        public override Round FindBestMove()
+        public override Turn FindBestMove()
         {
             var playerPerspective = PlayerPerspective.ShallowCopy();
             throw new NotImplementedException();
         }
 
-        public override Task<Round> FindBestMoveAsync()
+        public override Task<Turn> FindBestMoveAsync()
         {
             throw new NotSupportedException();
         }

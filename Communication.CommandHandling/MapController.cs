@@ -35,7 +35,7 @@
         /// Token in parameter must be Setup token.
         /// </remarks>
         /// <param name="commandToken">Token.</param>
-        public void SetupMap(ICommandToken commandToken)
+        public void SetupMap(ISetupMapToken commandToken)
         {
             if (HasStarted)
             {
@@ -65,14 +65,9 @@
         /// Updates map based on token passed in parameter.
         /// </summary>
         /// <param name="commandToken"></param>
-        public void UpdateMapToken(ICommandToken commandToken)
+        public void UpdateMap(UpdateMapToken commandToken)
         {
-            if (commandToken.CommandTokenType != CommandTokenType.UpdateMap)
-            {
-                throw new ArgumentException($"Invalid argument type {nameof(commandToken)}.");
-            }
-
-            var updateMapToken = (UpdateMapToken)commandToken;
+            var updateMapToken = commandToken;
 
             foreach (var change in updateMapToken.Changes)
             {

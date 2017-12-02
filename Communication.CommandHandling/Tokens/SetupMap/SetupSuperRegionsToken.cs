@@ -6,7 +6,7 @@
     /// <summary>
     /// Token which contains neighbour inicialization data.
     /// </summary>
-    public class SetupSuperRegionsToken : ICommandToken
+    public class SetupSuperRegionsToken : ISetupMapToken
     {
         public CommandTokenType CommandTokenType
         {

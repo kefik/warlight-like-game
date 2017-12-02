@@ -13,7 +13,7 @@
     /// <summary>
     /// Minimized version of <see cref="Game"/> from perspective of a given <see cref="Player"/>.
     /// </summary>
-    public abstract class GameBot : IBot<Round>
+    public abstract class GameBot : IBot<Turn>
     {
         internal GameBot(PlayerPerspective playerPerspective, Difficulty difficulty)
         {
@@ -30,12 +30,12 @@
         /// Finds and returns best move for given bot state.
         /// </summary>
         /// <returns></returns>
-        public abstract Round FindBestMove();
+        public abstract Turn FindBestMove();
 
         /// <summary>
         /// Asynchronously finds best move for the bot at given state.
         /// </summary>
         /// <returns></returns>
-        public abstract Task<Round> FindBestMoveAsync();
+        public abstract Task<Turn> FindBestMoveAsync();
     }
 }

@@ -10,7 +10,7 @@
 
     public class GameBotFactory
     {
-        public IBot<Round> CreateFromGame(Game game, Player player, GameBotType gameBotType)
+        public IBot<Turn> CreateFromGame(Game game, Player player, GameBotType gameBotType)
         {
             if (!game.Players.Contains(player))
             {
@@ -104,6 +104,17 @@
             }
 
             return gameBot;
+        }
+
+        public IBot<Turn> Create(GameBotType gameBotType, Map map, Difficulty difficulty, byte playerEncoded)
+        {
+            switch (gameBotType)
+            {
+                case GameBotType.MonteCarloTreeSearchBot:
+                    return new MonteCarloTreeSearchBot(new PlayerPerspective(map, playerEncoded), difficulty);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
+            }
         }
     }
 }

@@ -6,7 +6,7 @@
     /// <summary>
     /// Token containing information about setting up wastelands.
     /// </summary>
-    public class SetupWastelandsToken : ICommandToken
+    public class SetupWastelandsToken : ISetupMapToken
     {
         public CommandTokenType CommandTokenType
         {

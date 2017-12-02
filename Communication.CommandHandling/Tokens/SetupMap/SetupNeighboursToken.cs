@@ -6,7 +6,7 @@
     /// <summary>
     /// Token which contains neighbour inicialization data.
     /// </summary>
-    public class SetupNeighboursToken : ICommandToken
+    public class SetupNeighboursToken : ISetupMapToken
     {
         public CommandTokenType CommandTokenType
         {

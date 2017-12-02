@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheAiGames.CommunicationObj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Tests", "Common.Tests\Common.Tests.csproj", "{C4C1CF72-EE5D-4B1F-B572-9181243F018A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication.CommandHandling.Tests", "Communication.CommandHandling.Tests\Communication.CommandHandling.Tests.csproj", "{B50BD638-80B2-4514-82E8-F7F8DDC080EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{C4C1CF72-EE5D-4B1F-B572-9181243F018A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4C1CF72-EE5D-4B1F-B572-9181243F018A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4C1CF72-EE5D-4B1F-B572-9181243F018A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B50BD638-80B2-4514-82E8-F7F8DDC080EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B50BD638-80B2-4514-82E8-F7F8DDC080EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B50BD638-80B2-4514-82E8-F7F8DDC080EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B50BD638-80B2-4514-82E8-F7F8DDC080EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,6 +116,7 @@ Global
 		{904BAF22-A0A7-469B-B036-4CF9BF9190F5} = {2E315EA8-397F-49D5-895D-3DE24CE2EAD6}
 		{4F89350E-5363-4822-AD07-4D5272B55C84} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 		{C4C1CF72-EE5D-4B1F-B572-9181243F018A} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
+		{B50BD638-80B2-4514-82E8-F7F8DDC080EE} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D606CDC-59E3-471D-99B3-397C7AD8F1AB}
