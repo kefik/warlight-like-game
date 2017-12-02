@@ -32,7 +32,7 @@
         [Test]
         public void AddTest()
         {
-            Assert.Throws<ArgumentException>(() => testDictionary.Add(null, 7));
+            Assert.Throws<ArgumentNullException>(() => testDictionary.Add(null, 7));
             Assert.Throws<ArgumentException>(() => testDictionary.Add("testt", 2));
             Assert.Throws<ArgumentException>(() => testDictionary.Add("test1", 10));
             
