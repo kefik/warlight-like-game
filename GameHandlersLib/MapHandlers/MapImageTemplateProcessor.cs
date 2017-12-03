@@ -1,9 +1,11 @@
-﻿namespace GameObjectsLib.GameMap
+﻿namespace GameHandlersLib.MapHandlers
 {
     using System;
     using System.Collections.Generic;
     using System.Drawing;
-    using GameHandlersLib.MapHandlers;
+    using Common.Collections;
+    using GameObjectsLib.GameMap;
+    using Region = GameObjectsLib.GameMap.Region;
 
     /// <summary>
     ///     Represents low level visual representation of the map template,
@@ -11,15 +13,12 @@
     /// </summary>
     internal class MapImageTemplateProcessor
     {
-        Map map;
-
         /// <summary>
         ///     Image containing highlighted version of the game map.
         /// </summary>
         public Bitmap RegionHighlightedImage { get; }
 
-        private readonly Dictionary<Color, Region> regionsMapped;
-        private readonly Dictionary<Region, Color> colorsMapped;
+        private readonly BidirectionalDictionary<Color, Region> regionsColorsMapped;
 
         /// <summary>
         ///     Constructs MapImage instance.
@@ -33,7 +32,6 @@
         public MapImageTemplateProcessor(Map map, Image regionHighlightedImage,
             Dictionary<Color, Region> regionsWithColors)
         {
-            this.map = map;
             RegionHighlightedImage = new Bitmap(regionHighlightedImage);
 
             if (map.Regions.Count != regionsWithColors.Count)
@@ -41,13 +39,12 @@
                 throw new ArgumentException();
             }
 
-            regionsMapped = regionsWithColors;
+            regionsColorsMapped = new BidirectionalDictionary<Color, Region>();
 
             // initialize color
-            colorsMapped = new Dictionary<Region, Color>();
             foreach (KeyValuePair<Color, Region> item in regionsWithColors)
             {
-                colorsMapped.Add(item.Value, item.Key);
+                regionsColorsMapped.Add(item.Key, item.Value);
             }
         }
 
@@ -58,7 +55,7 @@
         /// <returns>Region corresponding to the color.</returns>
         public Region GetRegion(Color color)
         {
-            return regionsMapped.TryGetValue(color, out Region region) ? region : null;
+            return regionsColorsMapped.TryGetValue(color, out Region region) ? region : null;
         }
 
         /// <summary>
@@ -87,7 +84,7 @@
         /// <returns>Color matching the region.</returns>
         public Color? GetColor(Region region)
         {
-            bool correct = colorsMapped.TryGetValue(region, out Color color);
+            bool correct = regionsColorsMapped.TryGetValue(region, out Color color);
             return correct ? new Color?(color) : null;
         }
     }
