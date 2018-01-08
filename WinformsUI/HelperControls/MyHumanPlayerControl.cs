@@ -108,7 +108,7 @@
         private void UserChanged(User user)
         {
             Invoke(user.UserType == UserType.MyNetworkUser
-                ? (() => playerNameTextBox.Enabled = false)
+                ? new Action(() => playerNameTextBox.Enabled = false)
                 : new Action(() => playerNameTextBox.Enabled = true));
         }
     }

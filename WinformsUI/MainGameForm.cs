@@ -226,7 +226,7 @@
             }
             else
             {
-                loggedInLabel.Text = $"You are currently logged in as a local user named {Global.MyUser.Name}.";
+                loggedInLabel.Text = $"You are currently logged in as a local user.";
             }
         }
 
