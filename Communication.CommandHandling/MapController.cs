@@ -13,7 +13,7 @@
         private readonly bool isFogOfWar;
         private readonly int defaultArmy;
 
-        private Map map;
+        private MapMin mapMin;
 
         public bool HasStarted { get; private set; }
 
@@ -72,7 +72,7 @@
             foreach (var change in updateMapToken.Changes)
             {
                 // get the region
-                var region = map.RegionsMin.First(x => x.Id == change.RegionId);
+                var region = mapMin.RegionsMin.First(x => x.Id == change.RegionId);
 
                 // update the region
                 region.Army = change.Army;
@@ -84,14 +84,14 @@
         /// Gets map that was setted up by tokens.
         /// </summary>
         /// <returns></returns>
-        public Map GetMap()
+        public MapMin GetMap()
         {
             if (!HasStarted)
             {
                 throw new ArgumentException($"You cannot get map because the game has not started.");
             }
 
-            return map;
+            return mapMin;
         }
 
         /// <summary>
@@ -122,9 +122,9 @@
                 superRegionMin.Regions = regionsUnderSuperRegion.ToArray();
             }
 
-            map = new Map(regionsMin.ToArray(), superRegionsMin.ToArray());
+            mapMin = new MapMin(regionsMin.ToArray(), superRegionsMin.ToArray());
 
-            map.ReconstructGraph();
+            mapMin.ReconstructGraph();
         }
 
         private void SetupNeighbours(ICollection<RegionMin> regionsMin)

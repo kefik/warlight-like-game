@@ -9,22 +9,25 @@ namespace GameAi
     /// </summary>
     public struct PlayerPerspective
     {
-        public Map Map;
-        public byte PlayerEncoded { get; internal set; }
+        /// <summary>
+        /// Minified version of the map.
+        /// </summary>
+        public readonly MapMin MapMin;
+
+        /// <summary>
+        /// Represents encoded identification of the player.
+        /// </summary>
+        public byte PlayerEncoded { get; }
         
         public PlayerPerspective(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, byte playerEncoded)
         {
-            Map = new Map()
-            {
-                RegionsMin = regionsMin,
-                SuperRegionsMin = superRegionsMin
-            };
+            MapMin = new MapMin(regionsMin, superRegionsMin);
             PlayerEncoded = playerEncoded;
         }
 
-        public PlayerPerspective(Map map, byte playerEncoded)
+        public PlayerPerspective(MapMin mapMin, byte playerEncoded)
         {
-            Map = map;
+            MapMin = mapMin;
             PlayerEncoded = playerEncoded;
         }
 
@@ -35,21 +38,7 @@ namespace GameAi
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal PlayerPerspective ShallowCopy()
         {
-            RegionMin[] regionsMin = new RegionMin[Map.RegionsMin.Length];
-            Array.Copy(Map.RegionsMin, regionsMin, Map.RegionsMin.Length);
-
-            SuperRegionMin[] superRegionsMin = new SuperRegionMin[Map.SuperRegionsMin.Length];
-            Array.Copy(Map.SuperRegionsMin, superRegionsMin, Map.SuperRegionsMin.Length);
-
-            return new PlayerPerspective
-            {
-                PlayerEncoded = PlayerEncoded,
-                Map = new Map()
-                {
-                    RegionsMin = regionsMin,
-                    SuperRegionsMin = superRegionsMin
-                }
-            };
+            return new PlayerPerspective(MapMin.ShallowCopy(), PlayerEncoded);
         }
     }
 }

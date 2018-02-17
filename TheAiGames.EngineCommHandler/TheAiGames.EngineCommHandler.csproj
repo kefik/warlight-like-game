@@ -47,5 +47,19 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Communication.CommandHandling\Communication.CommandHandling.csproj">
+      <Project>{762984CC-0E48-4762-B05A-00F48742E863}</Project>
+      <Name>Communication.CommandHandling</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Communication.Shared\Communication.Shared.csproj">
+      <Project>{402F06CF-1819-4CCE-9E31-A07B560BD0FA}</Project>
+      <Name>Communication.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TheAiGames.CommunicationObjects\TheAiGames.CommunicationObjects.csproj">
+      <Project>{A8894037-EDF7-4F15-9CC3-E8D69FD98176}</Project>
+      <Name>TheAiGames.CommunicationObjects</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

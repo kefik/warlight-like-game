@@ -11,7 +11,7 @@
     /// <summary>
     /// Translates commands in TheAiGames syntax into tokens defined by my syntax.
     /// </summary>
-    internal class Translator : ITranslator
+    public class Translator : ITranslator
     {
         private const string Settings = "settings";
         private const string SetupMap = "setup_map";

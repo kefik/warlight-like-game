@@ -72,20 +72,12 @@
                 superRegion.Regions = containedRegions.ToArray();
             }
 
-            var map = new Map()
-            {
-                RegionsMin = regions,
-                SuperRegionsMin = superRegions
-            };
+            var map = new MapMin(regions, superRegions);
 
             map.ReconstructGraph();
 
             dictionary.TryGetValue(player, out byte playerEncoded);
-            var playerPerspective = new PlayerPerspective()
-            {
-                PlayerEncoded = playerEncoded,
-                Map = map
-            };
+            var playerPerspective = new PlayerPerspective(map, playerEncoded);
 
             Difficulty difficulty = Difficulty.Hard;
             if (player.GetType() == typeof(AiPlayer))
@@ -106,12 +98,12 @@
             return gameBot;
         }
 
-        public IBot<Turn> Create(GameBotType gameBotType, Map map, Difficulty difficulty, byte playerEncoded)
+        public IBot<Turn> Create(GameBotType gameBotType, MapMin mapMin, Difficulty difficulty, byte playerEncoded)
         {
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    return new MonteCarloTreeSearchBot(new PlayerPerspective(map, playerEncoded), difficulty);
+                    return new MonteCarloTreeSearchBot(new PlayerPerspective(mapMin, playerEncoded), difficulty);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
             }

@@ -1,13 +1,19 @@
 namespace GameAi
 {
+    using System;
+    using System.Diagnostics.Contracts;
     using System.Linq;
+    using System.Runtime.CompilerServices;
 
-    public struct Map
+    /// <summary>
+    /// Represents minified version of the map.
+    /// </summary>
+    public struct MapMin
     {
-        public RegionMin[] RegionsMin { get; internal set; }
-        public SuperRegionMin[] SuperRegionsMin { get; internal set; }
+        public RegionMin[] RegionsMin { get; }
+        public SuperRegionMin[] SuperRegionsMin { get; }
 
-        public Map(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin)
+        public MapMin(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin)
         {
             RegionsMin = regionsMin;
             SuperRegionsMin = superRegionsMin;
@@ -42,6 +48,19 @@ namespace GameAi
                     region.NeighbourRegions[i] = realRegion;
                 }
             }
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal MapMin ShallowCopy()
+        {
+            RegionMin[] regionsMin = new RegionMin[RegionsMin.Length];
+            Array.Copy(RegionsMin, regionsMin, RegionsMin.Length);
+
+            SuperRegionMin[] superRegionsMin = new SuperRegionMin[SuperRegionsMin.Length];
+            Array.Copy(SuperRegionsMin, superRegionsMin, SuperRegionsMin.Length);
+
+            return new MapMin(regionsMin, superRegionsMin);
         }
     }
 }

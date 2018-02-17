@@ -9,8 +9,13 @@ namespace GameAi
     using GameObjectsLib.Players;
 
     /// <summary>
-    /// Minimized version of <see cref="Region"/>.
+    /// Minimized version of <see cref="Region"/>. It's purpose is
+    /// to be smaller and faster than <seealso cref="Region"/> class for
+    /// evaluation.
     /// </summary>
+    /// <remarks>
+    /// Must be class and not struct, because of neighbours.
+    /// </remarks>
     public class RegionMin
     {
         private class RegionMinStatic
@@ -47,7 +52,7 @@ namespace GameAi
             }
         }
         /// <summary>
-        /// First 5 bits = owner, 1 visibility, 12 bits = army
+        /// First 5 bits = owner, 1 visibility, 10 bits = army
         /// </summary>
         private ushort ownerAndArmyEncoded;
 
@@ -56,13 +61,17 @@ namespace GameAi
         /// <summary>
         /// Represents the owner from players perspective specified in constructor.
         /// </summary>
+        /// <remarks>
+        /// First 5 bits of <see cref="ownerAndArmyEncoded"/>
+        /// are used for owner identification.
+        /// </remarks>
         public byte OwnerEncoded
         {
             get { return (byte) (ownerAndArmyEncoded & 0b11111); }
             set
             {
                 ownerAndArmyEncoded &= 0b1111111111100000; // 5 zeros, 11 ones
-                value &= 0b00011111;
+                value &= 0b11111;
                 ownerAndArmyEncoded |= value;
             }
         }
@@ -86,33 +95,42 @@ namespace GameAi
         /// <summary>
         /// Represents size of army of the region.
         /// </summary>
+        /// <remarks>10 upper bits from <see cref="ownerAndArmyEncoded"/>
+        /// are used for army.</remarks>
         public int Army
         {
             get { return ownerAndArmyEncoded >> 6; }
             set
             {
-                ownerAndArmyEncoded = (ushort)(((ushort.MaxValue >> 10) << 10) | ((ushort)value >> 6));
+                ushort armyValue = (ushort) value;
+
+                // army mask = 10x 0, 6x 1
+                ushort armyMask = 0b0000000000111111;
+
+                // reset army bits
+                ownerAndArmyEncoded &= armyMask;
+
+                ownerAndArmyEncoded |= (ushort)(armyValue << 6);
             }
         }
         
         /// <summary>
         /// True, if the region is hidden by Fog of war.
         /// </summary>
-        public bool IsVisible
+        /// <remarks>
+        /// 6-th bit of <see cref="ownerAndArmyEncoded"/> is used for
+        /// IsVisible boolean.
+        /// </remarks>
+        public unsafe bool IsVisible
         {
             get { return (ownerAndArmyEncoded & 0b100000) != 0; }
             set
             {
-                ushort mask;
-                if (value)
-                {
-                    mask = ushort.MaxValue & 0b100000;
-                }
-                else
-                {
-                    mask = 0;
-                }
-                ownerAndArmyEncoded = (ushort)(mask | ownerAndArmyEncoded);
+                // get byte value (faster than if)
+                byte byteValue = *((byte*) (&value));
+
+                ushort shiftedValue = (ushort)(byteValue << 5);
+                ownerAndArmyEncoded = (ushort)(shiftedValue | ownerAndArmyEncoded);
             }
         }
 
