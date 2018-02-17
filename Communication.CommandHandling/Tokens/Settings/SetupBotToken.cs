@@ -5,11 +5,6 @@
 
     public class SetupBotToken : ICommandToken
     {
-        public CommandTokenType CommandTokenType
-        {
-            get { return CommandTokenType.SettingsBot; }
-        }
-
         public int PlayerId { get; }
         public OwnerPerspective OwnerPerspective { get; }
 

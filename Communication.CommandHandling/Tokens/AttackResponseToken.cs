@@ -5,14 +5,6 @@
 
     public class AttackResponseToken : ICommandToken
     {
-        public CommandTokenType CommandTokenType
-        {
-            get
-            {
-                return CommandTokenType.AttackResponse;
-            }
-        }
-
         public int PlayerId { get; }
 
         public ICollection<(int AttackingRegionId, int DefendingRegionId, int Army)> Attacks { get; }

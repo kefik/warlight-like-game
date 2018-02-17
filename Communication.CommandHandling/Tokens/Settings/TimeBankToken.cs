@@ -8,11 +8,6 @@
     /// </summary>
     public class TimeBankToken : ICommandToken
     {
-        public CommandTokenType CommandTokenType
-        {
-            get { return CommandTokenType.SettingsTimeBank; }
-        }
-
         public TimeSpan? TimeBankInterval { get; }
 
         public TimeBankToken(TimeSpan? timeBankInterval = null)

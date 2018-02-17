@@ -1,13 +1,9 @@
 ﻿namespace Communication.Shared
 {
     /// <summary>
-    /// Represents a command.
+    /// Represents a command. Every token must inherit from this interface.
     /// </summary>
     public interface ICommandToken
     {
-        /// <summary>
-        /// Type of the command.
-        /// </summary>
-        CommandTokenType CommandTokenType { get; }
     }
 }

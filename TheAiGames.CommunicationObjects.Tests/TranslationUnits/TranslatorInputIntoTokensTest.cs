@@ -27,7 +27,7 @@
         {
             var token = translator.Translate("settings timebank 10000");
 
-            Assert.AreEqual(token.CommandTokenType, CommandTokenType.SettingsTimeBank);
+            Assert.AreEqual(token.GetType(), typeof(TimeBankToken));
 
             var convertedToken = (TimeBankToken)token;
 

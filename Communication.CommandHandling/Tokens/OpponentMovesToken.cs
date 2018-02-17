@@ -7,12 +7,5 @@
     /// </summary>
     public class OpponentMovesToken : ICommandToken
     {
-        public CommandTokenType CommandTokenType
-        {
-            get
-            {
-                return CommandTokenType.OpponentMoves;
-            }
-        }
     }
 }

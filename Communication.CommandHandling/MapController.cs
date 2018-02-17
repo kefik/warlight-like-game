@@ -42,19 +42,19 @@
                 throw new ArgumentException($"The game has already started, you cannot setup map.");
             }
 
-            switch (commandToken.CommandTokenType)
+            switch (commandToken)
             {
-                case CommandTokenType.SetupSuperRegions:
-                    setupSuperRegionsToken = (SetupSuperRegionsToken)commandToken;
+                case SetupSuperRegionsToken token:
+                    setupSuperRegionsToken = token;
                     break;
-                case CommandTokenType.SetupRegions:
-                    setupRegionsToken = (SetupRegionsToken)commandToken;
+                case SetupRegionsToken token:
+                    setupRegionsToken = token;
                     break;
-                case CommandTokenType.SetupNeighbours:
-                    setupNeighboursToken = (SetupNeighboursToken)commandToken;
+                case SetupNeighboursToken token:
+                    setupNeighboursToken = token;
                     break;
-                case CommandTokenType.SetupWastelands:
-                    setupWastelandsToken = (SetupWastelandsToken)commandToken;
+                case SetupWastelandsToken token:
+                    setupWastelandsToken = token;
                     break;
                 default:
                     throw new ArgumentException($"When calling {nameof(SetupMap)}, its argument {nameof(commandToken)} must be of Setup type.");

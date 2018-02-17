@@ -8,11 +8,6 @@
     /// </summary>
     public class SetupSuperRegionsToken : ISetupMapToken
     {
-        public CommandTokenType CommandTokenType
-        {
-            get { return CommandTokenType.SetupSuperRegions; }
-        }
-
         public ICollection<(int SuperRegionId, int BonusArmy)> InitialChanges { get; }
 
         public SetupSuperRegionsToken(ICollection<(int SuperRegionId, int BonusArmy)> initialChanges)

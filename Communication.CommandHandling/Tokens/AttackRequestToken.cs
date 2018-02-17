@@ -8,14 +8,6 @@
     /// </summary>
     public class AttackRequestToken : ICommandToken
     {
-        public CommandTokenType CommandTokenType
-        {
-            get
-            {
-                return CommandTokenType.AttackRequest;
-            }
-        }
-
         public TimeSpan? Timeout { get; }
 
         public AttackRequestToken(TimeSpan? timeout = null)

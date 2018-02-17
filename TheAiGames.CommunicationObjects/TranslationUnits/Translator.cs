@@ -61,19 +61,7 @@
 
         public string Translate(ICommandToken commandToken)
         {
-            switch (commandToken?.CommandTokenType)
-            {
-                case CommandTokenType.PlaceArmiesResponse:
-                    return TranslatePlaceArmiesResponse((PlaceArmiesResponseToken) commandToken);
-                case CommandTokenType.AttackResponse:
-                    return TranslateAttackResponse((AttackResponseToken) commandToken);
-                case CommandTokenType.PickStartingRegionsResponse:
-                    return TranslatePickStartingRegions((PickStartingRegionsResponseToken) commandToken);
-                case null:
-                    return null;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(commandToken));
-            }
+            return commandToken != null ? TranslateFromToken((dynamic) commandToken) : null;
         }
 
         private UpdateMapToken TranslateUpdateMap(IEnumerable<string> tokens)
@@ -166,7 +154,7 @@
             throw new NotImplementedException();
         }
 
-        private string TranslatePlaceArmiesResponse(PlaceArmiesResponseToken token)
+        private string TranslateFromToken(PlaceArmiesResponseToken token)
         {
             if (token.Changes == null || token.Changes.Count == 0)
             {
@@ -191,7 +179,7 @@
             return sb.ToString();
         }
 
-        private string TranslateAttackResponse(AttackResponseToken token)
+        private string TranslateFromToken(AttackResponseToken token)
         {
             if (token.Attacks == null || token.Attacks.Count == 0)
             {
@@ -216,7 +204,7 @@
             return sb.ToString();
         }
 
-        private string TranslatePickStartingRegions(PickStartingRegionsResponseToken token)
+        private string TranslateFromToken(PickStartingRegionsResponseToken token)
         {
             if (token.RegionIds == null || token.RegionIds.Count > 1)
             {

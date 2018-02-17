@@ -3,11 +3,6 @@
     using Shared;
     public class StartingArmiesToken : ICommandToken
     {
-        public CommandTokenType CommandTokenType
-        {
-            get { return CommandTokenType.SettingsStartingArmies; }
-        }
-
         public int StartingArmySize { get; }
 
         public StartingArmiesToken(int startingArmySize)

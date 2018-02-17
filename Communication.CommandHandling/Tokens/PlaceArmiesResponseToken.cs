@@ -5,11 +5,6 @@
 
     public class PlaceArmiesResponseToken : ICommandToken
     {
-        public CommandTokenType CommandTokenType
-        {
-            get { return CommandTokenType.PlaceArmiesResponse; }
-        }
-
         public int PlayerId { get; }
 
         public ICollection<(int RegionId, int Army)> Changes { get; }

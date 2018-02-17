@@ -6,14 +6,6 @@
 
     public class PickStartingRegionsRequestToken : ICommandToken
     {
-        public CommandTokenType CommandTokenType
-        {
-            get
-            {
-                return CommandTokenType.PickStartingRegionsRequest;
-            }
-        }
-
         public TimeSpan? Timeout { get; }
 
         public ICollection<int> RegionIds { get; }
