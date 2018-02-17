@@ -152,25 +152,18 @@ namespace GameAi
             set { Static.Neighbours = value; }
         } 
         
-        internal RegionMin(Region region, byte ownerEncoded, Player playerPerspective, bool isFogOfWarGame = true)
+        internal RegionMin(Region region, byte ownerEncoded, Player playerPerspective)
         {
             Army = region.Army;
             OwnerEncoded = region.Owner == null ? (byte)0 : ownerEncoded;
-            
-            if (!isFogOfWarGame || region.IsNeighbourOf(playerPerspective))
-            {
-                IsVisible = true;
-            }
 
             Static = new RegionMinStatic(region, playerPerspective);
         }
 
-        public RegionMin(int regionId, SuperRegionMin superRegion, int army, bool isFogOfWarGame = true, bool isWasteland = false)
+        public RegionMin(int regionId, SuperRegionMin superRegion, int army, bool isWasteland = false)
         {
             Static = new RegionMinStatic(regionId, superRegion, isWasteland);
             Army = army;
-
-            IsVisible = !isFogOfWarGame;
         }
 
         /// <summary>

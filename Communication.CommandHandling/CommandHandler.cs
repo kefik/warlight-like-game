@@ -25,28 +25,30 @@
         public int? StartingPickRegionsCount { get; private set; }
         public int? MaxRoundsCount { get; private set; }
         public int? StartingArmyCount { get; private set; }
+        // TODO: option to set it dynamically
+        public bool IsFogOfWar { get; private set; } = true;
 
         #endregion
 
         public CommandHandler()
         {
-            mapController = new MapController(true);
+            mapController = new MapController(IsFogOfWar);
             playerDictionary = new Dictionary<int, OwnerPerspective>();
         }
 
         public ICommandToken Execute(ICommandToken commandToken)
         {
             // dynamically dispatch for the token
-            return Execute((dynamic)commandToken);
+            return ExecuteCommand((dynamic)commandToken);
         }
 
-        private ICommandToken Execute(TimeBankToken timeBankToken)
+        private ICommandToken ExecuteCommand(TimeBankToken timeBankToken)
         {
             TimeBank = timeBankToken.TimeBankInterval;
             return null;
         }
 
-        private ICommandToken Execute(SetupBotToken token)
+        private ICommandToken ExecuteCommand(SetupBotToken token)
         {
             int playerId = token.PlayerId;
             OwnerPerspective ownerPerspective = token.OwnerPerspective;
@@ -55,40 +57,40 @@
             return null;
         }
 
-        private ICommandToken Execute(StartingPickRegionsCountToken token)
+        private ICommandToken ExecuteCommand(StartingPickRegionsCountToken token)
         {
             StartingPickRegionsCount = token.RegionsToPickCount;
             return null;
         }
 
-        private ICommandToken Execute(PlaceArmiesRequestToken token)
+        private ICommandToken ExecuteCommand(PlaceArmiesRequestToken token)
         {
             // TODO: solve request
 
             throw new NotImplementedException();
         }
 
-        private ICommandToken Execute(AttackRequestToken token)
+        private ICommandToken ExecuteCommand(AttackRequestToken token)
         {
             // TODO: solve request
 
             throw new NotImplementedException();
         }
 
-        private ICommandToken Execute(PickStartingRegionsRequestToken token)
+        private ICommandToken ExecuteCommand(PickStartingRegionsRequestToken token)
         {
             // TODO: solve request
 
             throw new NotImplementedException();
         }
 
-        private ICommandToken Execute(TimePerMoveToken token)
+        private ICommandToken ExecuteCommand(TimePerMoveToken token)
         {
             TimePerMove = token.Time;
             return null;
         }
 
-        private ICommandToken Execute(StartingRegionsToken token)
+        private ICommandToken ExecuteCommand(StartingRegionsToken token)
         {
             mapController.Start();
 
@@ -98,32 +100,32 @@
             int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
 
             bot = factory.Create(GameBotType.MonteCarloTreeSearchBot, mapController.GetMap(), Difficulty.Hard,
-                (byte)myPlayerId);
+                (byte)myPlayerId, IsFogOfWar);
 
             // TODO: run to get the best move
 
             return null;
         }
 
-        private ICommandToken Execute(MaxRoundsToken token)
+        private ICommandToken ExecuteCommand(MaxRoundsToken token)
         {
             MaxRoundsCount = token.MaxRoundsCount;
             return null;
         }
 
-        private ICommandToken Execute(StartingArmiesToken token)
+        private ICommandToken ExecuteCommand(StartingArmiesToken token)
         {
             StartingArmyCount = token.StartingArmySize;
             return null;
         }
 
-        private ICommandToken Execute(ISetupMapToken token)
+        private ICommandToken ExecuteCommand(ISetupMapToken token)
         {
             mapController.SetupMap(token);
             return null;
         }
 
-        private ICommandToken Execute(UpdateMapToken token)
+        private ICommandToken ExecuteCommand(UpdateMapToken token)
         {
             mapController.UpdateMap(token);
             return null;

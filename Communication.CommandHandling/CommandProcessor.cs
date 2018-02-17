@@ -1,5 +1,6 @@
 ﻿namespace Communication.CommandHandling
 {
+    using System;
     using Shared;
 
     public class CommandProcessor : ICommandProcessor
@@ -15,13 +16,21 @@
 
         public string Process(string input)
         {
-            var inputCommandToken = translator.Translate(input);
+            try
+            {
+                var inputCommandToken = translator.Translate(input);
 
-            var outputCommandToken = commandHandler.Execute(inputCommandToken);
+                var outputCommandToken = commandHandler.Execute(inputCommandToken);
 
-            string output = translator.Translate(outputCommandToken);
+                string output = translator.Translate(outputCommandToken);
 
-            return output;
+                return output;
+            }
+            // NotImplementedException => I can ignore this command
+            catch (NotImplementedException)
+            {
+                return null;
+            }
         }
     }
 }

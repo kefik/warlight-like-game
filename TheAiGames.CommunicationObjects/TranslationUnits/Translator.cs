@@ -151,6 +151,7 @@
 
         private OpponentMovesToken TranslateOpponentMoves(IEnumerable<string> tokens)
         {
+            // no need to implement for now, bot probably doesn't need to know
             throw new NotImplementedException();
         }
 

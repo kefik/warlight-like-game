@@ -32,11 +32,11 @@
             {
                 if (x.Owner == null)
                 {
-                    return new RegionMin(x, 0, player, game.IsFogOfWar);
+                    return new RegionMin(x, 0, player);
                 }
                 dictionary.TryGetValue(x.Owner, out byte encodedOwner);
 
-                return new RegionMin(x, encodedOwner, player, game.IsFogOfWar);
+                return new RegionMin(x, encodedOwner, player);
             }).ToArray();
 
             // setup neighbours to those regions
@@ -77,7 +77,9 @@
             map.ReconstructGraph();
 
             dictionary.TryGetValue(player, out byte playerEncoded);
+
             var playerPerspective = new PlayerPerspective(map, playerEncoded);
+            InitializeVisibility(playerPerspective, game.IsFogOfWar);
 
             Difficulty difficulty = Difficulty.Hard;
             if (player.GetType() == typeof(AiPlayer))
@@ -89,7 +91,7 @@
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    gameBot = new MonteCarloTreeSearchBot(playerPerspective, difficulty);
+                    gameBot = new MonteCarloTreeSearchBot(playerPerspective, difficulty, game.IsFogOfWar);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
@@ -98,14 +100,44 @@
             return gameBot;
         }
 
-        public IBot<Turn> Create(GameBotType gameBotType, MapMin mapMin, Difficulty difficulty, byte playerEncoded)
+        public IBot<Turn> Create(GameBotType gameBotType, MapMin mapMin, Difficulty difficulty, byte playerEncoded, bool isFogOfWar)
         {
+            PlayerPerspective playerPerspective = new PlayerPerspective(mapMin, playerEncoded);
+            InitializeVisibility(playerPerspective, isFogOfWar);
+
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    return new MonteCarloTreeSearchBot(new PlayerPerspective(mapMin, playerEncoded), difficulty);
+                    return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
+            }
+        }
+
+        /// <summary>
+        /// Initializes visibility of all regions based on <see cref="PlayerPerspective.PlayerEncoded"/>.
+        /// </summary>
+        /// <param name="playerPerspective"></param>
+        /// <param name="isFogOfWar"></param>
+        private void InitializeVisibility(PlayerPerspective playerPerspective, bool isFogOfWar)
+        {
+            if (isFogOfWar)
+            {
+                foreach (RegionMin regionMin in playerPerspective.MapMin.RegionsMin)
+                {
+                    regionMin.IsVisible = true;
+                }
+            }
+            else
+            {
+                foreach (var regionMin in playerPerspective.MapMin.RegionsMin)
+                {
+                    if (playerPerspective.IsRegionMine(regionMin)
+                        || playerPerspective.IsNeighbourToMyRegion(regionMin))
+                    {
+                        regionMin.IsVisible = true;
+                    }
+                }
             }
         }
     }

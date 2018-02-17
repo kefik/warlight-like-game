@@ -15,17 +15,18 @@
     /// </summary>
     public abstract class GameBot : IBot<Turn>
     {
-        internal GameBot(PlayerPerspective playerPerspective, Difficulty difficulty)
+        public readonly PlayerPerspective PlayerPerspective;
+
+        public Difficulty Difficulty { get; }
+        public bool IsFogOfWar { get; }
+        
+        internal GameBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar)
         {
             this.PlayerPerspective = playerPerspective;
             this.Difficulty = difficulty;
+            IsFogOfWar = isFogOfWar;
         }
 
-        protected internal Difficulty Difficulty { get; }
-        protected internal bool IsFogOfWar { get; set; }
-
-        public PlayerPerspective PlayerPerspective;
-        
         /// <summary>
         /// Finds and returns best move for given bot state.
         /// </summary>

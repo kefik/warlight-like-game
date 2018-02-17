@@ -160,11 +160,11 @@
                 RegionMin regionMin;
                 if (setupWastelandsToken == null || !setupWastelandsToken.Regions.Contains(regionId))
                 {
-                    regionMin = new RegionMin(regionId, superRegion, defaultArmy, isFogOfWar);
+                    regionMin = new RegionMin(regionId, superRegion, defaultArmy);
                 }
                 else
                 {
-                    regionMin = new RegionMin(regionId, superRegion, defaultArmy, isFogOfWar, true);
+                    regionMin = new RegionMin(regionId, superRegion, defaultArmy, true);
                 }
 
                 regionsMin.Add(regionMin);

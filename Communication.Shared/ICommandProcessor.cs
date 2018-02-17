@@ -1,7 +1,8 @@
 ﻿namespace Communication.Shared
 {
     /// <summary>
-    /// Handles processing of commands.
+    /// Handles processing of commands, namely translating, interpreting
+    /// and translating back.
     /// </summary>
     public interface ICommandProcessor
     {

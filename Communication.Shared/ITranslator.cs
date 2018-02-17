@@ -1,9 +1,7 @@
 ﻿namespace Communication.Shared
 {
-    using System.Collections.Generic;
-
     /// <summary>
-    /// Can translate into string input into command and other way.
+    /// Can translate string input into command and other way.
     /// </summary>
     public interface ITranslator
     {

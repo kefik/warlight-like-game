@@ -4,9 +4,10 @@ namespace GameAi
     using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using GameObjectsLib.GameMap;
 
     /// <summary>
-    /// Represents minified version of the map.
+    /// Represents minified version of the <see cref="Map"/>.
     /// </summary>
     public struct MapMin
     {
