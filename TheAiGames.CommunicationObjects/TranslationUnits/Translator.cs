@@ -35,10 +35,10 @@
             this.setupMapTranslationUnit = new SetupMapTranslationUnit();
         }
 
-        public ICommandToken Translate(string input)
+        public ICommandToken Translate(string command)
         {
             // split input by space => tokens
-            string[] tokens = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] tokens = command.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             switch (tokens[0])
             {

@@ -10,9 +10,9 @@
         /// <summary>
         /// Translates string into command.
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="command"></param>
         /// <returns></returns>
-        ICommandToken Translate(string input);
+        ICommandToken Translate(string command);
 
         /// <summary>
         /// Translates command into string.
