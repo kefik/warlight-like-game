@@ -11,8 +11,8 @@
     public class MapController
     {
         private readonly int defaultArmy;
-
-        private MapMin mapMin;
+        
+        private (RegionMin[] RegionsMin, SuperRegionMin[] SuperRegionsMin) mapStructures;
 
         public bool HasStarted { get; private set; }
 
@@ -59,6 +59,20 @@
             }
         }
 
+        private ref RegionMin GetRegionMin(int regionId)
+        {
+            var regionsMin = mapStructures.RegionsMin;
+            for (int i = 0; i < regionsMin.Length; i++)
+            {
+                if (regionsMin[i].Id == regionId)
+                {
+                    return ref regionsMin[i];
+                }
+            }
+            
+            throw new ArgumentException($"Region with id {regionId} does not exist.");
+        }
+
         /// <summary>
         /// Updates map based on token passed in parameter.
         /// </summary>
@@ -67,14 +81,14 @@
         {
             var updateMapToken = commandToken;
 
-            foreach (var change in updateMapToken.Changes)
+            foreach (var (regionId, owner, army) in updateMapToken.Changes)
             {
                 // get the region
-                var region = mapMin.RegionsMin.First(x => x.Id == change.RegionId);
+                ref var region = ref GetRegionMin(regionId);
 
                 // update the region
-                region.Army = change.Army;
-                region.OwnerEncoded = (byte)(change.Owner);
+                region.Army = army;
+                region.OwnerEncoded = (byte)(owner);
             }
         }
 
@@ -82,14 +96,14 @@
         /// Gets map that was setted up by tokens.
         /// </summary>
         /// <returns></returns>
-        public MapMin GetMap()
+        public (RegionMin[] RegionsMin, SuperRegionMin[] SuperRegionsMin) GetMapStructures()
         {
             if (!HasStarted)
             {
                 throw new ArgumentException($"You cannot get map because the game has not started.");
             }
 
-            return mapMin;
+            return mapStructures;
         }
 
         /// <summary>
@@ -118,13 +132,13 @@
             {
                 SuperRegionMin superRegionMin = superRegionsMin[index];
 
-                var regionsUnderSuperRegionIds = regionsMin.Where(x => x.SuperRegion.Id == superRegionMin.Id).Select(x => x.Id);
+                var regionsUnderSuperRegionIds = regionsMin.Where(x => x.SuperRegionId == superRegionMin.Id).Select(x => x.Id);
                 superRegionMin.RegionsIds = regionsUnderSuperRegionIds.ToArray();
 
                 superRegionsMin[index] = superRegionMin;
             }
-
-            mapMin = new MapMin(regionsMin.ToArray(), superRegionsMin.ToArray());
+            
+            mapStructures = (regionsMin.ToArray(), superRegionsMin.ToArray());
         }
 
         private void SetupNeighbours(ICollection<RegionMin> regionsMin)
@@ -148,21 +162,14 @@
                     throw new ArgumentException($"Region {nameof(regionId)} has already been initialized.");
                 }
 
-                var superRegion = superRegionsMin.FirstOrDefault(x => x.Id == superRegionId);
-
-                if (superRegion.Equals(default(SuperRegionMin)))
-                {
-                    throw new ArgumentException($"SuperRegions must be initialized before regions");
-                }
-
                 RegionMin regionMin;
                 if (setupWastelandsToken == null || !setupWastelandsToken.Regions.Contains(regionId))
                 {
-                    regionMin = new RegionMin(regionId, superRegion, defaultArmy);
+                    regionMin = new RegionMin(regionId, superRegionId, defaultArmy);
                 }
                 else
                 {
-                    regionMin = new RegionMin(regionId, superRegion, defaultArmy, true);
+                    regionMin = new RegionMin(regionId, superRegionId, defaultArmy, true);
                 }
 
                 regionsMin.Add(regionMin);

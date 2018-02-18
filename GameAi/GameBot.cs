@@ -15,16 +15,22 @@
     /// </summary>
     public abstract class GameBot : IBot<Turn>
     {
-        public readonly PlayerPerspective PlayerPerspective;
+        protected readonly PlayerPerspective PlayerPerspective;
+
+        /// <summary>
+        /// Dictionary containing information about mapping between original region ids and region ids this instance of bot uses.
+        /// </summary>
+        private readonly IdsMappingDictionary regionsIdsMappingDictionary;
 
         public Difficulty Difficulty { get; }
         public bool IsFogOfWar { get; }
         
-        internal GameBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar)
+        internal GameBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar, IdsMappingDictionary regionsIdsMappingDictionary)
         {
             this.PlayerPerspective = playerPerspective;
             this.Difficulty = difficulty;
             IsFogOfWar = isFogOfWar;
+            this.regionsIdsMappingDictionary = regionsIdsMappingDictionary;
         }
 
         /// <summary>
@@ -38,5 +44,22 @@
         /// </summary>
         /// <returns></returns>
         public abstract Task<Turn> FindBestMoveAsync();
+
+        protected int GetOriginalRegionId(int newRegionId)
+        {
+            if (!regionsIdsMappingDictionary.TryGetOriginalId(newRegionId, out int originalId))
+            {
+                throw new ArgumentException($"Region with new id {newRegionId} not found");
+            }
+
+            return originalId;
+        }
+
+        public void UpdateMap()
+        {
+            // TODO: break the evaluation
+
+            // TODO: update the map
+        }
     }
 }

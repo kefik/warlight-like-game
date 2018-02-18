@@ -16,7 +16,9 @@
         private readonly MapController mapController;
         private IBot<Turn> bot;
 
+        #region Mapping dictionaries
         private readonly IDictionary<int, OwnerPerspective> playerDictionary;
+        #endregion
 
         #region Properties
 
@@ -95,11 +97,12 @@
             mapController.Start();
 
             // create bot
-            GameBotFactory factory = new GameBotFactory();
+            GameBotCreator creator = new GameBotCreator();
 
             int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
 
-            bot = factory.Create(GameBotType.MonteCarloTreeSearchBot, mapController.GetMap(), Difficulty.Hard,
+            var (regionsMin, superRegionsMin) = mapController.GetMapStructures();
+            bot = creator.Create(GameBotType.MonteCarloTreeSearchBot, regionsMin, superRegionsMin, Difficulty.Hard,
                 (byte)myPlayerId, IsFogOfWar);
 
             // TODO: run to get the best move
@@ -128,6 +131,9 @@
         private ICommandToken ExecuteCommand(UpdateMapToken token)
         {
             mapController.UpdateMap(token);
+
+            // TODO: update the bots map ~ call bot.Update
+
             return null;
         }
     }

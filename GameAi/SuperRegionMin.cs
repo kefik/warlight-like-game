@@ -15,7 +15,7 @@
     {
         private class SuperRegionMinStatic
         {
-            public int Id { get; }
+            public int Id { get; internal set; }
             public int[] RegionsIds { get; set; }
             public int Bonus { get; }
 
@@ -40,12 +40,16 @@
         public int Id
         {
             get { return Static.Id; }
+            internal set
+            {
+                Static.Id = value;
+            }
         }
 
         /// <summary>
         /// Represents owner of this region.
         /// </summary>
-        public OwnerPerspective OwnerPerspective { get; set; }
+        public byte PlayerEncoded { get; set; }
 
         /// <summary>
         /// Represents bonus given to the owner of this region per round.
@@ -64,20 +68,9 @@
             set { Static.RegionsIds = value; }
         }
 
-        internal SuperRegionMin(SuperRegion superRegion, Player playerPerspective)
+        internal SuperRegionMin(SuperRegion superRegion, byte playerEncoded = 0)
         {
-            if (superRegion.Owner == null)
-            {
-                OwnerPerspective = OwnerPerspective.Unoccupied;
-            }
-            else if (superRegion.Owner == playerPerspective)
-            {
-                OwnerPerspective = OwnerPerspective.Mine;
-            }
-            else
-            {
-                OwnerPerspective = OwnerPerspective.Enemy;
-            }
+            PlayerEncoded = playerEncoded;
 
             Static = new SuperRegionMinStatic(superRegion);
         }
@@ -86,7 +79,12 @@
         {
             Static = new SuperRegionMinStatic(superRegionId, bonusArmy);
 
-            OwnerPerspective = OwnerPerspective.Unoccupied;
+            PlayerEncoded = 0;
+        }
+
+        public override string ToString()
+        {
+            return Id.ToString();
         }
     }
 }

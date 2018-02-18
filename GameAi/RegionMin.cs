@@ -20,21 +20,21 @@ namespace GameAi
     {
         private class RegionMinStatic
         {
-            public int Id { get; }
+            public int Id { get; internal set; }
             public int[] NeighboursIds { get; set; }
-            public SuperRegionMin SuperRegion { get; set; }
+            public int SuperRegionId { get; set; }
             public bool IsWasteland { get; }
 
             public RegionMinStatic(Region region, Player ownerEncoded)
             {
                 Id = region.Id;
-                SuperRegion = new SuperRegionMin(region.SuperRegion, ownerEncoded);
+                SuperRegionId = region.SuperRegion.Id;
             }
 
-            public RegionMinStatic(int regionId, SuperRegionMin superRegion, bool isWasteland = false)
+            public RegionMinStatic(int regionId, int superRegionId, bool isWasteland = false)
             {
                 Id = regionId;
-                SuperRegion = superRegion;
+                SuperRegionId = superRegionId;
                 IsWasteland = isWasteland;
             }
 
@@ -82,6 +82,7 @@ namespace GameAi
         public int Id
         {
             get { return Static.Id; }
+            internal set { Static.Id = value; }
         }
 
         /// <summary>
@@ -137,10 +138,10 @@ namespace GameAi
         /// <summary>
         /// SuperRegion in which this region is contained.
         /// </summary>
-        public SuperRegionMin SuperRegion
+        public int SuperRegionId
         {
-            get { return Static.SuperRegion; }
-            internal set { Static.SuperRegion = value; }
+            get { return Static.SuperRegionId; }
+            internal set { Static.SuperRegionId = value; }
         }
 
         /// <summary>
@@ -161,10 +162,10 @@ namespace GameAi
             OwnerEncoded = region.Owner == null ? (byte)0 : ownerEncoded;
         }
 
-        public RegionMin(int regionId, SuperRegionMin superRegion, int army, bool isWasteland = false)
+        public RegionMin(int regionId, int superRegionId, int army, bool isWasteland = false)
         {
             ownerAndArmyEncoded = 0;
-            Static = new RegionMinStatic(regionId, superRegion, isWasteland);
+            Static = new RegionMinStatic(regionId, superRegionId, isWasteland);
 
             Army = army;
         }
@@ -194,6 +195,11 @@ namespace GameAi
         public bool IsNeighbourOf(RegionMin region)
         {
             return Static.IsNeighbourOf(region);
+        }
+
+        public override string ToString()
+        {
+            return Id.ToString();
         }
     }
 }

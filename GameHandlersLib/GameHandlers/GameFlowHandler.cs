@@ -388,7 +388,7 @@
 
             OnBegin?.Invoke();
 
-            var factory = new GameBotFactory();
+            var factory = new GameBotCreator();
             var bot = factory.CreateFromGame(Game, PlayerOnTurn, GameBotType.MonteCarloTreeSearchBot);
 
             //bot.FindBestMove();

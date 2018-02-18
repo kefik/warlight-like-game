@@ -41,11 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameBotFactory.cs" />
+    <Compile Include="GameBotCreator.cs" />
     <Compile Include="GameBotType.cs" />
     <Compile Include="GameBot.cs" />
     <Compile Include="IBot.cs" />
+    <Compile Include="IdsMappingDictionary.cs" />
     <Compile Include="MapMin.cs" />
+    <Compile Include="MapMinCreator.cs" />
     <Compile Include="MonteCarloTreeSearchBot.cs" />
     <Compile Include="OwnerPerspective.cs" />
     <Compile Include="PlayerPerspective.cs" />
@@ -54,6 +56,10 @@
     <Compile Include="SuperRegionMin.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{E4CBE100-724B-4097-9EBD-DB0CFBE41375}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameObjectsLib\GameObjectsLib.csproj">
       <Project>{57a48d5c-6e58-4ec7-acd0-565a4df58daf}</Project>
       <Name>GameObjectsLib</Name>

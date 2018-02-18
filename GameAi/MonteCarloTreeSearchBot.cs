@@ -10,7 +10,8 @@
     /// </summary>
     internal class MonteCarloTreeSearchBot : GameBot
     {
-        public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar) : base(playerPerspective, difficulty, isFogOfWar)
+        public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar, IdsMappingDictionary regionsIdsMappingDictionary)
+            : base(playerPerspective, difficulty, isFogOfWar, regionsIdsMappingDictionary)
         {
         }
 

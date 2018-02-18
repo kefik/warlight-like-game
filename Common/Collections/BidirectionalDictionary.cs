@@ -141,13 +141,13 @@
         /// Attempts to get value, returning false on unsuccessful attempt.
         /// </summary>
         /// <remarks>O(1) time.</remarks>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
         /// <returns></returns>
-        public bool TryGetValue(TFirst key, out TSecond value)
+        public bool TryGetValue(TFirst first, out TSecond second)
         {
-            bool returnValue = firstToSecondMap.TryGetValue(key, out TSecond val);
-            value = val;
+            bool returnValue = firstToSecondMap.TryGetValue(first, out TSecond val);
+            second = val;
             return returnValue;
         }
 
@@ -155,24 +155,24 @@
         /// Attempts to get value, returning false on unsuccessful attempt.
         /// </summary>
         /// <remarks>O(1) time.</remarks>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
         /// <returns></returns>
-        public bool TryGetValue(TSecond key, out TFirst value)
+        public bool TryGetValue(TSecond second, out TFirst first)
         {
-            bool returnValue = secondToFirstMap.TryGetValue(key, out TFirst val);
-            value = val;
+            bool returnValue = secondToFirstMap.TryGetValue(second, out TFirst val);
+            first = val;
             return returnValue;
         }
 
-        public bool ContainsKey(TFirst key)
+        public bool ContainsKey(TFirst first)
         {
-            return firstToSecondMap.ContainsKey(key);
+            return firstToSecondMap.ContainsKey(first);
         }
 
-        public bool ContainsKey(TSecond key)
+        public bool ContainsKey(TSecond second)
         {
-            return secondToFirstMap.ContainsKey(key);
+            return secondToFirstMap.ContainsKey(second);
         }
 
         void ICollection<KeyValuePair<TFirst, TSecond>>.CopyTo(KeyValuePair<TFirst, TSecond>[] array, int arrayIndex)

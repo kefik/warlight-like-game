@@ -13,20 +13,20 @@ namespace GameAi
         /// <summary>
         /// Minified version of the map.
         /// </summary>
-        public readonly MapMin MapMin;
+        internal readonly MapMin MapMin;
 
         /// <summary>
         /// Represents encoded identification of the player.
         /// </summary>
         public byte PlayerEncoded { get; internal set; }
         
-        public PlayerPerspective(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, byte playerEncoded)
+        internal PlayerPerspective(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, byte playerEncoded)
         {
             MapMin = new MapMin(regionsMin, superRegionsMin);
             PlayerEncoded = playerEncoded;
         }
 
-        public PlayerPerspective(MapMin mapMin, byte playerEncoded)
+        internal PlayerPerspective(MapMin mapMin, byte playerEncoded)
         {
             MapMin = mapMin;
             PlayerEncoded = playerEncoded;
@@ -54,7 +54,7 @@ namespace GameAi
 
         public bool IsRegionMine(int regionId)
         {
-            RegionMin regionMin = MapMin.RegionsMin[regionId - 1];
+            RegionMin regionMin = MapMin.RegionsMin[regionId];
 
             return IsRegionMine(regionMin);
         }

@@ -1,6 +1,7 @@
 ﻿namespace Communication.CommandHandling
 {
     using System;
+    using System.Diagnostics;
     using Shared;
 
     public class CommandProcessor : ICommandProcessor
@@ -27,8 +28,9 @@
                 return output;
             }
             // NotImplementedException => I can ignore this command
-            catch (NotImplementedException)
+            catch (NotImplementedException exc)
             {
+                Debug.WriteLine(exc);
                 return null;
             }
         }

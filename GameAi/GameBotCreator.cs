@@ -8,7 +8,7 @@
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
 
-    public class GameBotFactory
+    public class GameBotCreator
     {
         public IBot<Turn> CreateFromGame(Game game, Player player, GameBotType gameBotType)
         {
@@ -25,7 +25,7 @@
             }
 
             // setup super regions
-            var superRegions = game.Map.SuperRegions.Select(x => new SuperRegionMin(x, player)).ToArray();
+            var superRegions = game.Map.SuperRegions.Select(x => dictionary.TryGetValue(player, out byte playerId) ? new SuperRegionMin(x, playerId) : new SuperRegionMin(x)).ToArray();
 
             // setup regions
             var regions = game.Map.Regions.Select(x =>
@@ -63,7 +63,8 @@
                 superRegions[index] = superRegion;
             }
 
-            var map = new MapMin(regions, superRegions);
+            // create map
+            var map = new MapMinCreator().Create(regions, superRegions, out var regionsIdsMappingDictionary, out _);
 
             dictionary.TryGetValue(player, out byte playerEncoded);
 
@@ -80,7 +81,7 @@
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    gameBot = new MonteCarloTreeSearchBot(playerPerspective, difficulty, game.IsFogOfWar);
+                    gameBot = new MonteCarloTreeSearchBot(playerPerspective, difficulty, game.IsFogOfWar, regionsIdsMappingDictionary);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
@@ -89,15 +90,19 @@
             return gameBot;
         }
 
-        public IBot<Turn> Create(GameBotType gameBotType, MapMin mapMin, Difficulty difficulty, byte playerEncoded, bool isFogOfWar)
+        public IBot<Turn> Create(GameBotType gameBotType, RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, Difficulty difficulty, byte playerEncoded, bool isFogOfWar)
         {
+            // create minimized map
+            // super regions mapping is not needed, because bot returns best move, which doesnt involve any super region iformation
+            MapMin mapMin = new MapMinCreator().Create(regionsMin, superRegionsMin, out var regionIdsMappingDictionary, out _);
+
             PlayerPerspective playerPerspective = new PlayerPerspective(mapMin, playerEncoded);
             InitializeVisibility(playerPerspective, isFogOfWar);
 
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar);
+                    return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar, regionIdsMappingDictionary);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
             }
