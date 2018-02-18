@@ -82,3 +82,5 @@ Instead of other collections, arrays will be used in order to ensure best speed 
 
 Further details won't be specified here. Evaluation structures will be commented appropriately for 
 programmer to understand specifics.
+
+![Evaluation structures design image](evaluationStructures.jpg)
