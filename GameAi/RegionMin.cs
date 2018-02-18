@@ -16,12 +16,12 @@ namespace GameAi
     /// <remarks>
     /// Must be class and not struct, because of neighbours.
     /// </remarks>
-    public class RegionMin
+    public struct RegionMin
     {
         private class RegionMinStatic
         {
             public int Id { get; }
-            public RegionMin[] Neighbours { get; set; }
+            public int[] NeighboursIds { get; set; }
             public SuperRegionMin SuperRegion { get; set; }
             public bool IsWasteland { get; }
 
@@ -41,9 +41,9 @@ namespace GameAi
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool IsNeighbourOf(RegionMin region)
             {
-                foreach (var neighbour in Neighbours)
+                foreach (var neighbourId in NeighboursIds)
                 {
-                    if (neighbour.Static.Id == region.Static.Id)
+                    if (neighbourId == region.Static.Id)
                     {
                         return true;
                     }
@@ -146,23 +146,26 @@ namespace GameAi
         /// <summary>
         /// Array of neighbour regions of this given region.
         /// </summary>
-        public RegionMin[] NeighbourRegions
+        public int[] NeighbourRegionsIds
         {
-            get { return Static.Neighbours; }
-            set { Static.Neighbours = value; }
+            get { return Static.NeighboursIds; }
+            set { Static.NeighboursIds = value; }
         } 
         
         internal RegionMin(Region region, byte ownerEncoded, Player playerPerspective)
         {
+            ownerAndArmyEncoded = 0;
+            Static = new RegionMinStatic(region, playerPerspective);
+
             Army = region.Army;
             OwnerEncoded = region.Owner == null ? (byte)0 : ownerEncoded;
-
-            Static = new RegionMinStatic(region, playerPerspective);
         }
 
         public RegionMin(int regionId, SuperRegionMin superRegion, int army, bool isWasteland = false)
         {
+            ownerAndArmyEncoded = 0;
             Static = new RegionMinStatic(regionId, superRegion, isWasteland);
+
             Army = army;
         }
 
@@ -180,16 +183,6 @@ namespace GameAi
             }
 
             return playerPerspective == OwnerEncoded ? OwnerPerspective.Mine : OwnerPerspective.Enemy;
-        }
-
-        /// <summary>
-        /// Shallow-copies of this instance.
-        /// </summary>
-        /// <returns>Shallow copy of this instance.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected internal RegionMin ShallowCopy()
-        {
-            return (RegionMin)MemberwiseClone();
         }
         
         /// <summary>

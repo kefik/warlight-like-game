@@ -18,7 +18,7 @@ namespace GameAi
         /// <summary>
         /// Represents encoded identification of the player.
         /// </summary>
-        public byte PlayerEncoded { get; }
+        public byte PlayerEncoded { get; internal set; }
         
         public PlayerPerspective(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, byte playerEncoded)
         {
@@ -52,6 +52,13 @@ namespace GameAi
             return regionMin.GetOwnerPerspective(PlayerEncoded) == OwnerPerspective.Mine;
         }
 
+        public bool IsRegionMine(int regionId)
+        {
+            RegionMin regionMin = MapMin.RegionsMin[regionId - 1];
+
+            return IsRegionMine(regionMin);
+        }
+
         /// <summary>
         /// Finds out whether <see cref="regionMin"/> is neighbour
         /// to any region of <seealso cref="PlayerEncoded"/>.
@@ -61,7 +68,7 @@ namespace GameAi
         public bool IsNeighbourToMyRegion(RegionMin regionMin)
         {
             // TODO: slow, refactor if I need it to invoke regularly
-            return regionMin.NeighbourRegions.Any(IsRegionMine);
+            return regionMin.NeighbourRegionsIds.Any(IsRegionMine);
         }
     }
 }

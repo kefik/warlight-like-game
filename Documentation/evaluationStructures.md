@@ -68,7 +68,9 @@ only neighbour region (with fog of war one can see only neighbour region).
 - Third option is not good as well, because last thing mentioned about neighbours could actually be useful
 at some point. Traversing structure this way would be very slow.
 
-The second or third option are both viable choices. The second one seems to be more flexible in the end.
+The second or third option are both viable choices. The second one seems to be more flexible, but
+overall in the evaluation it could generate a lot of cache misses. I would in the end go for option
+3.
 
 ## Representation
 For structures copying to be faster, they will be implemented effectively. Thus *dynamic* part 

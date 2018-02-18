@@ -40,41 +40,30 @@
             }).ToArray();
 
             // setup neighbours to those regions
-            foreach (var region in regions)
+            for (int index = 0; index < regions.Length; index++)
             {
-                List<RegionMin> neighbours = new List<RegionMin>();
+                var region = regions[index];
                 // get original regions neighbours
                 var originalNeighbours = game.Map.Regions.First(x => x.Id == region.Id).NeighbourRegions;
 
-                // for-each neighbour find his equivalent in regions and add it to neighbour
-                foreach (var originalNeighbour in originalNeighbours)
-                {
-                    var realNeighbour = regions.First(x => x.Id == originalNeighbour.Id);
-                    neighbours.Add(realNeighbour);
-                }
+                region.NeighbourRegionsIds = originalNeighbours.Select(x => x.Id).ToArray();
 
-                // copy it to the array
-                region.NeighbourRegions = neighbours.ToArray();
+                regions[index] = region;
             }
 
-            foreach (var superRegion in superRegions)
+            for (int index = 0; index < superRegions.Length; index++)
             {
-                List<RegionMin> containedRegions = new List<RegionMin>();
+                var superRegion = superRegions[index];
+                
                 // get original SuperRegion regions
-                var originalRegions = game.Map.SuperRegions.First(x => x.Id == superRegion.Id).Regions;
+                var originalRegionsIds = game.Map.SuperRegions.First(x => x.Id == superRegion.Id).Regions.Select(x => x.Id);
+                
+                superRegion.RegionsIds = originalRegionsIds.ToArray();
 
-                foreach (var originalRegion in originalRegions)
-                {
-                    var realRegion = regions.First(x => x.Id == originalRegion.Id);
-                    containedRegions.Add(realRegion);
-                }
-
-                superRegion.Regions = containedRegions.ToArray();
+                superRegions[index] = superRegion;
             }
 
             var map = new MapMin(regions, superRegions);
-
-            map.ReconstructGraph();
 
             dictionary.TryGetValue(player, out byte playerEncoded);
 
@@ -123,19 +112,20 @@
         {
             if (isFogOfWar)
             {
-                foreach (RegionMin regionMin in playerPerspective.MapMin.RegionsMin)
+                for (int index = 0; index < playerPerspective.MapMin.RegionsMin.Length; index++)
                 {
-                    regionMin.IsVisible = true;
+                    playerPerspective.MapMin.RegionsMin[index].IsVisible = true;
                 }
             }
             else
             {
-                foreach (var regionMin in playerPerspective.MapMin.RegionsMin)
+                for (int index = 0; index < playerPerspective.MapMin.RegionsMin.Length; index++)
                 {
+                    var regionMin = playerPerspective.MapMin.RegionsMin[index];
                     if (playerPerspective.IsRegionMine(regionMin)
                         || playerPerspective.IsNeighbourToMyRegion(regionMin))
                     {
-                        regionMin.IsVisible = true;
+                        playerPerspective.MapMin.RegionsMin[index].IsVisible = true;
                     }
                 }
             }

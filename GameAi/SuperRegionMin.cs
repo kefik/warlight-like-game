@@ -11,12 +11,12 @@
     /// <summary>
     /// Represents minimized version of SuperRegion class for the purpose of calculation
     /// </summary>
-    public class SuperRegionMin
+    public struct SuperRegionMin
     {
         private class SuperRegionMinStatic
         {
             public int Id { get; }
-            public RegionMin[] Regions { get; set; }
+            public int[] RegionsIds { get; set; }
             public int Bonus { get; }
 
             public SuperRegionMinStatic(SuperRegion superRegion)
@@ -58,10 +58,10 @@
         /// <summary>
         /// Represents regions that belong to the given SuperRegion.
         /// </summary>
-        public RegionMin[] Regions
+        public int[] RegionsIds
         {
-            get { return Static.Regions; }
-            set { Static.Regions = value; }
+            get { return Static.RegionsIds; }
+            set { Static.RegionsIds = value; }
         }
 
         internal SuperRegionMin(SuperRegion superRegion, Player playerPerspective)
@@ -85,55 +85,8 @@
         public SuperRegionMin(int superRegionId, int bonusArmy)
         {
             Static = new SuperRegionMinStatic(superRegionId, bonusArmy);
+
             OwnerPerspective = OwnerPerspective.Unoccupied;
-        }
-
-        /// <summary>
-        /// Refreshes SuperRegion, deciding whos the new owner.
-        /// </summary>
-        public void Refresh(byte playerPerspective)
-        {
-            int unoccupiedCount = 0,
-                mineCount = 0,
-                enemyCount = 0;
-
-            foreach (var region in Static.Regions)
-            {
-                switch (region.GetOwnerPerspective(playerPerspective))
-                {
-                    case OwnerPerspective.Unoccupied:
-                        unoccupiedCount++;
-                        break;
-                    case OwnerPerspective.Enemy:
-                        enemyCount++;
-                        break;
-                    case OwnerPerspective.Mine:
-                        mineCount++;
-                        break;
-                }
-            }
-            if (unoccupiedCount != 0 || (mineCount != 0 && enemyCount != 0))
-            {
-                OwnerPerspective = OwnerPerspective.Unoccupied;
-            }
-            else if (mineCount != 0 && unoccupiedCount == 0 && enemyCount == 0)
-            {
-                OwnerPerspective = OwnerPerspective.Mine;
-            }
-            else if (mineCount == 0 && unoccupiedCount == 0 && enemyCount != 0)
-            {
-                OwnerPerspective = OwnerPerspective.Enemy;
-            }
-        }
-        
-        /// <summary>
-        /// Shallow-copies this instance.
-        /// </summary>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected internal SuperRegionMin ShallowCopy()
-        {
-            return (SuperRegionMin)MemberwiseClone();
         }
     }
 }

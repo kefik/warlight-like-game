@@ -32,7 +32,7 @@
 
         public CommandHandler()
         {
-            mapController = new MapController(IsFogOfWar);
+            mapController = new MapController();
             playerDictionary = new Dictionary<int, OwnerPerspective>();
         }
 

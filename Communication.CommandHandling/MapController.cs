@@ -10,7 +10,6 @@
 
     public class MapController
     {
-        private readonly bool isFogOfWar;
         private readonly int defaultArmy;
 
         private MapMin mapMin;
@@ -22,9 +21,8 @@
         private SetupNeighboursToken setupNeighboursToken;
         private SetupWastelandsToken setupWastelandsToken;
 
-        public MapController(bool isFogOfWar, int defaultArmy = 2)
+        public MapController(int defaultArmy = 2)
         {
-            this.isFogOfWar = isFogOfWar;
             this.defaultArmy = defaultArmy;
         }
 
@@ -106,8 +104,8 @@
 
             HasStarted = true;
 
-            ICollection<RegionMin> regionsMin = new List<RegionMin>();
-            ICollection<SuperRegionMin> superRegionsMin = new List<SuperRegionMin>();
+            var regionsMin = new List<RegionMin>();
+            var superRegionsMin = new List<SuperRegionMin>();
             
             SetupSuperRegions(superRegionsMin);
             
@@ -116,26 +114,26 @@
             SetupNeighbours(regionsMin);
 
             // add regions to super region
-            foreach (SuperRegionMin superRegionMin in superRegionsMin)
+            for (int index = 0; index < superRegionsMin.Count; index++)
             {
-                var regionsUnderSuperRegion = regionsMin.Where(x => x.SuperRegion?.Id == superRegionMin.Id);
-                superRegionMin.Regions = regionsUnderSuperRegion.ToArray();
+                SuperRegionMin superRegionMin = superRegionsMin[index];
+
+                var regionsUnderSuperRegionIds = regionsMin.Where(x => x.SuperRegion.Id == superRegionMin.Id).Select(x => x.Id);
+                superRegionMin.RegionsIds = regionsUnderSuperRegionIds.ToArray();
+
+                superRegionsMin[index] = superRegionMin;
             }
 
             mapMin = new MapMin(regionsMin.ToArray(), superRegionsMin.ToArray());
-
-            mapMin.ReconstructGraph();
         }
 
         private void SetupNeighbours(ICollection<RegionMin> regionsMin)
         {
-            foreach (var neighbourInitialization in setupNeighboursToken.NeighboursInitialization)
+            foreach (var (regionId, neighboursIds) in setupNeighboursToken.NeighboursInitialization)
             {
-                var region = regionsMin.First(x => x.Id == neighbourInitialization.RegionId);
-
-                var regionNeighbours = regionsMin.Where(x => neighbourInitialization.NeighboursIds.Contains(x.Id));
-
-                region.NeighbourRegions = regionNeighbours.ToArray();
+                var region = regionsMin.First(x => x.Id == regionId);
+                
+                region.NeighbourRegionsIds = neighboursIds.ToArray();
             }
         }
 
@@ -152,7 +150,7 @@
 
                 var superRegion = superRegionsMin.FirstOrDefault(x => x.Id == superRegionId);
 
-                if (superRegion == null)
+                if (superRegion.Equals(default(SuperRegionMin)))
                 {
                     throw new ArgumentException($"SuperRegions must be initialized before regions");
                 }
@@ -173,15 +171,15 @@
 
         private void SetupSuperRegions(ICollection<SuperRegionMin> superRegionsMin)
         {
-            foreach (var initialChange in setupSuperRegionsToken.InitialChanges)
+            foreach (var (superRegionId, bonusArmy) in setupSuperRegionsToken.InitialChanges)
             {
-                if (superRegionsMin.Any(x => x.Id == initialChange.SuperRegionId))
+                if (superRegionsMin.Any(x => x.Id == superRegionId))
                 {
                     throw new ArgumentException(
-                        $"SuperRegion with id {initialChange.SuperRegionId} has already been initialized.");
+                        $"SuperRegion with id {superRegionId} has already been initialized.");
                 }
 
-                superRegionsMin.Add(new SuperRegionMin(initialChange.SuperRegionId, initialChange.BonusArmy));
+                superRegionsMin.Add(new SuperRegionMin(superRegionId, bonusArmy));
             }
         }
     }
