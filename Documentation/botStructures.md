@@ -1,7 +1,7 @@
 # Bot structures
 
 ## Design
-![Command processing design image](botStructures.jpg)
+![Bot structures design image](botStructures.jpg)
 
 ### Description
 - *IBot* - most abstracted bot interface
