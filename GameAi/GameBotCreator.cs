@@ -3,14 +3,17 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using BotStructures;
+    using EvaluationStructures;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
+    using Interfaces;
 
-    public class GameBotCreator
+    internal class GameBotCreator
     {
-        public IBot<Turn> CreateFromGame(Game game, Player player, GameBotType gameBotType)
+        public GameBot CreateFromGame(Game game, Player player, GameBotType gameBotType, out IdsMappingDictionary regionsIdsMappingDictionary)
         {
             if (!game.Players.Contains(player))
             {
@@ -64,7 +67,7 @@
             }
 
             // create map
-            var map = new MapMinCreator().Create(regions, superRegions, out var regionsIdsMappingDictionary, out _);
+            var map = new MapMinCreator().Create(regions, superRegions, out regionsIdsMappingDictionary, out _);
 
             dictionary.TryGetValue(player, out byte playerEncoded);
 
@@ -90,11 +93,11 @@
             return gameBot;
         }
 
-        public IBot<Turn> Create(GameBotType gameBotType, RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, Difficulty difficulty, byte playerEncoded, bool isFogOfWar)
+        public GameBot Create(GameBotType gameBotType, RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, Difficulty difficulty, byte playerEncoded, bool isFogOfWar, out IdsMappingDictionary regionsIdsMappingDictionary)
         {
             // create minimized map
             // super regions mapping is not needed, because bot returns best move, which doesnt involve any super region iformation
-            MapMin mapMin = new MapMinCreator().Create(regionsMin, superRegionsMin, out var regionIdsMappingDictionary, out _);
+            MapMin mapMin = new MapMinCreator().Create(regionsMin, superRegionsMin, out regionsIdsMappingDictionary, out _);
 
             PlayerPerspective playerPerspective = new PlayerPerspective(mapMin, playerEncoded);
             InitializeVisibility(playerPerspective, isFogOfWar);
@@ -102,7 +105,7 @@
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar, regionIdsMappingDictionary);
+                    return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar, regionsIdsMappingDictionary);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
             }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using EvaluationStructures;
 
     /// <summary>
     /// Class whose purpose is to create instance of <see cref="MapMin"/> involving all difficulties with mapping IDs etc.

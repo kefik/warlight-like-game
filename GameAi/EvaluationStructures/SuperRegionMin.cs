@@ -1,12 +1,6 @@
-﻿namespace GameAi
+﻿namespace GameAi.EvaluationStructures
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-    using GameObjectsLib;
     using GameObjectsLib.GameMap;
-    using GameObjectsLib.Players;
 
     /// <summary>
     /// Represents minimized version of SuperRegion class for the purpose of calculation

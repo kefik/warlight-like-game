@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinformsUI", "WinformsUI\WinformsUI.csproj", "{7022FF55-5AB7-467C-AF9A-BE8DCE89BA2B}"
 EndProject
@@ -38,6 +38,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Tests", "Common.Tests\Common.Tests.csproj", "{C4C1CF72-EE5D-4B1F-B572-9181243F018A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication.CommandHandling.Tests", "Communication.CommandHandling.Tests\Communication.CommandHandling.Tests.csproj", "{B50BD638-80B2-4514-82E8-F7F8DDC080EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAi.Interfaces", "GameAi.Interfaces\GameAi.Interfaces.csproj", "{F02FF366-6835-45EF-9EEE-2DF857830184}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +107,10 @@ Global
 		{B50BD638-80B2-4514-82E8-F7F8DDC080EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B50BD638-80B2-4514-82E8-F7F8DDC080EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B50BD638-80B2-4514-82E8-F7F8DDC080EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F02FF366-6835-45EF-9EEE-2DF857830184}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F02FF366-6835-45EF-9EEE-2DF857830184}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F02FF366-6835-45EF-9EEE-2DF857830184}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F02FF366-6835-45EF-9EEE-2DF857830184}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using GameAi;
+    using GameAi.Interfaces;
     using GameObjectsLib;
     using GameObjectsLib.GameRecording;
     using Shared;
@@ -14,7 +15,7 @@
     internal class CommandHandler : ICommandHandler
     {
         private readonly MapController mapController;
-        private IBot<Turn> bot;
+        private IOnlineBot<Turn> bot;
 
         #region Mapping dictionaries
         private readonly IDictionary<int, OwnerPerspective> playerDictionary;
@@ -97,12 +98,11 @@
             mapController.Start();
 
             // create bot
-            GameBotCreator creator = new GameBotCreator();
 
             int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
 
             var (regionsMin, superRegionsMin) = mapController.GetMapStructures();
-            bot = creator.Create(GameBotType.MonteCarloTreeSearchBot, regionsMin, superRegionsMin, Difficulty.Hard,
+            var botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot, regionsMin, superRegionsMin, Difficulty.Hard,
                 (byte)myPlayerId, IsFogOfWar);
 
             // TODO: run to get the best move

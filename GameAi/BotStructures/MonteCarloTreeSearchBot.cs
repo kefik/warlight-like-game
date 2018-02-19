@@ -1,7 +1,8 @@
-﻿namespace GameAi
+﻿namespace GameAi.BotStructures
 {
     using System;
     using System.Threading.Tasks;
+    using EvaluationStructures;
     using GameObjectsLib;
     using GameObjectsLib.GameRecording;
 
@@ -10,8 +11,8 @@
     /// </summary>
     internal class MonteCarloTreeSearchBot : GameBot
     {
-        public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar, IdsMappingDictionary regionsIdsMappingDictionary)
-            : base(playerPerspective, difficulty, isFogOfWar, regionsIdsMappingDictionary)
+        public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar)
+            : base(playerPerspective, difficulty, isFogOfWar)
         {
         }
 

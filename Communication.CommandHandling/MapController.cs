@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using GameAi;
+    using GameAi.EvaluationStructures;
     using Shared;
     using Tokens;
     using Tokens.SetupMap;

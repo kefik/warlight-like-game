@@ -30,5 +30,3 @@ which will be called. It starts searching.
 This will result in breaking the evaluation. Because *IOnlineBot* periodically
 saves best result to *CurrentBestMove* property
 5. Application calls *GetCurrentBestTurn* to obtain the best move.
-
-![Bot structures design image](botStructures.jpg)

@@ -5,6 +5,9 @@
     /// </summary>
     public enum GameBotType
     {
+        /// <summary>
+        /// Bot using MCTS for finding the best move.
+        /// </summary>
         MonteCarloTreeSearchBot
     }
 }

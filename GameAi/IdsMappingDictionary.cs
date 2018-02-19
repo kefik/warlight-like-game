@@ -2,12 +2,13 @@
 {
     using System.Linq;
     using Common.Collections;
+    using Interfaces;
 
     /// <summary>
     /// Wrapper around BidirectionalDictionary, whose purpose is to map Ids of structures
     /// both ways with more friendly interface.
     /// </summary>
-    public class IdsMappingDictionary
+    internal class IdsMappingDictionary : IIdsTranslationUnit
     {
         /// <summary>
         /// First parameter is Original Id, second parameter is Mapped Id.
@@ -46,6 +47,11 @@
             bidirectionalDictionary.Add(originalId, newMax);
 
             return newMax;
+        }
+
+        public bool TryGetNewId(int originalId, out int mappedId)
+        {
+            return bidirectionalDictionary.TryGetValue(originalId, second: out mappedId);
         }
 
         public bool TryGetOriginalId(int mappedId, out int originalId)

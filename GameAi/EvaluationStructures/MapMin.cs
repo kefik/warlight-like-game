@@ -1,8 +1,7 @@
-namespace GameAi
+namespace GameAi.EvaluationStructures
 {
     using System;
     using System.Diagnostics.Contracts;
-    using System.Linq;
     using System.Runtime.CompilerServices;
     using GameObjectsLib.GameMap;
 

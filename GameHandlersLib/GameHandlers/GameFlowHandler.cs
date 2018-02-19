@@ -387,9 +387,8 @@
             RedrawToPlayersPerspective();
 
             OnBegin?.Invoke();
-
-            var factory = new GameBotCreator();
-            var bot = factory.CreateFromGame(Game, PlayerOnTurn, GameBotType.MonteCarloTreeSearchBot);
+            
+            var botHandler = new WarlightAiBotHandler(Game, PlayerOnTurn, GameBotType.MonteCarloTreeSearchBot);
 
             //bot.FindBestMove();
         }

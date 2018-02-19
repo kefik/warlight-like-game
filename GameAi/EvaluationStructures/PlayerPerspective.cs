@@ -1,14 +1,12 @@
-namespace GameAi
+namespace GameAi.EvaluationStructures
 {
-    using System;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using GameObjectsLib.GameMap;
 
     /// <summary>
     /// Represents bot from perspective of certain player.
     /// </summary>
-    public struct PlayerPerspective
+    internal struct PlayerPerspective
     {
         /// <summary>
         /// Minified version of the map.
