@@ -84,7 +84,7 @@
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    gameBot = new MonteCarloTreeSearchBot(playerPerspective, difficulty, game.IsFogOfWar, regionsIdsMappingDictionary);
+                    gameBot = new MonteCarloTreeSearchBot(playerPerspective, difficulty, game.IsFogOfWar);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
@@ -105,7 +105,7 @@
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar, regionsIdsMappingDictionary);
+                    return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
             }
