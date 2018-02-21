@@ -46,7 +46,6 @@
     <Compile Include="BotStructures\GameBot.cs" />
     <Compile Include="IdsMappingDictionary.cs" />
     <Compile Include="EvaluationStructures\MapMin.cs" />
-    <Compile Include="MapMinCreator.cs" />
     <Compile Include="BotStructures\MonteCarloTreeSearchBot.cs" />
     <Compile Include="OwnerPerspective.cs" />
     <Compile Include="EvaluationStructures\PlayerPerspective.cs" />

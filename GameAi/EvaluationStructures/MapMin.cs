@@ -8,12 +8,12 @@ namespace GameAi.EvaluationStructures
     /// <summary>
     /// Represents minified version of the <see cref="Map"/>.
     /// </summary>
-    internal struct MapMin
+    public struct MapMin
     {
         public RegionMin[] RegionsMin { get; }
         public SuperRegionMin[] SuperRegionsMin { get; }
 
-        internal MapMin(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin)
+        public MapMin(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin)
         {
             RegionsMin = regionsMin;
             SuperRegionsMin = superRegionsMin;
@@ -44,7 +44,7 @@ namespace GameAi.EvaluationStructures
             {
                 var region = RegionsMin[i];
 
-                var newRegion = new RegionMin(region.Id, region.SuperRegionId, region.Army, region.IsWasteland);
+                var newRegion = new RegionMin(region.Id, region.SuperRegionId, region.Army, region.OwnerId, region.IsWasteland);
 
                 int[] neighbourIds = new int[region.NeighbourRegionsIds.Length];
                 Array.Copy(region.NeighbourRegionsIds, neighbourIds, neighbourIds.Length);
@@ -66,7 +66,7 @@ namespace GameAi.EvaluationStructures
                 Array.Copy(superRegion.RegionsIds, regionsIds, regionsIds.Length);
 
                 newSuperRegion.RegionsIds = regionsIds;
-                newSuperRegion.PlayerEncoded = superRegion.PlayerEncoded;
+                newSuperRegion.OwnerId = superRegion.OwnerId;
 
                 superRegionsMin[i] = newSuperRegion;
             }

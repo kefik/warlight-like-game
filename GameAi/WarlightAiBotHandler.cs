@@ -20,9 +20,9 @@
             translationUnit = regionsIdsMappingDictionary;
         }
 
-        public WarlightAiBotHandler(GameBotType gameBotType, RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, Difficulty difficulty, byte playerEncoded, bool isFogOfWar)
+        public WarlightAiBotHandler(GameBotType gameBotType, MapMin mapMin, Difficulty difficulty, byte playerEncoded, bool isFogOfWar)
         {
-            onlineBot = new GameBotCreator().Create(gameBotType, regionsMin, superRegionsMin, difficulty, playerEncoded,
+            onlineBot = new GameBotCreator().Create(gameBotType, mapMin, difficulty, playerEncoded,
                 isFogOfWar, out var regionsIdsMappingDictionary);
 
             translationUnit = regionsIdsMappingDictionary;

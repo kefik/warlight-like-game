@@ -12,13 +12,7 @@
             public int Id { get; internal set; }
             public int[] RegionsIds { get; set; }
             public int Bonus { get; }
-
-            public SuperRegionMinStatic(SuperRegion superRegion)
-            {
-                Id = superRegion.Id;
-                Bonus = superRegion.Bonus;
-            }
-
+            
             public SuperRegionMinStatic(int id, int bonus)
             {
                 Id = id;
@@ -43,7 +37,7 @@
         /// <summary>
         /// Represents owner of this region.
         /// </summary>
-        public byte PlayerEncoded { get; set; }
+        public byte OwnerId { get; set; }
 
         /// <summary>
         /// Represents bonus given to the owner of this region per round.
@@ -62,18 +56,11 @@
             set { Static.RegionsIds = value; }
         }
 
-        internal SuperRegionMin(SuperRegion superRegion, byte playerEncoded = 0)
-        {
-            PlayerEncoded = playerEncoded;
-
-            Static = new SuperRegionMinStatic(superRegion);
-        }
-
-        public SuperRegionMin(int superRegionId, int bonusArmy)
+        public SuperRegionMin(int superRegionId, int bonusArmy, byte owningPlayer = 0)
         {
             Static = new SuperRegionMinStatic(superRegionId, bonusArmy);
 
-            PlayerEncoded = 0;
+            OwnerId = owningPlayer;
         }
 
         public override string ToString()

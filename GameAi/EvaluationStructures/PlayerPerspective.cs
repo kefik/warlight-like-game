@@ -16,18 +16,18 @@ namespace GameAi.EvaluationStructures
         /// <summary>
         /// Represents encoded identification of the player.
         /// </summary>
-        public byte PlayerEncoded { get; internal set; }
+        public byte PlayerId { get; internal set; }
         
-        internal PlayerPerspective(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, byte playerEncoded)
+        internal PlayerPerspective(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, byte playerId)
         {
             MapMin = new MapMin(regionsMin, superRegionsMin);
-            PlayerEncoded = playerEncoded;
+            PlayerId = playerId;
         }
 
-        internal PlayerPerspective(MapMin mapMin, byte playerEncoded)
+        internal PlayerPerspective(MapMin mapMin, byte playerId)
         {
             MapMin = mapMin;
-            PlayerEncoded = playerEncoded;
+            PlayerId = playerId;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace GameAi.EvaluationStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal PlayerPerspective ShallowCopy()
         {
-            return new PlayerPerspective(MapMin.ShallowCopy(), PlayerEncoded);
+            return new PlayerPerspective(MapMin.ShallowCopy(), PlayerId);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace GameAi.EvaluationStructures
         /// <returns></returns>
         public bool IsRegionMine(RegionMin regionMin)
         {
-            return regionMin.GetOwnerPerspective(PlayerEncoded) == OwnerPerspective.Mine;
+            return regionMin.GetOwnerPerspective(PlayerId) == OwnerPerspective.Mine;
         }
 
         public bool IsRegionMine(int regionId)
@@ -59,7 +59,7 @@ namespace GameAi.EvaluationStructures
 
         /// <summary>
         /// Finds out whether <see cref="regionMin"/> is neighbour
-        /// to any region of <seealso cref="PlayerEncoded"/>.
+        /// to any region of <seealso cref="PlayerId"/>.
         /// </summary>
         /// <param name="regionMin"></param>
         /// <returns></returns>

@@ -20,27 +20,13 @@
                 throw new ArgumentException("Incorrect player parameter.");
             }
 
-            var dictionary = new Dictionary<Player, byte>();
-
-            for (byte i = 0; i < game.Players.Count; i++)
-            {
-                dictionary.Add(game.Players[i], (byte)(i + 1));
-            }
-
             // setup super regions
-            var superRegions = game.Map.SuperRegions.Select(x => dictionary.TryGetValue(player, out byte playerId) ? new SuperRegionMin(x, playerId) : new SuperRegionMin(x)).ToArray();
+            var superRegions = game.Map.SuperRegions
+                .Select(x => x.Owner == null ? new SuperRegionMin(x.Id, x.Bonus) : new SuperRegionMin(x.Id, x.Bonus, (byte)x.Owner.Id)).ToArray();
 
             // setup regions
-            var regions = game.Map.Regions.Select(x =>
-            {
-                if (x.Owner == null)
-                {
-                    return new RegionMin(x, 0, player);
-                }
-                dictionary.TryGetValue(x.Owner, out byte encodedOwner);
-
-                return new RegionMin(x, encodedOwner, player);
-            }).ToArray();
+            var regions = game.Map.Regions
+                .Select(x => x.Owner == null ? new RegionMin(x.Id, x.SuperRegion.Id, x.Army) : new RegionMin(x.Id, x.SuperRegion.Id, x.Army, (byte) x.Owner.Id)).ToArray();
 
             // setup neighbours to those regions
             for (int index = 0; index < regions.Length; index++)
@@ -67,9 +53,9 @@
             }
 
             // create map
-            var map = new MapMinCreator().Create(regions, superRegions, out regionsIdsMappingDictionary, out _);
+            var map = CreateMapForBot(regions, superRegions, out regionsIdsMappingDictionary, out _);
 
-            dictionary.TryGetValue(player, out byte playerEncoded);
+            byte playerEncoded = (byte) player.Id;
 
             var playerPerspective = new PlayerPerspective(map, playerEncoded);
             InitializeVisibility(playerPerspective, game.IsFogOfWar);
@@ -93,11 +79,11 @@
             return gameBot;
         }
 
-        public GameBot Create(GameBotType gameBotType, RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, Difficulty difficulty, byte playerEncoded, bool isFogOfWar, out IdsMappingDictionary regionsIdsMappingDictionary)
+        public GameBot Create(GameBotType gameBotType, MapMin map, Difficulty difficulty, byte playerEncoded, bool isFogOfWar, out IdsMappingDictionary regionsIdsMappingDictionary)
         {
             // create minimized map
             // super regions mapping is not needed, because bot returns best move, which doesnt involve any super region iformation
-            MapMin mapMin = new MapMinCreator().Create(regionsMin, superRegionsMin, out regionsIdsMappingDictionary, out _);
+            MapMin mapMin = CreateMapForBot(map, out regionsIdsMappingDictionary, out _);
 
             PlayerPerspective playerPerspective = new PlayerPerspective(mapMin, playerEncoded);
             InitializeVisibility(playerPerspective, isFogOfWar);
@@ -112,7 +98,7 @@
         }
 
         /// <summary>
-        /// Initializes visibility of all regions based on <see cref="PlayerPerspective.PlayerEncoded"/>.
+        /// Initializes visibility of all regions based on <see cref="PlayerPerspective.PlayerId"/>.
         /// </summary>
         /// <param name="playerPerspective"></param>
         /// <param name="isFogOfWar"></param>
@@ -136,6 +122,118 @@
                         playerPerspective.MapMin.RegionsMin[index].IsVisible = true;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Creates <see cref="MapMin"/> instance that bot can work with.
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="regionIdsMappingDictionary"></param>
+        /// <param name="superRegionsIdsMappingDictionary"></param>
+        /// <returns></returns>
+        private MapMin CreateMapForBot(MapMin map, out IdsMappingDictionary regionIdsMappingDictionary,
+            out IdsMappingDictionary superRegionsIdsMappingDictionary)
+        {
+            return CreateMapForBot(map.RegionsMin, map.SuperRegionsMin, out regionIdsMappingDictionary,
+                out superRegionsIdsMappingDictionary);
+        }
+        /// <summary>
+        /// Creates MapMin instance.
+        /// </summary>
+        /// <param name="regionsMin"></param>
+        /// <param name="superRegionsMin"></param>
+        /// <param name="regionIdsMappingDictionary"></param>
+        /// <param name="superRegionsIdsMappingDictionary"></param>
+        /// <returns></returns>
+        private MapMin CreateMapForBot(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, out IdsMappingDictionary regionIdsMappingDictionary, out IdsMappingDictionary superRegionsIdsMappingDictionary)
+        {
+            regionIdsMappingDictionary = new IdsMappingDictionary();
+            superRegionsIdsMappingDictionary = new IdsMappingDictionary();
+
+            // we dont want to change original structures => deep copy
+            var tempMapMin = new MapMin(regionsMin, superRegionsMin).DeepCopy();
+            regionsMin = tempMapMin.RegionsMin.OrderBy(x => x.Id).ToArray();
+            superRegionsMin = tempMapMin.SuperRegionsMin.OrderBy(x => x.Id).ToArray();
+
+            // so far we expect Ids to be ordered and unique
+            // now we have to shuffle it to minimal values => e.g. 2, 5, 7 => 0, 1, 2
+
+            for (int i = 0; i < regionsMin.Length; i++)
+            {
+                ref RegionMin region = ref regionsMin[i];
+
+                int mappedId = regionIdsMappingDictionary.GetMappedIdOrInsert(regionsMin[i].Id);
+
+                RemapId(regionsMin, superRegionsMin, ref region, mappedId);
+
+                region.Id = mappedId;
+
+            }
+
+            // do the same with super regions
+            for (int i = 0; i < superRegionsMin.Length; i++)
+            {
+                ref SuperRegionMin superRegion = ref superRegionsMin[i];
+
+                int mappedId = superRegionsIdsMappingDictionary.GetMappedIdOrInsert(superRegionsMin[i].Id);
+
+                RemapId(regionsMin, ref superRegion, mappedId);
+
+                superRegion.Id = mappedId;
+            }
+
+            return new MapMin(regionsMin, superRegionsMin);
+        }
+
+        private void RemapId(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, ref RegionMin regionMin, int newRegionId)
+        {
+            var neighboursIds = regionMin.NeighbourRegionsIds;
+
+            var neighbours = regionsMin.Where(x => neighboursIds.Contains(x.Id));
+
+            // remap neighbours
+            // for each neighbour change ID of regionMin to newId
+            foreach (var neighbour in neighbours)
+            {
+                var neighbourNeighbours = neighbour.NeighbourRegionsIds;
+
+                for (int i = 0; i < neighbourNeighbours.Length; i++)
+                {
+                    if (neighbourNeighbours[i] == regionMin.Id)
+                    {
+                        neighbourNeighbours[i] = newRegionId;
+                    }
+                }
+            }
+
+            // remap super regions regions
+            int superRegionId = regionMin.SuperRegionId;
+
+            var superRegion = superRegionsMin.First(x => x.Id == superRegionId);
+            int[] superRegionRegionsIds = superRegion.RegionsIds;
+
+            for (int i = 0; i < superRegionRegionsIds.Length; i++)
+            {
+                if (superRegionRegionsIds[i] == regionMin.Id)
+                {
+                    superRegionRegionsIds[i] = newRegionId;
+                }
+            }
+        }
+
+        private void RemapId(RegionMin[] regionsMin, ref SuperRegionMin currentSuperRegionMin, int newSuperRegionId)
+        {
+            int oldSuperRegionId = currentSuperRegionMin.Id;
+
+            // remap super regions regions
+            var superRegionsRegions = regionsMin.Where(x => x.SuperRegionId == oldSuperRegionId);
+
+            foreach (RegionMin superRegionsRegion in superRegionsRegions)
+            {
+                RegionMin regionsRegion = superRegionsRegion;
+
+                regionsRegion.SuperRegionId = newSuperRegionId;
             }
         }
     }

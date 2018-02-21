@@ -21,12 +21,6 @@ namespace GameAi.EvaluationStructures
             public int SuperRegionId { get; set; }
             public bool IsWasteland { get; }
 
-            public RegionMinStatic(Region region, Player ownerEncoded)
-            {
-                Id = region.Id;
-                SuperRegionId = region.SuperRegion.Id;
-            }
-
             public RegionMinStatic(int regionId, int superRegionId, bool isWasteland = false)
             {
                 Id = regionId;
@@ -61,7 +55,7 @@ namespace GameAi.EvaluationStructures
         /// First 5 bits of <see cref="ownerAndArmyEncoded"/>
         /// are used for owner identification.
         /// </remarks>
-        public byte OwnerEncoded
+        public byte OwnerId
         {
             get { return (byte) (ownerAndArmyEncoded & 0b11111); }
             set
@@ -148,22 +142,14 @@ namespace GameAi.EvaluationStructures
             get { return Static.NeighboursIds; }
             set { Static.NeighboursIds = value; }
         } 
-        
-        internal RegionMin(Region region, byte ownerEncoded, Player playerPerspective)
-        {
-            ownerAndArmyEncoded = 0;
-            Static = new RegionMinStatic(region, playerPerspective);
 
-            Army = region.Army;
-            OwnerEncoded = region.Owner == null ? (byte)0 : ownerEncoded;
-        }
-
-        public RegionMin(int regionId, int superRegionId, int army, bool isWasteland = false)
+        public RegionMin(int regionId, int superRegionId, int army, byte ownerIdPlayer = 0, bool isWasteland = false)
         {
             ownerAndArmyEncoded = 0;
             Static = new RegionMinStatic(regionId, superRegionId, isWasteland);
 
             Army = army;
+            OwnerId = ownerIdPlayer;
         }
 
         /// <summary>
@@ -174,12 +160,12 @@ namespace GameAi.EvaluationStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public OwnerPerspective GetOwnerPerspective(byte playerPerspective)
         {
-            if (OwnerEncoded == 0)
+            if (OwnerId == 0)
             {
                 return (byte)OwnerPerspective.Unoccupied;
             }
 
-            return playerPerspective == OwnerEncoded ? OwnerPerspective.Mine : OwnerPerspective.Enemy;
+            return playerPerspective == OwnerId ? OwnerPerspective.Mine : OwnerPerspective.Enemy;
         }
         
         /// <summary>

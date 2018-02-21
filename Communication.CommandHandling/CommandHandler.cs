@@ -101,8 +101,8 @@
 
             int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
 
-            var (regionsMin, superRegionsMin) = mapController.GetMapStructures();
-            var botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot, regionsMin, superRegionsMin, Difficulty.Hard,
+            var mapMin = mapController.GetMap();
+            var botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot, mapMin, Difficulty.Hard,
                 (byte)myPlayerId, IsFogOfWar);
 
             // TODO: run to get the best move

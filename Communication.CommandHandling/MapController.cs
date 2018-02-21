@@ -13,7 +13,7 @@
     {
         private readonly int defaultArmy;
         
-        private (RegionMin[] RegionsMin, SuperRegionMin[] SuperRegionsMin) mapStructures;
+        private MapMin map;
 
         public bool HasStarted { get; private set; }
 
@@ -62,7 +62,7 @@
 
         private ref RegionMin GetRegionMin(int regionId)
         {
-            var regionsMin = mapStructures.RegionsMin;
+            var regionsMin = map.RegionsMin;
             for (int i = 0; i < regionsMin.Length; i++)
             {
                 if (regionsMin[i].Id == regionId)
@@ -89,7 +89,7 @@
 
                 // update the region
                 region.Army = army;
-                region.OwnerEncoded = (byte)(owner);
+                region.OwnerId = (byte)(owner);
             }
         }
 
@@ -97,14 +97,14 @@
         /// Gets map that was setted up by tokens.
         /// </summary>
         /// <returns></returns>
-        public (RegionMin[] RegionsMin, SuperRegionMin[] SuperRegionsMin) GetMapStructures()
+        public MapMin GetMap()
         {
             if (!HasStarted)
             {
                 throw new ArgumentException($"You cannot get map because the game has not started.");
             }
 
-            return mapStructures;
+            return map;
         }
 
         /// <summary>
@@ -139,7 +139,7 @@
                 superRegionsMin[index] = superRegionMin;
             }
             
-            mapStructures = (regionsMin.ToArray(), superRegionsMin.ToArray());
+            map = new MapMin(regionsMin.ToArray(), superRegionsMin.ToArray());
         }
 
         private void SetupNeighbours(ICollection<RegionMin> regionsMin)
@@ -170,7 +170,7 @@
                 }
                 else
                 {
-                    regionMin = new RegionMin(regionId, superRegionId, defaultArmy, true);
+                    regionMin = new RegionMin(regionId, superRegionId, defaultArmy, isWasteland: true);
                 }
 
                 regionsMin.Add(regionMin);
