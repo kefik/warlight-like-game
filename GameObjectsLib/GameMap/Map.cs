@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Xml;
@@ -50,7 +52,10 @@
             Name = name;
             PlayersLimit = playersLimit;
 
-            Initialize(templatePath);
+            using (var fs = new FileStream(templatePath, FileMode.Open))
+            {
+                Initialize(fs);
+            }
         }
 
         private Map()
@@ -60,17 +65,15 @@
         /// <summary>
         /// Initializes map instance.
         /// </summary>
-        /// <param name="templatePath"></param>
-        private void Initialize(string templatePath)
+        /// <param name="stream"></param>
+        private void Initialize(Stream stream)
         {
             IList<SuperRegion> superRegions = new List<SuperRegion>();
             IList<Region> regions = new List<Region>();
 
             // set validation against xsd settings
-            XmlReaderSettings settings = new XmlReaderSettings
-            {
-                ValidationType = ValidationType.Schema
-            };
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.ValidationType = ValidationType.Schema;
             settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessInlineSchema;
             settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessSchemaLocation;
             settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
@@ -86,8 +89,9 @@
                         throw new ArgumentOutOfRangeException();
                 }
             };
+            settings.Schemas.Add("http://tempuri.org/XMLSchema.xsd", ConfigurationManager.AppSettings["MapSchemaPath"]);
             // verify xml against loaded xsd, read everything except for neighbours
-            using (XmlReader reader = XmlReader.Create(templatePath, settings))
+            using (XmlReader reader = XmlReader.Create(stream, settings))
             {
                 #region SuperRegion stats
 
@@ -162,8 +166,12 @@
                     }
                 }
             }
+
+            // read from the beginning
+            stream.Position = 0;
+
             // dont verify, just read neighbours and load them appropriately
-            using (XmlReader reader = XmlReader.Create(templatePath))
+            using (XmlReader reader = XmlReader.Create(stream))
             {
                 bool isSuperRegion = false;
 

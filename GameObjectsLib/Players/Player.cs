@@ -21,6 +21,11 @@
         {
         }
 
+        public virtual int Id
+        {
+            get { return (int) Color; }
+        }
+
         public abstract string Name { get; }
 
         [ProtoMember(1)]

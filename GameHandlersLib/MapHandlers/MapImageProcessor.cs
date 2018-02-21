@@ -2,9 +2,11 @@ namespace GameHandlersLib.MapHandlers
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Drawing.Imaging;
+    using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Xml;
@@ -337,22 +339,19 @@ namespace GameHandlersLib.MapHandlers
         }
 
         /// <summary>
-        ///     Initializes an instance of MapImageProcessor.
+        /// Initializes instance of <see cref="MapImageProcessor"/>.
         /// </summary>
-        /// <param name="map">Map of the future game.</param>
-        /// <param name="regionHighlightedImagePath">
-        ///     Path of image whose role is to map region to certain color to recognize what
-        ///     image has been clicked on by the user.
-        /// </param>
-        /// <param name="regionColorMappingPath">Path of file mapping color to certain existing map region.</param>
-        /// <param name="mapImagePath">Map of image that will be used as map and displayed to the user.</param>
-        /// <param name="isFogOfWar">True, if the given map should be processed as fog of war type.</param>
-        /// <returns>Initialized instance.</returns>
-        public static MapImageProcessor Create(Map map, string regionHighlightedImagePath,
-            string regionColorMappingPath, string mapImagePath, bool isFogOfWar)
+        /// <param name="map"></param>
+        /// <param name="regionHighlightedImageStream"></param>
+        /// <param name="regionColoringMappingStream"></param>
+        /// <param name="mapImageStream"></param>
+        /// <param name="isFogOfWar"></param>
+        /// <returns></returns>
+        public static MapImageProcessor Create(Map map, Stream regionHighlightedImageStream,
+            Stream regionColoringMappingStream, Stream mapImageStream, bool isFogOfWar)
         {
-            Bitmap regionHighlightedImage = new Bitmap(regionHighlightedImagePath);
-            Bitmap image = new Bitmap(mapImagePath);
+            Bitmap regionHighlightedImage = new Bitmap(regionHighlightedImageStream);
+            Bitmap image = new Bitmap(mapImageStream);
 
             // images are not equally sized
             if (image.Size != regionHighlightedImage.Size)
@@ -361,10 +360,8 @@ namespace GameHandlersLib.MapHandlers
             }
 
             // read the file
-            XmlReaderSettings settings = new XmlReaderSettings
-            {
-                ValidationType = ValidationType.Schema
-            };
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.ValidationType = ValidationType.Schema;
             settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessInlineSchema;
             settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessSchemaLocation;
             settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
@@ -381,8 +378,9 @@ namespace GameHandlersLib.MapHandlers
                 }
             };
 
+            settings.Schemas.Add("http://palasekj.cz/", ConfigurationManager.AppSettings["RegionColorMappingSchemaPath"]);
             var dictionary = new Dictionary<Color, Region>();
-            using (XmlReader reader = XmlReader.Create(regionColorMappingPath, settings))
+            using (XmlReader reader = XmlReader.Create(regionColoringMappingStream, settings))
             {
                 Color color = default(Color);
                 Region region = default(Region);
@@ -433,6 +431,29 @@ namespace GameHandlersLib.MapHandlers
             SelectRegionHandler selectRegionHandler = new SelectRegionHandler(mapImageTemplateProcessor, highlightHandler, isFogOfWar);
 
             return new MapImageProcessor(mapImageTemplateProcessor, image, textDrawingHandler, coloringHandler, selectRegionHandler, isFogOfWar);
+        }
+
+        /// <summary>
+        ///     Initializes an instance of <see cref="MapImageProcessor"/>.
+        /// </summary>
+        /// <param name="map">Map of the future game.</param>
+        /// <param name="regionHighlightedImagePath">
+        ///     Path of image whose role is to map region to certain color to recognize what
+        ///     image has been clicked on by the user.
+        /// </param>
+        /// <param name="regionColorMappingPath">Path of file mapping color to certain existing map region.</param>
+        /// <param name="mapImagePath">Map of image that will be used as map and displayed to the user.</param>
+        /// <param name="isFogOfWar">True, if the given map should be processed as fog of war type.</param>
+        /// <returns>Initialized instance.</returns>
+        public static MapImageProcessor Create(Map map, string regionHighlightedImagePath,
+            string regionColorMappingPath, string mapImagePath, bool isFogOfWar)
+        {
+            using (var regionHighlightedImageStream = new FileStream(regionHighlightedImagePath, FileMode.Open))
+            using (var regionColorMappingStream = new FileStream(regionColorMappingPath, FileMode.Open))
+            using (var mapImageStream = new FileStream(mapImagePath, FileMode.Open))
+            {
+                return Create(map, regionHighlightedImageStream, regionColorMappingStream, mapImageStream, isFogOfWar);
+            }
         }
     }
 }
