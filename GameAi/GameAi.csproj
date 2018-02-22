@@ -44,6 +44,7 @@
     <Compile Include="GameBotCreator.cs" />
     <Compile Include="GameBotType.cs" />
     <Compile Include="BotStructures\GameBot.cs" />
+    <Compile Include="GameRecording\BotTurn.cs" />
     <Compile Include="IdsMappingDictionary.cs" />
     <Compile Include="EvaluationStructures\MapMin.cs" />
     <Compile Include="BotStructures\MonteCarloTreeSearchBot.cs" />

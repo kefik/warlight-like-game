@@ -6,11 +6,12 @@
     using GameObjectsLib.Game;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
+    using GameRecording;
     using Interfaces;
 
-    public class WarlightAiBotHandler : IOnlineBotHandler<Turn>
+    public class WarlightAiBotHandler : IOnlineBotHandler<BotTurn>
     {
-        private readonly IOnlineBot<Turn> onlineBot;
+        private readonly IOnlineBot<BotTurn> onlineBot;
         private readonly IIdsTranslationUnit translationUnit;
 
         public WarlightAiBotHandler(Game game, Player player, GameBotType gameBotType)
@@ -28,14 +29,14 @@
             translationUnit = regionsIdsMappingDictionary;
         }
 
-        public Turn GetCurrentBestMove()
+        public BotTurn GetCurrentBestMove()
         {
             // TODO: translate format
             // TODO: return current best move
             throw new System.NotImplementedException();
         }
 
-        public async Task<Turn> FindBestMoveAsync()
+        public async Task<BotTurn> FindBestMoveAsync()
         {
             var turn = await onlineBot.FindBestMoveAsync();
 

@@ -5,6 +5,7 @@
     using EvaluationStructures;
     using GameObjectsLib;
     using GameObjectsLib.GameRecording;
+    using GameRecording;
 
     /// <summary>
     /// Bot using Monte-Carlo tree search algorithm.
@@ -16,13 +17,13 @@
         {
         }
 
-        public override Turn FindBestMove()
+        public override BotTurn FindBestMove()
         {
             var playerPerspective = PlayerPerspective.ShallowCopy();
             throw new NotImplementedException();
         }
 
-        public override Task<Turn> FindBestMoveAsync()
+        public override Task<BotTurn> FindBestMoveAsync()
         {
             throw new NotSupportedException();
         }
