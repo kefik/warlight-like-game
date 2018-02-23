@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication.CommandHandli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAi.Interfaces", "GameAi.Interfaces\GameAi.Interfaces.csproj", "{F02FF366-6835-45EF-9EEE-2DF857830184}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAi.Tests", "GameAi.Tests\GameAi.Tests.csproj", "{8EDF4429-251A-416D-BB68-93F227191BCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{F02FF366-6835-45EF-9EEE-2DF857830184}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F02FF366-6835-45EF-9EEE-2DF857830184}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F02FF366-6835-45EF-9EEE-2DF857830184}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{4F89350E-5363-4822-AD07-4D5272B55C84} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 		{C4C1CF72-EE5D-4B1F-B572-9181243F018A} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 		{B50BD638-80B2-4514-82E8-F7F8DDC080EE} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
+		{8EDF4429-251A-416D-BB68-93F227191BCF} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D606CDC-59E3-471D-99B3-397C7AD8F1AB}

@@ -63,7 +63,7 @@ namespace GameAi.EvaluationStructures
         /// </summary>
         /// <param name="regionMin"></param>
         /// <returns></returns>
-        public bool IsNeighbourToMyRegion(RegionMin regionMin)
+        public bool IsNeighbourToAnyMyRegion(RegionMin regionMin)
         {
             // TODO: slow, refactor if I need it to invoke regularly
             return regionMin.NeighbourRegionsIds.Any(IsRegionMine);

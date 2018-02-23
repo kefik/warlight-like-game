@@ -9,11 +9,12 @@
     using GameObjectsLib.Game;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
+    using GameRecording;
     using Interfaces;
 
     internal class GameBotCreator
     {
-        public GameBot CreateFromGame(Game game, Player player, GameBotType gameBotType, out IdsMappingDictionary regionsIdsMappingDictionary)
+        public IOnlineBot<BotTurn> CreateFromGame(Game game, Player player, GameBotType gameBotType, out IdsMappingDictionary regionsIdsMappingDictionary)
         {
             if (!game.Players.Contains(player))
             {
@@ -79,7 +80,7 @@
             return gameBot;
         }
 
-        public GameBot Create(GameBotType gameBotType, MapMin map, Difficulty difficulty, byte playerEncoded, bool isFogOfWar, out IdsMappingDictionary regionsIdsMappingDictionary)
+        public IOnlineBot<BotTurn> Create(GameBotType gameBotType, MapMin map, Difficulty difficulty, byte playerEncoded, bool isFogOfWar, out IdsMappingDictionary regionsIdsMappingDictionary)
         {
             // create minimized map
             // super regions mapping is not needed, because bot returns best move, which doesnt involve any super region iformation
@@ -117,7 +118,7 @@
                 {
                     var regionMin = playerPerspective.MapMin.RegionsMin[index];
                     if (playerPerspective.IsRegionMine(regionMin)
-                        || playerPerspective.IsNeighbourToMyRegion(regionMin))
+                        || playerPerspective.IsNeighbourToAnyMyRegion(regionMin))
                     {
                         playerPerspective.MapMin.RegionsMin[index].IsVisible = true;
                     }
