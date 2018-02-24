@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Configuration;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -56,6 +57,15 @@
             {
                 Initialize(fs);
             }
+        }
+
+        public Map(int id, string name, int playersLimit, Stream mapStream)
+        {
+            Id = id;
+            Name = name;
+            PlayersLimit = playersLimit;
+
+            Initialize(mapStream);
         }
 
         private Map()
