@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Collections\BidirectionalDictionary.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="ObjectPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
