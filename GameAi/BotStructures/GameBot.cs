@@ -23,6 +23,8 @@
 
         public BotTurn CurrentBestMove { get; protected set; }
 
+        public abstract bool CanStartEvaluation { get; }
+
         internal GameBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar)
         {
             this.PlayerPerspective = playerPerspective;
@@ -31,27 +33,13 @@
         }
 
         /// <summary>
-        /// Finds and returns best move for given bot state.
-        /// </summary>
-        /// <returns></returns>
-        public abstract BotTurn FindBestMove();
-
-        /// <summary>
         /// Asynchronously finds best move for the bot at given state.
         /// </summary>
         /// <returns></returns>
         public abstract Task<BotTurn> FindBestMoveAsync();
-        
-        public void UpdateMap()
-        {
-            // TODO: break the evaluation
 
-            // TODO: update the map
-        }
+        public abstract void UpdateMap();
 
-        public void StopEvaluation()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void StopEvaluation();
     }
 }

@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using GameAi;
+    using GameAi.GameRecording;
     using GameAi.Interfaces;
     using GameObjectsLib;
     using GameObjectsLib.GameRecording;
@@ -15,7 +17,7 @@
     internal class CommandHandler : ICommandHandler
     {
         private readonly MapController mapController;
-        private IOnlineBot<Turn> bot;
+        private IOnlineBotHandler<BotTurn> botHandler;
 
         #region Mapping dictionaries
         private readonly IDictionary<int, OwnerPerspective> playerDictionary;
@@ -69,22 +71,35 @@
         private ICommandToken ExecuteCommand(PlaceArmiesRequestToken token)
         {
             // TODO: solve request
+            // stop evaluation in specified timespan
+            botHandler.StopEvaluation(token.Timeout.Value - new TimeSpan(0, 0, 0, 0, milliseconds: 30)).Wait();
 
-            throw new NotImplementedException();
+            var bestMove = botHandler.GetCurrentBestMove();
+
+            // TODO: get place armies
+            return new PlaceArmiesResponseToken(bestMove.PlayerId, null);
         }
 
         private ICommandToken ExecuteCommand(AttackRequestToken token)
         {
-            // TODO: solve request
+            // stop evaluation in specified timespan
+            botHandler.StopEvaluation(token.Timeout.Value - new TimeSpan(0, 0, 0, 0, milliseconds: 30)).Wait();
 
-            throw new NotImplementedException();
+            var bestMove = botHandler.GetCurrentBestMove();
+
+            // TODO: get attacks
+            return new AttackResponseToken(bestMove.PlayerId);
         }
 
         private ICommandToken ExecuteCommand(PickStartingRegionsRequestToken token)
         {
-            // TODO: solve request
+            // stop evaluation in specified timespan
+            botHandler.StopEvaluation(token.Timeout.Value - new TimeSpan(0, 0, 0, 0, milliseconds: 30)).Wait();
 
-            throw new NotImplementedException();
+            var bestMove = botHandler.GetCurrentBestMove();
+
+            // get picked starting regions
+            return new PickStartingRegionsResponseToken(null);
         }
 
         private ICommandToken ExecuteCommand(TimePerMoveToken token)
@@ -102,10 +117,11 @@
             int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
 
             var mapMin = mapController.GetMap();
-            var botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot, mapMin, Difficulty.Hard,
+            botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot, mapMin, Difficulty.Hard,
                 (byte)myPlayerId, IsFogOfWar);
-
-            // TODO: run to get the best move
+            
+            // find the best move
+            botHandler.FindBestMoveAsync();
 
             return null;
         }
@@ -132,8 +148,13 @@
         {
             mapController.UpdateMap(token);
 
-            // TODO: update the bots map ~ call bot.Update
+            // update == create new bot handler with refreshed map
+            int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
 
+            var mapMin = mapController.GetMap();
+            botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot, mapMin, Difficulty.Hard,
+                (byte)myPlayerId, IsFogOfWar);
+            
             return null;
         }
     }

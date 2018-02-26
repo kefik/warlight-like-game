@@ -1,5 +1,6 @@
 ﻿namespace GameAi
 {
+    using System;
     using System.Threading.Tasks;
     using EvaluationStructures;
     using GameObjectsLib;
@@ -43,6 +44,16 @@
             // TODO: translate format
 
             throw new System.NotImplementedException();
+        }
+
+        public void StopEvaluation()
+        {
+            onlineBot.StopEvaluation();
+        }
+
+        public Task StopEvaluation(TimeSpan timeSpan)
+        {
+            return Task.Delay(timeSpan).ContinueWith(x => onlineBot.StopEvaluation());
         }
     }
 }

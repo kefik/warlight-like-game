@@ -12,25 +12,41 @@
     /// </summary>
     internal class MonteCarloTreeSearchBot : GameBot
     {
+        private BotEvaluationState evaluationState;
+
+        public override bool CanStartEvaluation
+        {
+            get { return evaluationState == BotEvaluationState.NotRunning; }
+        }
+
         public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar)
             : base(playerPerspective, difficulty, isFogOfWar)
         {
         }
 
-        public override BotTurn FindBestMove()
+        public override async Task<BotTurn> FindBestMoveAsync()
         {
-            var playerPerspective = PlayerPerspective.ShallowCopy();
-            throw new NotImplementedException();
-        }
+            if (evaluationState != BotEvaluationState.NotRunning)
+            {
+                throw new ArgumentException($"Cannot start evaluation if the current evaluation state is {evaluationState}");
+            }
 
-        public override Task<BotTurn> FindBestMoveAsync()
-        {
+            evaluationState = BotEvaluationState.Running;
+
+            // TODO: add evaluation
+
+            evaluationState = BotEvaluationState.NotRunning;
             throw new NotSupportedException();
         }
 
-        private Round FindBestMove(PlayerPerspective playerPerspective)
+        public override void UpdateMap()
         {
             throw new NotImplementedException();
+        }
+
+        public override void StopEvaluation()
+        {
+            evaluationState = BotEvaluationState.ShouldStop;
         }
     }
 }

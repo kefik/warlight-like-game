@@ -10,6 +10,11 @@
     public interface IBot<TBestMove>
     {
         /// <summary>
+        /// Reports whether the bot evaluation can start
+        /// </summary>
+        bool CanStartEvaluation { get; }
+
+        /// <summary>
         /// Finds the best move for the player.
         /// </summary>
         /// <returns></returns>

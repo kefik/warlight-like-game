@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BotEvaluationState.cs" />
     <Compile Include="GameBotCreator.cs" />
     <Compile Include="GameBotType.cs" />
     <Compile Include="BotStructures\GameBot.cs" />
