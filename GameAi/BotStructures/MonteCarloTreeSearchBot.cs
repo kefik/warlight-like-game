@@ -46,7 +46,10 @@
 
         public override void StopEvaluation()
         {
-            evaluationState = BotEvaluationState.ShouldStop;
+            if (evaluationState != BotEvaluationState.NotRunning)
+            {
+                evaluationState = BotEvaluationState.ShouldStop;
+            }
         }
     }
 }

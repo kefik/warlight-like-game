@@ -5,7 +5,9 @@
     /// <summary>
     /// Pool whose purpose is to relieve the pressure on GC.
     /// </summary>
-    /// <typeparam name="TType"></typeparam>
+    /// <typeparam name="TType">Type parameter that must be class (otherwise it doesn't make sense)
+    /// and must have parameterless construtor.
+    /// </typeparam>
     public class ObjectPool<TType> where TType : class, new()
     {
         /// <summary>
