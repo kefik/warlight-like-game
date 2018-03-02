@@ -1,10 +1,12 @@
-﻿namespace GameAi.BotStructures
+﻿namespace GameAi.BotStructures.MCTS
 {
     using System;
+    using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Common.Collections;
     using EvaluationStructures;
     using GameObjectsLib;
-    using GameObjectsLib.GameRecording;
     using GameRecording;
 
     /// <summary>
@@ -13,6 +15,7 @@
     internal class MonteCarloTreeSearchBot : GameBot
     {
         private BotEvaluationState evaluationState;
+        private MCTSEvaluationHandler evaluationHandler;
 
         public override bool CanStartEvaluation
         {
@@ -33,10 +36,23 @@
 
             evaluationState = BotEvaluationState.Running;
 
-            // TODO: add evaluation
+            // evaluate the tree
+            evaluationHandler = new MCTSEvaluationHandler(PlayerPerspective, new UctEvaluator());
+
+            try
+            {
+                await evaluationHandler.StartEvaluationAsync();
+            }
+            catch (OperationCanceledException)
+            {
+                // now I know the evaluation ended up with exception
+            }
 
             evaluationState = BotEvaluationState.NotRunning;
-            throw new NotSupportedException();
+
+            var bestMove = evaluationHandler.GetBestMove();
+
+            return bestMove;
         }
 
         public override void UpdateMap()
@@ -49,6 +65,7 @@
             if (evaluationState != BotEvaluationState.NotRunning)
             {
                 evaluationState = BotEvaluationState.ShouldStop;
+                evaluationHandler.Stop();
             }
         }
     }

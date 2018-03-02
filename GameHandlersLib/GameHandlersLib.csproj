@@ -67,6 +67,10 @@
       <Project>{E4CBE100-724B-4097-9EBD-DB0CFBE41375}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameAi.Interfaces\GameAi.Interfaces.csproj">
+      <Project>{f02ff366-6835-45ef-9eee-2df857830184}</Project>
+      <Name>GameAi.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameAi\GameAi.csproj">
       <Project>{1c45ef91-9586-4fc0-aabb-34751a8aafef}</Project>
       <Name>GameAi</Name>

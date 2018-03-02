@@ -1,6 +1,7 @@
 ﻿namespace GameAi
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using EvaluationStructures;
     using GameObjectsLib;
@@ -43,7 +44,7 @@
 
             // TODO: translate format
 
-            throw new System.NotImplementedException();
+            return turn;
         }
 
         public void StopEvaluation()

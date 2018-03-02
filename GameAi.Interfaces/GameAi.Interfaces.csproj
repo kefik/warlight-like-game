@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="IBot.cs" />
     <Compile Include="IIdsTranslationUnit.cs" />
+    <Compile Include="INodeEvaluator.cs" />
     <Compile Include="IOnlineBot.cs" />
     <Compile Include="IOnlineBotHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

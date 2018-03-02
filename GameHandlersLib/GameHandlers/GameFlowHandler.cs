@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Xml;
     using GameAi;
     using GameObjectsLib;
@@ -389,8 +391,12 @@
             OnBegin?.Invoke();
             
             var botHandler = new WarlightAiBotHandler(Game, PlayerOnTurn, GameBotType.MonteCarloTreeSearchBot);
-
-            //bot.FindBestMove();
+            
+            // find the best move
+            // create a new task bcuz otherwise ui thread gets blocked
+            var bestMoveTask = Task.Run(botHandler.FindBestMoveAsync);
+            //var bestMove = botHandler.FindBestMoveAsync().Result;
+            botHandler.StopEvaluation(new TimeSpan(0, 0, 2));
         }
 
         /// <summary>

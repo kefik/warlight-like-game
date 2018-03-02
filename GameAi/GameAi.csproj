@@ -33,6 +33,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,13 +45,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BotEvaluationState.cs" />
+    <Compile Include="BotStructures\MCTS\MCTSEvaluationHandler.cs" />
+    <Compile Include="BotStructures\MCTS\MCTSTree.cs" />
+    <Compile Include="BotStructures\MCTS\MCTSTreeHandler.cs" />
+    <Compile Include="BotStructures\MCTS\NodeState.cs" />
+    <Compile Include="BotStructures\MCTS\UctEvaluator.cs" />
     <Compile Include="GameBotCreator.cs" />
     <Compile Include="GameBotType.cs" />
     <Compile Include="BotStructures\GameBot.cs" />
     <Compile Include="GameRecording\BotTurn.cs" />
     <Compile Include="IdsMappingDictionary.cs" />
     <Compile Include="EvaluationStructures\MapMin.cs" />
-    <Compile Include="BotStructures\MonteCarloTreeSearchBot.cs" />
+    <Compile Include="BotStructures\MCTS\MonteCarloTreeSearchBot.cs" />
     <Compile Include="OwnerPerspective.cs" />
     <Compile Include="EvaluationStructures\PlayerPerspective.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,6 +77,9 @@
       <Project>{57a48d5c-6e58-4ec7-acd0-565a4df58daf}</Project>
       <Name>GameObjectsLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
