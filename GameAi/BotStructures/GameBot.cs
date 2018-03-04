@@ -9,8 +9,8 @@
     using GameObjectsLib.Game;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
-    using GameRecording;
     using Interfaces;
+    using InterFormatCommunication.GameRecording;
 
     /// <summary>
     /// Minimized version of <see cref="Game"/> from perspective of a given <see cref="Player"/>.
@@ -37,7 +37,7 @@
         /// Asynchronously finds best move for the bot at given state.
         /// </summary>
         /// <returns></returns>
-        public abstract Task<BotTurn> FindBestMoveAsync(params object[] restrictions);
+        public abstract Task<BotTurn> FindBestMoveAsync();
 
         public abstract void UpdateMap();
 

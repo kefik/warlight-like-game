@@ -1,6 +1,7 @@
 ﻿namespace GameAi.BotStructures.MCTS
 {
     using System;
+    using System.Collections.Generic;
     using Common;
     using Common.Collections;
     using EvaluationStructures;
@@ -58,6 +59,11 @@
             get { return Value.VisitCount; }
         }
 
+        public int WinCount
+        {
+            get { return Value.WinCount; }
+        }
+
         public PlayerPerspective GameState
         {
             get { return Value.BoardState; }
@@ -69,6 +75,11 @@
 
             node.Value = value;
             node.Parent = this;
+
+            if (Children == null)
+            {
+                Children = new List<MCTSTreeNode>();
+            }
 
             Children.Add(node);
         }

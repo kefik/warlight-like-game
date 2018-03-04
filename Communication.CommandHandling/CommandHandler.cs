@@ -5,10 +5,10 @@
     using System.Linq;
     using System.Threading.Tasks;
     using GameAi;
-    using GameAi.GameRecording;
     using GameAi.Interfaces;
     using GameObjectsLib;
     using GameObjectsLib.GameRecording;
+    using InterFormatCommunication.GameRecording;
     using Shared;
     using Tokens;
     using Tokens.Settings;
@@ -121,7 +121,7 @@
                 (byte)myPlayerId, IsFogOfWar);
             
             // find the best move
-            botHandler.FindBestMoveAsync(token.RegionIds as ICollection<object>);
+            botHandler.FindBestMoveAsync();
 
             return null;
         }

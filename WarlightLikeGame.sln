@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAi.Tests", "GameAi.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameObjectsLib.Tests", "GameObjectsLib.Tests\GameObjectsLib.Tests.csproj", "{496773E5-1554-42CD-B44F-55F9086F860B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterFormatCommunication", "InterFormatCommunication\InterFormatCommunication.csproj", "{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,10 @@ Global
 		{496773E5-1554-42CD-B44F-55F9086F860B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{496773E5-1554-42CD-B44F-55F9086F860B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{496773E5-1554-42CD-B44F-55F9086F860B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

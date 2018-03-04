@@ -394,7 +394,7 @@
             
             // find the best move
             // create a new task bcuz otherwise ui thread gets blocked
-            var bestMoveTask = Task.Run(botHandler.FindBestMoveAsync);
+            var bestMoveTask = Task.Run(() => botHandler.FindBestMoveAsync());
             //var bestMove = botHandler.FindBestMoveAsync().Result;
             botHandler.StopEvaluation(new TimeSpan(0, 0, 2));
         }

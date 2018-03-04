@@ -5,8 +5,8 @@
     using System.Threading.Tasks;
     using EvaluationStructures;
     using GameObjectsLib.GameRecording;
-    using GameRecording;
     using Interfaces;
+    using InterFormatCommunication.GameRecording;
 
     /// <summary>
     /// Component handling Monte Carlo tree search evaluation.
@@ -20,12 +20,12 @@
                 IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningGameActionGenerator,
                 params IGameActionGenerator<BotGameTurn, PlayerPerspective>[] actionGenerators)
         {
-            TreeHandlers = new MCTSTreeHandler[Environment.ProcessorCount];
+            TreeHandlers = new MCTSTreeHandler[1];
             CancellationTokenSource = new CancellationTokenSource();
 
             for (int index = 0; index < TreeHandlers.Length; index++)
             {
-                TreeHandlers[index] = new MCTSTreeHandler(initialGameState, nodeEvaluator, actionGenerators[0]);
+                TreeHandlers[index] = new MCTSTreeHandler(initialGameState, nodeEvaluator, beginningGameActionGenerator, actionGenerators[0]);
             }
         }
 

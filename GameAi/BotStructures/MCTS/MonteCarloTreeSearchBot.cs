@@ -9,7 +9,7 @@
     using Common.Extensions;
     using EvaluationStructures;
     using GameObjectsLib;
-    using GameRecording;
+    using InterFormatCommunication.GameRecording;
 
     /// <summary>
     /// Bot using Monte-Carlo tree search algorithm.
@@ -38,28 +38,17 @@
             return evaluationHandler.GetBestMove();
         }
 
-        public override async Task<BotTurn> FindBestMoveAsync(params object[] restrictions)
+        public override async Task<BotTurn> FindBestMoveAsync()
         {
             if (evaluationState != BotEvaluationState.NotRunning)
             {
                 throw new ArgumentException($"Cannot start evaluation if the current evaluation state is {evaluationState}");
             }
 
-            if (!restrictions.IsNullOrEmpty())
-            {
-                // parameter is regions given player can select
-                evaluationHandler = new MCTSEvaluationHandler(PlayerPerspective,
-                    new UctEvaluator(),
-                    new SelectRegionActionGenerator(restrictions[0] as ICollection<int>),
-                    new AggressiveBotActionGenerator());
-            }
-            else
-            {
-                evaluationHandler = new MCTSEvaluationHandler(PlayerPerspective,
-                    new UctEvaluator(),
-                    new SelectRegionActionGenerator(),
-                    new AggressiveBotActionGenerator());
-            }
+            evaluationHandler = new MCTSEvaluationHandler(PlayerPerspective,
+                new UctEvaluator(),
+                new SelectRegionActionGenerator(2),
+                new AggressiveBotActionGenerator());
 
             try
             {

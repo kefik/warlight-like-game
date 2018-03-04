@@ -1,7 +1,10 @@
 namespace GameAi.EvaluationStructures
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using GameObjectsLib.GameMap;
+    using GameObjectsLib.Players;
 
     /// <summary>
     /// Represents bot from perspective of certain player.
@@ -57,6 +60,11 @@ namespace GameAi.EvaluationStructures
             return IsRegionMine(regionMin);
         }
 
+        public bool IsSuperRegionMine(int superRegionId)
+        {
+            return MapMin.SuperRegionsMin[superRegionId].OwnerId == PlayerId;
+        }
+
         /// <summary>
         /// Finds out whether <see cref="regionMin"/> is neighbour
         /// to any region of <seealso cref="PlayerId"/>.
@@ -74,6 +82,47 @@ namespace GameAi.EvaluationStructures
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Obtains region by specified Id.
+        /// </summary>
+        /// <param name="regionId"></param>
+        /// <returns></returns>
+        public ref RegionMin GetRegion(int regionId)
+        {
+            return ref MapMin.RegionsMin[regionId];
+        }
+
+        public IEnumerable<RegionMin> GetMyRegions()
+        {
+            foreach (RegionMin regionMin in MapMin.RegionsMin)
+            {
+                if (regionMin.GetOwnerPerspective(PlayerId) == OwnerPerspective.Mine)
+                {
+                    yield return regionMin;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Obtains income of player at the current state of the game.
+        /// </summary>
+        /// <returns></returns>
+        public int GetMyIncome()
+        {
+            var superRegions = MapMin.SuperRegionsMin;
+
+            int basicIncome = Player.BasicIncome;
+            foreach (SuperRegionMin superRegionMin in superRegions)
+            {
+                if (IsSuperRegionMine(superRegionMin.Id))
+                {
+                    basicIncome += superRegionMin.Bonus;
+                }
+            }
+
+            return basicIncome;
         }
     }
 }

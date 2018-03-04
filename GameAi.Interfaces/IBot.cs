@@ -19,7 +19,7 @@
         /// Finds the best move for the player.
         /// </summary>
         /// <returns></returns>
-        Task<TBestMove> FindBestMoveAsync(params object[] restrictions);
+        Task<TBestMove> FindBestMoveAsync();
 
         /// <summary>
         /// Updates map of bot based on parameter.

@@ -1,12 +1,13 @@
 ﻿namespace GameAi.BotStructures.MCTS
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using EvaluationStructures;
-    using GameRecording;
     using Interfaces;
+    using InterFormatCommunication.GameRecording;
 
     internal class MCTSTreeHandler
     {
@@ -17,8 +18,8 @@
         public MCTSTree Tree { get; }
 
         public MCTSTreeHandler(PlayerPerspective initialBoardState, INodeEvaluator<MCTSTreeNode> nodeEvaluator,
-            IGameActionGenerator<BotGameTurn, PlayerPerspective> actionGenerator,
-            IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionGenerator = null)
+            IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionGenerator,
+            IGameActionGenerator<BotGameTurn, PlayerPerspective> actionGenerator)
         {
             var state = new NodeState()
             {
@@ -34,41 +35,22 @@
             this.beginningActionGenerator = beginningActionGenerator;
         }
 
+        /// <summary>
+        /// Starts evaluation.
+        /// </summary>
+        /// <param name="token"></param>
         public void StartEvaluation(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
                 var bestNode = SelectBestNode();
                 
-                var action = actionGenerator.Generate(bestNode.GameState);
-                throw new OperationCanceledException();
+                var nodesToSimulate = Expand(bestNode);
+
+                Simulate(nodesToSimulate);
+
+                Backpropagate(nodesToSimulate);
             }
-        }
-
-        public void StartGameBeginningEvaluation(CancellationToken token)
-        {
-            
-        }
-
-        private bool ShouldGenerateGameBeginningAction(MCTSTreeNode currentNode)
-        {
-            byte playerId = currentNode.Value.BoardState.PlayerId;
-
-            if (currentNode.IsRoot)
-            {
-                return true;
-            }
-
-            do
-            {
-                currentNode = currentNode.Parent;
-                if (currentNode.Value.BoardState.PlayerId == playerId)
-                {
-                    return true;
-                }
-            } while (!currentNode.IsRoot);
-
-            return false;
         }
         
         /// <summary>
@@ -78,12 +60,7 @@
         private MCTSTreeNode SelectBestNode()
         {
             MCTSTreeNode currentNode = Tree.Root;
-
-            if (currentNode == null)
-            {
-                throw new ArgumentException("The tree does not have a root.");
-            }
-
+            
             while (!currentNode.IsLeaf)
             {
                 currentNode = GetBestChild(currentNode);
@@ -119,9 +96,57 @@
         /// Expand the node specified in parameter meaning choose nexta ctions that will be simulated.
         /// </summary>
         /// <param name="node">Node to expand.</param>
-        private void ExpandNode(MCTSTreeNode node)
+        private IList<MCTSTreeNode> Expand(MCTSTreeNode node)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                var botTurn = beginningActionGenerator.Generate(node.GameState);
+
+                // TODO: get gameState this action leads to
+
+                node.AddChild(new NodeState()
+                {
+                });
+            }
+
+            return node.Children;
+        }
+
+        private void Simulate(ICollection<MCTSTreeNode> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                Simulate(node);
+            }
+        }
+
+        private void Simulate(MCTSTreeNode sourceNode)
         {
             throw new NotImplementedException();
+        }
+
+        private void Backpropagate(ICollection<MCTSTreeNode> nodes)
+        {
+            foreach (MCTSTreeNode node in nodes)
+            {
+                Backpropagate(node);
+            }
+        }
+
+        /// <summary>
+        /// Backpropagates the changes back to the root.
+        /// </summary>
+        /// <param name="newlyExpandedNode"></param>
+        private void Backpropagate(MCTSTreeNode newlyExpandedNode)
+        {
+            MCTSTreeNode currentNode = newlyExpandedNode.Parent;
+            // repeat until the current node is root node
+            do
+            {
+                // update the node
+                currentNode.Value.VisitCount += newlyExpandedNode.VisitCount;
+                currentNode.Value.WinCount += newlyExpandedNode.Value.WinCount;
+            } while (!(currentNode = newlyExpandedNode.Parent).IsRoot);
         }
     }
 }

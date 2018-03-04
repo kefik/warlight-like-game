@@ -12,7 +12,7 @@
         /// Finds asynchronously best move in specified time.
         /// </summary>
         /// <returns></returns>
-        Task<TBestMove> FindBestMoveAsync(params object[] restrictions);
+        Task<TBestMove> FindBestMoveAsync();
 
         void StopEvaluation();
 

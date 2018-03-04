@@ -37,7 +37,7 @@
         [ProtoMember(2, AsReference = true)]
         public IList<Region> ControlledRegions { get; } = new List<Region>();
 
-        private const int BasicIncome = 5;
+        public const int BasicIncome = 5;
 
         /// <summary>
         ///     Calculates players army income and returns it.
