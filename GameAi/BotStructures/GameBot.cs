@@ -1,6 +1,7 @@
 ﻿namespace GameAi.BotStructures
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using EvaluationStructures;
@@ -21,8 +22,6 @@
         public Difficulty Difficulty { get; }
         public bool IsFogOfWar { get; }
 
-        public BotTurn CurrentBestMove { get; protected set; }
-
         public abstract bool CanStartEvaluation { get; }
 
         internal GameBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar)
@@ -32,11 +31,13 @@
             IsFogOfWar = isFogOfWar;
         }
 
+        public abstract BotTurn GetCurrentBestMove();
+
         /// <summary>
         /// Asynchronously finds best move for the bot at given state.
         /// </summary>
         /// <returns></returns>
-        public abstract Task<BotTurn> FindBestMoveAsync();
+        public abstract Task<BotTurn> FindBestMoveAsync(params object[] restrictions);
 
         public abstract void UpdateMap();
 

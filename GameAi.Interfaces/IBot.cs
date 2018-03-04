@@ -1,6 +1,7 @@
 ﻿namespace GameAi.Interfaces
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -18,7 +19,7 @@
         /// Finds the best move for the player.
         /// </summary>
         /// <returns></returns>
-        Task<TBestMove> FindBestMoveAsync();
+        Task<TBestMove> FindBestMoveAsync(params object[] restrictions);
 
         /// <summary>
         /// Updates map of bot based on parameter.

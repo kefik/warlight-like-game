@@ -2,6 +2,6 @@
 {
     public interface IOnlineBot<TBestMove> : IBot<TBestMove>
     {
-        TBestMove CurrentBestMove { get; }
+        TBestMove GetCurrentBestMove();
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace GameAi.Interfaces
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@
         /// Finds asynchronously best move in specified time.
         /// </summary>
         /// <returns></returns>
-        Task<TBestMove> FindBestMoveAsync();
+        Task<TBestMove> FindBestMoveAsync(params object[] restrictions);
 
         void StopEvaluation();
 

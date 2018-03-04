@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BotEvaluationState.cs" />
+    <Compile Include="BotStructures\MCTS\ActionGenerators\AggressiveBotActionGenerator.cs" />
+    <Compile Include="BotStructures\MCTS\ActionGenerators\SelectRegionActionGenerator.cs" />
     <Compile Include="BotStructures\MCTS\MCTSEvaluationHandler.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTree.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTreeHandler.cs" />
@@ -53,6 +55,8 @@
     <Compile Include="GameBotCreator.cs" />
     <Compile Include="GameBotType.cs" />
     <Compile Include="BotStructures\GameBot.cs" />
+    <Compile Include="GameRecording\BotGameBeginningTurn.cs" />
+    <Compile Include="GameRecording\BotGameTurn.cs" />
     <Compile Include="GameRecording\BotTurn.cs" />
     <Compile Include="IdsMappingDictionary.cs" />
     <Compile Include="EvaluationStructures\MapMin.cs" />

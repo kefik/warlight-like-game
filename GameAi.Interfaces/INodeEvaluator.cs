@@ -1,7 +1,16 @@
 ﻿namespace GameAi.Interfaces
 {
-    public interface INodeEvaluator<in T>
+    /// <summary>
+    /// Component that can evaluate specified node.
+    /// </summary>
+    /// <typeparam name="TNode">Type of the node.</typeparam>
+    public interface INodeEvaluator<in TNode>
     {
-        double GetValue(T node);
+        /// <summary>
+        /// Obtains value of the node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        double GetValue(TNode node);
     }
 }

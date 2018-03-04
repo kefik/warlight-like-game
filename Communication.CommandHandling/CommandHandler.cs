@@ -121,7 +121,7 @@
                 (byte)myPlayerId, IsFogOfWar);
             
             // find the best move
-            botHandler.FindBestMoveAsync();
+            botHandler.FindBestMoveAsync(token.RegionIds as ICollection<object>);
 
             return null;
         }

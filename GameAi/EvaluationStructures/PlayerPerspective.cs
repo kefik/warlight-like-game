@@ -65,8 +65,15 @@ namespace GameAi.EvaluationStructures
         /// <returns></returns>
         public bool IsNeighbourToAnyMyRegion(RegionMin regionMin)
         {
-            // TODO: slow, refactor if I need it to invoke regularly
-            return regionMin.NeighbourRegionsIds.Any(IsRegionMine);
+            foreach (int regionsId in regionMin.NeighbourRegionsIds)
+            {
+                if (IsRegionMine(regionsId))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

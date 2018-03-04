@@ -1,6 +1,7 @@
 ﻿namespace GameAi
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using EvaluationStructures;
@@ -38,9 +39,9 @@
             throw new System.NotImplementedException();
         }
 
-        public async Task<BotTurn> FindBestMoveAsync()
+        public async Task<BotTurn> FindBestMoveAsync(params object[] restrictions)
         {
-            var turn = await onlineBot.FindBestMoveAsync();
+            var turn = await onlineBot.FindBestMoveAsync(restrictions);
 
             // TODO: translate format
 

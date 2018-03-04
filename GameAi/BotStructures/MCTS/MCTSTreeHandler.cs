@@ -1,19 +1,24 @@
 ﻿namespace GameAi.BotStructures.MCTS
 {
     using System;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using EvaluationStructures;
+    using GameRecording;
     using Interfaces;
 
     internal class MCTSTreeHandler
     {
         private readonly INodeEvaluator<MCTSTreeNode> nodeEvaluator;
-        private CancellationToken token;
-
+        private readonly IGameActionGenerator<BotGameTurn, PlayerPerspective> actionGenerator;
+        private readonly IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionGenerator;
+        
         public MCTSTree Tree { get; }
 
-        public MCTSTreeHandler(PlayerPerspective initialBoardState, INodeEvaluator<MCTSTreeNode> nodeEvaluator)
+        public MCTSTreeHandler(PlayerPerspective initialBoardState, INodeEvaluator<MCTSTreeNode> nodeEvaluator,
+            IGameActionGenerator<BotGameTurn, PlayerPerspective> actionGenerator,
+            IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionGenerator = null)
         {
             var state = new NodeState()
             {
@@ -25,30 +30,47 @@
             Tree = new MCTSTree(state);
 
             this.nodeEvaluator = nodeEvaluator;
+            this.actionGenerator = actionGenerator;
+            this.beginningActionGenerator = beginningActionGenerator;
         }
 
         public void StartEvaluation(CancellationToken token)
         {
-            this.token = token;
-
             while (!token.IsCancellationRequested)
             {
                 var bestNode = SelectBestNode();
-
+                
+                var action = actionGenerator.Generate(bestNode.GameState);
                 throw new OperationCanceledException();
             }
         }
 
-        private void StartEvaluation()
+        public void StartGameBeginningEvaluation(CancellationToken token)
         {
-            while (true)
-            {
-                var bestNode = SelectBestNode();
-
-                throw new OperationCanceledException();
-            }
+            
         }
 
+        private bool ShouldGenerateGameBeginningAction(MCTSTreeNode currentNode)
+        {
+            byte playerId = currentNode.Value.BoardState.PlayerId;
+
+            if (currentNode.IsRoot)
+            {
+                return true;
+            }
+
+            do
+            {
+                currentNode = currentNode.Parent;
+                if (currentNode.Value.BoardState.PlayerId == playerId)
+                {
+                    return true;
+                }
+            } while (!currentNode.IsRoot);
+
+            return false;
+        }
+        
         /// <summary>
         /// Selects the best node.
         /// </summary>

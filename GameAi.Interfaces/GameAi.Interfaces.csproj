@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IGameActionGenerator.cs" />
     <Compile Include="IBot.cs" />
     <Compile Include="IIdsTranslationUnit.cs" />
     <Compile Include="INodeEvaluator.cs" />

@@ -11,25 +11,27 @@
     /// <summary>
     /// Component handling Monte Carlo tree search evaluation.
     /// </summary>
-    internal class MCTSEvaluationHandler
+    internal class MCTSEvaluationHandler : IDisposable
     {
-        internal CancellationTokenSource CancellationTokenSource { get; set; }
+        private CancellationTokenSource CancellationTokenSource { get; set; }
         private MCTSTreeHandler[] TreeHandlers { get; }
 
-        public MCTSEvaluationHandler(PlayerPerspective initialGameState, INodeEvaluator<MCTSTreeNode> nodeEvaluator)
+        public MCTSEvaluationHandler(PlayerPerspective initialGameState, INodeEvaluator<MCTSTreeNode> nodeEvaluator,
+                IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningGameActionGenerator,
+                params IGameActionGenerator<BotGameTurn, PlayerPerspective>[] actionGenerators)
         {
-            TreeHandlers = new MCTSTreeHandler[2];
+            TreeHandlers = new MCTSTreeHandler[Environment.ProcessorCount];
             CancellationTokenSource = new CancellationTokenSource();
 
             for (int index = 0; index < TreeHandlers.Length; index++)
             {
-                TreeHandlers[index] = new MCTSTreeHandler(initialGameState, nodeEvaluator);
+                TreeHandlers[index] = new MCTSTreeHandler(initialGameState, nodeEvaluator, actionGenerators[0]);
             }
         }
 
         public BotTurn GetBestMove()
         {
-            // TODO: merge the trees and get the most visitted node
+            // TODO: merge the trees and get the most visited node
             throw new NotImplementedException();
         }
 
@@ -46,7 +48,6 @@
                 var treeHandler = TreeHandlers[i];
 
                 tasks[i] = Task.Run(() => treeHandler.StartEvaluation(CancellationTokenSource.Token));
-                await tasks[i];
             }
             
             await Task.WhenAll(tasks);
@@ -62,21 +63,19 @@
         }
 
         /// <summary>
-        /// Asynchronously clears evaluation cache.
+        /// Disposes resources, clearing evaluation cache.
         /// </summary>
-        /// <returns></returns>
-        public async Task ClearEvaluationCacheAsync()
+        public void Dispose()
         {
-            Task[] tasks = new Task[TreeHandlers.Length];
-
-            for (int i = 0; i < tasks.Length; i++)
+            foreach (var treeHandler in TreeHandlers)
             {
-                var treeHandler = TreeHandlers[i];
-
-                tasks[i] = Task.Run(() => treeHandler.Tree.FreeEntireTree());
+                treeHandler.Tree.FreeEntireTree();
             }
+        }
 
-            await Task.WhenAll(tasks);
+        ~MCTSEvaluationHandler()
+        {
+            Dispose();
         }
     }
 }

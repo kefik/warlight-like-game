@@ -17,10 +17,8 @@
     {
         public MCTSTree(NodeState nodeState)
         {
-            Root = new MCTSTreeNode()
-            {
-                Value = nodeState
-            };
+            Root = DefaultPool.Allocate();
+            Root.Value = nodeState;
         }
 
         /// <summary>
@@ -44,6 +42,9 @@
         {
             // free every node
             ForEachPreOrder(FreeNode);
+
+            // root freed => no reason to have pointer on it
+            Root = null;
         }
     }
 
@@ -55,6 +56,11 @@
         public int VisitCount
         {
             get { return Value.VisitCount; }
+        }
+
+        public PlayerPerspective GameState
+        {
+            get { return Value.BoardState; }
         }
 
         public override void AddChild(NodeState value)
