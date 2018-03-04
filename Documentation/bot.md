@@ -16,7 +16,7 @@ update its best move and property *CurrentBestMove* will return this move.
 This design is flexible enough to fill up requirements. However, the problem is
 to implement those features without hindering the evaluation speed.
 
-## Details
+## Design details
 ### Stop evaluation
 Bot has to know if the stop condition has been fulfilled. Therefore there must be
 stored this information. But how?
@@ -63,3 +63,68 @@ We don't want to throw exception and catch it every time someone
 tries to start a new evaluation process when the cancellation
 of the previous one was not handled.
 Therefore *IBot* interface will have property *CanStartEvaluation*.
+
+## Monte Carlo tree search bot
+In this chapter Monte Carlo tree search
+bot implementation for this game will
+be discussed.
+
+Further in this chapter there will
+be used following terms:
+- **Action** - sequence of moves of given player
+- **Action generator** - component that generates
+action (based on some game heuristics)
+- **Board state** - state of the game
+
+Each node of the tree describes the
+current board state. Each edge in
+the tree describes an action that led to
+the child's described board state.
+
+### Basic algorithm description
+MCTS is best-first-search algorithm.
+It has 4 main steps that run in a loop:
+1. *Selection* - select the most appropriate
+node that is not expanded
+2. *Expansion* - expand the selected node meaning
+choose next actions that will be
+beginning for simulation part
+3. *Simulation* - play (randomly in a sense)
+actions and then evaluate the result of the game
+4. *Backpropagation* - backpropagate
+result obtained in simulation phase
+back to the root
+
+### Parallel MCTS
+There are many approaches for implementing
+MCTS in parallel. The approach that will be used
+in this project is *Root parallelisation*.
+
+*Root parallelisation* is easy parallel algorithm
+achieving good results. It is described by following steps:
+
+1. In parallel build separate trees,
+do all evaluation separately
+2. When the evaluation comes to an end (e.g. timer),
+merge the trees and return the action (edge)
+leading to a board state (node), that
+was visited the most times (thus
+achieved the best results).
+
+### Design
+
+<img src="bot_mcts.jpg" alt="mcts object design" />
+
+- *MCTSTreeHandler* - handles evaluation
+on one tree, each instance of this class
+represents one single-threaded evaluation of
+Monte Carlo tree search
+- *IGameActionGenerator* - handles generating
+actions (sequence of moves for a player). The
+generation should be semi-random, meaning
+it should randomly choose from meaningful actions.
+- *INodeEvaluator* - handles evaluating node's
+quality. It comes to use in selection phase of MCTS,
+when we need to choose best unexpanded node.
+- *MCTSEvaluationHandler* - handles parallel
+evaluation using *MCTSTreeHandler*s.
