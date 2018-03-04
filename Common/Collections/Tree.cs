@@ -11,7 +11,7 @@
     public class Tree<TNodeType, TValue> where TNodeType : TreeNode<TNodeType, TValue>, new()
     {
         /// <summary>
-        /// Root of the tree. It's parent is null.
+        /// Root of the tree. Its parent is null.
         /// </summary>
         public TNodeType Root { get; set; }
 
@@ -22,7 +22,10 @@
         /// <param name="action">Action to be invoked on every node.</param>
         public void ForEachPostOrder(Action<TNodeType> action)
         {
-            ForEachPostOrder(Root, action);
+            if (Root != null)
+            {
+                ForEachPostOrder(Root, action);
+            }
         }
 
         private void ForEachPostOrder(TNodeType currentNode, Action<TNodeType> action)
@@ -45,7 +48,10 @@
         /// <param name="action">Action to be invoked on every node.</param>
         public void ForEachPreOrder(Action<TNodeType> action)
         {
-            ForEachPreOrder(Root, action);
+            if (Root != null)
+            {
+                ForEachPreOrder(Root, action);
+            }
         }
 
         private void ForEachPreOrder(TNodeType currentNode, Action<TNodeType> action)
