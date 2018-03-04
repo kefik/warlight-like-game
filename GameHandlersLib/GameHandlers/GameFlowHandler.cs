@@ -8,11 +8,13 @@
     using System.Threading.Tasks;
     using System.Xml;
     using GameAi;
+    using GameAi.Interfaces;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
+    using InterFormatCommunication.Restrictions;
     using MapImageProcessor = MapHandlers.MapImageProcessor;
 
     /// <summary>
@@ -390,7 +392,13 @@
 
             OnBegin?.Invoke();
             
-            var botHandler = new WarlightAiBotHandler(Game, PlayerOnTurn, GameBotType.MonteCarloTreeSearchBot);
+            // TODO: add restrictions
+            var botHandler = new WarlightAiBotHandler(Game, PlayerOnTurn,
+                GameBotType.MonteCarloTreeSearchBot,
+                new Restrictions()
+            {
+                    
+            });
             
             // find the best move
             // create a new task bcuz otherwise ui thread gets blocked

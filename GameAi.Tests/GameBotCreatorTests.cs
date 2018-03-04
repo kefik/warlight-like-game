@@ -2,6 +2,7 @@
 {
     using EvaluationStructures;
     using GameObjectsLib;
+    using InterFormatCommunication.Restrictions;
     using NUnit.Framework;
 
     using static NUnit.Framework.Assert;
@@ -42,7 +43,8 @@
             var mapMin = new MapMin(regionsMin, superRegionsMin);
 
             var bot = creator.Create(GameBotType.MonteCarloTreeSearchBot, mapMin, Difficulty.Hard, playerEncoded: 1,
-                isFogOfWar: true, regionsIdsMappingDictionary: out IdsMappingDictionary regionsIdsMappingDictionary);
+                isFogOfWar: true, regionsIdsMappingDictionary: out IdsMappingDictionary regionsIdsMappingDictionary, 
+                restrictions: new Restrictions());
 
             // validate dictionary
             {

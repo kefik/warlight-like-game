@@ -25,7 +25,8 @@
 
             for (int index = 0; index < TreeHandlers.Length; index++)
             {
-                TreeHandlers[index] = new MCTSTreeHandler(initialGameState, nodeEvaluator, beginningGameActionGenerator, actionGenerators[0]);
+                TreeHandlers[index] = new MCTSTreeHandler(initialGameState, nodeEvaluator,
+                    beginningGameActionGenerator, actionGenerators[0]);
             }
         }
 
@@ -47,7 +48,8 @@
             {
                 var treeHandler = TreeHandlers[i];
 
-                tasks[i] = Task.Run(() => treeHandler.StartEvaluation(CancellationTokenSource.Token));
+                tasks[i] = Task.Run(() => treeHandler
+                    .StartEvaluation(CancellationTokenSource.Token));
             }
             
             await Task.WhenAll(tasks);

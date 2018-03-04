@@ -12,13 +12,13 @@
     using GameObjectsLib.Players;
     using Interfaces;
     using InterFormatCommunication.GameRecording;
+    using InterFormatCommunication.Restrictions;
 
     internal class GameBotCreator
     {
         public IOnlineBot<BotTurn> CreateFromGame(Game game, Player player,
             GameBotType gameBotType, out IdsMappingDictionary regionsIdsMappingDictionary,
-            IEnumerable<IGameBeginningRestriction> gameBeginningRestrictions = null,
-            IEnumerable<IGameRestriction> gameRestrictions = null)
+            Restrictions restrictions)
         {
             if (!game.Players.Contains(player))
             {
@@ -75,7 +75,8 @@
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    gameBot = new MonteCarloTreeSearchBot(playerPerspective, difficulty, game.IsFogOfWar);
+                    gameBot = new MonteCarloTreeSearchBot(playerPerspective, difficulty, game.IsFogOfWar,
+                        restrictions);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
@@ -87,8 +88,7 @@
         public IOnlineBot<BotTurn> Create(GameBotType gameBotType, MapMin map,
             Difficulty difficulty, byte playerEncoded, bool isFogOfWar,
             out IdsMappingDictionary regionsIdsMappingDictionary,
-            IEnumerable<IGameBeginningRestriction> gameBeginningRestrictions = null,
-            IEnumerable<IGameRestriction> gameRestrictions = null)
+            Restrictions restrictions)
         {
             // create minimized map
             // super regions mapping is not needed, because bot returns best move, which doesnt involve any super region iformation
@@ -100,7 +100,8 @@
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar);
+                    return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar,
+                        restrictions);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
             }

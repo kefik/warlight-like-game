@@ -9,6 +9,7 @@
     using GameObjectsLib;
     using GameObjectsLib.GameRecording;
     using InterFormatCommunication.GameRecording;
+    using InterFormatCommunication.Restrictions;
     using Shared;
     using Tokens;
     using Tokens.Settings;
@@ -112,13 +113,25 @@
         {
             mapController.Start();
 
+            // specify restrictions
+            var restrictions = new Restrictions()
+            {
+                GameBeginningRestrictions = new List<IGameBeginningRestriction>()
+                {
+                    new GameBeginningRestriction()
+                    {
+                        RegionsPlayerCanChooseCount = StartingPickRegionsCount.Value,
+                        RestrictedRegions = token.RegionIds
+                    }
+                }
+            };
             // create bot
 
             int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
 
             var mapMin = mapController.GetMap();
             botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot, mapMin, Difficulty.Hard,
-                (byte)myPlayerId, IsFogOfWar);
+                (byte)myPlayerId, IsFogOfWar, restrictions);
             
             // find the best move
             botHandler.FindBestMoveAsync();
@@ -147,13 +160,11 @@
         private ICommandToken ExecuteCommand(UpdateMapToken token)
         {
             mapController.UpdateMap(token);
-
+            
             // update == create new bot handler with refreshed map
             int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
 
             var mapMin = mapController.GetMap();
-            botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot, mapMin, Difficulty.Hard,
-                (byte)myPlayerId, IsFogOfWar);
             
             return null;
         }

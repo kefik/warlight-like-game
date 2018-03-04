@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using ActionGenerators;
@@ -9,7 +10,9 @@
     using Common.Extensions;
     using EvaluationStructures;
     using GameObjectsLib;
+    using Interfaces;
     using InterFormatCommunication.GameRecording;
+    using InterFormatCommunication.Restrictions;
 
     /// <summary>
     /// Bot using Monte-Carlo tree search algorithm.
@@ -17,16 +20,34 @@
     internal class MonteCarloTreeSearchBot : GameBot
     {
         private BotEvaluationState evaluationState;
-        private MCTSEvaluationHandler evaluationHandler;
+        private readonly MCTSEvaluationHandler evaluationHandler;
 
         public override bool CanStartEvaluation
         {
             get { return evaluationState == BotEvaluationState.NotRunning; }
         }
 
-        public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar)
-            : base(playerPerspective, difficulty, isFogOfWar)
+        public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar,
+            Restrictions restrictions)
+            : base(playerPerspective, difficulty, isFogOfWar, restrictions)
         {
+            // there must be game beginning restriction specifying initial conditions
+            if (Restrictions?.GameBeginningRestrictions == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            var gameBeginningRestriction =
+                Restrictions.GameBeginningRestrictions
+                    .First(x => x.PlayerId == PlayerPerspective.PlayerId);
+
+            evaluationHandler = new MCTSEvaluationHandler(PlayerPerspective,
+                new UctEvaluator(),
+                new SelectRegionActionGenerator(
+                    gameBeginningRestriction.RegionsPlayerCanChooseCount,
+                    gameBeginningRestriction.PlayerId,
+                    gameBeginningRestriction.RestrictedRegions),
+                new AggressiveBotActionGenerator());
         }
 
         public override BotTurn GetCurrentBestMove()
@@ -44,12 +65,7 @@
             {
                 throw new ArgumentException($"Cannot start evaluation if the current evaluation state is {evaluationState}");
             }
-
-            evaluationHandler = new MCTSEvaluationHandler(PlayerPerspective,
-                new UctEvaluator(),
-                new SelectRegionActionGenerator(2),
-                new AggressiveBotActionGenerator());
-
+            
             try
             {
                 var evaluationTask = evaluationHandler.StartEvaluationAsync();
