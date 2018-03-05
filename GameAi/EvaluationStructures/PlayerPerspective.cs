@@ -83,17 +83,7 @@ namespace GameAi.EvaluationStructures
 
             return false;
         }
-
-        /// <summary>
-        /// Obtains region by specified Id.
-        /// </summary>
-        /// <param name="regionId"></param>
-        /// <returns></returns>
-        public ref RegionMin GetRegion(int regionId)
-        {
-            return ref MapMin.RegionsMin[regionId];
-        }
-
+        
         public IEnumerable<RegionMin> GetMyRegions()
         {
             foreach (RegionMin regionMin in MapMin.RegionsMin)
@@ -104,7 +94,7 @@ namespace GameAi.EvaluationStructures
                 }
             }
         }
-
+        
         /// <summary>
         /// Obtains income of player at the current state of the game.
         /// </summary>

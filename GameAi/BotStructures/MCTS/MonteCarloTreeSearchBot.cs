@@ -31,23 +31,8 @@
             Restrictions restrictions)
             : base(playerPerspective, difficulty, isFogOfWar, restrictions)
         {
-            // there must be game beginning restriction specifying initial conditions
-            if (Restrictions?.GameBeginningRestrictions == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            var gameBeginningRestriction =
-                Restrictions.GameBeginningRestrictions
-                    .First(x => x.PlayerId == PlayerPerspective.PlayerId);
-
             evaluationHandler = new MCTSEvaluationHandler(PlayerPerspective,
-                new UctEvaluator(),
-                new SelectRegionActionGenerator(
-                    gameBeginningRestriction.RegionsPlayerCanChooseCount,
-                    gameBeginningRestriction.PlayerId,
-                    gameBeginningRestriction.RestrictedRegions),
-                new AggressiveBotActionGenerator());
+                restrictions);
         }
 
         public override BotTurn GetCurrentBestMove()
@@ -65,7 +50,7 @@
             {
                 throw new ArgumentException($"Cannot start evaluation if the current evaluation state is {evaluationState}");
             }
-            
+
             try
             {
                 var evaluationTask = evaluationHandler.StartEvaluationAsync();

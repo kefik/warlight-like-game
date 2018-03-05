@@ -9,17 +9,25 @@
     using Interfaces;
     using InterFormatCommunication.GameRecording;
 
+    /// <summary>
+    /// Handles single-threaded MCTS evaluation.
+    /// </summary>
     internal class MCTSTreeHandler
     {
         private readonly INodeEvaluator<MCTSTreeNode> nodeEvaluator;
-        private readonly IGameActionGenerator<BotGameTurn, PlayerPerspective> actionGenerator;
+        private readonly IGameActionGenerator<BotGameTurn, PlayerPerspective> expansionActionGenerator;
         private readonly IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionGenerator;
         
+        /// <summary>
+        /// Tree representing the evaluation.
+        /// </summary>
         public MCTSTree Tree { get; }
 
-        public MCTSTreeHandler(PlayerPerspective initialBoardState, INodeEvaluator<MCTSTreeNode> nodeEvaluator,
-            IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionGenerator,
-            IGameActionGenerator<BotGameTurn, PlayerPerspective> actionGenerator)
+        public MCTSTreeHandler(PlayerPerspective initialBoardState,
+            INodeEvaluator<MCTSTreeNode> nodeEvaluator,
+            IGameActionGenerator<BotGameTurn, PlayerPerspective> expansionActionGenerator,
+            IGameActionGenerator<BotGameTurn, PlayerPerspective> simulationActionGenerator,
+            IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionGenerator)
         {
             var state = new NodeState()
             {
@@ -31,12 +39,12 @@
             Tree = new MCTSTree(state);
 
             this.nodeEvaluator = nodeEvaluator;
-            this.actionGenerator = actionGenerator;
+            this.expansionActionGenerator = expansionActionGenerator;
             this.beginningActionGenerator = beginningActionGenerator;
         }
 
         /// <summary>
-        /// Starts evaluation.
+        /// Starts MCTS evaluation with possible cancellation.
         /// </summary>
         /// <param name="token"></param>
         public void StartEvaluation(CancellationToken token)
@@ -96,17 +104,32 @@
         /// Expand the node specified in parameter meaning choose nexta ctions that will be simulated.
         /// </summary>
         /// <param name="node">Node to expand.</param>
+        /// <returns>New children <see cref="node"/> was expanded to.</returns>
         private IList<MCTSTreeNode> Expand(MCTSTreeNode node)
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 9; i++)
             {
-                var botTurn = beginningActionGenerator.Generate(node.GameState);
-
-                // TODO: get gameState this action leads to
-
-                node.AddChild(new NodeState()
+                if (node.GameState.MapMin.IsGameBeginning())
                 {
-                });
+                    var botTurn = beginningActionGenerator.Generate(node.GameState);
+
+                    // TODO: try to generate best moves from opponents perspective (fog of war problem)
+                    // TODO: get gameState this action leads to
+
+                    node.AddChild(new NodeState()
+                    {
+                    });
+                }
+                else
+                {
+                    var botTurn = expansionActionGenerator.Generate(node.GameState);
+
+                    // TODO: get gameState this action leads to
+
+                    node.AddChild(new NodeState()
+                    {
+                    });
+                }
             }
 
             return node.Children;
@@ -125,7 +148,7 @@
             throw new NotImplementedException();
         }
 
-        private void Backpropagate(ICollection<MCTSTreeNode> nodes)
+        private void Backpropagate(IEnumerable<MCTSTreeNode> nodes)
         {
             foreach (MCTSTreeNode node in nodes)
             {

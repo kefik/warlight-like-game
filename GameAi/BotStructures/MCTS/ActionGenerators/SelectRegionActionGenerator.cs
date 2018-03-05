@@ -7,6 +7,9 @@
     using Interfaces;
     using InterFormatCommunication.GameRecording;
 
+    /// <summary>
+    /// Represents action generator for selecting regions at the beginning of the game.
+    /// </summary>
     internal class SelectRegionActionGenerator : IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective>
     {
         private readonly int playerId;
@@ -57,7 +60,7 @@
             {
                 foreach (int regionsRestriction in regionsRestrictions)
                 {
-                    regionsMin[index++] = playerPerspective.GetRegion(regionsRestriction);
+                    regionsMin[index++] = playerPerspective.MapMin.GetRegion(regionsRestriction);
                 }
             }
             // indices of regions that were chosen by the algorithm

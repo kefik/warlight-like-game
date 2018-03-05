@@ -1,7 +1,9 @@
 namespace GameAi.EvaluationStructures
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using GameObjectsLib.GameMap;
 
@@ -72,6 +74,35 @@ namespace GameAi.EvaluationStructures
             }
 
             return new MapMin(regionsMin, superRegionsMin);
+        }
+
+        /// <summary>
+        /// Reports whether the current situation is the game beginning.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>Slow, don't use frequently.</remarks>
+        [Pure]
+        public bool IsGameBeginning()
+        {
+            return RegionsMin.All(x => x.OwnerId == 0);
+        }
+
+        /// <summary>
+        /// Obtains region by specified Id.
+        /// </summary>
+        /// <param name="regionId"></param>
+        /// <returns></returns>
+        public ref RegionMin GetRegion(int regionId)
+        {
+            return ref RegionsMin[regionId];
+        }
+
+        public IEnumerable<RegionMin> GetNeighbourRegions(int regionId)
+        {
+            foreach (var neighbourRegionIds in GetRegion(regionId).NeighbourRegionsIds)
+            {
+                yield return GetRegion(neighbourRegionIds);
+            }
         }
     }
 }
