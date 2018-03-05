@@ -128,3 +128,35 @@ quality. It comes to use in selection phase of MCTS,
 when we need to choose best unexpanded node.
 - *MCTSEvaluationHandler* - handles parallel
 evaluation using *MCTSTreeHandler*s.
+
+#### Action generators
+Action generators are components responsible
+for generating sequence of moves for a player
+based on current situation in the game.
+There are two types of action generators:
+1. Beginning game action generators - these are 
+responsible for selecting best regions at the
+beginning of the game
+2. Game action generators - generate deploy + attack
+moves in other stages of the game
+
+In Warlight game there is a problem with possible
+partial information about the game state (fog of war option).
+Action generators must be aware of that. *RegionMin* structure
+has *IsVisible* property reporting whether the region is visible
+for the player this bot tries to find the best move for.
+
+##### Beginning game action generators
+Must generate beginning game region selection. There can be specified
+regions options from which given bot must choose from (e.g. choose from 2 regions
+from regions with IDs 2, 4 or 7).
+
+There will be used following heuristics:
+TODO
+
+##### Game action generators
+Must generate deploying/attacking. There is no known restriction
+concerning this phase like in previous section.
+
+There will be used following heuristics:
+TODO

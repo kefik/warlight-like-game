@@ -32,11 +32,11 @@
         /// <summary>
         /// Initializes components for MCTS evaluation.
         /// </summary>
-        /// <param name="initialGameState"></param>
-        /// <param name="restrictions"></param>
+        /// <param name="initialGameState">Initial game state of the evaluation.</param>
+        /// <param name="restrictions">Restrictions for the game.</param>
         /// <remarks>
         /// Must be called only if the evaluation is stopped, 
-        /// otherwise it can cause unpreditected behaviour.
+        /// otherwise it can cause unpredicted behaviour.
         /// </remarks>
         public void Initialize(PlayerPerspective initialGameState,
             Restrictions restrictions)
