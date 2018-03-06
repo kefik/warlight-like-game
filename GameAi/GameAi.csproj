@@ -64,6 +64,10 @@
       <Project>{E4CBE100-724B-4097-9EBD-DB0CFBE41375}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
+      <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
+      <Name>GameAi.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameAi.Interfaces\GameAi.Interfaces.csproj">
       <Project>{F02FF366-6835-45EF-9EEE-2DF857830184}</Project>
       <Name>GameAi.Interfaces</Name>
@@ -71,10 +75,6 @@
     <ProjectReference Include="..\GameObjectsLib\GameObjectsLib.csproj">
       <Project>{57a48d5c-6e58-4ec7-acd0-565a4df58daf}</Project>
       <Name>GameObjectsLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\InterFormatCommunication\GameAi.Data.csproj">
-      <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
-      <Name>GameAi.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

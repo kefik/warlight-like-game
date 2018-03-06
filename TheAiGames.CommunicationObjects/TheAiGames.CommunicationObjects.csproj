@@ -61,11 +61,7 @@
       <Project>{402F06CF-1819-4CCE-9E31-A07B560BD0FA}</Project>
       <Name>Communication.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GameAi\GameAi.csproj">
-      <Project>{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}</Project>
-      <Name>GameAi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\InterFormatCommunication\GameAi.Data.csproj">
+    <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
       <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
       <Name>GameAi.Data</Name>
     </ProjectReference>

@@ -73,6 +73,10 @@
       <Project>{402F06CF-1819-4CCE-9E31-A07B560BD0FA}</Project>
       <Name>Communication.Shared</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
+      <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
+      <Name>GameAi.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameAi.Interfaces\GameAi.Interfaces.csproj">
       <Project>{F02FF366-6835-45EF-9EEE-2DF857830184}</Project>
       <Name>GameAi.Interfaces</Name>
@@ -84,10 +88,6 @@
     <ProjectReference Include="..\GameObjectsLib\GameObjectsLib.csproj">
       <Project>{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}</Project>
       <Name>GameObjectsLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\InterFormatCommunication\GameAi.Data.csproj">
-      <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
-      <Name>GameAi.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

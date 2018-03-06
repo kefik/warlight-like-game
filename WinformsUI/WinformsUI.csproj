@@ -410,10 +410,6 @@
       <Project>{9871296D-976F-466C-825F-FCFAA66C4212}</Project>
       <Name>Client.Entities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GameAi\GameAi.csproj">
-      <Project>{1c45ef91-9586-4fc0-aabb-34751a8aafef}</Project>
-      <Name>GameAi</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GameHandlersLib\GameHandlersLib.csproj">
       <Project>{eb5f1bbb-f000-4835-86df-f0e60b8298a6}</Project>
       <Name>GameHandlersLib</Name>

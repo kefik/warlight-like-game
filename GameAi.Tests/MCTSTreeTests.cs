@@ -1,7 +1,6 @@
 ﻿namespace GameAi.Tests
 {
     using System.Collections.Generic;
-    using System.Linq;
     using BotStructures.MCTS;
     using Common.Collections;
     using NUnit.Framework;
