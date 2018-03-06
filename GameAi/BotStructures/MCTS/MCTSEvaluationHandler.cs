@@ -117,9 +117,12 @@
         /// </summary>
         public void ClearEvaluationCache()
         {
-            foreach (var treeHandler in treeHandlers)
+            if (treeHandlers != null)
             {
-                treeHandler.Tree.FreeEntireTree();
+                foreach (var treeHandler in treeHandlers)
+                {
+                    treeHandler.Tree.FreeEntireTree();
+                }
             }
         }
 

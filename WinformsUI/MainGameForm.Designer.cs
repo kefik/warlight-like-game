@@ -39,6 +39,7 @@
             this.passwordLabel = new System.Windows.Forms.Label();
             this.playerNameLabel = new System.Windows.Forms.Label();
             this.loggedInLabel = new System.Windows.Forms.Label();
+            this.simulatorTabPage = new System.Windows.Forms.TabPage();
             this.typeGameChoiceTabControl.SuspendLayout();
             this.settingsTabPage.SuspendLayout();
             this.SuspendLayout();
@@ -72,6 +73,7 @@
             this.typeGameChoiceTabControl.Controls.Add(this.singleplayerTabPage);
             this.typeGameChoiceTabControl.Controls.Add(this.multiplayerTabPage);
             this.typeGameChoiceTabControl.Controls.Add(this.settingsTabPage);
+            this.typeGameChoiceTabControl.Controls.Add(this.simulatorTabPage);
             this.typeGameChoiceTabControl.Location = new System.Drawing.Point(0, 0);
             this.typeGameChoiceTabControl.Name = "typeGameChoiceTabControl";
             this.typeGameChoiceTabControl.SelectedIndex = 0;
@@ -154,6 +156,16 @@
             this.loggedInLabel.Text = "You are currently logged in as a local user.";
             this.loggedInLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // simulatorTabPage
+            // 
+            this.simulatorTabPage.Location = new System.Drawing.Point(4, 22);
+            this.simulatorTabPage.Name = "simulatorTabPage";
+            this.simulatorTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.simulatorTabPage.Size = new System.Drawing.Size(752, 426);
+            this.simulatorTabPage.TabIndex = 3;
+            this.simulatorTabPage.Text = "Simulator";
+            this.simulatorTabPage.UseVisualStyleBackColor = true;
+            // 
             // MainGameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -186,6 +198,7 @@
         private System.Windows.Forms.TextBox playerNameTextBox;
         private System.Windows.Forms.TextBox passwordTextBox;
         private System.Windows.Forms.TextBox emailTextBox;
+        private System.Windows.Forms.TabPage simulatorTabPage;
     }
 }
 

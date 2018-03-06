@@ -8,6 +8,7 @@ namespace GameObjectsLib.Game
         None,
         SinglePlayer,
         MultiplayerHotseat,
-        MultiplayerNetwork
+        MultiplayerNetwork,
+        Simulator
     }
 }

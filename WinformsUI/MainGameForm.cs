@@ -12,6 +12,7 @@
     using GameSetup.Multiplayer;
     using GameSetup.Multiplayer.Hotseat;
     using GameSetup.Multiplayer.Network;
+    using GameSetup.Simulator;
     using GameSetup.Singleplayer;
     using InGame;
 
@@ -22,8 +23,10 @@
         private SingleplayerGameOptionsControl singleplayerGameOptionsControl;
         private HotseatGameOptionsControl hotseatGameOptionsControl;
         private NetworkGameOptionsControl networkGameOptionsControl;
+        private SimulatorGameOptionsControl simulatorGameOptionsControl;
 
         private InGameControl inGame;
+        private SimulatorInGameControl simulatorInGame;
 
         public MainGameForm()
         {
@@ -78,6 +81,21 @@
             }
             inGame.Initialize(game);
             inGame.Show();
+        }
+
+        private void LoadSimulatorInGameScreen(Game game)
+        {
+            // remove previous
+            simulatorGameOptionsControl?.Dispose();
+            simulatorGameOptionsControl = null;
+            // load game screen
+            simulatorInGame = new SimulatorInGameControl()
+            {
+                Parent = simulatorTabPage,
+                Dock = DockStyle.Fill
+            };
+            simulatorInGame.Initialize(game);
+            simulatorInGame.Show();
         }
 
         private void LoadGame(Game game)
@@ -218,6 +236,20 @@
             }
         }
 
+        private void LoadSimulatorControls()
+        {
+            simulatorGameOptionsControl?.Dispose();
+
+            simulatorGameOptionsControl = new SimulatorGameOptionsControl()
+            {
+                Parent = simulatorTabPage,
+                Dock = DockStyle.Fill
+            };
+
+            simulatorGameOptionsControl.OnSimulationStarted += LoadSimulatorInGameScreen;
+            simulatorGameOptionsControl.Show();
+        }
+
         public void UserChanged(User newUser)
         {
             if (Global.MyUser.UserType == UserType.MyNetworkUser)
@@ -326,6 +358,9 @@
             inGame?.Dispose();
             inGame = null;
 
+            simulatorInGame?.Dispose();
+            simulatorInGame = null;
+
             switch (typeGameChoiceTabControl.SelectedIndex)
             {
                 case 0: // singleplayer
@@ -336,6 +371,9 @@
                     break;
                 case 2: // settings
                     LoadSettingsControls();
+                    break;
+                case 3: // simulator
+                    LoadSimulatorControls();
                     break;
                 default:
                     return;
