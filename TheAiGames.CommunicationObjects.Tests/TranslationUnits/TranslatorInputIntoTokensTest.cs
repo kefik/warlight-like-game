@@ -1,14 +1,11 @@
-﻿namespace TheAiGames.CommunicationObjects.Tests.TranslationUnits
+﻿namespace TheAiGames.EngineCommHandler.Tests.TranslationUnits
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using Communication.CommandHandling.Tokens;
     using Communication.CommandHandling.Tokens.Settings;
     using Communication.CommandHandling.Tokens.SetupMap;
-    using Communication.Shared;
     using EngineCommHandler.TranslationUnits;
-    using GameAi;
     using GameAi.Data;
     using NUnit.Framework;
 

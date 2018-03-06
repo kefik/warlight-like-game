@@ -1,4 +1,4 @@
-﻿namespace TheAiGames.CommunicationObjects.Tests.TranslationUnits
+﻿namespace TheAiGames.EngineCommHandler.Tests.TranslationUnits
 {
     using System.Collections.Generic;
     using Communication.CommandHandling.Tokens;
