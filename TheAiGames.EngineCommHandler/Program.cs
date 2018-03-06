@@ -4,7 +4,7 @@
     using System.IO;
     using Communication.CommandHandling;
     using Communication.Shared;
-    using CommunicationObjects.TranslationUnits;
+    using TranslationUnits;
 
     internal class Program
     {

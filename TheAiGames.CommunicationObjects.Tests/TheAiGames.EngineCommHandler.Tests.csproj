@@ -67,9 +67,9 @@
       <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
       <Name>GameAi.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TheAiGames.CommunicationObjects\TheAiGames.CommunicationObjects.csproj">
-      <Project>{a8894037-edf7-4f15-9cc3-e8d69fd98176}</Project>
-      <Name>TheAiGames.CommunicationObjects</Name>
+    <ProjectReference Include="..\TheAiGames.EngineCommHandler\TheAiGames.EngineCommHandler.csproj">
+      <Project>{F787951E-571B-4507-AED9-8A4A55D2A4F5}</Project>
+      <Name>TheAiGames.EngineCommHandler</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

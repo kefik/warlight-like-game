@@ -7,7 +7,7 @@
     using Communication.CommandHandling.Tokens.Settings;
     using Communication.CommandHandling.Tokens.SetupMap;
     using Communication.Shared;
-    using CommunicationObjects.TranslationUnits;
+    using EngineCommHandler.TranslationUnits;
     using GameAi;
     using GameAi.Data;
     using NUnit.Framework;

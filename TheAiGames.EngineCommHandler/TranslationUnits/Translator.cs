@@ -1,4 +1,4 @@
-﻿namespace TheAiGames.CommunicationObjects.TranslationUnits
+﻿namespace TheAiGames.EngineCommHandler.TranslationUnits
 {
     using System;
     using System.Collections.Generic;

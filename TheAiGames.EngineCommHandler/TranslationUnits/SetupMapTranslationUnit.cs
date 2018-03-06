@@ -1,4 +1,4 @@
-﻿namespace TheAiGames.CommunicationObjects.TranslationUnits
+﻿namespace TheAiGames.EngineCommHandler.TranslationUnits
 {
     using System;
     using System.Collections.Generic;
@@ -127,7 +127,7 @@
             var allNeighboursIds = (from region in regionsWithNeighbours
                                     select region.NeighbourIds into neighbours
                                     from neighbour in neighbours
-                                    select neighbour).Distinct().ToList();
+                                    select neighbour).Distinct<int>().ToList();
 
             foreach (int neighbourId in allNeighboursIds)
             {
@@ -144,14 +144,13 @@
                 var regionWithNeighbours = regionsWithNeighbours[i];
 
                 // neighbours of current region defined from the perspective of other regions
-                var allRegionNeighbours = regionWithNeighbours.NeighbourIds.Concat(
-                    from otherRegions in regionsWithNeighbours
+                var allRegionNeighbours = Enumerable.Concat<int>(regionWithNeighbours.NeighbourIds, from otherRegions in regionsWithNeighbours
                     where otherRegions.RegionId != regionWithNeighbours.RegionId
                     where otherRegions.NeighbourIds.Contains(regionWithNeighbours.RegionId)
                     select otherRegions.RegionId);
 
                 // currently defined neighbours united with those regions that have current region defined as neighbour = new neighbours
-                regionWithNeighbours.NeighbourIds = regionWithNeighbours.NeighbourIds.Union(allRegionNeighbours).ToList();
+                regionWithNeighbours.NeighbourIds = Enumerable.Union(regionWithNeighbours.NeighbourIds, allRegionNeighbours).ToList();
 
                 regionsWithNeighbours[i] = regionWithNeighbours;
             }

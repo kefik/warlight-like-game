@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Communication.CommandHandling.Tokens;
     using Communication.Shared;
-    using CommunicationObjects.TranslationUnits;
+    using EngineCommHandler.TranslationUnits;
     using NUnit.Framework;
 
     [TestFixture]

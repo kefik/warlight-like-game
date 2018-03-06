@@ -31,6 +31,9 @@
             catch (NotImplementedException exc)
             {
                 Debug.WriteLine(exc);
+#if DEBUG
+                throw;
+#endif
                 return null;
             }
         }

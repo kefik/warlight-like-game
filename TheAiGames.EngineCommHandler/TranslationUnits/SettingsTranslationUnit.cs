@@ -1,4 +1,4 @@
-﻿namespace TheAiGames.CommunicationObjects.TranslationUnits
+﻿namespace TheAiGames.EngineCommHandler.TranslationUnits
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,6 @@
     using Common.Collections;
     using Communication.CommandHandling.Tokens.Settings;
     using Communication.Shared;
-    using GameAi;
     using GameAi.Data;
 
     /// <summary>
