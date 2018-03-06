@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAi.Tests", "GameAi.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameObjectsLib.Tests", "GameObjectsLib.Tests\GameObjectsLib.Tests.csproj", "{496773E5-1554-42CD-B44F-55F9086F860B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterFormatCommunication", "InterFormatCommunication\InterFormatCommunication.csproj", "{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAi.Data", "InterFormatCommunication\GameAi.Data.csproj", "{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

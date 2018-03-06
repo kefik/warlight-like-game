@@ -7,6 +7,7 @@
     using Communication.CommandHandling.Tokens.Settings;
     using Communication.Shared;
     using GameAi;
+    using GameAi.Data;
 
     /// <summary>
     /// Handles translation of settings commands at the beginning of the game.

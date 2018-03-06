@@ -1,12 +1,10 @@
-namespace GameAi.EvaluationStructures
+namespace GameAi.Data.EvaluationStructures
 {
     using System.Runtime.CompilerServices;
-    using GameObjectsLib.GameMap;
-    using GameObjectsLib.Players;
 
     /// <summary>
-    /// Minimized version of <see cref="Region"/>. It's purpose is
-    /// to be smaller and faster than <seealso cref="Region"/> class for
+    /// Minimized version of <see cref="GameObjectsLib.GameMap.Region"/>. It's purpose is
+    /// to be smaller and faster than <seealso cref="GameObjectsLib.GameMap.Region"/> class for
     /// evaluation.
     /// </summary>
     /// <remarks>
@@ -72,7 +70,7 @@ namespace GameAi.EvaluationStructures
         public int Id
         {
             get { return Static.Id; }
-            internal set { Static.Id = value; }
+            set { Static.Id = value; }
         }
 
         /// <summary>
@@ -131,7 +129,7 @@ namespace GameAi.EvaluationStructures
         public int SuperRegionId
         {
             get { return Static.SuperRegionId; }
-            internal set { Static.SuperRegionId = value; }
+            set { Static.SuperRegionId = value; }
         }
 
         /// <summary>

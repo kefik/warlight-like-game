@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Common;
     using Common.Collections;
-    using EvaluationStructures;
+    using Data.EvaluationStructures;
     using Interfaces;
     using static Common.ObjectPool<MCTSTreeNode>;
 

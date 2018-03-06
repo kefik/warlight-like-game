@@ -1,7 +1,7 @@
-﻿namespace InterFormatCommunication.Restrictions
+﻿namespace GameAi.Data.Restrictions
 {
     using System.Collections.Generic;
-    using GameAi.Interfaces;
+    using Interfaces;
 
     /// <summary>
     /// Represents restrictions applied for given instance of the game.

@@ -8,11 +8,11 @@
     using ActionGenerators;
     using Common.Collections;
     using Common.Extensions;
-    using EvaluationStructures;
+    using Data.EvaluationStructures;
+    using Data.GameRecording;
+    using Data.Restrictions;
     using GameObjectsLib;
     using Interfaces;
-    using InterFormatCommunication.GameRecording;
-    using InterFormatCommunication.Restrictions;
 
     /// <summary>
     /// Bot using Monte-Carlo tree search algorithm.

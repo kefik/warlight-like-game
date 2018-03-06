@@ -1,7 +1,7 @@
 ﻿namespace GameAi.Tests
 {
     using System;
-    using EvaluationStructures;
+    using Data.EvaluationStructures;
     using NUnit.Framework;
     using static NUnit.Framework.Assert;
 

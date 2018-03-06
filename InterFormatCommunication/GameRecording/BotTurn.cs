@@ -1,4 +1,4 @@
-﻿namespace InterFormatCommunication.GameRecording
+﻿namespace GameAi.Data.GameRecording
 {
     public abstract class BotTurn
     {

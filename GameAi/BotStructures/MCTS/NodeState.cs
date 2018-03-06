@@ -1,6 +1,6 @@
 ﻿namespace GameAi.BotStructures.MCTS
 {
-    using EvaluationStructures;
+    using Data.EvaluationStructures;
 
     /// <summary>
     /// Represents state of the board.

@@ -1,4 +1,4 @@
-﻿namespace GameAi
+﻿namespace GameAi.Data
 {
     /// <summary>
     /// Represents owner state given region has. It's always measured from perspective of a certain player.

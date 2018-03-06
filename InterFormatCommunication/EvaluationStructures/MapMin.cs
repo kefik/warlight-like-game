@@ -1,14 +1,13 @@
-namespace GameAi.EvaluationStructures
+namespace GameAi.Data.EvaluationStructures
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using GameObjectsLib.GameMap;
 
     /// <summary>
-    /// Represents minified version of the <see cref="Map"/>.
+    /// Represents minified version of the <see cref="GameObjectsLib.GameMap.Map"/>.
     /// </summary>
     public struct MapMin
     {
@@ -23,7 +22,7 @@ namespace GameAi.EvaluationStructures
         
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal MapMin ShallowCopy()
+        public MapMin ShallowCopy()
         {
             RegionMin[] regionsMin = new RegionMin[RegionsMin.Length];
             Array.Copy(RegionsMin, regionsMin, RegionsMin.Length);
@@ -38,7 +37,7 @@ namespace GameAi.EvaluationStructures
         /// Performs deep copy of the MapMin structure.
         /// </summary>
         /// <returns></returns>
-        internal MapMin DeepCopy()
+        public MapMin DeepCopy()
         {
             RegionMin[] regionsMin = new RegionMin[RegionsMin.Length];
 

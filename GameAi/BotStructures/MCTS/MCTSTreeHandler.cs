@@ -5,9 +5,9 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using EvaluationStructures;
+    using Data.EvaluationStructures;
+    using Data.GameRecording;
     using Interfaces;
-    using InterFormatCommunication.GameRecording;
 
     /// <summary>
     /// Handles single-threaded MCTS evaluation.

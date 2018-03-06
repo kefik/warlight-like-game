@@ -5,14 +5,15 @@
     using System.Linq;
     using BotStructures;
     using BotStructures.MCTS;
-    using EvaluationStructures;
+    using Data;
+    using Data.EvaluationStructures;
+    using Data.GameRecording;
+    using Data.Restrictions;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
     using Interfaces;
-    using InterFormatCommunication.GameRecording;
-    using InterFormatCommunication.Restrictions;
 
     internal class GameBotCreator
     {

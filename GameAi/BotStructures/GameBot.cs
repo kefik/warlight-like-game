@@ -4,14 +4,14 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using EvaluationStructures;
+    using Data.EvaluationStructures;
+    using Data.GameRecording;
+    using Data.Restrictions;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
     using Interfaces;
-    using InterFormatCommunication.GameRecording;
-    using InterFormatCommunication.Restrictions;
 
     /// <summary>
     /// Minimized version of <see cref="Game"/> from perspective of a given <see cref="Player"/>.

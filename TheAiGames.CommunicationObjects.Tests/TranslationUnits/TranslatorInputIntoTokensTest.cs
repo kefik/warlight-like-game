@@ -9,6 +9,7 @@
     using Communication.Shared;
     using CommunicationObjects.TranslationUnits;
     using GameAi;
+    using GameAi.Data;
     using NUnit.Framework;
 
     [TestFixture]

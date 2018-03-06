@@ -80,9 +80,9 @@
       <Project>{57a48d5c-6e58-4ec7-acd0-565a4df58daf}</Project>
       <Name>GameObjectsLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\InterFormatCommunication\InterFormatCommunication.csproj">
+    <ProjectReference Include="..\InterFormatCommunication\GameAi.Data.csproj">
       <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
-      <Name>InterFormatCommunication</Name>
+      <Name>GameAi.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

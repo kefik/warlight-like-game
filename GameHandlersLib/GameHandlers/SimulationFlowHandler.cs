@@ -5,6 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using GameAi;
+    using GameAi.Data;
     using GameObjectsLib.Game;
     using GameObjectsLib.Players;
     using MapHandlers;

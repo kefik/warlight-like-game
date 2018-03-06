@@ -4,7 +4,6 @@
     using System.Linq;
     using BotStructures.MCTS;
     using Common.Collections;
-    using EvaluationStructures;
     using NUnit.Framework;
 
     using static NUnit.Framework.Assert;

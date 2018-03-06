@@ -1,8 +1,9 @@
 ﻿namespace GameAi.Tests
 {
-    using EvaluationStructures;
+    using Data;
+    using Data.EvaluationStructures;
+    using Data.Restrictions;
     using GameObjectsLib;
-    using InterFormatCommunication.Restrictions;
     using NUnit.Framework;
 
     using static NUnit.Framework.Assert;

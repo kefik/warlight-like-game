@@ -1,7 +1,5 @@
-﻿namespace GameAi.EvaluationStructures
+﻿namespace GameAi.Data.EvaluationStructures
 {
-    using GameObjectsLib.GameMap;
-
     /// <summary>
     /// Represents minimized version of SuperRegion class for the purpose of calculation
     /// </summary>
@@ -28,7 +26,7 @@
         public int Id
         {
             get { return Static.Id; }
-            internal set
+            set
             {
                 Static.Id = value;
             }

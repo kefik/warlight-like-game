@@ -1,4 +1,4 @@
-﻿namespace GameAi
+﻿namespace GameAi.Data
 {
     /// <summary>
     /// Enum for types of bots one can implement.

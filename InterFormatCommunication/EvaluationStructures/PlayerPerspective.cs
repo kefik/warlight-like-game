@@ -1,33 +1,30 @@
-namespace GameAi.EvaluationStructures
+namespace GameAi.Data.EvaluationStructures
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Runtime.CompilerServices;
-    using GameObjectsLib.GameMap;
-    using GameObjectsLib.Players;
 
     /// <summary>
     /// Represents bot from perspective of certain player.
     /// </summary>
-    internal struct PlayerPerspective
+    public struct PlayerPerspective
     {
         /// <summary>
         /// Minified version of the map.
         /// </summary>
-        internal readonly MapMin MapMin;
+        public readonly MapMin MapMin;
 
         /// <summary>
         /// Represents encoded identification of the player.
         /// </summary>
         public byte PlayerId { get; internal set; }
         
-        internal PlayerPerspective(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, byte playerId)
+        public PlayerPerspective(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, byte playerId)
         {
             MapMin = new MapMin(regionsMin, superRegionsMin);
             PlayerId = playerId;
         }
 
-        internal PlayerPerspective(MapMin mapMin, byte playerId)
+        public PlayerPerspective(MapMin mapMin, byte playerId)
         {
             MapMin = mapMin;
             PlayerId = playerId;
@@ -38,7 +35,7 @@ namespace GameAi.EvaluationStructures
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal PlayerPerspective ShallowCopy()
+        public PlayerPerspective ShallowCopy()
         {
             return new PlayerPerspective(MapMin.ShallowCopy(), PlayerId);
         }
@@ -103,7 +100,8 @@ namespace GameAi.EvaluationStructures
         {
             var superRegions = MapMin.SuperRegionsMin;
 
-            int basicIncome = Player.BasicIncome;
+            // TODO: remove hardcoded string
+            int basicIncome = 5;
             foreach (SuperRegionMin superRegionMin in superRegions)
             {
                 if (IsSuperRegionMine(superRegionMin.Id))

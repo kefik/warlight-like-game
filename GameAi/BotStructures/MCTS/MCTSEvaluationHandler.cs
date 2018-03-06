@@ -6,11 +6,11 @@
     using System.Threading;
     using System.Threading.Tasks;
     using ActionGenerators;
-    using EvaluationStructures;
+    using Data.EvaluationStructures;
+    using Data.GameRecording;
+    using Data.Restrictions;
     using GameObjectsLib.GameRecording;
     using Interfaces;
-    using InterFormatCommunication.GameRecording;
-    using InterFormatCommunication.Restrictions;
 
     /// <summary>
     /// Component handling Monte Carlo tree search evaluation.

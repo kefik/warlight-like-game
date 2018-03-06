@@ -8,13 +8,14 @@
     using System.Threading.Tasks;
     using System.Xml;
     using GameAi;
+    using GameAi.Data;
+    using GameAi.Data.Restrictions;
     using GameAi.Interfaces;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
-    using InterFormatCommunication.Restrictions;
     using MapImageProcessor = MapHandlers.MapImageProcessor;
 
     /// <summary>

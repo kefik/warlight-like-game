@@ -5,11 +5,12 @@
     using System.Linq;
     using System.Threading.Tasks;
     using GameAi;
+    using GameAi.Data;
+    using GameAi.Data.GameRecording;
+    using GameAi.Data.Restrictions;
     using GameAi.Interfaces;
     using GameObjectsLib;
     using GameObjectsLib.GameRecording;
-    using InterFormatCommunication.GameRecording;
-    using InterFormatCommunication.Restrictions;
     using Shared;
     using Tokens;
     using Tokens.Settings;

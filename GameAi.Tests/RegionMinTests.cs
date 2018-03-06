@@ -1,6 +1,7 @@
 ﻿namespace GameAi.Tests
 {
-    using EvaluationStructures;
+    using Data;
+    using Data.EvaluationStructures;
     using NUnit.Framework;
 
     [TestFixture]

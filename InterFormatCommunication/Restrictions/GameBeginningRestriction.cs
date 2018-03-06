@@ -1,7 +1,7 @@
-﻿namespace InterFormatCommunication.Restrictions
+﻿namespace GameAi.Data.Restrictions
 {
     using System.Collections.Generic;
-    using GameAi.Interfaces;
+    using Interfaces;
 
     public class GameBeginningRestriction : IGameBeginningRestriction
     {

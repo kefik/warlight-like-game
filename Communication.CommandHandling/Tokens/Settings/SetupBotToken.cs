@@ -1,6 +1,7 @@
 ﻿namespace Communication.CommandHandling.Tokens.Settings
 {
     using GameAi;
+    using GameAi.Data;
     using Shared;
 
     public class SetupBotToken : ICommandToken

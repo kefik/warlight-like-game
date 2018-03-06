@@ -3,9 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using EvaluationStructures;
+    using Data.EvaluationStructures;
+    using Data.GameRecording;
     using Interfaces;
-    using InterFormatCommunication.GameRecording;
 
     /// <summary>
     /// Represents action generator for selecting regions at the beginning of the game.
