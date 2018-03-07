@@ -19,11 +19,21 @@
         private readonly IOnlineBot<BotTurn> onlineBot;
         private readonly IIdsTranslationUnit translationUnit;
 
-        public WarlightAiBotHandler(Game game, Player player, GameBotType gameBotType,
+        public WarlightAiBotHandler(Game game, HumanPlayer player, GameBotType gameBotType,
             Restrictions restrictions)
         {
             onlineBot = new GameBotCreator().CreateFromGame(game, player,
-                gameBotType,
+                gameBotType, 
+                out var regionsIdsMappingDictionary,
+                restrictions);
+
+            translationUnit = regionsIdsMappingDictionary;
+        }
+        public WarlightAiBotHandler(Game game, AiPlayer player,
+            Restrictions restrictions)
+        {
+            onlineBot = new GameBotCreator().CreateFromGame(game, player,
+                player.BotType,
                 out var regionsIdsMappingDictionary,
                 restrictions);
 

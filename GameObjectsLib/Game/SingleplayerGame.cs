@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameAi.Data.Restrictions;
     using GameMap;
+    using GameRestrictions;
     using Players;
     using ProtoBuf;
 
@@ -60,7 +62,8 @@
             }
         }
 
-        public SingleplayerGame(int id, Map map, IList<Player> players, bool isFogOfWar) : base(id, map, players, isFogOfWar)
+        public SingleplayerGame(int id, Map map, IList<Player> players, bool isFogOfWar, GameRestrictions restrictions)
+            : base(id, map, players, isFogOfWar, restrictions)
         {
         }
 

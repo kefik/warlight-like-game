@@ -31,6 +31,8 @@
             this.gameMenuPanel = new System.Windows.Forms.Panel();
             this.menuButton = new System.Windows.Forms.Button();
             this.gameStateMenuPanel = new System.Windows.Forms.Panel();
+            this.botThinkingTimeLabel = new System.Windows.Forms.Label();
+            this.botThinkingTimeNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.nextActionButton = new System.Windows.Forms.Button();
             this.previousActionButton = new System.Windows.Forms.Button();
             this.previousRoundButton = new System.Windows.Forms.Button();
@@ -39,14 +41,10 @@
             this.nextTurnButton = new System.Windows.Forms.Button();
             this.playPauseButton = new System.Windows.Forms.Button();
             this.gameMapPictureBox = new System.Windows.Forms.PictureBox();
-            this.botThinkingTimeNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.botThinkingTimeLabel = new System.Windows.Forms.Label();
-            this.firstActionButton = new System.Windows.Forms.Button();
-            this.lastActionButton = new System.Windows.Forms.Button();
             this.gameMenuPanel.SuspendLayout();
             this.gameStateMenuPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.botThinkingTimeNumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // gameMenuPanel
@@ -73,8 +71,6 @@
             // 
             this.gameStateMenuPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameStateMenuPanel.Controls.Add(this.firstActionButton);
-            this.gameStateMenuPanel.Controls.Add(this.lastActionButton);
             this.gameStateMenuPanel.Controls.Add(this.botThinkingTimeLabel);
             this.gameStateMenuPanel.Controls.Add(this.botThinkingTimeNumericUpDown);
             this.gameStateMenuPanel.Controls.Add(this.nextActionButton);
@@ -88,6 +84,35 @@
             this.gameStateMenuPanel.Name = "gameStateMenuPanel";
             this.gameStateMenuPanel.Size = new System.Drawing.Size(177, 358);
             this.gameStateMenuPanel.TabIndex = 0;
+            // 
+            // botThinkingTimeLabel
+            // 
+            this.botThinkingTimeLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.botThinkingTimeLabel.AutoSize = true;
+            this.botThinkingTimeLabel.Location = new System.Drawing.Point(8, 279);
+            this.botThinkingTimeLabel.Name = "botThinkingTimeLabel";
+            this.botThinkingTimeLabel.Size = new System.Drawing.Size(85, 13);
+            this.botThinkingTimeLabel.TabIndex = 8;
+            this.botThinkingTimeLabel.Text = "Time for bot (ms)";
+            // 
+            // botThinkingTimeNumericUpDown
+            // 
+            this.botThinkingTimeNumericUpDown.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.botThinkingTimeNumericUpDown.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.botThinkingTimeNumericUpDown.Location = new System.Drawing.Point(99, 277);
+            this.botThinkingTimeNumericUpDown.Maximum = new decimal(new int[] {
+            60000,
+            0,
+            0,
+            0});
+            this.botThinkingTimeNumericUpDown.Name = "botThinkingTimeNumericUpDown";
+            this.botThinkingTimeNumericUpDown.Size = new System.Drawing.Size(60, 20);
+            this.botThinkingTimeNumericUpDown.TabIndex = 7;
+            this.botThinkingTimeNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // nextActionButton
             // 
@@ -151,6 +176,7 @@
             this.playPauseButton.TabIndex = 0;
             this.playPauseButton.Text = ">|";
             this.playPauseButton.UseVisualStyleBackColor = true;
+            this.playPauseButton.Click += new System.EventHandler(this.PlayOrStopButtonClick);
             // 
             // gameMapPictureBox
             // 
@@ -159,53 +185,6 @@
             this.gameMapPictureBox.Size = new System.Drawing.Size(578, 439);
             this.gameMapPictureBox.TabIndex = 5;
             this.gameMapPictureBox.TabStop = false;
-            // 
-            // botThinkingTimeNumericUpDown
-            // 
-            this.botThinkingTimeNumericUpDown.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.botThinkingTimeNumericUpDown.Increment = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.botThinkingTimeNumericUpDown.Location = new System.Drawing.Point(99, 277);
-            this.botThinkingTimeNumericUpDown.Maximum = new decimal(new int[] {
-            60000,
-            0,
-            0,
-            0});
-            this.botThinkingTimeNumericUpDown.Name = "botThinkingTimeNumericUpDown";
-            this.botThinkingTimeNumericUpDown.Size = new System.Drawing.Size(60, 20);
-            this.botThinkingTimeNumericUpDown.TabIndex = 7;
-            this.botThinkingTimeNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // botThinkingTimeLabel
-            // 
-            this.botThinkingTimeLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.botThinkingTimeLabel.AutoSize = true;
-            this.botThinkingTimeLabel.Location = new System.Drawing.Point(8, 279);
-            this.botThinkingTimeLabel.Name = "botThinkingTimeLabel";
-            this.botThinkingTimeLabel.Size = new System.Drawing.Size(85, 13);
-            this.botThinkingTimeLabel.TabIndex = 8;
-            this.botThinkingTimeLabel.Text = "Time for bot (ms)";
-            // 
-            // firstActionButton
-            // 
-            this.firstActionButton.Location = new System.Drawing.Point(39, 231);
-            this.firstActionButton.Name = "firstActionButton";
-            this.firstActionButton.Size = new System.Drawing.Size(44, 23);
-            this.firstActionButton.TabIndex = 10;
-            this.firstActionButton.Text = "<<<<";
-            this.firstActionButton.UseVisualStyleBackColor = true;
-            // 
-            // lastActionButton
-            // 
-            this.lastActionButton.Location = new System.Drawing.Point(82, 231);
-            this.lastActionButton.Name = "lastActionButton";
-            this.lastActionButton.Size = new System.Drawing.Size(45, 23);
-            this.lastActionButton.TabIndex = 9;
-            this.lastActionButton.Text = ">>>>";
-            this.lastActionButton.UseVisualStyleBackColor = true;
             // 
             // SimulatorInGameControl
             // 
@@ -218,8 +197,8 @@
             this.gameMenuPanel.ResumeLayout(false);
             this.gameStateMenuPanel.ResumeLayout(false);
             this.gameStateMenuPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.botThinkingTimeNumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -238,7 +217,5 @@
         private System.Windows.Forms.PictureBox gameMapPictureBox;
         private System.Windows.Forms.Label botThinkingTimeLabel;
         private System.Windows.Forms.NumericUpDown botThinkingTimeNumericUpDown;
-        private System.Windows.Forms.Button firstActionButton;
-        private System.Windows.Forms.Button lastActionButton;
     }
 }

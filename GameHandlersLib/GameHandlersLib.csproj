@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameHandlers\BotEvaluationHandler.cs" />
     <Compile Include="GameHandlers\GameFlowHandler.cs" />
     <Compile Include="GameHandlers\GameState.cs" />
     <Compile Include="GameHandlers\HotseatGameFlowHandler.cs" />

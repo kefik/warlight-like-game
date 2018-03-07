@@ -44,20 +44,15 @@
             botHandlers = new WarlightAiBotHandler[game.Players.Count];
         }
 
-        public async Task PlayAsync()
+        public async Task StartOrContinueEvaluationAsync()
         {
-            var bots = Game.Players;
-
-            for (int index = 0; index < bots.Count; index++)
+            if (IsRunning)
             {
-                var botHandler = new WarlightAiBotHandler(Game, bots[index], GameBotType.MonteCarloTreeSearchBot,
-                    null);
-
-                var bestMoveTask = Task.Run(botHandler.FindBestMoveAsync);
-                await botHandler.StopEvaluation(new TimeSpan(0, 0, 0, 2));
-
-                var bestMove = await bestMoveTask;
+                throw new ArgumentException("Cannot start evaluation if it's already been started.");
             }
+
+            IsRunning = true;
+            // TODO: continue playing the bot
         }
 
         public async Task PauseEvaluationAsync()
@@ -66,38 +61,22 @@
             // TODO: stop evaluation of currently playing bot immediately
         }
 
-        public async Task ContinueEvaluationAsync()
-        {
-            IsRunning = true;
-            // TODO: continue playing the bot
-        }
-
-        public async Task SkipActionAsync()
+        public async Task MoveToNextActionAsync()
         {
             
         }
 
-        public async Task ReturnActionAsync()
+        public async Task MoveToPreviousActionAsync()
         {
             
         }
 
-        public async Task SkipTurnAsync()
+        public async Task MoveToNextRoundAsync()
         {
             
         }
 
-        public async Task ReturnTurnAsync()
-        {
-            
-        }
-
-        public async Task SkipRoundAsync()
-        {
-            
-        }
-
-        public async Task ReturnRoundAsync()
+        public async Task MoveToPreviousRoundAsync()
         {
             
         }

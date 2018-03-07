@@ -2,20 +2,18 @@
 {
     using System.Collections.Generic;
     using Interfaces;
+    using ProtoBuf;
 
     /// <summary>
     /// Represents restrictions applied for given instance of the game.
     /// </summary>
+    [ProtoContract]
     public class Restrictions
     {
         /// <summary>
         /// Restrictions for the game beginning part.
         /// </summary>
-        public ICollection<IGameBeginningRestriction> GameBeginningRestrictions { get; set; }
-
-        /// <summary>
-        /// Restrictions for other parts.
-        /// </summary>
-        public ICollection<IGameRestriction> GameRestrictions { get; set; }
+        [ProtoMember(1)]
+        public ICollection<GameBeginningRestriction> GameBeginningRestrictions { get; set; }
     }
 }

@@ -2,8 +2,10 @@
 {
     using System.Collections.Generic;
     using Interfaces;
+    using ProtoBuf;
 
-    public class GameBeginningRestriction : IGameBeginningRestriction
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
+    public class GameBeginningRestriction
     {
         public int PlayerId { get; set; }
         public int RegionsPlayerCanChooseCount { get; set; }

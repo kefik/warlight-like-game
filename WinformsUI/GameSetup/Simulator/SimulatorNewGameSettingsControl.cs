@@ -11,6 +11,7 @@ using System.Windows.Forms;
 namespace WinformsUI.GameSetup.Simulator
 {
     using Client.Entities;
+    using GameAi.Data.Restrictions;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.Players;
@@ -69,11 +70,11 @@ namespace WinformsUI.GameSetup.Simulator
                 {
                     players.Add(aiPlayer);
                 }
-                
+
                 var factory = new GameFactory();
-                var game = factory.CreateGame(0, GameType.SinglePlayer, map, players, fogOfWar: fogOfWarCheckBox.Checked);
-
-
+                var game = factory.CreateGame(0, GameType.Simulator, map, players, fogOfWar: fogOfWarCheckBox.Checked,
+                    restrictions: null);
+                
                 OnSimulationStarted?.Invoke(game);
             }
             catch (UnauthorizedAccessException)

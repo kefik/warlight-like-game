@@ -5,8 +5,10 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using GameAi.Data.Restrictions;
     using GameMap;
     using GameRecording;
+    using GameRestrictions;
     using NetworkCommObjects;
     using Players;
     using ProtoBuf;
@@ -24,6 +26,7 @@
     [ProtoInclude(10, typeof(SingleplayerGame))]
     [ProtoInclude(11, typeof(HotseatGame))]
     [ProtoInclude(12, typeof(NetworkGame))]
+    [ProtoInclude(13, typeof(SimulatorGame))]
     public abstract class Game : ISaveable<Game>, IRefreshable
     {
         [ProtoMember(1)]
@@ -61,6 +64,9 @@
         [ProtoMember(5)]
         public IList<Player> Players { get; }
 
+        [ProtoMember(6)]
+        public GameRestrictions Restrictions { get; }
+
         /// <summary>
         ///     Return game type this game has.
         /// </summary>
@@ -70,12 +76,13 @@
         {
         }
 
-        protected Game(int id, Map map, IList<Player> players, bool isFogOfWar)
+        protected Game(int id, Map map, IList<Player> players, bool isFogOfWar, GameRestrictions restrictions)
         {
             Id = id;
             Map = map;
             Players = players;
             IsFogOfWar = isFogOfWar;
+            Restrictions = restrictions;
         }
 
         /// <summary>

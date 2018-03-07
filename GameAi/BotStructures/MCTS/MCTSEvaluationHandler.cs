@@ -145,7 +145,7 @@
         }
 
         private IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> GetGameBeginningActionGenerator(
-            IGameBeginningRestriction gameBeginningRestriction)
+            GameBeginningRestriction gameBeginningRestriction)
         {
             if (gameBeginningRestriction == null)
             {

@@ -57,7 +57,27 @@ namespace WinformsUI.InGame
         {
             if (!simulationFlowHandler.IsRunning)
             {
-                await simulationFlowHandler.ContinueEvaluationAsync();
+                await simulationFlowHandler.StartOrContinueEvaluationAsync();
+            }
+            else
+            {
+                await simulationFlowHandler.PauseEvaluationAsync();
+            }
+        }
+
+        public async void NextActionButtonClick(object sender, EventArgs args)
+        {
+            if (!simulationFlowHandler.IsRunning)
+            {
+                await simulationFlowHandler.MoveToNextActionAsync();
+            }
+        }
+
+        public async void PreviousActionButtonClick(object sender, EventArgs args)
+        {
+            if (!simulationFlowHandler.IsRunning)
+            {
+                await simulationFlowHandler.MoveToPreviousActionAsync();
             }
         }
     }

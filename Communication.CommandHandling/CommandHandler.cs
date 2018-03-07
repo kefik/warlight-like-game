@@ -117,7 +117,7 @@
             // specify restrictions
             var restrictions = new Restrictions()
             {
-                GameBeginningRestrictions = new List<IGameBeginningRestriction>()
+                GameBeginningRestrictions = new List<GameBeginningRestriction>()
                 {
                     new GameBeginningRestriction()
                     {
