@@ -26,7 +26,7 @@ This screen is very similar to
 create new singleplayer game screen.
 Their difference is that user cannot actively
 play the game and the engine can generate restrictions
-(restrictions are e.g. bot at the beginning can
+(restrictions are e.g. that bot at the beginning can
 choose only from specified regions) and user
 instead of choosing bot's difficulty
 will have an option to choose bot type
@@ -37,4 +37,19 @@ After pressing the Start button user
 will be moved to screen specified in
 next article section.
 
-### Simulation screen
+### Game simulation screen
+<img src="simulator_game_screen.jpg" alt="Game simulation screen"/>
+
+Looks similar to standard game screens, but controls on the left
+are different.
+
+- *>|* - starts or stops playing the bot
+- *<* or *>* - skips to next action or returns the last played action if there's any
+- *<<* or *>>* - skips to next turn or returns the last played turn if there's any
+- *<<<* or *>>>* - skips to next round or returns the last played round if there's any
+- *<<<<* or *>>>>* - skips to end of the so far played game or
+returns the game to the beginning
+
+*Time for bot* represents time each bot has for evaluation of its next turn.
+It's time measurement unit will be a millisecond. Its default value
+will be set for 4000 ms.

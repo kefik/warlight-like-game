@@ -6,6 +6,7 @@
     using System.IO;
     using Common.Extensions;
     using Game;
+    using GameAi.Data;
     using GameMap;
     using GameUser;
     using NUnit.Framework;
@@ -32,7 +33,7 @@
 
             players = new List<Player>
             {
-                new AiPlayer(Difficulty.Hard, "PC1", KnownColor.AliceBlue),
+                new AiPlayer(Difficulty.Hard, "PC1", KnownColor.AliceBlue, GameBotType.MonteCarloTreeSearchBot),
                 new HumanPlayer(new LocalUser("TestUser"), KnownColor.Red)
             };
         }

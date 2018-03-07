@@ -121,5 +121,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
+      <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
+      <Name>GameAi.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

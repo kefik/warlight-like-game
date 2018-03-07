@@ -55,6 +55,7 @@
             this.colorButton.Size = new System.Drawing.Size(62, 21);
             this.colorButton.TabIndex = 4;
             this.colorButton.UseVisualStyleBackColor = false;
+            this.colorButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ChangeColor);
             // 
             // botTypeComboBox
             // 
@@ -65,9 +66,9 @@
             "Easy",
             "Medium",
             "Hard"});
-            this.botTypeComboBox.Location = new System.Drawing.Point(193, 5);
+            this.botTypeComboBox.Location = new System.Drawing.Point(146, 5);
             this.botTypeComboBox.Name = "botTypeComboBox";
-            this.botTypeComboBox.Size = new System.Drawing.Size(109, 21);
+            this.botTypeComboBox.Size = new System.Drawing.Size(156, 21);
             this.botTypeComboBox.TabIndex = 3;
             // 
             // SimulatorBotPlayerControl

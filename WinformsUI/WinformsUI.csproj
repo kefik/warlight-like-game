@@ -153,6 +153,12 @@
     <Compile Include="HelperControls\SimulatorBotPlayerControl.Designer.cs">
       <DependentUpon>SimulatorBotPlayerControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="HelperControls\SimulatorBotSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HelperControls\SimulatorBotSettingsControl.Designer.cs">
+      <DependentUpon>SimulatorBotSettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="InGame\InGameControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -312,6 +318,9 @@
     <EmbeddedResource Include="HelperControls\SimulatorBotPlayerControl.resx">
       <DependentUpon>SimulatorBotPlayerControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="HelperControls\SimulatorBotSettingsControl.resx">
+      <DependentUpon>SimulatorBotSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InGame\InGameControl.resx">
       <DependentUpon>InGameControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -409,6 +418,14 @@
     <ProjectReference Include="..\Client.Entities\Client.Entities.csproj">
       <Project>{9871296D-976F-466C-825F-FCFAA66C4212}</Project>
       <Name>Client.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{E4CBE100-724B-4097-9EBD-DB0CFBE41375}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
+      <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
+      <Name>GameAi.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\GameHandlersLib\GameHandlersLib.csproj">
       <Project>{eb5f1bbb-f000-4835-86df-f0e60b8298a6}</Project>

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Drawing;
+    using GameAi.Data;
     using ProtoBuf;
 
     /// <summary>
@@ -20,12 +21,19 @@
         /// </summary>
         public Difficulty Difficulty { get; }
 
+        /// <summary>
+        /// Type of the bot for the AI player.
+        /// </summary>
+        public GameBotType BotType { get; }
+
         public override string Name { get; }
 
-        public AiPlayer(Difficulty difficulty, string name, KnownColor color) : base(color)
+        public AiPlayer(Difficulty difficulty, string name, KnownColor color,
+            GameBotType botType) : base(color)
         {
             Difficulty = difficulty;
             Name = name;
+            BotType = botType;
         }
     }
 }

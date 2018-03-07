@@ -71,6 +71,10 @@
       <Project>{E4CBE100-724B-4097-9EBD-DB0CFBE41375}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
+      <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
+      <Name>GameAi.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameObjectsLib\GameObjectsLib.csproj">
       <Project>{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}</Project>
       <Name>GameObjectsLib</Name>

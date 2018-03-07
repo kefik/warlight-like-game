@@ -2,6 +2,7 @@
 {
     using System.Drawing;
     using System.Windows.Forms;
+    using GameAi.Data;
     using GameObjectsLib;
     using GameObjectsLib.Players;
 
@@ -13,7 +14,7 @@
         {
             InitializeComponent();
 
-            player = new AiPlayer(Difficulty.Medium, "PC1", KnownColor.Blue);
+            player = new AiPlayer(Difficulty.Medium, "PC1", KnownColor.Blue, GameBotType.MonteCarloTreeSearchBot);
 
             difficultyComboBox.SelectedIndex = (int) player.Difficulty;
             colorButton.BackColor = Color.FromKnownColor(player.Color);
@@ -34,7 +35,7 @@
             get { return player.Color; }
             private set
             {
-                player = new AiPlayer(player.Difficulty, player.Name, value);
+                player = new AiPlayer(player.Difficulty, player.Name, value, GameBotType.MonteCarloTreeSearchBot);
                 colorButton.BackColor = Color.FromKnownColor(value);
             }
         }
@@ -47,7 +48,7 @@
             get { return player.Difficulty; }
             private set
             {
-                player = new AiPlayer(value, player.Name, player.Color);
+                player = new AiPlayer(value, player.Name, player.Color, GameBotType.MonteCarloTreeSearchBot);
                 difficultyComboBox.SelectedIndex = (int) player.Difficulty;
             }
         }
@@ -60,7 +61,7 @@
             get { return player.Name; }
             private set
             {
-                player = new AiPlayer(player.Difficulty, value, player.Color);
+                player = new AiPlayer(player.Difficulty, value, player.Color, GameBotType.MonteCarloTreeSearchBot);
                 aiNameLabel.Text = value;
             }
         }
@@ -98,7 +99,7 @@
         /// <returns></returns>
         public Player GetPlayer()
         {
-            return new AiPlayer(player.Difficulty, player.Name, player.Color);
+            return new AiPlayer(player.Difficulty, player.Name, player.Color, GameBotType.MonteCarloTreeSearchBot);
         }
     }
 }

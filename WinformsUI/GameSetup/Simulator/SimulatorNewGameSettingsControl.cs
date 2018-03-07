@@ -26,12 +26,12 @@ namespace WinformsUI.GameSetup.Simulator
 
             previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit;
-            aiPlayerSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit;
+            simulatorBotSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit;
             // when the map is chosen, update maximum values
             mapSettingsControl.OnMapChosen += (o, e) =>
             {
                 aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit;
-                aiPlayerSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit;
+                simulatorBotSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit;
             };
         }
         private void PlayersNumberChanged(object sender, EventArgs e)
@@ -41,7 +41,7 @@ namespace WinformsUI.GameSetup.Simulator
                 decimal difference = aiPlayersNumberNumericUpDown.Value - previousPlayersNumber;
                 for (int i = 0; i < difference; i++)
                 {
-                    aiPlayerSettingsControl.AddPlayer();
+                    simulatorBotSettingsControl.AddPlayer();
                 }
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             }
@@ -50,7 +50,7 @@ namespace WinformsUI.GameSetup.Simulator
                 decimal difference = previousPlayersNumber - aiPlayersNumberNumericUpDown.Value;
                 for (int i = 0; i < difference; i++)
                 {
-                    aiPlayerSettingsControl.RemovePlayer();
+                    simulatorBotSettingsControl.RemovePlayer();
                 }
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             }
@@ -62,7 +62,7 @@ namespace WinformsUI.GameSetup.Simulator
             {
                 Map map = mapSettingsControl.GetMap();
 
-                IList<AiPlayer> aiPlayers = aiPlayerSettingsControl.GetPlayers();
+                IList<AiPlayer> aiPlayers = simulatorBotSettingsControl.GetPlayers();
 
                 IList<Player> players = new List<Player>();
                 foreach (AiPlayer aiPlayer in aiPlayers)
