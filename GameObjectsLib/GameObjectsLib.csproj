@@ -63,7 +63,6 @@
     <Compile Include="GameRecording\Attack.cs" />
     <Compile Include="GameRecording\Attacking.cs" />
     <Compile Include="GameRecording\Deployment.cs" />
-    <Compile Include="Difficulty.cs" />
     <Compile Include="GameRecording\GameBeginningRound.cs" />
     <Compile Include="Game\GameFactory.cs" />
     <Compile Include="Game\GameState.cs" />

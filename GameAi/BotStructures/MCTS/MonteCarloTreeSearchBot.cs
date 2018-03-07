@@ -8,6 +8,7 @@
     using ActionGenerators;
     using Common.Collections;
     using Common.Extensions;
+    using Data;
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Data.Restrictions;

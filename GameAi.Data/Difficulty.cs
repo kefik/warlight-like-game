@@ -1,4 +1,4 @@
-﻿namespace GameObjectsLib
+﻿namespace GameAi.Data
 {
     /// <summary>
     ///     Represents difficulty of given artifficial player.

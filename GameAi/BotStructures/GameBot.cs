@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Data;
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Data.Restrictions;
