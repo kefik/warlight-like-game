@@ -4,8 +4,8 @@
     using ProtoBuf;
 
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
-    public class GameRestrictions
+    public class GameObjectsRestrictions
     {
-        public ICollection<GameBeginningRestriction> GameBeginningRestrictions { get; set; }
+        public ICollection<GameObjectsBeginningRestriction> GameBeginningRestrictions { get; set; }
     }
 }

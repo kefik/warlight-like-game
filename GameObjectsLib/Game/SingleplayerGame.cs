@@ -62,8 +62,8 @@
             }
         }
 
-        public SingleplayerGame(int id, Map map, IList<Player> players, bool isFogOfWar, GameRestrictions restrictions)
-            : base(id, map, players, isFogOfWar, restrictions)
+        public SingleplayerGame(int id, Map map, IList<Player> players, bool isFogOfWar, GameObjectsRestrictions objectsRestrictions)
+            : base(id, map, players, isFogOfWar, objectsRestrictions)
         {
         }
 

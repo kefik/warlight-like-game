@@ -6,12 +6,13 @@
     using ProtoBuf;
 
     [ProtoContract]
-    public class GameBeginningRestriction
+    public class GameObjectsBeginningRestriction
     {
         [ProtoMember(1, AsReference = true)]
         public Player Player { get; set; }
         [ProtoMember(2)]
         public int RegionsToChooseCount { get; set; }
+
         [ProtoMember(3, AsReference = true)]
         public ICollection<Region> RegionsPlayersCanChoose { get; set; }
     }

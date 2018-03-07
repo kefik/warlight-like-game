@@ -41,7 +41,7 @@
         [Test]
         public void HotseatGameTest()
         {
-            Game game = new GameFactory().CreateGame(1, GameType.MultiplayerHotseat, map, players, fogOfWar: true, restrictions: null);
+            Game game = new GameFactory().CreateGame(1, GameType.MultiplayerHotseat, map, players, fogOfWar: true, objectsRestrictions: null);
         }
     }
 }

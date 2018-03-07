@@ -11,6 +11,7 @@ using System.Windows.Forms;
 namespace WinformsUI.GameSetup.Simulator
 {
     using Client.Entities;
+    using FormatConverters;
     using GameAi.Data.Restrictions;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
@@ -64,16 +65,16 @@ namespace WinformsUI.GameSetup.Simulator
                 Map map = mapSettingsControl.GetMap();
 
                 IList<AiPlayer> aiPlayers = simulatorBotSettingsControl.GetPlayers();
-
-                IList<Player> players = new List<Player>();
-                foreach (AiPlayer aiPlayer in aiPlayers)
-                {
-                    players.Add(aiPlayer);
-                }
+                var players = aiPlayers.Cast<Player>().ToList();
+                
+                var restrictions = new RestrictionsGenerator(map.Regions.Select(x => x.Id),
+                    aiPlayers.Select(x => x.Id)).Generate();
+                var gameRestrictions = restrictions
+                    .ToGameRestrictions(map, players);
 
                 var factory = new GameFactory();
                 var game = factory.CreateGame(0, GameType.Simulator, map, players, fogOfWar: fogOfWarCheckBox.Checked,
-                    restrictions: null);
+                    objectsRestrictions: gameRestrictions);
                 
                 OnSimulationStarted?.Invoke(game);
             }

@@ -20,21 +20,21 @@
         /// <param name="map">Map of the game.</param>
         /// <param name="players">Players that will be playing the game.</param>
         /// <param name="fogOfWar">True, if the game will be fog of war.</param>
-        /// <param name="restrictions">Restrictions of the game.</param>
+        /// <param name="objectsRestrictions">Restrictions of the game.</param>
         /// <returns>Created instance of the game.</returns>
         public Game CreateGame(int id, GameType gameType, Map map,
-            IList<Player> players, bool fogOfWar, GameRestrictions restrictions)
+            IList<Player> players, bool fogOfWar, GameObjectsRestrictions objectsRestrictions)
         {
             switch (gameType)
             {
                 case GameType.SinglePlayer:
-                    return new SingleplayerGame(id, map, players, fogOfWar, restrictions);
+                    return new SingleplayerGame(id, map, players, fogOfWar, objectsRestrictions);
                 case GameType.MultiplayerHotseat:
-                    return new HotseatGame(id, map, players, fogOfWar, restrictions);
+                    return new HotseatGame(id, map, players, fogOfWar, objectsRestrictions);
                 case GameType.MultiplayerNetwork:
-                    return new NetworkGame(id, map, players, fogOfWar, restrictions);
+                    return new NetworkGame(id, map, players, fogOfWar, objectsRestrictions);
                 case GameType.Simulator:
-                    return new SimulatorGame(id, map, players, fogOfWar, restrictions);
+                    return new SimulatorGame(id, map, players, fogOfWar, objectsRestrictions);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameType), gameType, null);
             }

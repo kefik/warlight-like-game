@@ -157,7 +157,7 @@
 
                                 GameFactory factory = new GameFactory();
                                 Game game = factory.CreateGame(newGameId, GameType.MultiplayerNetwork,
-                                    map, players, fogOfWar: true, restrictions: null);
+                                    map, players, fogOfWar: true, objectsRestrictions: null);
 
                                 OpenedGame openedGame = new OpenedGame
                                 {

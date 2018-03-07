@@ -162,7 +162,7 @@
 
                 var factory = new GameFactory();
                 game = factory.CreateGame(gameId, GameType.MultiplayerHotseat,
-                    map, players, fogOfWar: fogOfWarCheckBox.Checked, restrictions: null);
+                    map, players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: null);
 
 
                 // TEST

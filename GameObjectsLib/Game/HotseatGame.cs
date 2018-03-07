@@ -16,8 +16,8 @@
             get { return GameType.MultiplayerHotseat; }
         }
 
-        public HotseatGame(int id, Map map, IList<Player> players, bool isFogOfWar, GameRestrictions restrictions)
-            : base(id, map, players, isFogOfWar, restrictions)
+        public HotseatGame(int id, Map map, IList<Player> players, bool isFogOfWar, GameObjectsRestrictions objectsRestrictions)
+            : base(id, map, players, isFogOfWar, objectsRestrictions)
         {
         }
 

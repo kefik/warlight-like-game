@@ -37,6 +37,10 @@
         {
             var gameBeginningRestrictions = new List<GameBeginningRestriction>();
             int regionsOfferCount = this.regionsIds.Count / playersIds.Count;
+
+            // so its not to big
+            regionsOfferCount = regionsOfferCount > 10 ? 7 : regionsOfferCount;
+
             regionsIds.Shuffle();
 
             // TODO: not constant, varaible regions to choose based on user preferences
@@ -49,7 +53,8 @@
                 var restriction = new GameBeginningRestriction
                 {
                     PlayerId = playerId,
-                    RegionsPlayerCanChooseCount = regionsToChooseCount
+                    RegionsPlayerCanChooseCount = regionsToChooseCount,
+                    RestrictedRegions = new List<int>()
                 };
 
                 for (int i = 0; i < regionsOfferCount; i++)

@@ -56,8 +56,8 @@
     <Compile Include="GameRecording\LinearizedGameBeginningRound.cs" />
     <Compile Include="GameRecording\LinearizedGameRound.cs" />
     <Compile Include="GameRecording\ILinearizedRound.cs" />
-    <Compile Include="GameRestrictions\GameBeginningRestriction.cs" />
-    <Compile Include="GameRestrictions\GameRestrictions.cs" />
+    <Compile Include="GameRestrictions\GameObjectsBeginningRestriction.cs" />
+    <Compile Include="GameRestrictions\GameObjectsRestrictions.cs" />
     <Compile Include="Game\SimulatorGame.cs" />
     <Compile Include="Players\AiPlayer.cs" />
     <Compile Include="GameRecording\Attack.cs" />

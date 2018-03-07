@@ -65,7 +65,7 @@
         public IList<Player> Players { get; }
 
         [ProtoMember(6)]
-        public GameRestrictions Restrictions { get; }
+        public GameObjectsRestrictions ObjectsRestrictions { get; }
 
         /// <summary>
         ///     Return game type this game has.
@@ -76,13 +76,13 @@
         {
         }
 
-        protected Game(int id, Map map, IList<Player> players, bool isFogOfWar, GameRestrictions restrictions)
+        protected Game(int id, Map map, IList<Player> players, bool isFogOfWar, GameObjectsRestrictions objectsRestrictions)
         {
             Id = id;
             Map = map;
             Players = players;
             IsFogOfWar = isFogOfWar;
-            Restrictions = restrictions;
+            ObjectsRestrictions = objectsRestrictions;
         }
 
         /// <summary>

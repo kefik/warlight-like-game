@@ -17,7 +17,7 @@
         }
 
         public NetworkGame(int id, Map map, IList<Player> players, bool isFogOfWar,
-            GameRestrictions restrictions) : base(id, map, players, isFogOfWar, restrictions)
+            GameObjectsRestrictions objectsRestrictions) : base(id, map, players, isFogOfWar, objectsRestrictions)
         {
         }
 
