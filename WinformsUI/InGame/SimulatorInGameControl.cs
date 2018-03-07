@@ -52,5 +52,13 @@ namespace WinformsUI.InGame
 
             this.simulationFlowHandler.OnImageChanged += gameMapPictureBox.Refresh;
         }
+
+        public async void PlayOrStopButtonClick(object sender, EventArgs args)
+        {
+            if (!simulationFlowHandler.IsRunning)
+            {
+                await simulationFlowHandler.ContinueEvaluationAsync();
+            }
+        }
     }
 }

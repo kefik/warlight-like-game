@@ -16,6 +16,8 @@
 
         public MapImageProcessor ImageProcessor { get; }
 
+        public bool IsRunning { get; private set; }
+
         private WarlightAiBotHandler[] botHandlers;
 
         public event Action OnImageChanged
@@ -38,7 +40,7 @@
 
             Game = game;
             ImageProcessor = processor;
-
+            
             botHandlers = new WarlightAiBotHandler[game.Players.Count];
         }
 
@@ -58,42 +60,44 @@
             }
         }
 
-        public void PauseEvaluation()
+        public async Task PauseEvaluationAsync()
         {
+            IsRunning = false;
             // TODO: stop evaluation of currently playing bot immediately
         }
 
         public async Task ContinueEvaluationAsync()
         {
+            IsRunning = true;
             // TODO: continue playing the bot
         }
 
-        public void SkipAction()
+        public async Task SkipActionAsync()
         {
             
         }
 
-        public void ReturnAction()
+        public async Task ReturnActionAsync()
         {
             
         }
 
-        public void SkipTurn()
+        public async Task SkipTurnAsync()
         {
             
         }
 
-        public void ReturnTurn()
+        public async Task ReturnTurnAsync()
         {
             
         }
 
-        public void SkipRound()
+        public async Task SkipRoundAsync()
         {
             
         }
 
-        public void ReturnRound()
+        public async Task ReturnRoundAsync()
         {
             
         }

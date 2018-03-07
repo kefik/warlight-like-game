@@ -31,18 +31,18 @@
             this.gameMenuPanel = new System.Windows.Forms.Panel();
             this.menuButton = new System.Windows.Forms.Button();
             this.gameStateMenuPanel = new System.Windows.Forms.Panel();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.nextActionButton = new System.Windows.Forms.Button();
+            this.previousActionButton = new System.Windows.Forms.Button();
+            this.previousRoundButton = new System.Windows.Forms.Button();
+            this.nextRoundButton = new System.Windows.Forms.Button();
+            this.previousTurnButton = new System.Windows.Forms.Button();
+            this.nextTurnButton = new System.Windows.Forms.Button();
+            this.playPauseButton = new System.Windows.Forms.Button();
             this.gameMapPictureBox = new System.Windows.Forms.PictureBox();
             this.botThinkingTimeNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.botThinkingTimeLabel = new System.Windows.Forms.Label();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
+            this.firstActionButton = new System.Windows.Forms.Button();
+            this.lastActionButton = new System.Windows.Forms.Button();
             this.gameMenuPanel.SuspendLayout();
             this.gameStateMenuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameMapPictureBox)).BeginInit();
@@ -73,84 +73,84 @@
             // 
             this.gameStateMenuPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameStateMenuPanel.Controls.Add(this.button8);
-            this.gameStateMenuPanel.Controls.Add(this.button9);
+            this.gameStateMenuPanel.Controls.Add(this.firstActionButton);
+            this.gameStateMenuPanel.Controls.Add(this.lastActionButton);
             this.gameStateMenuPanel.Controls.Add(this.botThinkingTimeLabel);
             this.gameStateMenuPanel.Controls.Add(this.botThinkingTimeNumericUpDown);
-            this.gameStateMenuPanel.Controls.Add(this.button7);
-            this.gameStateMenuPanel.Controls.Add(this.button6);
-            this.gameStateMenuPanel.Controls.Add(this.button5);
-            this.gameStateMenuPanel.Controls.Add(this.button4);
-            this.gameStateMenuPanel.Controls.Add(this.button3);
-            this.gameStateMenuPanel.Controls.Add(this.button2);
-            this.gameStateMenuPanel.Controls.Add(this.button1);
+            this.gameStateMenuPanel.Controls.Add(this.nextActionButton);
+            this.gameStateMenuPanel.Controls.Add(this.previousActionButton);
+            this.gameStateMenuPanel.Controls.Add(this.previousRoundButton);
+            this.gameStateMenuPanel.Controls.Add(this.nextRoundButton);
+            this.gameStateMenuPanel.Controls.Add(this.previousTurnButton);
+            this.gameStateMenuPanel.Controls.Add(this.nextTurnButton);
+            this.gameStateMenuPanel.Controls.Add(this.playPauseButton);
             this.gameStateMenuPanel.Location = new System.Drawing.Point(3, 3);
             this.gameStateMenuPanel.Name = "gameStateMenuPanel";
             this.gameStateMenuPanel.Size = new System.Drawing.Size(177, 358);
             this.gameStateMenuPanel.TabIndex = 0;
             // 
-            // button7
+            // nextActionButton
             // 
-            this.button7.Location = new System.Drawing.Point(82, 144);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(45, 23);
-            this.button7.TabIndex = 6;
-            this.button7.Text = ">";
-            this.button7.UseVisualStyleBackColor = true;
+            this.nextActionButton.Location = new System.Drawing.Point(82, 144);
+            this.nextActionButton.Name = "nextActionButton";
+            this.nextActionButton.Size = new System.Drawing.Size(45, 23);
+            this.nextActionButton.TabIndex = 6;
+            this.nextActionButton.Text = ">";
+            this.nextActionButton.UseVisualStyleBackColor = true;
             // 
-            // button6
+            // previousActionButton
             // 
-            this.button6.Location = new System.Drawing.Point(39, 144);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(44, 23);
-            this.button6.TabIndex = 5;
-            this.button6.Text = "<";
-            this.button6.UseVisualStyleBackColor = true;
+            this.previousActionButton.Location = new System.Drawing.Point(39, 144);
+            this.previousActionButton.Name = "previousActionButton";
+            this.previousActionButton.Size = new System.Drawing.Size(44, 23);
+            this.previousActionButton.TabIndex = 5;
+            this.previousActionButton.Text = "<";
+            this.previousActionButton.UseVisualStyleBackColor = true;
             // 
-            // button5
+            // previousRoundButton
             // 
-            this.button5.Location = new System.Drawing.Point(39, 202);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(44, 23);
-            this.button5.TabIndex = 4;
-            this.button5.Text = "<<<";
-            this.button5.UseVisualStyleBackColor = true;
+            this.previousRoundButton.Location = new System.Drawing.Point(39, 202);
+            this.previousRoundButton.Name = "previousRoundButton";
+            this.previousRoundButton.Size = new System.Drawing.Size(44, 23);
+            this.previousRoundButton.TabIndex = 4;
+            this.previousRoundButton.Text = "<<<";
+            this.previousRoundButton.UseVisualStyleBackColor = true;
             // 
-            // button4
+            // nextRoundButton
             // 
-            this.button4.Location = new System.Drawing.Point(82, 202);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(45, 23);
-            this.button4.TabIndex = 3;
-            this.button4.Text = ">>>";
-            this.button4.UseVisualStyleBackColor = true;
+            this.nextRoundButton.Location = new System.Drawing.Point(82, 202);
+            this.nextRoundButton.Name = "nextRoundButton";
+            this.nextRoundButton.Size = new System.Drawing.Size(45, 23);
+            this.nextRoundButton.TabIndex = 3;
+            this.nextRoundButton.Text = ">>>";
+            this.nextRoundButton.UseVisualStyleBackColor = true;
             // 
-            // button3
+            // previousTurnButton
             // 
-            this.button3.Location = new System.Drawing.Point(39, 173);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(44, 23);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "<<";
-            this.button3.UseVisualStyleBackColor = true;
+            this.previousTurnButton.Location = new System.Drawing.Point(39, 173);
+            this.previousTurnButton.Name = "previousTurnButton";
+            this.previousTurnButton.Size = new System.Drawing.Size(44, 23);
+            this.previousTurnButton.TabIndex = 2;
+            this.previousTurnButton.Text = "<<";
+            this.previousTurnButton.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // nextTurnButton
             // 
-            this.button2.Location = new System.Drawing.Point(82, 173);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(45, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = ">>";
-            this.button2.UseVisualStyleBackColor = true;
+            this.nextTurnButton.Location = new System.Drawing.Point(82, 173);
+            this.nextTurnButton.Name = "nextTurnButton";
+            this.nextTurnButton.Size = new System.Drawing.Size(45, 23);
+            this.nextTurnButton.TabIndex = 1;
+            this.nextTurnButton.Text = ">>";
+            this.nextTurnButton.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // playPauseButton
             // 
-            this.button1.Location = new System.Drawing.Point(39, 115);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(88, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = ">|";
-            this.button1.UseVisualStyleBackColor = true;
+            this.playPauseButton.Location = new System.Drawing.Point(39, 115);
+            this.playPauseButton.Name = "playPauseButton";
+            this.playPauseButton.Size = new System.Drawing.Size(88, 23);
+            this.playPauseButton.TabIndex = 0;
+            this.playPauseButton.Text = ">|";
+            this.playPauseButton.UseVisualStyleBackColor = true;
             // 
             // gameMapPictureBox
             // 
@@ -183,29 +183,29 @@
             // 
             this.botThinkingTimeLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.botThinkingTimeLabel.AutoSize = true;
-            this.botThinkingTimeLabel.Location = new System.Drawing.Point(20, 279);
+            this.botThinkingTimeLabel.Location = new System.Drawing.Point(8, 279);
             this.botThinkingTimeLabel.Name = "botThinkingTimeLabel";
-            this.botThinkingTimeLabel.Size = new System.Drawing.Size(63, 13);
+            this.botThinkingTimeLabel.Size = new System.Drawing.Size(85, 13);
             this.botThinkingTimeLabel.TabIndex = 8;
-            this.botThinkingTimeLabel.Text = "Time for bot";
+            this.botThinkingTimeLabel.Text = "Time for bot (ms)";
             // 
-            // button8
+            // firstActionButton
             // 
-            this.button8.Location = new System.Drawing.Point(39, 231);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(44, 23);
-            this.button8.TabIndex = 10;
-            this.button8.Text = "<<<<";
-            this.button8.UseVisualStyleBackColor = true;
+            this.firstActionButton.Location = new System.Drawing.Point(39, 231);
+            this.firstActionButton.Name = "firstActionButton";
+            this.firstActionButton.Size = new System.Drawing.Size(44, 23);
+            this.firstActionButton.TabIndex = 10;
+            this.firstActionButton.Text = "<<<<";
+            this.firstActionButton.UseVisualStyleBackColor = true;
             // 
-            // button9
+            // lastActionButton
             // 
-            this.button9.Location = new System.Drawing.Point(82, 231);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(45, 23);
-            this.button9.TabIndex = 9;
-            this.button9.Text = ">>>>";
-            this.button9.UseVisualStyleBackColor = true;
+            this.lastActionButton.Location = new System.Drawing.Point(82, 231);
+            this.lastActionButton.Name = "lastActionButton";
+            this.lastActionButton.Size = new System.Drawing.Size(45, 23);
+            this.lastActionButton.TabIndex = 9;
+            this.lastActionButton.Text = ">>>>";
+            this.lastActionButton.UseVisualStyleBackColor = true;
             // 
             // SimulatorInGameControl
             // 
@@ -228,17 +228,17 @@
         private System.Windows.Forms.Panel gameMenuPanel;
         private System.Windows.Forms.Button menuButton;
         private System.Windows.Forms.Panel gameStateMenuPanel;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button nextActionButton;
+        private System.Windows.Forms.Button previousActionButton;
+        private System.Windows.Forms.Button previousRoundButton;
+        private System.Windows.Forms.Button nextRoundButton;
+        private System.Windows.Forms.Button previousTurnButton;
+        private System.Windows.Forms.Button nextTurnButton;
+        private System.Windows.Forms.Button playPauseButton;
         private System.Windows.Forms.PictureBox gameMapPictureBox;
         private System.Windows.Forms.Label botThinkingTimeLabel;
         private System.Windows.Forms.NumericUpDown botThinkingTimeNumericUpDown;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button firstActionButton;
+        private System.Windows.Forms.Button lastActionButton;
     }
 }
