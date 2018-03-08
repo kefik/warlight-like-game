@@ -15,5 +15,10 @@
         /// </summary>
         [ProtoMember(1)]
         public ICollection<GameBeginningRestriction> GameBeginningRestrictions { get; set; }
+
+        public Restrictions()
+        {
+            GameBeginningRestrictions = new List<GameBeginningRestriction>();
+        }
     }
 }

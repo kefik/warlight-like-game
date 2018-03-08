@@ -61,7 +61,7 @@ namespace WinformsUI.InGame
             }
             else
             {
-                await simulationFlowHandler.PauseEvaluationAsync();
+                simulationFlowHandler.PauseEvaluation();
             }
         }
 

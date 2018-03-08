@@ -45,7 +45,22 @@
 
         public static Restrictions ToRestrictions(this GameObjectsRestrictions gameObjectsRestrictions)
         {
-            throw new NotImplementedException();
+            var restrictions = new Restrictions();
+            
+            // map game beginning restrictions
+            foreach (GameObjectsBeginningRestriction gameObjectsBeginningRestriction in gameObjectsRestrictions.GameBeginningRestrictions)
+            {
+                var gameBeginningRestriction = new GameBeginningRestriction();
+                gameBeginningRestriction.PlayerId = gameObjectsBeginningRestriction
+                    .Player.Id;
+                gameBeginningRestriction.RegionsPlayerCanChooseCount =
+                    gameObjectsBeginningRestriction.RegionsToChooseCount;
+                gameBeginningRestriction.RestrictedRegions =
+                    gameObjectsBeginningRestriction.RegionsPlayersCanChoose.Select(x => x.Id).ToList();
+                restrictions.GameBeginningRestrictions.Add(gameBeginningRestriction);
+            }
+
+            return restrictions;
         }
     }
 }

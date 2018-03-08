@@ -12,13 +12,14 @@
 
     public class SimulationFlowHandler
     {
+        private readonly BotEvaluationHandler botEvaluationHandler;
+        private readonly GameRecordHandler gameRecordHandler;
+
         public Game Game { get; }
 
         public MapImageProcessor ImageProcessor { get; }
 
         public bool IsRunning { get; private set; }
-
-        private WarlightAiBotHandler[] botHandlers;
 
         public event Action OnImageChanged
         {
@@ -41,7 +42,10 @@
             Game = game;
             ImageProcessor = processor;
             
-            botHandlers = new WarlightAiBotHandler[game.Players.Count];
+            botEvaluationHandler = new BotEvaluationHandler(game);
+
+            gameRecordHandler = new GameRecordHandler(processor);
+            gameRecordHandler.Load(game);
         }
 
         public async Task StartOrContinueEvaluationAsync()
@@ -52,28 +56,40 @@
             }
 
             IsRunning = true;
-            // TODO: continue playing the bot
-        }
+            // continue playing the bot
+            try
+            {
+                await botEvaluationHandler.StartOrContinueEvaluationAsync();
+            }
+            catch (OperationCanceledException)
+            {
+                // ignore
+            }
 
-        public async Task PauseEvaluationAsync()
-        {
+            gameRecordHandler.Load(Game);
+
             IsRunning = false;
-            // TODO: stop evaluation of currently playing bot immediately
         }
 
-        public async Task MoveToNextActionAsync()
+        public void PauseEvaluation()
         {
-            
+            // stop evaluation of currently playing bot immediately
+            botEvaluationHandler.PauseEvaluation();
         }
 
-        public async Task MoveToPreviousActionAsync()
+        public void MoveToNextAction()
         {
-            
+            gameRecordHandler.MoveToNextAction();
         }
 
-        public async Task MoveToNextRoundAsync()
+        public void MoveToPreviousAction()
         {
-            
+            gameRecordHandler.MoveToPreviousAction();
+        }
+
+        public void MoveToNextRoundAsync()
+        {
+            gameRecordHandler.MoveToNextRound();
         }
 
         public async Task MoveToPreviousRoundAsync()

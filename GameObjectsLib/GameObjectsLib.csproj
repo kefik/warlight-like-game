@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="GameRecording\GameBeginningTurn.cs" />
     <Compile Include="GameRecording\GameTurn.cs" />
+    <Compile Include="GameRecording\IAction.cs" />
     <Compile Include="GameRecording\LinearizedGameBeginningRound.cs" />
     <Compile Include="GameRecording\LinearizedGameRound.cs" />
     <Compile Include="GameRecording\ILinearizedRound.cs" />

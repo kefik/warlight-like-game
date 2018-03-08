@@ -178,7 +178,7 @@
         ///     Purpose of this method is to remap those references back for future
         ///     graph updating to be easy..
         /// </summary>
-        private void ReconstructOriginalGraph()
+        public void ReconstructOriginalGraph()
         {
             // TODO: IMPORTANT = does not work
             
@@ -235,6 +235,7 @@
                         foreach (Deployment deployment in deploying.ArmiesDeployed)
                         {
                             deployment.Region = Map.Regions.First(x => x == deployment.Region);
+                            deployment.DeployingPlayer = Players.First(x => x == deployment.DeployingPlayer);
                         }
 
                         var attacking = round.Attacking;
@@ -243,6 +244,9 @@
                             attack.Attacker = Map.Regions.First(x => x == attack.Attacker);
                             attack.Defender = Map.Regions.First(x => x == attack.Defender);
                             attack.AttackingPlayer = Players.First(x => x == attack.AttackingPlayer);
+
+                            var mapChange = attack.PostAttackMapChange;
+                            mapChange.DefendingRegionOwner = Players.First(x => x == mapChange.DefendingRegionOwner);
                         }
                         break;
                     case LinearizedGameBeginningRound round:

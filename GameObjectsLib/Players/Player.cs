@@ -89,7 +89,7 @@
             {
                 return true;
             }
-            return Color == other.Color && Name == other.Name;
+            return Id == other.Id;
         }
 
         public override bool Equals(object obj)

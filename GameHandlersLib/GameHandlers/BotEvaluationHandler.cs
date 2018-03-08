@@ -2,30 +2,39 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using FormatConverters;
     using GameAi;
     using GameAi.Data;
     using GameAi.Data.Restrictions;
     using GameObjectsLib.Game;
+    using GameObjectsLib.GameRecording;
+    using GameObjectsLib.GameRestrictions;
     using GameObjectsLib.Players;
 
     public class BotEvaluationHandler
     {
-        private IList<Player> players;
-        private Game game;
-        private Restrictions restrictions;
+        private readonly IList<Player> players;
+        private readonly Game game;
+        private readonly GameObjectsRestrictions objectsRestrictions;
 
         private WarlightAiBotHandler[] botHandlers;
+        private Turn[] turns;
+
+        private readonly RoundHandler roundHandler;
+
         private int currentlyEvaluatingIndex;
 
         private CancellationTokenSource cancellationTokenSource;
 
-        public BotEvaluationHandler(Game game, IList<Player> players, Restrictions restrictions)
+        public BotEvaluationHandler(Game game)
         {
             this.game = game;
-            this.players = players;
-            this.restrictions = restrictions;
+            this.players = game.Players;
+            this.objectsRestrictions = game.ObjectsRestrictions;
+            roundHandler = new RoundHandler(game);
 
             cancellationTokenSource = new CancellationTokenSource();
         }
@@ -35,34 +44,11 @@
             var token = cancellationTokenSource.Token;
             do
             {
-                if (currentlyEvaluatingIndex == 0)
+                await PlayOrContinuePlayingRoundAsync();
+                if (token.IsCancellationRequested)
                 {
-                    botHandlers = new WarlightAiBotHandler[players.Count];
+                    throw new OperationCanceledException();
                 }
-
-                for (int i = currentlyEvaluatingIndex; i < botHandlers.Length; i++)
-                {
-                    if (players[i].GetType() == typeof(HumanPlayer))
-                    {
-                        botHandlers[i] = new WarlightAiBotHandler(game, (HumanPlayer) players[i],
-                            GameBotType.MonteCarloTreeSearchBot, null);
-                    }
-                    else
-                    {
-                        botHandlers[i] = new WarlightAiBotHandler(game, (AiPlayer)players[i],
-                            null);
-                    }
-                    var bestTurn = await botHandlers[i].FindBestMoveAsync();
-                    // TODO: store best turn
-                    currentlyEvaluatingIndex++;
-
-                    if (token.IsCancellationRequested)
-                    {
-                        throw new OperationCanceledException();
-                    }
-                }
-
-                currentlyEvaluatingIndex = 0;
             } while (true);
         }
 
@@ -74,10 +60,18 @@
         public async Task PlayOrContinuePlayingRoundAsync()
         {
             var token = cancellationTokenSource.Token;
+            
+            // no turn was played so far
+            if (currentlyEvaluatingIndex == 0)
+            {
+                botHandlers = new WarlightAiBotHandler[players.Count];
+                turns = new Turn[players.Count];
+            }
 
             // play from index you stopped playing at
             for (int i = currentlyEvaluatingIndex; i < botHandlers.Length; i++)
             {
+                var restrictions = objectsRestrictions.ToRestrictions();
                 if (players[i].GetType() == typeof(HumanPlayer))
                 {
                     botHandlers[i] = new WarlightAiBotHandler(game, (HumanPlayer)players[i],
@@ -88,17 +82,48 @@
                     botHandlers[i] = new WarlightAiBotHandler(game, (AiPlayer)players[i],
                         restrictions);
                 }
-                var bestTurn = await botHandlers[i].FindBestMoveAsync();
-                // TODO: store best turn
+                var bestTurn = (await botHandlers[i].FindBestMoveAsync()).ToTurn(game.Map, game.Players);
+                turns[i] = bestTurn;
+                
+                currentlyEvaluatingIndex++;
 
-                // current index must not be >= number of bots
-                currentlyEvaluatingIndex = ++currentlyEvaluatingIndex % botHandlers.Length;
-
+                // all bots have returned their turn => play it
+                // and quit the evaluation
+                if (currentlyEvaluatingIndex >= players.Count)
+                {
+                    PlayRound(turns);
+                    currentlyEvaluatingIndex = 0;
+                    break;
+                }
                 if (token.IsCancellationRequested)
                 {
                     throw new OperationCanceledException();
                 }
             }
+        }
+
+        private void PlayRound(Turn[] turns)
+        {
+            ILinearizedRound linearizedRound;
+            switch (turns?.FirstOrDefault())
+            {
+                case GameBeginningTurn turn:
+                    linearizedRound = new GameBeginningRound()
+                    {
+                        Turns = turns
+                    }.Linearize();
+                    break;
+                case GameTurn turn:
+                    linearizedRound = new GameRound()
+                    {
+                        Turns = turns
+                    }.Linearize();
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+            game.AllRounds.Add(linearizedRound);
+            roundHandler.PlayRound(linearizedRound);
         }
 
         public void PauseEvaluation()

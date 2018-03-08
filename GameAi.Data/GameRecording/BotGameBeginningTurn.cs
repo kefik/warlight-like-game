@@ -4,7 +4,7 @@
 
     public class BotGameBeginningTurn : BotTurn
     {
-        public ICollection<int> SeizedRegionsIds { get; set; }
+        public ICollection<int> SeizedRegionsIds { get; set; } = new List<int>();
 
         public BotGameBeginningTurn(int playerId) : base(playerId)
         {

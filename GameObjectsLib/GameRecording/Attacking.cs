@@ -23,7 +23,10 @@ namespace GameObjectsLib.GameRecording
         }
 
         // ReSharper disable once UnusedMember.Local
-        private Attacking() { }
+        private Attacking()
+        {
+            Attacks = new List<Attack>();
+        }
 
         /// <summary>
         ///     Calculates units of given region that are left to attack.

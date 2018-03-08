@@ -5,13 +5,18 @@ namespace GameObjectsLib.GameRecording
     using ProtoBuf;
 
     [ProtoContract]
-    public class Seize
+    public class Seize : IAction
     {
         [ProtoMember(1, AsReference = true)]
         public Player SeizingPlayer { get; internal set; }
 
         [ProtoMember(2, AsReference = true)]
         public Region Region { get; internal set; }
+
+        public Player ActionInvoker
+        {
+            get { return SeizingPlayer; }
+        }
 
         // ReSharper disable once UnusedMember.Local
         private Seize() { }
@@ -20,6 +25,11 @@ namespace GameObjectsLib.GameRecording
         {
             SeizingPlayer = player;
             Region = region;
+        }
+        
+        public bool DoesConcernRegion(Region region)
+        {
+            return Region == region;
         }
     }
 }

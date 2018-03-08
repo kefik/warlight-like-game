@@ -8,13 +8,18 @@ namespace GameObjectsLib.GameRecording
     ///     Represents one attack in the game round.
     /// </summary>
     [ProtoContract]
-    public class Attack
+    public class Attack : IAction
     {
         /// <summary>
         /// Represents attacking player in this attack.
         /// </summary>
         [ProtoMember(1, AsReference = true)]
         public Player AttackingPlayer { get; internal set; }
+
+        public Player ActionInvoker
+        {
+            get { return AttackingPlayer; }
+        }
 
         /// <summary>
         ///     Represents attacking region.
@@ -62,6 +67,11 @@ namespace GameObjectsLib.GameRecording
             Attacker = attacker;
             AttackingArmy = attackingArmy;
             Defender = defender;
+        }
+
+        public bool DoesConcernRegion(Region region)
+        {
+            return Attacker == region || Defender == region;
         }
     }
 }

@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="GameHandlers\BotEvaluationHandler.cs" />
     <Compile Include="GameHandlers\GameFlowHandler.cs" />
+    <Compile Include="GameHandlers\GameRecordHandler.cs" />
     <Compile Include="GameHandlers\GameState.cs" />
     <Compile Include="GameHandlers\HotseatGameFlowHandler.cs" />
     <Compile Include="GameHandlers\PlayerExtensions.cs" />
@@ -68,6 +69,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{E4CBE100-724B-4097-9EBD-DB0CFBE41375}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FormatConverters\FormatConverters.csproj">
+      <Project>{A5D00DC5-CACC-444C-9BAD-AE47F72AF010}</Project>
+      <Name>FormatConverters</Name>
     </ProjectReference>
     <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
       <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
