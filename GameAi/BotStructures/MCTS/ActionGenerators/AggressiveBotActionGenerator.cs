@@ -53,11 +53,11 @@
             };
         }
 
-        private ICollection<(int AttackingRegionId, int AttackingArmy, int DefendingRegionId)> GenerateAttacking(
+        private ICollection<(int AttackingPlayerId, int AttackingRegionId, int AttackingArmy, int DefendingRegionId)> GenerateAttacking(
             PlayerPerspective currentGameState)
         {
-            IList<(int AttackingRegionId, int AttackingArmy, int DefendingRegionId)> attacks
-                = new List<(int AttackingRegionId, int AttackingArmy, int DefendingRegionId)>();
+            IList<(int AttackingPlayerId, int AttackingRegionId, int AttackingArmy, int DefendingRegionId)> attacks
+                = new List<(int AttackingPlayerId, int AttackingRegionId, int AttackingArmy, int DefendingRegionId)>();
             // my region with biggest army
             var regionsWithHighestArmy = currentGameState.GetMyRegions().OrderByDescending(x => x.Army);
 
@@ -73,7 +73,7 @@
                 int attackingArmy = region.Army - 1;
                 
                 // attack on not mine region with lowest army
-                attacks.Add((region.Id, attackingArmy, neighbourToAttack.Id));
+                attacks.Add((region.OwnerId, region.Id, attackingArmy, neighbourToAttack.Id));
             }
 
             return attacks;

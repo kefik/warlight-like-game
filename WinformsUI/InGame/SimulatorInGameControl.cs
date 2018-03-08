@@ -65,19 +65,19 @@ namespace WinformsUI.InGame
             }
         }
 
-        public async void NextActionButtonClick(object sender, EventArgs args)
+        public void NextActionButtonClick(object sender, EventArgs args)
         {
             if (!simulationFlowHandler.IsRunning)
             {
-                await simulationFlowHandler.MoveToNextActionAsync();
+                simulationFlowHandler.MoveToNextAction();
             }
         }
 
-        public async void PreviousActionButtonClick(object sender, EventArgs args)
+        public void PreviousActionButtonClick(object sender, EventArgs args)
         {
             if (!simulationFlowHandler.IsRunning)
             {
-                await simulationFlowHandler.MoveToPreviousActionAsync();
+                simulationFlowHandler.MoveToPreviousAction();
             }
         }
     }
