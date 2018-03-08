@@ -10,10 +10,10 @@ namespace GameObjectsLib.GameRecording
     public class Deployment
     {
         [ProtoMember(1, AsReference = true)]
-        public Region Region { get; }
+        public Region Region { get; internal set; }
 
         [ProtoMember(2)]
-        public int Army { get; }
+        public int Army { get; internal set; }
 
         // ReSharper disable once UnusedMember.Local
         private Deployment() { }

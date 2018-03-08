@@ -15,7 +15,7 @@
     internal class RoundHandler
     {
         private readonly Game game;
-        private Random random;
+        private readonly Random random;
 
         /// <summary>
         /// Initializes instance of <see cref="RoundHandler"/> with <see cref="game"/> parameter.
@@ -107,6 +107,14 @@
                         defender.Army = remainingDefendingArmy;
                     }
                 }
+
+                // set the map changes that happened during this evaluation
+                attack.PostAttackMapChange = new PostAttackMapChange()
+                {
+                    AttackingRegionArmy = attacker.Army,
+                    DefendingRegionArmy = defender.Army,
+                    DefendingRegionOwner = defender.Owner
+                };
             }
         }
 

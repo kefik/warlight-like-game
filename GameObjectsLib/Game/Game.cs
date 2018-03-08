@@ -224,6 +224,37 @@
                     player.ControlledRegions[i] = realRegion;
                 }
             }
+
+            // remap rounds
+            foreach (var linearizedRound in AllRounds)
+            {
+                switch (linearizedRound)
+                {
+                    case LinearizedGameRound round:
+                        var deploying = round.Deploying;
+                        foreach (Deployment deployment in deploying.ArmiesDeployed)
+                        {
+                            deployment.Region = Map.Regions.First(x => x == deployment.Region);
+                        }
+
+                        var attacking = round.Attacking;
+                        foreach (Attack attack in attacking.Attacks)
+                        {
+                            attack.Attacker = Map.Regions.First(x => x == attack.Attacker);
+                            attack.Defender = Map.Regions.First(x => x == attack.Defender);
+                            attack.AttackingPlayer = Players.First(x => x == attack.AttackingPlayer);
+                        }
+                        break;
+                    case LinearizedGameBeginningRound round:
+                        var selectedRegions = round.SelectedRegions;
+                        foreach (Seize selectedRegion in selectedRegions)
+                        {
+                            selectedRegion.Region = Map.Regions.First(x => x == selectedRegion.Region);
+                            selectedRegion.SeizingPlayer = Players.First(x => x == selectedRegion.SeizingPlayer);
+                        }
+                        break;
+                }
+            }
         }
 
         /// <summary>
