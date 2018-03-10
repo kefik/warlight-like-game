@@ -296,5 +296,43 @@
             wasMoved = gameRecordHandler.MoveToNextRound();
             IsFalse(wasMoved);
         }
+
+        [Test]
+        public void MoveToBeginningAndEndTest()
+        {
+            gameRecordHandler.Load(game);
+            var copiedGame = gameRecordHandler.Game;
+            var regions = copiedGame.Map.Regions;
+            czechia = regions.First(x => x.Name == "Czechia");
+            germany = regions.First(x => x.Name == "Germany");
+            austria = regions.First(x => x.Name == "Austria");
+
+            // to the beginning
+            bool wasMoved = gameRecordHandler.MoveToBeginning();
+            IsTrue(wasMoved);
+            AreEqual(2, germany.Army);
+            IsNull(germany.Owner);
+            IsTrue(wasMoved);
+            AreEqual(2, austria.Army);
+            IsNull(austria.Owner);
+
+            // try more to the beginning
+            wasMoved = gameRecordHandler.MoveToBeginning();
+            IsFalse(wasMoved);
+
+            // to the end
+            wasMoved = gameRecordHandler.MoveToEnd();
+            IsTrue(wasMoved);
+            AreEqual(1, austria.Army);
+            AreEqual(pc1, austria.Owner);
+            AreEqual(4, czechia.Army);
+            AreEqual(pc1, czechia.Owner);
+            AreEqual(5, germany.Army);
+            AreEqual(pc2, germany.Owner);
+
+            // try one more
+            wasMoved = gameRecordHandler.MoveToEnd();
+            IsFalse(wasMoved);
+        }
     }
 }

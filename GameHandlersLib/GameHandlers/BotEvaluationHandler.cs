@@ -39,12 +39,12 @@
             cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public async Task StartOrContinueEvaluationAsync()
+        public async Task StartOrContinueEvaluationAsync(TimeSpan timeForBotMove)
         {
             var token = cancellationTokenSource.Token;
             do
             {
-                await PlayOrContinuePlayingRoundAsync();
+                await PlayOrContinuePlayingRoundAsync(timeForBotMove);
                 if (token.IsCancellationRequested)
                 {
                     throw new OperationCanceledException();
@@ -57,7 +57,7 @@
         /// already started, then it continues evaluating that round.
         /// </summary>
         /// <returns></returns>
-        public async Task PlayOrContinuePlayingRoundAsync()
+        public async Task PlayOrContinuePlayingRoundAsync(TimeSpan timeForBotMove)
         {
             var token = cancellationTokenSource.Token;
             
@@ -82,7 +82,10 @@
                     botHandlers[i] = new WarlightAiBotHandler(game, (AiPlayer)players[i],
                         restrictions);
                 }
-                var bestTurn = (await botHandlers[i].FindBestMoveAsync()).ToTurn(game.Map, game.Players);
+                var botTask = Task.Run(botHandlers[i].FindBestMoveAsync);
+                // break after specified amount of time
+                botHandlers[i].StopEvaluation(timeForBotMove);
+                var bestTurn = (await botTask).ToTurn(game.Map, game.Players);
                 turns[i] = bestTurn;
                 
                 currentlyEvaluatingIndex++;

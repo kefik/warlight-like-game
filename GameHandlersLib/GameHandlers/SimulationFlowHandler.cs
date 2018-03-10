@@ -18,8 +18,8 @@
         public Game Game { get; }
 
         public MapImageProcessor ImageProcessor { get; }
-
-        public bool IsRunning { get; private set; }
+        
+        public bool IsRunning { get; set; }
 
         public event Action OnImageChanged
         {
@@ -48,7 +48,7 @@
             gameRecordHandler.Load(game);
         }
 
-        public async Task StartOrContinueEvaluationAsync()
+        public async Task StartOrContinueEvaluationAsync(TimeSpan timeForBotMove)
         {
             if (IsRunning)
             {
@@ -59,7 +59,7 @@
             // continue playing the bot
             try
             {
-                await botEvaluationHandler.StartOrContinueEvaluationAsync();
+                await botEvaluationHandler.StartOrContinueEvaluationAsync(timeForBotMove);
             }
             catch (OperationCanceledException)
             {
@@ -87,14 +87,24 @@
             gameRecordHandler.MoveToPreviousAction();
         }
 
-        public void MoveToNextRoundAsync()
+        public void MoveToNextRound()
         {
             gameRecordHandler.MoveToNextRound();
         }
 
-        public async Task MoveToPreviousRoundAsync()
+        public void MoveToPreviousRound()
         {
-            
+            gameRecordHandler.MoveToPreviousRound();
+        }
+
+        public void MoveToBeginning()
+        {
+            gameRecordHandler.MoveToBeginning();
+        }
+
+        public void MoveToEnd()
+        {
+            gameRecordHandler.MoveToEnd();
         }
     }
 }

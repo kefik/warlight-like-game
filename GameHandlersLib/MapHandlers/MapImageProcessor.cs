@@ -258,7 +258,7 @@ namespace GameHandlersLib.MapHandlers
         /// <param name="playerPerspective">Player, from whose perspective should be image redrawed.</param>
         public virtual void RedrawMap(Game game, Player playerPerspective)
         {
-            if (isFogOfWar)
+            if (isFogOfWar && playerPerspective != null)
             {
                 RedrawWithFogOfWar(game, playerPerspective);
             }

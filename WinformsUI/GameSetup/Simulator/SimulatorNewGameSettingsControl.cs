@@ -66,11 +66,15 @@ namespace WinformsUI.GameSetup.Simulator
 
                 IList<AiPlayer> aiPlayers = simulatorBotSettingsControl.GetPlayers();
                 var players = aiPlayers.Cast<Player>().ToList();
-                
-                var restrictions = new RestrictionsGenerator(map.Regions.Select(x => x.Id),
-                    aiPlayers.Select(x => x.Id)).Generate();
+
+                Restrictions restrictions = null;
+                if (generateRestrictionsCheckBox.Checked)
+                {
+                    restrictions = new RestrictionsGenerator(map.Regions.Select(x => x.Id),
+                        aiPlayers.Select(x => x.Id)).Generate();
+                }
                 var gameRestrictions = restrictions
-                    .ToGameRestrictions(map, players);
+                    ?.ToGameRestrictions(map, players);
 
                 var factory = new GameFactory();
                 var game = factory.CreateGame(0, GameType.Simulator, map, players, fogOfWar: fogOfWarCheckBox.Checked,

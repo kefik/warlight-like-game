@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
@@ -48,6 +49,8 @@
             }
 
             currentActionEnumerator = new ActionEnumerator(Game.AllRounds);
+
+            mapImageProcessor.RedrawMap(Game, null);
         }
 
         private IAction GetFirstPreviousActionOrDefault(Predicate<IAction> predicate)
@@ -68,6 +71,11 @@
         internal IAction GetCurrentAction()
         {
             return currentActionEnumerator.GetCurrentAction();
+        }
+
+        public bool IsOnNewestPosition()
+        {
+            return GetCurrentAction() == null;
         }
 
         /// <summary>
@@ -198,6 +206,69 @@
             } while (currentActionEnumerator.ActionIndex != 0);
 
             mapImageProcessor.RedrawMap(Game, null);
+
+            return wasSuccessful;
+        }
+
+        /// <summary>
+        /// Moves the context to the beginning before the first
+        /// round.
+        /// </summary>
+        /// <returns>True, if it does anything, otherwise false.</returns>
+        public bool MoveToBeginning()
+        {
+            bool wasSuccessful;
+            bool continueEvaluation = true;
+
+            int i = 0;
+            do
+            {
+                // move to previous round while function returns true
+                continueEvaluation &= MoveToPreviousRound();
+
+                // first iteration and function returned false
+                // => it wasnt successful
+                if (i == 0 && !continueEvaluation)
+                {
+                    wasSuccessful = false;
+                }
+                else
+                {
+                    wasSuccessful = true;
+                }
+                i++;
+            } while (continueEvaluation);
+
+            return wasSuccessful;
+        }
+
+        /// <summary>
+        /// Moves the context to the end after the last round.
+        /// </summary>
+        /// <returns>True, if it moves.</returns>
+        public bool MoveToEnd()
+        {
+            bool wasSuccessful;
+            bool continueEvaluation = true;
+
+            int i = 0;
+            do
+            {
+                // move to previous round while function returns true
+                continueEvaluation &= MoveToNextRound();
+
+                // first iteration and function returned false
+                // => it wasnt successful
+                if (i == 0 && !continueEvaluation)
+                {
+                    wasSuccessful = false;
+                }
+                else
+                {
+                    wasSuccessful = true;
+                }
+                i++;
+            } while (continueEvaluation);
 
             return wasSuccessful;
         }

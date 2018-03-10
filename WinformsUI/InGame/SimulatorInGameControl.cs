@@ -55,9 +55,11 @@ namespace WinformsUI.InGame
 
         public async void PlayOrStopButtonClick(object sender, EventArgs args)
         {
+            var timeForBotMove = new TimeSpan(0, 0,
+                0, 0, milliseconds: (int)botThinkingTimeNumericUpDown.Value);
             if (!simulationFlowHandler.IsRunning)
             {
-                await simulationFlowHandler.StartOrContinueEvaluationAsync();
+                await simulationFlowHandler.StartOrContinueEvaluationAsync(timeForBotMove);
             }
             else
             {
@@ -78,6 +80,38 @@ namespace WinformsUI.InGame
             if (!simulationFlowHandler.IsRunning)
             {
                 simulationFlowHandler.MoveToPreviousAction();
+            }
+        }
+
+        public void NextRoundButtonClick(object sender, EventArgs args)
+        {
+            if (!simulationFlowHandler.IsRunning)
+            {
+                simulationFlowHandler.MoveToNextRound();
+            }
+        }
+
+        public void PreviousRoundButtonClick(object sender, EventArgs args)
+        {
+            if (!simulationFlowHandler.IsRunning)
+            {
+                simulationFlowHandler.MoveToPreviousRound();
+            }
+        }
+
+        public void EndOfTheGameButtonClick(object sender, EventArgs args)
+        {
+            if (!simulationFlowHandler.IsRunning)
+            {
+                simulationFlowHandler.MoveToEnd();
+            }
+        }
+
+        public void BeginningOfTheGameButtonClick(object sender, EventArgs args)
+        {
+            if (!simulationFlowHandler.IsRunning)
+            {
+                simulationFlowHandler.MoveToBeginning();
             }
         }
     }

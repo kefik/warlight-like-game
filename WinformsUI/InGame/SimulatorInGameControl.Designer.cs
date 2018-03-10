@@ -113,6 +113,11 @@
             this.botThinkingTimeNumericUpDown.Size = new System.Drawing.Size(60, 20);
             this.botThinkingTimeNumericUpDown.TabIndex = 7;
             this.botThinkingTimeNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.botThinkingTimeNumericUpDown.Value = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
             // 
             // nextActionButton
             // 
@@ -122,6 +127,7 @@
             this.nextActionButton.TabIndex = 6;
             this.nextActionButton.Text = ">";
             this.nextActionButton.UseVisualStyleBackColor = true;
+            this.nextActionButton.Click += new System.EventHandler(this.NextActionButtonClick);
             // 
             // previousActionButton
             // 
@@ -131,6 +137,7 @@
             this.previousActionButton.TabIndex = 5;
             this.previousActionButton.Text = "<";
             this.previousActionButton.UseVisualStyleBackColor = true;
+            this.previousActionButton.Click += new System.EventHandler(this.PreviousActionButtonClick);
             // 
             // previousRoundButton
             // 
@@ -140,6 +147,7 @@
             this.previousRoundButton.TabIndex = 4;
             this.previousRoundButton.Text = "<<<";
             this.previousRoundButton.UseVisualStyleBackColor = true;
+            this.previousRoundButton.Click += new System.EventHandler(this.BeginningOfTheGameButtonClick);
             // 
             // nextRoundButton
             // 
@@ -149,6 +157,7 @@
             this.nextRoundButton.TabIndex = 3;
             this.nextRoundButton.Text = ">>>";
             this.nextRoundButton.UseVisualStyleBackColor = true;
+            this.nextRoundButton.Click += new System.EventHandler(this.EndOfTheGameButtonClick);
             // 
             // previousTurnButton
             // 
@@ -158,6 +167,7 @@
             this.previousTurnButton.TabIndex = 2;
             this.previousTurnButton.Text = "<<";
             this.previousTurnButton.UseVisualStyleBackColor = true;
+            this.previousTurnButton.Click += new System.EventHandler(this.PreviousRoundButtonClick);
             // 
             // nextTurnButton
             // 
@@ -167,6 +177,7 @@
             this.nextTurnButton.TabIndex = 1;
             this.nextTurnButton.Text = ">>";
             this.nextTurnButton.UseVisualStyleBackColor = true;
+            this.nextTurnButton.Click += new System.EventHandler(this.NextRoundButtonClick);
             // 
             // playPauseButton
             // 
