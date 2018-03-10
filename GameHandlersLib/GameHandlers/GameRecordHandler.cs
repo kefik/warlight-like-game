@@ -39,14 +39,7 @@
         /// <param name="game">Game to load.</param>
         public void Load(Game game)
         {
-            using (var ms = game.GetStreamForSerializedGame())
-            {
-                // deep copy the game so its independent on current bot playing
-                var copiedGame =
-                    (Game)SerializationObjectWrapper.Deserialize(ms).Value;
-                this.Game = copiedGame;
-                this.Game.ReconstructOriginalGraph();
-            }
+            Game = game.DeepCopy();
 
             currentActionEnumerator = new ActionEnumerator(Game.AllRounds);
 

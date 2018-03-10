@@ -153,6 +153,25 @@
         }
 
         /// <summary>
+        /// Deep copies <see cref="Game"/> instance.
+        /// </summary>
+        /// <returns></returns>
+        public Game DeepCopy()
+        {
+            Game game;
+            using (var ms = GetStreamForSerializedGame())
+            {
+                // deep copy the game so its independent on current bot playing
+                var copiedGame =
+                    (Game)SerializationObjectWrapper.Deserialize(ms).Value;
+                game = copiedGame;
+                game.ReconstructOriginalGraph();
+            }
+
+            return game;
+        }
+
+        /// <summary>
         ///     Loads the game based on parameters.
         /// </summary>
         /// <typeparam name="TLoadSource">Source type.</typeparam>
@@ -178,10 +197,8 @@
         ///     Purpose of this method is to remap those references back for future
         ///     graph updating to be easy..
         /// </summary>
-        public void ReconstructOriginalGraph()
+        internal void ReconstructOriginalGraph()
         {
-            // TODO: IMPORTANT = does not work
-            
             // SuperRegions and its regions
             foreach (var superRegion in Map.SuperRegions)
             {
