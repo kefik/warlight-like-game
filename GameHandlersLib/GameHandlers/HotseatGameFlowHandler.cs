@@ -8,6 +8,7 @@
     using GameObjectsLib.GameUser;
     using GameObjectsLib.Players;
     using MapHandlers;
+    using IMapImageProcessor = MapHandlers.IMapImageProcessor;
 
     public sealed class HotseatGameFlowHandler : GameFlowHandler
     {
@@ -19,7 +20,7 @@
             get { return playersEnumerator?.Current; }
         }
 
-        public HotseatGameFlowHandler(Game game, MapImageProcessor processor) : base(game, processor)
+        public HotseatGameFlowHandler(Game game, IMapImageProcessor processor) : base(game, processor)
         {
             localPlayers = from player in game.Players
                            where player.GetType() == typeof(HumanPlayer)

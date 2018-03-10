@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="GameHandlers\BotEvaluationHandler.cs" />
     <Compile Include="GameHandlers\GameFlowHandler.cs" />
+    <Compile Include="GameHandlers\ActionEnumerator.cs" />
     <Compile Include="GameHandlers\GameRecordHandler.cs" />
     <Compile Include="GameHandlers\GameState.cs" />
     <Compile Include="GameHandlers\HotseatGameFlowHandler.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="MapHandlers\ColoringHandler.cs" />
     <Compile Include="MapHandlers\Global.cs" />
     <Compile Include="MapHandlers\HighlightHandler.cs" />
+    <Compile Include="MapHandlers\IMapImageProcessor.cs" />
     <Compile Include="MapHandlers\MapImageProcessor.cs" />
     <Compile Include="MapHandlers\MapImageTemplateProcessor.cs" />
     <Compile Include="MapHandlers\SelectRegionHandler.cs" />

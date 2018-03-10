@@ -40,7 +40,7 @@
             // deploys
             foreach (Deployment deployment in gameTurn.Deploying.ArmiesDeployed)
             {
-                botGameTurn.Deployments.Add((deployment.Region.Id, deployment.Army));
+                botGameTurn.Deployments.Add((deployment.Region.Id, deployment.Army, deployment.DeployingPlayer.Id));
             }
 
             // attacks
@@ -87,11 +87,12 @@
             var gameTurn = new GameTurn(players.First(x => x.Id == botGameTurn.PlayerId));
             // deploying
             var deployments = new List<Deployment>();
-            foreach ((int regionId, int army) in botGameTurn.Deployments)
+            foreach ((int regionId, int army, int deployingPlayerId) in botGameTurn.Deployments)
             {
                 deployments.Add(new Deployment(
                         map.Regions.First(x => x.Id == regionId),
-                        army
+                        army,
+                        players.First(x => x.Id == deployingPlayerId)
                     ));
             }
             var deploying = new Deploying(deployments);

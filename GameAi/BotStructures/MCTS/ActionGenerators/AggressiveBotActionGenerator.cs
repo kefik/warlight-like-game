@@ -39,7 +39,7 @@
             };
         }
 
-        private ICollection<(int RegionId, int Army)> GenerateDeploying(PlayerPerspective currentGameState)
+        private ICollection<(int RegionId, int Army, int DeployingPlayer)> GenerateDeploying(PlayerPerspective currentGameState)
         {
             var myRegions = currentGameState.GetMyRegions();
             int canDeployUnitsCount = currentGameState.GetMyIncome();
@@ -47,9 +47,9 @@
             int regionToDeployToId = myRegions.First().Id;
             
             // TODO: deploy reasonably
-            return new List<(int RegionId, int Army)>()
+            return new List<(int RegionId, int Army, int DeployingPlayerId)>()
             {
-                (regionToDeployToId, canDeployUnitsCount)
+                (regionToDeployToId, canDeployUnitsCount, currentGameState.PlayerId)
             };
         }
 
@@ -79,9 +79,9 @@
             return attacks;
         }
 
-        private void UpdateGameStateAfterDeploying(ref PlayerPerspective gameState, ICollection<(int RegionId, int Army)> deployments)
+        private void UpdateGameStateAfterDeploying(ref PlayerPerspective gameState, ICollection<(int RegionId, int Army, int DeployingPlayerId)> deployments)
         {
-            foreach (var (regionId, army) in deployments)
+            foreach (var (regionId, army, deployingPlayerId) in deployments)
             {
                 ref var region = ref gameState.MapMin.GetRegion(regionId);
                 region.Army += army;

@@ -74,7 +74,7 @@
             {
                 ArmiesDeployed.Remove(deployment);
             }
-            ArmiesDeployed.Add(new Deployment(region, newArmy));
+            ArmiesDeployed.Add(new Deployment(region, newArmy, region.Owner));
         }
 
         /// <summary>

@@ -27,10 +27,11 @@ namespace GameObjectsLib.GameRecording
         // ReSharper disable once UnusedMember.Local
         private Deployment() { }
 
-        public Deployment(Region region, int army)
+        public Deployment(Region region, int army, Player deployingPlayer)
         {
             Region = region;
             Army = army;
+            DeployingPlayer = deployingPlayer;
         }
         
         public bool DoesConcernRegion(Region region)

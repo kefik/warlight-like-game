@@ -16,7 +16,7 @@
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
-    using MapImageProcessor = MapHandlers.MapImageProcessor;
+    using IMapImageProcessor = MapHandlers.IMapImageProcessor;
 
     /// <summary>
     ///     Component handling game state changes and all reactions to them.
@@ -25,7 +25,7 @@
     {
         public Game Game { get; }
 
-        public MapImageProcessor ImageProcessor { get; }
+        public IMapImageProcessor ImageProcessor { get; }
 
         private readonly RoundHandler roundHandler;
 
@@ -63,7 +63,7 @@
             get { return Game.AllRounds; }
         }
 
-        protected GameFlowHandler(Game game, MapImageProcessor processor)
+        protected GameFlowHandler(Game game, IMapImageProcessor processor)
         {
             Game = game;
             ImageProcessor = processor;

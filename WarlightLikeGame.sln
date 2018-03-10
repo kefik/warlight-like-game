@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAi.Data", "GameAi.Data\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormatConverters", "FormatConverters\FormatConverters.csproj", "{A5D00DC5-CACC-444C-9BAD-AE47F72AF010}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameHandlersLib.Tests", "GameHandlersLib.Tests\GameHandlersLib.Tests.csproj", "{DA76BD4E-6D5F-45DE-8552-FC082AF3B199}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{A5D00DC5-CACC-444C-9BAD-AE47F72AF010}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5D00DC5-CACC-444C-9BAD-AE47F72AF010}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5D00DC5-CACC-444C-9BAD-AE47F72AF010}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA76BD4E-6D5F-45DE-8552-FC082AF3B199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA76BD4E-6D5F-45DE-8552-FC082AF3B199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA76BD4E-6D5F-45DE-8552-FC082AF3B199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA76BD4E-6D5F-45DE-8552-FC082AF3B199}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,6 +149,7 @@ Global
 		{B50BD638-80B2-4514-82E8-F7F8DDC080EE} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 		{8EDF4429-251A-416D-BB68-93F227191BCF} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 		{496773E5-1554-42CD-B44F-55F9086F860B} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
+		{DA76BD4E-6D5F-45DE-8552-FC082AF3B199} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D606CDC-59E3-471D-99B3-397C7AD8F1AB}

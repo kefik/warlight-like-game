@@ -8,30 +8,27 @@
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.NetworkCommObjects;
     using MapHandlers;
+    using IMapImageProcessor = MapHandlers.IMapImageProcessor;
 
     /// <summary>
     /// Handles playing game record.
     /// </summary>
-    public class GameRecordHandler
+    internal class GameRecordHandler
     {
-        private Game game;
-        private readonly MapImageProcessor mapImageProcessor;
+        internal Game Game { get; private set; }
+        private readonly IMapImageProcessor mapImageProcessor;
 
-        private int currentRoundIndex;
-        /// <summary>
-        /// With currentRoundIndex 
-        /// denotes first action that wasn't played so far.
-        /// </summary>
-        private int currentActionIndex;
+        private ActionEnumerator currentActionEnumerator;
 
-        private IList<ILinearizedRound> Rounds
+        internal IList<ILinearizedRound> Rounds
         {
-            get { return game.AllRounds; }
+            get { return Game.AllRounds; }
         }
         
-        public GameRecordHandler(MapImageProcessor mapImageProcessor)
+        public GameRecordHandler(IMapImageProcessor mapImageProcessor, Game game)
         {
             this.mapImageProcessor = mapImageProcessor;
+            Load(game);
         }
 
         public void Load(Game game)
@@ -40,134 +37,53 @@
             {
                 var copiedGame =
                     (Game)SerializationObjectWrapper.Deserialize(ms).Value;
-                this.game = copiedGame;
-                this.game.ReconstructOriginalGraph();
+                this.Game = copiedGame;
+                this.Game.ReconstructOriginalGraph();
             }
 
-            currentRoundIndex = Rounds.Count - 1;
-            currentActionIndex = GetLastActionIndex(currentRoundIndex);
-        }
-
-        private int GetLastActionIndex(int roundIndex)
-        {
-            switch (Rounds[roundIndex])
-            {
-                case LinearizedGameBeginningRound round:
-                    return round.SelectedRegions.Count - 1;
-                case LinearizedGameRound round:
-                    return round.Deploying.ArmiesDeployed.Count
-                           + round.Attacking.Attacks.Count - 1;
-                default:
-                    return 0;
-            }
-        }
-
-        private (int roundIndex, int actionIndex) GetIncrementedActionIndex(int roundIndex, int actionIndex)
-        {
-            var action = GetAction(roundIndex, actionIndex + 1);
-            if (action == null)
-            {
-                var incAction = GetAction(roundIndex + 1, 0);
-
-                if (incAction == null)
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
-
-                return (roundIndex + 1, 0);
-            }
-
-            return (roundIndex, actionIndex + 1);
-        }
-
-        private (int roundIndex, int actionIndex) GetDecrementedActionIndex(int roundIndex, int actionIndex)
-        {
-            var action = GetAction(roundIndex, actionIndex - 1);
-            if (action == null)
-            {
-                int lastActionIndex = GetLastActionIndex(roundIndex - 1);
-                var incAction = GetAction(roundIndex - 1,
-                    lastActionIndex);
-
-                if (incAction == null)
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
-
-                return (roundIndex - 1, lastActionIndex);
-            }
-
-            return (roundIndex, actionIndex - 1);
-        }
-
-        private IAction GetCurrentAction()
-        {
-            return GetAction(currentRoundIndex, currentActionIndex);
-        }
-
-        private IAction GetAction(int roundIndex, int actionIndex)
-        {
-            switch (Rounds[roundIndex])
-            {
-                case LinearizedGameBeginningRound round:
-                    // out of range => null
-                    if (actionIndex >= round.SelectedRegions.Count)
-                    {
-                        return null;
-                    }
-                    return round.SelectedRegions[actionIndex];
-                case LinearizedGameRound round:
-                {
-                    if (round.Deploying.ArmiesDeployed.Count == actionIndex)
-                    {
-                        // can overflow from the other side
-                        return round.Attacking.Attacks.Count == 0 ?
-                                null : round.Attacking.Attacks[0];
-                    }
-                    if (round.Deploying.ArmiesDeployed.Count < actionIndex)
-                    {
-                        // attacks can overflow
-                        return round.Attacking.Attacks.Count < actionIndex ?
-                                null : round.Attacking.Attacks[actionIndex];
-                    }
-
-                    // count > actionIndex
-                    return round.Deploying.ArmiesDeployed[actionIndex];
-                }
-                default:
-                    return null;
-            }
+            currentActionEnumerator = new ActionEnumerator(Game.AllRounds);
         }
 
         private IAction GetFirstPreviousActionOrDefault(Predicate<IAction> predicate)
         {
-            IAction currentAction;
-            (int roundIndex, int actionIndex) = GetDecrementedActionIndex(currentRoundIndex, currentActionIndex);
-            while ((currentAction = GetAction(roundIndex, actionIndex)) != null)
+            ActionEnumerator actionEnumerator = currentActionEnumerator;
+            
+            while (actionEnumerator.MovePrevious())
             {
+                var currentAction = actionEnumerator.GetCurrentAction();
                 if (predicate(currentAction))
                 {
                     return currentAction;
                 }
-                (roundIndex, actionIndex)
-                    = GetDecrementedActionIndex(roundIndex, actionIndex);
             }
             return null;
+        }
+
+        internal IAction GetCurrentAction()
+        {
+            return currentActionEnumerator.GetCurrentAction();
         }
 
         /// <summary>
         /// Moves perspective to the next action.
         /// </summary>
-        public void MoveToNextAction()
+        public bool MoveToNextAction()
         {
-            MoveToNextActionPrivate();
+            bool wasSuccessful = MoveToNextActionPrivate();
 
-            mapImageProcessor.RedrawMap(game, null);
+            mapImageProcessor.RedrawMap(Game, null);
+
+            return wasSuccessful;
         }
 
-        private void MoveToNextActionPrivate()
+        private bool MoveToNextActionPrivate()
         {
-            IAction currentAction = GetCurrentAction();
+            IAction currentAction = currentActionEnumerator.GetCurrentAction();
+
+            if (currentAction == null)
+            {
+                return false;
+            }
 
             switch (currentAction)
             {
@@ -184,33 +100,37 @@
                     action.Region.Owner = action.SeizingPlayer;
                     break;
                 default:
-                    break;
+                    return false;
             }
 
-            var (roundIndex, actionIndex) = GetIncrementedActionIndex(currentRoundIndex, currentActionIndex);
-            currentRoundIndex = roundIndex;
-            currentActionIndex = actionIndex;
+            currentActionEnumerator.MoveNext();
+            return true;
         }
 
         /// <summary>
         /// Moves record perspective to the previous action.
         /// </summary>
-        public void MoveToPreviousAction()
+        public bool MoveToPreviousAction()
         {
-            MoveToPreviousActionPrivate();
+            bool wasSuccessful = MoveToPreviousActionPrivate();
 
-            mapImageProcessor.RedrawMap(game, null);
+            mapImageProcessor.RedrawMap(Game, null);
+
+            return wasSuccessful;
         }
 
-        private void MoveToPreviousActionPrivate()
+        private bool MoveToPreviousActionPrivate()
         {
             // get first previous action that gives
             // us information about the current state
-            var (roundIndex, actionIndex) = GetDecrementedActionIndex(currentRoundIndex, currentActionIndex);
-            currentRoundIndex = roundIndex;
-            currentActionIndex = actionIndex;
 
-            var actionToRevert = GetCurrentAction();
+            // cannot move backwards => return false
+            if (!currentActionEnumerator.MovePrevious())
+            {
+                return false;
+            }
+
+            var actionToRevert = currentActionEnumerator.GetCurrentAction();
 
             switch (actionToRevert)
             {
@@ -224,18 +144,28 @@
                     // revert seize => seized owner was previously null
                     action.Region.Owner = null;
                     break;
+                default:
+                    return false;
             }
+            return true;
         }
 
-        public void MoveToNextRound()
+        public bool MoveToNextRound()
         {
-            int roundIndex = currentRoundIndex;
+            int roundIndex = currentActionEnumerator.RoundIndex;
+
+            // moving to next round is successful
+            // if at least one action has been moved
+            bool wasSuccessful = false;
             do
             {
-                MoveToNextActionPrivate();
-            } while (roundIndex != currentRoundIndex);
+                wasSuccessful |= MoveToNextActionPrivate();
+                // roundIndex == currentRoundIndex => moved the round
+            } while (roundIndex != currentActionEnumerator.RoundIndex);
             
-            mapImageProcessor.RedrawMap(game, null);
+            mapImageProcessor.RedrawMap(Game, null);
+
+            return wasSuccessful;
         }
 
         private void RevertDeploymentAction(Deployment deployment)
@@ -276,6 +206,7 @@
                     {
                         action.Defender.Army
                             = action.PostAttackMapChange.DefendingRegionArmy;
+                        action.Defender.Owner = action.PostAttackMapChange.DefendingRegionOwner;
                     }
                     else
                     {

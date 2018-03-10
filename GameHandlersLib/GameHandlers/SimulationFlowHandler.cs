@@ -44,7 +44,7 @@
             
             botEvaluationHandler = new BotEvaluationHandler(game);
 
-            gameRecordHandler = new GameRecordHandler(processor);
+            gameRecordHandler = new GameRecordHandler(processor, game);
             gameRecordHandler.Load(game);
         }
 

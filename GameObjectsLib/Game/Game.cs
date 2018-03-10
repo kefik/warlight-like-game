@@ -246,7 +246,10 @@
                             attack.AttackingPlayer = Players.First(x => x == attack.AttackingPlayer);
 
                             var mapChange = attack.PostAttackMapChange;
-                            mapChange.DefendingRegionOwner = Players.First(x => x == mapChange.DefendingRegionOwner);
+                            if (mapChange.DefendingRegionOwner != null)
+                            {
+                                mapChange.DefendingRegionOwner = Players.First(x => x == mapChange.DefendingRegionOwner);
+                            }
                         }
                         break;
                     case LinearizedGameBeginningRound round:

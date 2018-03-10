@@ -21,7 +21,7 @@ namespace GameHandlersLib.MapHandlers
     /// <summary>
     ///     Represents visual representation of the game map and functionality linked with it.
     /// </summary>
-    public class MapImageProcessor
+    public class MapImageProcessor : IMapImageProcessor
     {
         private readonly bool isFogOfWar;
 
@@ -40,7 +40,7 @@ namespace GameHandlersLib.MapHandlers
         /// <summary>
         /// Is invoked when image is changed (redrawn, etc...)
         /// </summary>
-        public Action OnImageChanged;
+        public event Action OnImageChanged;
 
         /// <summary>
         /// Gets selected region by the player.
@@ -61,7 +61,7 @@ namespace GameHandlersLib.MapHandlers
             this.selectRegionHandler = selectRegionHandler;
         }
 
-        internal Region GetRegion(int x, int y)
+        public Region GetRegion(int x, int y)
         {
             return templateProcessor.GetRegion(x, y);
         }
@@ -256,7 +256,7 @@ namespace GameHandlersLib.MapHandlers
         /// </summary>
         /// <param name="game">Game from which it has source.</param>
         /// <param name="playerPerspective">Player, from whose perspective should be image redrawed.</param>
-        public void RedrawMap(Game game, Player playerPerspective)
+        public virtual void RedrawMap(Game game, Player playerPerspective)
         {
             if (isFogOfWar)
             {
