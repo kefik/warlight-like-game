@@ -163,14 +163,138 @@
             var currentAction = (Attack)gameRecordHandler.GetCurrentAction();
 
             // refreshed countries
-            var czechia = regions.First(x => x.Name == "Czechia");
-            var germany = regions.First(x => x.Name == "Germany");
-            var austria = regions.First(x => x.Name == "Austria");
+            czechia = regions.First(x => x.Name == "Czechia");
+            germany = regions.First(x => x.Name == "Germany");
+            austria = regions.First(x => x.Name == "Austria");
             AreEqual(currentAction.Defender, czechia);
             AreEqual(currentAction.Attacker, germany);
             AreEqual(germany.Army, 7);
             AreEqual(czechia.Army, 5);
             AreEqual(czechia.Owner, pc1);
+        }
+
+        [Test]
+        public void MoveToNextAndPreviousActionTest()
+        {
+            gameRecordHandler.Load(game);
+            var copiedGame = gameRecordHandler.Game;
+            var regions = copiedGame.Map.Regions;
+            bool wasMoved = gameRecordHandler.MoveToNextAction();
+
+            IsFalse(wasMoved);
+
+            wasMoved = gameRecordHandler.MoveToPreviousAction();
+            wasMoved = gameRecordHandler.MoveToNextAction();
+
+            IsTrue(wasMoved);
+            IsNull(gameRecordHandler.GetCurrentAction());
+        }
+
+        [Test]
+        public void MoveToNextAndPreviousActionTest2()
+        {
+            gameRecordHandler.Load(game);
+            var copiedGame = gameRecordHandler.Game;
+            var regions = copiedGame.Map.Regions;
+
+            // current position == after last action
+
+            // revert attack germany -> czechia
+            bool wasMoved = gameRecordHandler.MoveToPreviousAction();
+            // revert attack austria -> czechia
+            wasMoved = gameRecordHandler.MoveToPreviousAction();
+            // revert deploy germany
+            wasMoved = gameRecordHandler.MoveToPreviousAction();
+            // revert deploy austria
+            wasMoved = gameRecordHandler.MoveToPreviousAction();
+
+            austria = regions.First(x => x.Name == "Austria");
+            czechia = regions.First(x => x.Name == "Czechia");
+            germany = regions.First(x => x.Name == "Germany");
+
+            AreEqual(2, austria.Army);
+            AreEqual(pc1, austria.Owner);
+            AreEqual(2, czechia.Army);
+            IsNull(czechia.Owner);
+            AreEqual(2, germany.Army);
+            AreEqual(pc2, germany.Owner);
+
+            // revert seize germany
+            wasMoved = gameRecordHandler.MoveToPreviousAction();
+            IsTrue(wasMoved);
+            AreEqual(2, germany.Army);
+            IsNull(germany.Owner);
+
+            // revert seize austria
+            wasMoved = gameRecordHandler.MoveToPreviousAction();
+            IsTrue(wasMoved);
+            AreEqual(2, austria.Army);
+            IsNull(austria.Owner);
+
+            // revert invalid one more back
+            wasMoved = gameRecordHandler.MoveToPreviousAction();
+            IsFalse(wasMoved);
+
+            // seize austria and germany
+            wasMoved = gameRecordHandler.MoveToNextAction();
+            wasMoved = gameRecordHandler.MoveToNextAction();
+
+            AreEqual(2, austria.Army);
+            AreEqual(pc1, austria.Owner);
+            AreEqual(2, czechia.Army);
+            IsNull(czechia.Owner);
+            AreEqual(2, germany.Army);
+            AreEqual(pc2, germany.Owner);
+        }
+
+        [Test]
+        public void MoveRoundsTest()
+        {
+            gameRecordHandler.Load(game);
+            var copiedGame = gameRecordHandler.Game;
+            var regions = copiedGame.Map.Regions;
+            czechia = regions.First(x => x.Name == "Czechia");
+            germany = regions.First(x => x.Name == "Germany");
+            austria = regions.First(x => x.Name == "Austria");
+
+            // reset deploy and attack round
+            bool wasMoved = gameRecordHandler.MoveToPreviousRound();
+            IsTrue(wasMoved);
+            AreEqual(2, austria.Army);
+            AreEqual(pc1, austria.Owner);
+            AreEqual(2, czechia.Army);
+            IsNull(czechia.Owner);
+            AreEqual(2, germany.Army);
+            AreEqual(pc2, germany.Owner);
+
+            // reset seizes
+            wasMoved = gameRecordHandler.MoveToPreviousRound();
+            IsTrue(wasMoved);
+            AreEqual(2, germany.Army);
+            IsNull(germany.Owner);
+            IsTrue(wasMoved);
+            AreEqual(2, austria.Army);
+            IsNull(austria.Owner);
+
+            // try to play one step back
+            wasMoved = gameRecordHandler.MoveToPreviousRound();
+            IsFalse(wasMoved);
+
+            // play seizes, deploy and attacks
+            wasMoved = gameRecordHandler.MoveToNextRound();
+            IsTrue(wasMoved);
+            wasMoved = gameRecordHandler.MoveToNextRound();
+            IsTrue(wasMoved);
+            AreEqual(1, austria.Army);
+            AreEqual(pc1, austria.Owner);
+            AreEqual(4, czechia.Army);
+            AreEqual(pc1, czechia.Owner);
+            AreEqual(5, germany.Army);
+            AreEqual(pc2, germany.Owner);
+
+            // try to play one step forward
+            wasMoved = gameRecordHandler.MoveToNextRound();
+            IsFalse(wasMoved);
         }
     }
 }

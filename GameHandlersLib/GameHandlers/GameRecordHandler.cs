@@ -31,10 +31,16 @@
             Load(game);
         }
 
+        /// <summary>
+        /// Loads game, deep-copying it for the <see cref="GameRecordHandler"/>
+        /// instance.
+        /// </summary>
+        /// <param name="game">Game to load.</param>
         public void Load(Game game)
         {
             using (var ms = game.GetStreamForSerializedGame())
             {
+                // deep copy the game so its independent on current bot playing
                 var copiedGame =
                     (Game)SerializationObjectWrapper.Deserialize(ms).Value;
                 this.Game = copiedGame;
@@ -150,19 +156,47 @@
             return true;
         }
 
+        /// <summary>
+        /// Moves current state of the game to the next round.
+        /// </summary>
+        /// <returns>
+        /// True, if it successfully moved, false otherwise.
+        /// </returns>
         public bool MoveToNextRound()
         {
-            int roundIndex = currentActionEnumerator.RoundIndex;
-
             // moving to next round is successful
             // if at least one action has been moved
             bool wasSuccessful = false;
             do
             {
                 wasSuccessful |= MoveToNextActionPrivate();
-                // roundIndex == currentRoundIndex => moved the round
-            } while (roundIndex != currentActionEnumerator.RoundIndex);
+                // action index == 0 => its beginning of the new round
+                // => round has been reset
+            } while (currentActionEnumerator.ActionIndex != 0);
             
+            mapImageProcessor.RedrawMap(Game, null);
+
+            return wasSuccessful;
+        }
+
+        /// <summary>
+        /// Moves current state of the game to the previous round.
+        /// </summary>
+        /// <returns>
+        /// True, if it successfully moved, false otherwise.
+        /// </returns>
+        public bool MoveToPreviousRound()
+        {
+            // moving to previous round is successful
+            // if at least one move was successful
+            bool wasSuccessful = false;
+            do
+            {
+                wasSuccessful |= MoveToPreviousAction();
+                // action index == 0 => its beginning of the round
+                // => round has been reset
+            } while (currentActionEnumerator.ActionIndex != 0);
+
             mapImageProcessor.RedrawMap(Game, null);
 
             return wasSuccessful;
@@ -216,7 +250,14 @@
                     break;
                 case Seize action:
                     // revert seize => seized owner was previously null
-                    action.Region.Owner = null;
+                    // TODO: default not fixed value
+                    action.Region.Army = 2;
+                    break;
+                default:
+                    // there is no concerned action => set up default values
+                    concernedRegion.Owner = null;
+                    // TODO: not fixed value
+                    concernedRegion.Army = 2;
                     break;
             }
         }

@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionEnumeratorTests.cs" />
     <Compile Include="GameRecordHandlerTests.cs" />
     <Compile Include="Maps.Designer.cs">
       <AutoGen>True</AutoGen>

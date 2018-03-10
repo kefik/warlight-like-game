@@ -43,7 +43,10 @@
             {
                 var incAction = GetAction(RoundIndex + 1, 0);
 
-                if (incAction == null)
+                // RoundIndex + 1 == rounds.Count =>
+                // special case, when I've played all moves
+                if (incAction == null
+                    && RoundIndex + 1 != rounds.Count)
                 {
                     return false;
                 }
@@ -102,7 +105,7 @@
         private int? GetLastActionIndex(int roundIndex)
         {
             // invalid => report invalid by -1
-            if (roundIndex <= 0 || roundIndex >= rounds.Count)
+            if (roundIndex < 0 || roundIndex >= rounds.Count)
             {
                 return null;
             }
@@ -121,7 +124,8 @@
         private IAction GetAction(int roundIndex, int actionIndex)
         {
             // arguments out of range => return null
-            if (roundIndex >= rounds.Count || roundIndex < 0)
+            if (roundIndex >= rounds.Count || roundIndex < 0
+                || actionIndex < 0)
             {
                 return null;
             }
