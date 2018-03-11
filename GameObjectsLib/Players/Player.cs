@@ -15,7 +15,7 @@
     [ProtoContract]
     [ProtoInclude(400, typeof(AiPlayer))]
     [ProtoInclude(401, typeof(HumanPlayer))]
-    public abstract class Player : IEquatable<Player>, IRefreshable
+    public abstract class Player : IEquatable<Player>
     {
         protected Player()
         {
@@ -34,8 +34,13 @@
         /// <summary>
         ///     Regions this player controls.
         /// </summary>
+        public IReadOnlyList<Region> ControlledRegions
+        {
+            get { return ControlledRegionsInternal; }
+        }
+
         [ProtoMember(2, AsReference = true)]
-        public IList<Region> ControlledRegions { get; } = new List<Region>();
+        internal List<Region> ControlledRegionsInternal { get; } = new List<Region>();
 
         public const int BasicIncome = 5;
 
@@ -61,22 +66,6 @@
         public override string ToString()
         {
             return Name;
-        }
-
-        /// <summary>
-        ///     Refreshes controlled regions of the player.
-        /// </summary>
-        public void Refresh()
-        {
-            // if this players controlled region doesnt have as owner this player
-            // remove that region from controlled regions
-            for (int i = ControlledRegions.Count - 1; i >= 0; i--)
-            {
-                if (ControlledRegions[i].Owner != this)
-                {
-                    ControlledRegions.Remove(ControlledRegions[i]);
-                }
-            }
         }
 
         /// <summary>

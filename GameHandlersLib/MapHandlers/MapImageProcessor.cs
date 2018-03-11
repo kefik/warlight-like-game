@@ -278,7 +278,7 @@ namespace GameHandlersLib.MapHandlers
         private void RedrawWithFogOfWar(Game game, Player playerPerspective)
         {
             // get owned regions
-            IList<Region> ownedRegions = playerPerspective.ControlledRegions;
+            var ownedRegions = playerPerspective.ControlledRegions;
 
             // recolor them to players color
             foreach (Region ownedRegion in ownedRegions)

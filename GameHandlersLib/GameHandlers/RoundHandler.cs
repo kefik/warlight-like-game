@@ -34,7 +34,7 @@
                 Region realRegion = game.Map.Regions.First(x => x == roundSelectedRegion.Region);
                 Player realPlayer = game.Players.First(x => roundSelectedRegion.SeizingPlayer == x);
 
-                realRegion.Owner = realPlayer;
+                realRegion.ChangeOwner(realPlayer);
             }
         }
 
@@ -88,7 +88,7 @@
                         // move rest of the units
                         remainingDefendingArmy = remainingAttackingArmy;
                         // region was conquered
-                        defender.Owner = attack.Attacker.Owner;
+                        defender.ChangeOwner(attack.Attacker.Owner);
                         // cuz of negative units
                         defender.Army = remainingDefendingArmy;
                     }

@@ -135,16 +135,6 @@
         /// </summary>
         public void Refresh()
         {
-            // refresh regions owner
-            foreach (Region region in Map.Regions)
-            {
-                region.Refresh();
-            }
-            // refresh
-            foreach (Player player in Players)
-            {
-                player.Refresh();
-            }
             // refresh super regions
             foreach (SuperRegion superRegion in Map.SuperRegions)
             {
@@ -237,7 +227,7 @@
                 {
                     var realRegion = Map.Regions.First(x => x == player.ControlledRegions[i]);
                     realRegion.Owner = player;
-                    player.ControlledRegions[i] = realRegion;
+                    player.ControlledRegionsInternal[i] = realRegion;
                 }
             }
 

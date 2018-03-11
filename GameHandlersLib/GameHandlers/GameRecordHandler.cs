@@ -200,8 +200,7 @@
                     break;
                 case Seize action:
                     // revert seize => seized owner was previously null
-                    action.SeizingPlayer.ControlledRegions.Remove(action.Region);
-                    action.Region.Owner = null;
+                    action.Region.ChangeOwner(null);
                     break;
                 default:
                     return false;

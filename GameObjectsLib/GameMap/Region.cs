@@ -11,7 +11,7 @@
     /// </summary>
     [Serializable]
     [ProtoContract]
-    public class Region : IEquatable<Region>, IRefreshable
+    public class Region : IEquatable<Region>
     {
         public const int MinimumArmy = 1;
 
@@ -25,7 +25,7 @@
         ///     Player owning given region. Null means no owner.
         /// </summary>
         [ProtoMember(3, AsReference = true)]
-        public Player Owner { get; set; }
+        public Player Owner { get; internal set; }
 
         /// <summary>
         ///     Number of units occuppying this region.
@@ -64,10 +64,10 @@
                 return;
             }
 
-            Owner?.ControlledRegions.Remove(this);
+            Owner?.ControlledRegionsInternal.Remove(this);
             if (newOwner != null)
             {
-                newOwner.ControlledRegions.Add(this);
+                newOwner.ControlledRegionsInternal.Add(this);
             }
 
             Owner = newOwner;
@@ -139,28 +139,6 @@
         public override int GetHashCode()
         {
             return Id;
-        }
-
-        /// <summary>
-        ///     Refreshes situation of the game based on this regions owner.
-        /// </summary>
-        public void Refresh()
-        {
-            if (Owner == null)
-            {
-                return;
-            }
-            // if this region has player as owner, but this player doesn't have
-            // this region as controlled region, add this region to controlled regions
-            // of the player
-            IList<Region> ownerRegions = Owner.ControlledRegions;
-            bool containsThisRegion = (from region in ownerRegions
-                                       where region == this
-                                       select region).Any();
-            if (!containsThisRegion)
-            {
-                ownerRegions.Add(this);
-            }
         }
 
         public static bool operator ==(Region left, Region right)

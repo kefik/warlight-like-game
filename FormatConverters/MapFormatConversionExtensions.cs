@@ -79,10 +79,14 @@
             Region[] regions = mapMin.RegionsMin
                 .Select(x => new Region(x.Id, null, superRegions.FirstOrDefault(y => y.Id == x.SuperRegionId))
                 {
-                    Army = x.Army,
-                    Owner = players.FirstOrDefault(y => y.Id == x.OwnerId)
+                    Army = x.Army
                 })
                 .ToArray();
+
+            foreach (Region region in regions)
+            {
+                region.ChangeOwner(players.First(y => y.Id == mapMin.RegionsMin.First(x => x.Id == region.Id).OwnerId));
+            }
 
             // add regions to super region
             foreach (SuperRegion superRegion in superRegions)

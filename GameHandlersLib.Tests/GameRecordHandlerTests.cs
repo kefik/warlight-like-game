@@ -111,17 +111,13 @@
                 new Attacking(attacks)));
 
             austria.Army = 1;
-            austria.Owner = pc1;
+            austria.ChangeOwner(pc1);
 
             poland.Army = 5;
-            poland.Owner = pc2;
+            poland.ChangeOwner(pc2);
 
             czechia.Army = 4;
-            czechia.Owner = pc1;
-
-            pc1.ControlledRegions.Add(austria);
-            pc1.ControlledRegions.Add(czechia);
-            pc2.ControlledRegions.Add(poland);
+            czechia.ChangeOwner(pc1);
 
             #endregion
         }
