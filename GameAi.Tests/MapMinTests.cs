@@ -47,7 +47,7 @@
             for (int i = 0; i < newMapMin.RegionsMin.Length; i++)
             {
                 newMapMin.RegionsMin[i].Id = 10;
-                AreNotEqual(newMapMin.RegionsMin[i].Id, mapMin.RegionsMin[i].Id);
+                AreNotEqual(mapMin.RegionsMin[i].Id, newMapMin.RegionsMin[i].Id);
             }
 
             for (int i = 0; i < newMapMin.SuperRegionsMin.Length; i++)
@@ -69,7 +69,7 @@
             for (int i = 0; i < newMapMin.RegionsMin.Length; i++)
             {
                 newMapMin.RegionsMin[i].Id = 10;
-                AreEqual(newMapMin.RegionsMin[i].Id, mapMin.RegionsMin[i].Id);
+                AreEqual(mapMin.RegionsMin[i].Id, newMapMin.RegionsMin[i].Id);
             }
 
             for (int i = 0; i < newMapMin.SuperRegionsMin.Length; i++)
@@ -90,14 +90,14 @@
                 var newMapMinRegion = newMapMin.RegionsMin[i];
                 var mapMinRegion = mapMin.RegionsMin[i];
 
-                AreEqual(newMapMinRegion.Id, mapMinRegion.Id);
-                AreEqual(newMapMinRegion.Army, mapMinRegion.Army);
-                AreEqual(newMapMinRegion.OwnerId, mapMinRegion.OwnerId);
+                AreEqual(mapMinRegion.Id, newMapMinRegion.Id);
+                AreEqual(mapMinRegion.Army, newMapMinRegion.Army);
+                AreEqual(mapMinRegion.OwnerId, newMapMinRegion.OwnerId);
 
                 // have same neighbours
                 for (int j = 0; j < Math.Max(newMapMinRegion.NeighbourRegionsIds.Length, mapMinRegion.NeighbourRegionsIds.Length); j++)
                 {
-                    AreEqual(newMapMinRegion.NeighbourRegionsIds[j], mapMinRegion.NeighbourRegionsIds[j]);
+                    AreEqual(mapMinRegion.NeighbourRegionsIds[j], newMapMinRegion.NeighbourRegionsIds[j]);
                 }
             }
 
@@ -106,9 +106,9 @@
                 var oldSuperRegion = mapMin.SuperRegionsMin[i];
                 var newSuperRegion = newMapMin.SuperRegionsMin[i];
 
-                AreEqual(newSuperRegion.Id, oldSuperRegion.Id);
-                AreEqual(newSuperRegion.Bonus, oldSuperRegion.Bonus);
-                AreEqual(newSuperRegion.OwnerId, oldSuperRegion.OwnerId);
+                AreEqual(oldSuperRegion.Id, newSuperRegion.Id);
+                AreEqual(oldSuperRegion.Bonus, newSuperRegion.Bonus);
+                AreEqual(oldSuperRegion.OwnerId, newSuperRegion.OwnerId);
 
                 // have same regions
                 for (int j = 0; j < Math.Max(oldSuperRegion.RegionsIds.Length, newSuperRegion.RegionsIds.Length); j++)

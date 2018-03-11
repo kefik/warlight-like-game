@@ -132,7 +132,7 @@
         public void GameInstancesAreIndependentTest()
         {
             var currentAction = gameRecordHandler.GetCurrentAction();
-            AreSame(null, currentAction);
+            IsNull(currentAction);
             IsEmpty(gameRecordHandler.Rounds);
         }
 
@@ -166,11 +166,11 @@
             czechia = regions.First(x => x.Name == "Czechia");
             germany = regions.First(x => x.Name == "Germany");
             austria = regions.First(x => x.Name == "Austria");
-            AreEqual(currentAction.Defender, czechia);
-            AreEqual(currentAction.Attacker, germany);
-            AreEqual(germany.Army, 7);
-            AreEqual(czechia.Army, 5);
-            AreEqual(czechia.Owner, pc1);
+            AreEqual(czechia, currentAction.Defender);
+            AreEqual(germany, currentAction.Attacker);
+            AreEqual(7, germany.Army);
+            AreEqual(5, czechia.Army);
+            AreEqual(pc1, czechia.Owner);
         }
 
         [Test]

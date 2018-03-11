@@ -68,6 +68,14 @@
             Initialize(mapStream);
         }
 
+        public Map(int id, string name, IList<Region> regions, IList<SuperRegion> superRegions)
+        {
+            Id = id;
+            Name = name;
+            Regions = regions;
+            SuperRegions = superRegions;
+        }
+
         private Map()
         {
         }

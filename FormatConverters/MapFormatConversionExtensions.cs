@@ -1,9 +1,11 @@
 ﻿namespace FormatConverters
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using GameAi.Data.EvaluationStructures;
     using GameObjectsLib.GameMap;
+    using GameObjectsLib.Players;
 
     /// <summary>
     /// Handles conversion concerning the <see cref="Map"/>.
@@ -65,11 +67,47 @@
         /// Converts from <see cref="MapMin"/> minified format
         /// to <seealso cref="Map"/> format.
         /// </summary>
-        /// <param name="mapMin"></param>
-        /// <returns></returns>
-        public static Map ToMap(this MapMin mapMin)
+        /// <param name="mapMin">Minified map.</param>
+        /// <param name="players">List of players.</param>
+        /// <returns>Map created from <see cref="MapMin"/> instance.</returns>
+        public static Map ToMap(this MapMin mapMin, IList<Player> players)
         {
-            throw new NotImplementedException();
+            SuperRegion[] superRegions = mapMin.SuperRegionsMin
+                .Select(x => new SuperRegion(x.Id, null, x.Bonus))
+                .ToArray();
+
+            Region[] regions = mapMin.RegionsMin
+                .Select(x => new Region(x.Id, null, superRegions.FirstOrDefault(y => y.Id == x.SuperRegionId))
+                {
+                    Army = x.Army,
+                    Owner = players.FirstOrDefault(y => y.Id == x.OwnerId)
+                })
+                .ToArray();
+
+            // add regions to super region
+            foreach (SuperRegion superRegion in superRegions)
+            {
+                // for each region that belongs to the super region => add it
+                foreach (Region region in mapMin.SuperRegionsMin.First(x => x.Id == superRegion.Id)
+                    .RegionsIds.Select(x => regions.First(y => y.Id == x)))
+                {
+                    superRegion.Regions.Add(region);
+                }
+            }
+
+            // add neighbours to regions
+            foreach (Region region in regions)
+            {
+                var neighbours = mapMin.RegionsMin.First(x => x.Id == region.Id).NeighbourRegionsIds
+                    .Select(x => regions.First(y => y.Id == x));
+
+                foreach (Region neighbour in neighbours)
+                {
+                    region.NeighbourRegions.Add(neighbour);
+                }
+            }
+
+            return new Map(0, null, regions, superRegions);
         }
     }
 }

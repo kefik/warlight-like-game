@@ -24,7 +24,7 @@
 
             Assert.IsFalse(regionMin.IsWasteland);
 
-            Assert.AreEqual(regionMin.OwnerId, 3);
+            Assert.AreEqual(3, regionMin.OwnerId);
         }
 
         [Test]

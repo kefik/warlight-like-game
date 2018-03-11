@@ -155,8 +155,8 @@
             IsTrue(wasMoved);
             var current = actionEnumerator.GetCurrentAction();
             var currentDeploy = (Deployment) current;
-            AreEqual(currentDeploy.DeployingPlayer, pc1);
-            AreEqual(currentDeploy.Region, austria);
+            AreEqual(pc1, currentDeploy.DeployingPlayer);
+            AreEqual(austria, currentDeploy.Region);
             AreEqual(1, actionEnumerator.RoundIndex);
             AreEqual(0, actionEnumerator.ActionIndex);
 
@@ -165,8 +165,8 @@
             IsTrue(wasMoved);
             current = actionEnumerator.GetCurrentAction();
             currentDeploy = (Deployment) current;
-            AreEqual(currentDeploy.DeployingPlayer, pc2);
-            AreEqual(currentDeploy.Region, germany);
+            AreEqual(pc2, currentDeploy.DeployingPlayer);
+            AreEqual(germany, currentDeploy.Region);
             AreEqual(1, actionEnumerator.RoundIndex);
             AreEqual(1, actionEnumerator.ActionIndex);
 
@@ -181,16 +181,16 @@
             IsTrue(wasMoved);
             current = actionEnumerator.GetCurrentAction();
             var currentAttack = (Attack) current;
-            AreEqual(currentAttack.Defender, czechia);
-            AreEqual(currentAttack.Attacker, germany);
-            AreEqual(currentAttack.AttackingPlayer, pc2);
+            AreEqual(czechia, currentAttack.Defender);
+            AreEqual(germany, currentAttack.Attacker);
+            AreEqual(pc2, currentAttack.AttackingPlayer);
             AreEqual(1, actionEnumerator.RoundIndex);
             AreEqual(3, actionEnumerator.ActionIndex);
 
             // after second attack
             wasMoved = actionEnumerator.MoveNext();
             IsTrue(wasMoved);
-            IsNull(actionEnumerator.GetCurrentAction(), null);
+            IsNull(actionEnumerator.GetCurrentAction());
             AreEqual(2, actionEnumerator.RoundIndex);
             AreEqual(0, actionEnumerator.ActionIndex);
 

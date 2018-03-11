@@ -31,5 +31,10 @@ namespace GameObjectsLib.GameRecording
         {
             return Region == region;
         }
+
+        public override string ToString()
+        {
+            return $"{SeizingPlayer?.Name} {Region?.Name}";
+        }
     }
 }

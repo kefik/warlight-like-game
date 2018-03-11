@@ -76,18 +76,7 @@
 
         public override string ToString()
         {
-            string name = string.Format($"{nameof(Name)}: {Name}");
-            string bonus = string.Format($"{nameof(Bonus)}: {Bonus}");
-            string regions;
-            {
-                StringBuilder sb = new StringBuilder();
-                foreach (Region region in Regions)
-                {
-                    sb.Append(region.Name + ", ");
-                }
-                regions = string.Format($"{nameof(Regions)}: {sb}");
-            }
-            return name + ", " + bonus + ", " + regions;
+            return $"{Name}";
         }
 
         public bool Equals(SuperRegion other)

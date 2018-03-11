@@ -73,5 +73,11 @@ namespace GameObjectsLib.GameRecording
         {
             return Attacker == region || Defender == region;
         }
+
+        public override string ToString()
+        {
+            string value = $"{AttackingPlayer?.Name} {Attacker?.Name} {AttackingArmy} {Defender?.Name}";
+            return value;
+        }
     }
 }

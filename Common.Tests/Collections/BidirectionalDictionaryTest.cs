@@ -51,10 +51,10 @@
         {
             bool doesContain = testDictionary.TryGetValue(2, out string test);
             Assert.True(doesContain);
-            Assert.AreEqual(test, "test2");
+            Assert.AreEqual("test2", test);
 
             bool doesNotContain = testDictionary.TryGetValue(4, out string _);
-            Assert.AreEqual(doesNotContain, false);
+            Assert.AreEqual(false, doesNotContain);
         }
 
         [Test]

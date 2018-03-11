@@ -38,5 +38,11 @@ namespace GameObjectsLib.GameRecording
         {
             return Region == region;
         }
+
+        public override string ToString()
+        {
+            string value = $"{DeployingPlayer?.Name} {Region?.Name} {Army}";
+            return value;
+        }
     }
 }
