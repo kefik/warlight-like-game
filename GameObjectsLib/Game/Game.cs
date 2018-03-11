@@ -162,11 +162,10 @@
             using (var ms = GetStreamForSerializedGame())
             {
                 // deep copy the game so its independent on current bot playing
-                var copiedGame =
-                    (Game)SerializationObjectWrapper.Deserialize(ms).Value;
-                game = copiedGame;
+                game = (Game)SerializationObjectWrapper.Deserialize(ms).Value;
                 game.ReconstructOriginalGraph();
             }
+            game.Refresh();
 
             return game;
         }

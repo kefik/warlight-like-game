@@ -74,9 +74,20 @@ namespace GameObjectsLib.GameRecording
             return Attacker == region || Defender == region;
         }
 
+        public bool IsCloseOrRelatedTo(Player player)
+        {
+            return player.IsRegionMine(Attacker)
+                || player.IsRegionMine(Defender)
+                || Attacker.IsNeighbourOf(player)
+                || Defender.IsNeighbourOf(player);
+        }
+
         public override string ToString()
         {
-            string value = $"{AttackingPlayer?.Name} {Attacker?.Name} {AttackingArmy} {Defender?.Name}";
+            string value = $"Attacker: {AttackingPlayer?.Name}, " +
+                           $"{Attacker?.Name} -> " +
+                           $"{Defender?.Name}, " +
+                           $"{AttackingArmy}";
             return value;
         }
     }

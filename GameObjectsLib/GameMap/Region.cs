@@ -54,6 +54,26 @@
         }
 
         /// <summary>
+        /// Changes owner of the region.
+        /// </summary>
+        /// <param name="newOwner"></param>
+        public void ChangeOwner(Player newOwner)
+        {
+            if (newOwner == Owner)
+            {
+                return;
+            }
+
+            Owner?.ControlledRegions.Remove(this);
+            if (newOwner != null)
+            {
+                newOwner.ControlledRegions.Add(this);
+            }
+
+            Owner = newOwner;
+        }
+
+        /// <summary>
         ///     Finds out whether region in parameter is neighbour of this instance.
         /// </summary>
         /// <param name="region">Region.</param>

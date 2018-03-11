@@ -42,7 +42,7 @@ namespace WinformsUI.InGame
                     mapInfo.ColorRegionsTemplatePath, mapInfo.ImagePath, game.IsFogOfWar);
             }
 
-            simulationFlowHandler = new SimulationFlowHandler(game, mapImageProcessor);
+            simulationFlowHandler = new SimulationFlowHandler(game, mapImageProcessor, null);
 
             gameMapPictureBox.SizeMode = PictureBoxSizeMode.Normal;
             gameMapPictureBox.Image = simulationFlowHandler.ImageProcessor.MapImage;

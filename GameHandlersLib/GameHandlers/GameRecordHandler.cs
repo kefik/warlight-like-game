@@ -8,6 +8,7 @@
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.NetworkCommObjects;
+    using GameObjectsLib.Players;
     using MapHandlers;
     using IMapImageProcessor = MapHandlers.IMapImageProcessor;
 
@@ -17,6 +18,7 @@
     internal class GameRecordHandler
     {
         internal Game Game { get; private set; }
+        internal Player PlayerPerspective { get; private set; }
         private readonly IMapImageProcessor mapImageProcessor;
 
         private ActionEnumerator currentActionEnumerator;
@@ -26,10 +28,11 @@
             get { return Game.AllRounds; }
         }
         
-        public GameRecordHandler(IMapImageProcessor mapImageProcessor, Game game)
+        public GameRecordHandler(IMapImageProcessor mapImageProcessor,
+            Game game, Player playerPerspective)
         {
             this.mapImageProcessor = mapImageProcessor;
-            Load(game);
+            Load(game, playerPerspective);
         }
 
         /// <summary>
@@ -37,13 +40,15 @@
         /// instance.
         /// </summary>
         /// <param name="game">Game to load.</param>
-        public void Load(Game game)
+        /// <param name="playerPerspective">Player perspective.</param>
+        public void Load(Game game, Player playerPerspective)
         {
             Game = game.DeepCopy();
 
             currentActionEnumerator = new ActionEnumerator(Game.AllRounds);
+            PlayerPerspective = Game.Players.FirstOrDefault(x => x == playerPerspective);
 
-            mapImageProcessor.RedrawMap(Game, null);
+            mapImageProcessor.RedrawMap(Game, playerPerspective);
         }
 
         private IAction GetFirstPreviousActionOrDefault(Predicate<IAction> predicate)
@@ -76,9 +81,32 @@
         /// </summary>
         public bool MoveToNextAction()
         {
-            bool wasSuccessful = MoveToNextActionPrivate();
+            bool wasSuccessful;
+            bool foundTheAction;
+            ActionEnumerator tempEnumerator;
+            do
+            {
+                // temp enumerator
+                tempEnumerator = currentActionEnumerator;
+                tempEnumerator.MoveNext();
 
-            mapImageProcessor.RedrawMap(Game, null);
+                // get current action and whether it is related to players perspective
+                foundTheAction =
+                    PlayerPerspective == null
+                    || tempEnumerator
+                        .GetCurrentAction()
+                        ?.IsCloseOrRelatedTo(PlayerPerspective) == true;
+
+                // move to next action if there's any
+                wasSuccessful = MoveToNextActionPrivate();
+
+                // repeat while you can move to next action
+                // and it does not concern our player perspective
+                // only if it is fog of war
+                // (skip moves you cannot see)
+            } while (wasSuccessful && Game.IsFogOfWar && !foundTheAction);
+
+            mapImageProcessor.RedrawMap(Game, PlayerPerspective);
 
             return wasSuccessful;
         }
@@ -101,10 +129,10 @@
                     var mapChange = action.PostAttackMapChange;
                     action.Attacker.Army = mapChange.AttackingRegionArmy;
                     action.Defender.Army = mapChange.DefendingRegionArmy;
-                    action.Defender.Owner = mapChange.DefendingRegionOwner;
+                    action.Defender.ChangeOwner(mapChange.DefendingRegionOwner);
                     break;
                 case Seize action:
-                    action.Region.Owner = action.SeizingPlayer;
+                    action.Region.ChangeOwner(action.SeizingPlayer);
                     break;
                 default:
                     return false;
@@ -119,9 +147,32 @@
         /// </summary>
         public bool MoveToPreviousAction()
         {
-            bool wasSuccessful = MoveToPreviousActionPrivate();
+            bool wasSuccessful;
+            bool foundTheAction;
+            ActionEnumerator tempEnumerator;
+            do
+            {
+                // temp enumerator ... we need to have correct game context
+                // for IsCloseOrRelated function
+                tempEnumerator = currentActionEnumerator;
+                tempEnumerator.MovePrevious();
 
-            mapImageProcessor.RedrawMap(Game, null);
+                // get current action and whether it is related to players perspective
+                foundTheAction = PlayerPerspective == null
+                                           || tempEnumerator
+                                               .GetCurrentAction()
+                                               ?.IsCloseOrRelatedTo(PlayerPerspective) == true;
+
+                // move to previous action
+                wasSuccessful = MoveToPreviousActionPrivate();
+                
+                // repeat while you can move to previous action
+                // and it does not concern our player perspective
+                // only if it is fog of war
+                // (skip moves you cannot see)
+            } while (wasSuccessful && Game.IsFogOfWar && !foundTheAction);
+
+            mapImageProcessor.RedrawMap(Game, PlayerPerspective);
 
             return wasSuccessful;
         }
@@ -149,6 +200,7 @@
                     break;
                 case Seize action:
                     // revert seize => seized owner was previously null
+                    action.SeizingPlayer.ControlledRegions.Remove(action.Region);
                     action.Region.Owner = null;
                     break;
                 default:
@@ -175,7 +227,7 @@
                 // => round has been reset
             } while (currentActionEnumerator.ActionIndex != 0);
             
-            mapImageProcessor.RedrawMap(Game, null);
+            mapImageProcessor.RedrawMap(Game, PlayerPerspective);
 
             return wasSuccessful;
         }
@@ -198,7 +250,7 @@
                 // => round has been reset
             } while (currentActionEnumerator.ActionIndex != 0);
 
-            mapImageProcessor.RedrawMap(Game, null);
+            mapImageProcessor.RedrawMap(Game, PlayerPerspective);
 
             return wasSuccessful;
         }
@@ -304,7 +356,9 @@
                     {
                         action.Defender.Army
                             = action.PostAttackMapChange.DefendingRegionArmy;
-                        action.Defender.Owner = action.PostAttackMapChange.DefendingRegionOwner;
+
+                        // change owner
+                        action.Defender.ChangeOwner(action.PostAttackMapChange.DefendingRegionOwner);
                     }
                     else
                     {
@@ -319,7 +373,9 @@
                     break;
                 default:
                     // there is no concerned action => set up default values
-                    concernedRegion.Owner = null;
+
+                    // if the region has owner => remove it from his ownership
+                    concernedRegion.ChangeOwner(null);
                     // TODO: not fixed value
                     concernedRegion.Army = 2;
                     break;

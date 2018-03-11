@@ -79,6 +79,17 @@
             }
         }
 
+        /// <summary>
+        /// Reports whether given region is owned by
+        /// this instance of a player.
+        /// </summary>
+        /// <param name="region"></param>
+        /// <returns></returns>
+        public bool IsRegionMine(Region region)
+        {
+            return region.Owner == this;
+        }
+
         public bool Equals(Player other)
         {
             if (ReferenceEquals(null, other))

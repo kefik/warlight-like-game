@@ -20,5 +20,13 @@
         /// <param name="region"></param>
         /// <returns></returns>
         bool DoesConcernRegion(Region region);
+
+        /// <summary>
+        /// Reports whether this action is happening
+        /// close to the player (neighbour or his own).
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        bool IsCloseOrRelatedTo(Player player);
     }
 }

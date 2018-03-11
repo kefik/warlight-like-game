@@ -15,9 +15,11 @@
         private readonly BotEvaluationHandler botEvaluationHandler;
         private readonly GameRecordHandler gameRecordHandler;
 
+        private Player playerPerspective;
+
         public Game Game { get; }
 
-        public MapImageProcessor ImageProcessor { get; }
+        public IMapImageProcessor ImageProcessor { get; }
         
         public bool IsRunning { get; set; }
 
@@ -27,7 +29,9 @@
             remove { ImageProcessor.OnImageChanged -= value; }
         }
 
-        public SimulationFlowHandler(Game game, MapImageProcessor processor)
+        public SimulationFlowHandler(Game game,
+            IMapImageProcessor processor,
+            Player playerPerspective)
         {
             if (game.RoundNumber != 0)
             {
@@ -44,8 +48,14 @@
             
             botEvaluationHandler = new BotEvaluationHandler(game);
 
-            gameRecordHandler = new GameRecordHandler(processor, game);
-            gameRecordHandler.Load(game);
+            this.playerPerspective = playerPerspective;
+            gameRecordHandler = new GameRecordHandler(processor, game, playerPerspective);
+        }
+
+        public void ChangePlayerPerspective(Player playerPerspective)
+        {
+            this.playerPerspective = playerPerspective;
+            gameRecordHandler.Load(Game, playerPerspective);
         }
 
         public async Task StartOrContinueEvaluationAsync(TimeSpan timeForBotMove)
@@ -66,7 +76,7 @@
                 // ignore
             }
 
-            gameRecordHandler.Load(Game);
+            gameRecordHandler.Load(Game, playerPerspective);
 
             IsRunning = false;
         }

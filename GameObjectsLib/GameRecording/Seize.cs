@@ -1,5 +1,6 @@
 namespace GameObjectsLib.GameRecording
 {
+    using System.Linq;
     using GameMap;
     using Players;
     using ProtoBuf;
@@ -30,6 +31,12 @@ namespace GameObjectsLib.GameRecording
         public bool DoesConcernRegion(Region region)
         {
             return Region == region;
+        }
+
+        public bool IsCloseOrRelatedTo(Player player)
+        {
+            return SeizingPlayer == player
+                || Region.IsNeighbourOf(player);
         }
 
         public override string ToString()
