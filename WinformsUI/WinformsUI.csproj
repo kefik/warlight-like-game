@@ -42,11 +42,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -416,19 +417,19 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Client.Entities\Client.Entities.csproj">
-      <Project>{9871296D-976F-466C-825F-FCFAA66C4212}</Project>
+      <Project>{9871296d-976f-466c-825f-fcfaa66c4212}</Project>
       <Name>Client.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{E4CBE100-724B-4097-9EBD-DB0CFBE41375}</Project>
+      <Project>{e4cbe100-724b-4097-9ebd-db0cfbe41375}</Project>
       <Name>Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\FormatConverters\FormatConverters.csproj">
-      <Project>{A5D00DC5-CACC-444C-9BAD-AE47F72AF010}</Project>
+      <Project>{a5d00dc5-cacc-444c-9bad-ae47f72af010}</Project>
       <Name>FormatConverters</Name>
     </ProjectReference>
     <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
-      <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
+      <Project>{55ce83a4-73f0-4ae4-9af2-cc96fb90c201}</Project>
       <Name>GameAi.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\GameHandlersLib\GameHandlersLib.csproj">
@@ -440,7 +441,6 @@
       <Name>GameObjectsLib</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <MakeDir Condition="!Exists('$(OutDir)/SavedGames')" Directories="$(OutDir)/SavedGames" />
