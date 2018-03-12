@@ -27,7 +27,7 @@
 
         /// <summary>
         /// Gets mapped ID based on <see cref="originalId"/>. If the <seealso cref="originalId"/>
-        /// doesnt exist, creates new entry with it.
+        /// doesnt exist, creates new entry with it. Starts from 0.
         /// </summary>
         /// <param name="originalId"></param>
         /// <returns></returns>

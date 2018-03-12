@@ -72,20 +72,21 @@
             for (int i = currentlyEvaluatingIndex; i < botHandlers.Length; i++)
             {
                 var restrictions = objectsRestrictions.ToRestrictions();
-                if (players[i].GetType() == typeof(HumanPlayer))
+                int currentIndex = i;
+                if (players[currentIndex].GetType() == typeof(HumanPlayer))
                 {
-                    botHandlers[i] = new WarlightAiBotHandler(game, (HumanPlayer)players[i],
+                    botHandlers[currentIndex] = new WarlightAiBotHandler(game, (HumanPlayer)players[i],
                         GameBotType.MonteCarloTreeSearchBot, restrictions);
                 }
                 else
                 {
-                    botHandlers[i] = new WarlightAiBotHandler(game, (AiPlayer)players[i],
+                    botHandlers[currentIndex] = new WarlightAiBotHandler(game, (AiPlayer)players[i],
                         restrictions);
                 }
-                var botTask = Task.Run(botHandlers[i].FindBestMoveAsync);
+                var botTask = botHandlers[currentIndex].FindBestMoveAsync();
                 // break after specified amount of time
-                botHandlers[i].StopEvaluation(timeForBotMove);
-                var bestTurn = (await botTask).ToTurn(game.Map, game.Players);
+                //botHandlers[i].StopEvaluation(timeForBotMove);
+                var bestTurn = botTask.Result.ToTurn(game.Map, game.Players);
                 turns[i] = bestTurn;
                 
                 currentlyEvaluatingIndex++;

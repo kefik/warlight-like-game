@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using BotStructures;
+    using BotStructures.AggressiveBot;
     using BotStructures.MCTS;
     using Data;
     using Data.EvaluationStructures;
@@ -18,9 +19,15 @@
     internal class GameBotCreator
     {
         public IOnlineBot<BotTurn> CreateFromGame(Game game, Player player,
-            GameBotType gameBotType, out IdsMappingDictionary regionsIdsMappingDictionary,
+            GameBotType gameBotType,
+            out IdsMappingDictionary regionsIdsMappingDictionary,
+            out IdsMappingDictionary playersIdsMappingDictionary,
             Restrictions restrictions)
         {
+            var playersMappingDictionary = new IdsMappingDictionary();
+            playersIdsMappingDictionary = playersMappingDictionary;
+            playersIdsMappingDictionary.GetMappedIdOrInsert(0); // map 0 to 0
+
             if (!game.Players.Contains(player))
             {
                 throw new ArgumentException("Incorrect player parameter.");
@@ -28,11 +35,15 @@
 
             // setup super regions
             var superRegions = game.Map.SuperRegions
-                .Select(x => x.Owner == null ? new SuperRegionMin(x.Id, x.Bonus) : new SuperRegionMin(x.Id, x.Bonus, (byte)x.Owner.Id)).ToArray();
+                .Select(x => x.Owner == null ? new SuperRegionMin(x.Id, x.Bonus)
+                    : new SuperRegionMin(x.Id, x.Bonus, (byte)playersMappingDictionary
+                        .GetMappedIdOrInsert(x.Owner.Id))).ToArray();
 
             // setup regions
             var regions = game.Map.Regions
-                .Select(x => x.Owner == null ? new RegionMin(x.Id, x.SuperRegion.Id, x.Army) : new RegionMin(x.Id, x.SuperRegion.Id, x.Army, (byte) x.Owner.Id)).ToArray();
+                .Select(x => x.Owner == null ? new RegionMin(x.Id, x.SuperRegion.Id, x.Army)
+                    : new RegionMin(x.Id, x.SuperRegion.Id, x.Army,
+                    (byte)playersMappingDictionary.GetMappedIdOrInsert(x.Owner.Id))).ToArray();
 
             // setup neighbours to those regions
             for (int index = 0; index < regions.Length; index++)
@@ -79,6 +90,9 @@
                     gameBot = new MonteCarloTreeSearchBot(playerPerspective, difficulty, game.IsFogOfWar,
                         restrictions);
                     break;
+                case GameBotType.AggressiveBot:
+                    return new AggressiveBot(playerPerspective, difficulty,
+                        game.IsFogOfWar, restrictions);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
             }
@@ -103,6 +117,9 @@
                 case GameBotType.MonteCarloTreeSearchBot:
                     return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar,
                         restrictions);
+                case GameBotType.AggressiveBot:
+                    return new AggressiveBot(playerPerspective, difficulty,
+                        isFogOfWar, restrictions);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
             }
@@ -115,7 +132,7 @@
         /// <param name="isFogOfWar"></param>
         private void InitializeVisibility(PlayerPerspective playerPerspective, bool isFogOfWar)
         {
-            if (isFogOfWar)
+            if (!isFogOfWar)
             {
                 for (int index = 0; index < playerPerspective.MapMin.RegionsMin.Length; index++)
                 {

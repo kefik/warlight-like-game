@@ -11,8 +11,8 @@
         /// <summary>
         /// Bot will be randomly chosen.
         /// </summary>
-        [Display(Name = "Random bot")]
-        Random,
+        [Display(Name = "Aggressive bot")]
+        AggressiveBot,
         /// <summary>
         /// Bot using MCTS for finding the best move.
         /// </summary>

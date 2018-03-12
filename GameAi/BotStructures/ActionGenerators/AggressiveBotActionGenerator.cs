@@ -1,7 +1,5 @@
-﻿namespace GameAi.BotStructures.MCTS.ActionGenerators
+﻿namespace GameAi.BotStructures.ActionGenerators
 {
-    using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using Data;
@@ -43,7 +41,8 @@
         {
             var myRegions = currentGameState.GetMyRegions();
             int canDeployUnitsCount = currentGameState.GetMyIncome();
-
+            
+            // must have region
             int regionToDeployToId = myRegions.First().Id;
             
             // TODO: deploy reasonably

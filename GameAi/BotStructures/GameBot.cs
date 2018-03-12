@@ -21,18 +21,25 @@
     {
         protected readonly PlayerPerspective PlayerPerspective;
         protected Restrictions Restrictions;
+        protected BotEvaluationState EvaluationState;
 
         public Difficulty Difficulty { get; }
         public bool IsFogOfWar { get; }
 
-        public abstract bool CanStartEvaluation { get; }
+        public virtual bool CanStartEvaluation
+        {
+            get { return EvaluationState == BotEvaluationState.NotRunning; }
+        }
 
-        internal GameBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar, Restrictions restrictions)
+        internal GameBot(PlayerPerspective playerPerspective,
+            Difficulty difficulty, bool isFogOfWar,
+            Restrictions restrictions)
         {
             this.PlayerPerspective = playerPerspective;
             this.Difficulty = difficulty;
             IsFogOfWar = isFogOfWar;
             this.Restrictions = restrictions;
+            this.EvaluationState = BotEvaluationState.NotRunning;
         }
 
         public abstract BotTurn GetCurrentBestMove();

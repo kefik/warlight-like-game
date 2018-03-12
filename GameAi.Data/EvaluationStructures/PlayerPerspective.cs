@@ -85,7 +85,7 @@ namespace GameAi.Data.EvaluationStructures
         {
             foreach (RegionMin regionMin in MapMin.RegionsMin)
             {
-                if (regionMin.GetOwnerPerspective(PlayerId) == OwnerPerspective.Mine)
+                if (regionMin.OwnerId == PlayerId)
                 {
                     yield return regionMin;
                 }

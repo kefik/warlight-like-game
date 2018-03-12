@@ -22,12 +22,15 @@ namespace WinformsUI.HelperControls
         public SimulatorBotPlayerControl(string uniqueName)
         {
             InitializeComponent();
-
-            player = new AiPlayer(Difficulty.Hard, "PC1", KnownColor.Blue, GameBotType.MonteCarloTreeSearchBot);
             
-            colorButton.BackColor = Color.FromKnownColor(player.Color);
-
             InitializeBotTypeDropdownList();
+
+            player = new AiPlayer(Difficulty.Hard,
+                "PC1", KnownColor.Blue,
+                GameBotType.MonteCarloTreeSearchBot);
+
+            PlayerColor = player.Color;
+            BotType = GameBotType.AggressiveBot;
         }
 
         public SimulatorBotPlayerControl(AiPlayer player)

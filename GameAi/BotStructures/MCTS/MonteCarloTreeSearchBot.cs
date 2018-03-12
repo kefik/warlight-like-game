@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using ActionGenerators;
     using Common.Collections;
     using Common.Extensions;
     using Data;
@@ -20,13 +19,7 @@
     /// </summary>
     internal class MonteCarloTreeSearchBot : GameBot
     {
-        private BotEvaluationState evaluationState;
         private readonly MCTSEvaluationHandler evaluationHandler;
-
-        public override bool CanStartEvaluation
-        {
-            get { return evaluationState == BotEvaluationState.NotRunning; }
-        }
 
         public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar,
             Restrictions restrictions)
@@ -47,9 +40,9 @@
 
         public override async Task<BotTurn> FindBestMoveAsync()
         {
-            if (evaluationState != BotEvaluationState.NotRunning)
+            if (EvaluationState != BotEvaluationState.NotRunning)
             {
-                throw new ArgumentException($"Cannot start evaluation if the current evaluation state is {evaluationState}");
+                throw new ArgumentException($"Cannot start evaluation if the current evaluation state is {EvaluationState}");
             }
 
             try
@@ -57,7 +50,7 @@
                 var evaluationTask = evaluationHandler.StartEvaluationAsync();
 
                 // must be called here to avoid race condition (stop before start)
-                evaluationState = BotEvaluationState.Running;
+                EvaluationState = BotEvaluationState.Running;
 
                 await evaluationTask;
             }
@@ -66,7 +59,7 @@
                 // now I know the evaluation ended up with exception
             }
 
-            evaluationState = BotEvaluationState.NotRunning;
+            EvaluationState = BotEvaluationState.NotRunning;
 
             var bestMove = evaluationHandler.GetBestMove();
 
@@ -80,9 +73,9 @@
 
         public override void StopEvaluation()
         {
-            if (evaluationState != BotEvaluationState.NotRunning)
+            if (EvaluationState != BotEvaluationState.NotRunning)
             {
-                evaluationState = BotEvaluationState.ShouldStop;
+                EvaluationState = BotEvaluationState.ShouldStop;
                 evaluationHandler.Stop();
             }
         }

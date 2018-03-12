@@ -45,8 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BotEvaluationState.cs" />
-    <Compile Include="BotStructures\MCTS\ActionGenerators\AggressiveBotActionGenerator.cs" />
-    <Compile Include="BotStructures\MCTS\ActionGenerators\SelectRegionActionGenerator.cs" />
+    <Compile Include="BotStructures\ActionGenerators\AggressiveBotActionGenerator.cs" />
+    <Compile Include="BotStructures\ActionGenerators\SelectRegionActionGenerator.cs" />
+    <Compile Include="BotStructures\AggressiveBot\AggressiveBot.cs" />
     <Compile Include="BotStructures\MCTS\MCTSEvaluationHandler.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTree.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTreeHandler.cs" />
@@ -80,8 +81,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EvaluationStructures\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
