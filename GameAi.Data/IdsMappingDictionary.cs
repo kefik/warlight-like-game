@@ -1,5 +1,7 @@
-﻿namespace GameAi
+﻿namespace GameAi.Data
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Common.Collections;
     using Interfaces;
@@ -8,7 +10,7 @@
     /// Wrapper around BidirectionalDictionary, whose purpose is to map Ids of structures
     /// both ways with more friendly interface.
     /// </summary>
-    internal class IdsMappingDictionary : IIdsTranslationUnit
+    public class IdsMappingDictionary : IIdMapper
     {
         /// <summary>
         /// First parameter is Original Id, second parameter is Mapped Id.
@@ -18,6 +20,14 @@
         public IdsMappingDictionary()
         {
             bidirectionalDictionary = new BidirectionalDictionary<int, int>();
+        }
+
+        public IdsMappingDictionary(IEnumerable<int> ids) : this()
+        {
+            foreach (int id in ids)
+            {
+                GetMappedIdOrInsert(id);
+            }
         }
 
         public void Clear()
@@ -57,6 +67,27 @@
         public bool TryGetOriginalId(int mappedId, out int originalId)
         {
             return bidirectionalDictionary.TryGetValue(mappedId, first: out originalId);
+        }
+
+        public int GetOriginalId(int mappedId)
+        {
+            if (!bidirectionalDictionary.TryGetValue(mappedId,
+                first: out int originalId))
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            return originalId;
+        }
+
+        public int GetNewId(int originalId)
+        {
+            if (!bidirectionalDictionary.TryGetValue(originalId, second: out int mappedId))
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            return mappedId;
         }
     }
 }

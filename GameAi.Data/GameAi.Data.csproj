@@ -55,6 +55,7 @@
     <Compile Include="GameRecording\BotGameBeginningTurn.cs" />
     <Compile Include="GameRecording\BotGameTurn.cs" />
     <Compile Include="GameRecording\BotTurn.cs" />
+    <Compile Include="IdsMappingDictionary.cs" />
     <Compile Include="OwnerPerspective.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Restrictions\GameBeginningRestriction.cs" />

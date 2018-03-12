@@ -49,6 +49,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormatConverters", "FormatC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameHandlersLib.Tests", "GameHandlersLib.Tests\GameHandlersLib.Tests.csproj", "{DA76BD4E-6D5F-45DE-8552-FC082AF3B199}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAi.Data.Tests", "GameAi.Data.Tests\GameAi.Data.Tests.csproj", "{1F967F88-63B9-4D52-9BF3-728E4176246A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormatConverters.Tests", "FormatConverters.Tests\FormatConverters.Tests.csproj", "{A9797618-1E0A-401E-80A2-94EBBE463C50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +139,14 @@ Global
 		{DA76BD4E-6D5F-45DE-8552-FC082AF3B199}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA76BD4E-6D5F-45DE-8552-FC082AF3B199}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA76BD4E-6D5F-45DE-8552-FC082AF3B199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F967F88-63B9-4D52-9BF3-728E4176246A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F967F88-63B9-4D52-9BF3-728E4176246A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F967F88-63B9-4D52-9BF3-728E4176246A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F967F88-63B9-4D52-9BF3-728E4176246A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9797618-1E0A-401E-80A2-94EBBE463C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9797618-1E0A-401E-80A2-94EBBE463C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9797618-1E0A-401E-80A2-94EBBE463C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9797618-1E0A-401E-80A2-94EBBE463C50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +162,8 @@ Global
 		{8EDF4429-251A-416D-BB68-93F227191BCF} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 		{496773E5-1554-42CD-B44F-55F9086F860B} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 		{DA76BD4E-6D5F-45DE-8552-FC082AF3B199} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
+		{1F967F88-63B9-4D52-9BF3-728E4176246A} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
+		{A9797618-1E0A-401E-80A2-94EBBE463C50} = {B90BDD69-9375-4470-A4A2-1CD90046B7E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D606CDC-59E3-471D-99B3-397C7AD8F1AB}

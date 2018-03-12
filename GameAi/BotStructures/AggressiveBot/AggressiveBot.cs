@@ -9,6 +9,7 @@
     using Data.GameRecording;
     using Data.Restrictions;
     using Interfaces;
+
     internal class AggressiveBot : GameBot
     {
         private readonly SelectRegionActionGenerator selectRegionActionGenerator;

@@ -256,7 +256,10 @@
                 // didnt select anything and select attempt is not players region
                 return 0;
             }
-            else if (attacker != null && (ImageProcessor.GetRegion(x,y) == null || !ImageProcessor.GetRegion(x, y).IsNeighbourOf(attacker)))
+            else if (attacker != null
+                && (ImageProcessor.GetRegion(x,y) == null
+                || !ImageProcessor.GetRegion(x, y)
+                    .IsNeighbourOf(attacker)))
             {
                 // attacker correct, but next selected region is null or isnt neighbour
                 return 1;
@@ -392,14 +395,6 @@
             RedrawToPlayersPerspective();
 
             OnBegin?.Invoke();
-            
-            // TODO: add restrictions
-            var botHandler = new WarlightAiBotHandler(Game, PlayerOnTurn,
-                GameBotType.MonteCarloTreeSearchBot,
-                new Restrictions()
-            {
-                    
-            });
             
             // find the best move
             // create a new task bcuz otherwise ui thread gets blocked

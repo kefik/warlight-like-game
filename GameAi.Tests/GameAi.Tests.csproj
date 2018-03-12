@@ -37,12 +37,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameBotCreatorTests.cs" />
-    <Compile Include="MapMinTests.cs" />
     <Compile Include="MCTSTreeTests.cs" />
-    <Compile Include="PlayerPerspectiveTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegionMinTests.cs" />
-    <Compile Include="SuperRegionMinTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">

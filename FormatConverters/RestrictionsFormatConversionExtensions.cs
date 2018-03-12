@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using GameAi.Data.Restrictions;
+    using GameAi.Interfaces;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameRestrictions;
     using GameObjectsLib.Players;
@@ -58,6 +59,19 @@
                 gameBeginningRestriction.RestrictedRegions =
                     gameObjectsBeginningRestriction.RegionsPlayersCanChoose.Select(x => x.Id).ToList();
                 restrictions.GameBeginningRestrictions.Add(gameBeginningRestriction);
+            }
+
+            return restrictions;
+        }
+
+        public static Restrictions ToRemappedRestrictions(this Restrictions restrictions, IIdMapper playerIdsMapper)
+        {
+            var beginningRestrictions = restrictions.GameBeginningRestrictions;
+            foreach (GameBeginningRestriction gameBeginningRestriction
+                in beginningRestrictions)
+            {
+                gameBeginningRestriction.PlayerId = playerIdsMapper
+                    .GetNewId(gameBeginningRestriction.PlayerId);
             }
 
             return restrictions;

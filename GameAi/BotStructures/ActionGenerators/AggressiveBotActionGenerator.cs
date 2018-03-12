@@ -72,7 +72,8 @@
                 int attackingArmy = region.Army - 1;
                 
                 // attack on not mine region with lowest army
-                attacks.Add((region.OwnerId, region.Id, attackingArmy, neighbourToAttack.Id));
+                attacks.Add((region.OwnerId, region.Id, attackingArmy,
+                    neighbourToAttack.Id));
             }
 
             return attacks;

@@ -67,26 +67,43 @@
                 botHandlers = new WarlightAiBotHandler[players.Count];
                 turns = new Turn[players.Count];
             }
+            // create ids mapper
+            var playerIdsMapper = players.CreateCompressedAiMapper();
+
+            var restrictions = objectsRestrictions.ToRestrictions().ToRemappedRestrictions(playerIdsMapper);
+
+            var mapMin = game.Map.ToMapMin(playerIdsMapper);
 
             // play from index you stopped playing at
             for (int i = currentlyEvaluatingIndex; i < botHandlers.Length; i++)
             {
-                var restrictions = objectsRestrictions.ToRestrictions();
+                // fixing closure issue
                 int currentIndex = i;
+
+                if (!playerIdsMapper.TryGetNewId(players[currentIndex].Id, out int evaluationPlayerId))
+                {
+                    throw new ArgumentException("Player ID must be correclty mapped in the dictionary");
+                }
+
                 if (players[currentIndex].GetType() == typeof(HumanPlayer))
                 {
-                    botHandlers[currentIndex] = new WarlightAiBotHandler(game, (HumanPlayer)players[i],
-                        GameBotType.MonteCarloTreeSearchBot, restrictions);
+                    botHandlers[currentIndex] = new WarlightAiBotHandler(
+                        GameBotType.AggressiveBot,
+                        mapMin, Difficulty.Hard, (byte)evaluationPlayerId,
+                        game.IsFogOfWar, restrictions);
                 }
                 else
                 {
-                    botHandlers[currentIndex] = new WarlightAiBotHandler(game, (AiPlayer)players[i],
-                        restrictions);
+                    var aiPlayer = (AiPlayer) players[currentIndex];
+                    botHandlers[currentIndex] = new WarlightAiBotHandler(
+                        aiPlayer.BotType,
+                        mapMin, aiPlayer.Difficulty, (byte)evaluationPlayerId,
+                        game.IsFogOfWar, restrictions);
                 }
                 var botTask = botHandlers[currentIndex].FindBestMoveAsync();
                 // break after specified amount of time
                 //botHandlers[i].StopEvaluation(timeForBotMove);
-                var bestTurn = botTask.Result.ToTurn(game.Map, game.Players);
+                var bestTurn = botTask.Result.ToTurn(game.Map, game.Players, playerIdsMapper);
                 turns[i] = bestTurn;
                 
                 currentlyEvaluatingIndex++;

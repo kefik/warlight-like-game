@@ -10,6 +10,7 @@
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Data.Restrictions;
+    using FormatConverters;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameRecording;
@@ -18,90 +19,10 @@
 
     internal class GameBotCreator
     {
-        public IOnlineBot<BotTurn> CreateFromGame(Game game, Player player,
-            GameBotType gameBotType,
-            out IdsMappingDictionary regionsIdsMappingDictionary,
-            out IdsMappingDictionary playersIdsMappingDictionary,
-            Restrictions restrictions)
-        {
-            var playersMappingDictionary = new IdsMappingDictionary();
-            playersIdsMappingDictionary = playersMappingDictionary;
-            playersIdsMappingDictionary.GetMappedIdOrInsert(0); // map 0 to 0
-
-            if (!game.Players.Contains(player))
-            {
-                throw new ArgumentException("Incorrect player parameter.");
-            }
-
-            // setup super regions
-            var superRegions = game.Map.SuperRegions
-                .Select(x => x.Owner == null ? new SuperRegionMin(x.Id, x.Bonus)
-                    : new SuperRegionMin(x.Id, x.Bonus, (byte)playersMappingDictionary
-                        .GetMappedIdOrInsert(x.Owner.Id))).ToArray();
-
-            // setup regions
-            var regions = game.Map.Regions
-                .Select(x => x.Owner == null ? new RegionMin(x.Id, x.SuperRegion.Id, x.Army)
-                    : new RegionMin(x.Id, x.SuperRegion.Id, x.Army,
-                    (byte)playersMappingDictionary.GetMappedIdOrInsert(x.Owner.Id))).ToArray();
-
-            // setup neighbours to those regions
-            for (int index = 0; index < regions.Length; index++)
-            {
-                var region = regions[index];
-                // get original regions neighbours
-                var originalNeighbours = game.Map.Regions.First(x => x.Id == region.Id).NeighbourRegions;
-
-                region.NeighbourRegionsIds = originalNeighbours.Select(x => x.Id).ToArray();
-
-                regions[index] = region;
-            }
-
-            for (int index = 0; index < superRegions.Length; index++)
-            {
-                var superRegion = superRegions[index];
-                
-                // get original SuperRegion regions
-                var originalRegionsIds = game.Map.SuperRegions.First(x => x.Id == superRegion.Id).Regions.Select(x => x.Id);
-                
-                superRegion.RegionsIds = originalRegionsIds.ToArray();
-
-                superRegions[index] = superRegion;
-            }
-
-            // create map
-            var map = CreateMapForBot(regions, superRegions, out regionsIdsMappingDictionary, out _);
-
-            byte playerEncoded = (byte) player.Id;
-
-            var playerPerspective = new PlayerPerspective(map, playerEncoded);
-            InitializeVisibility(playerPerspective, game.IsFogOfWar);
-
-            Difficulty difficulty = Difficulty.Hard;
-            if (player.GetType() == typeof(AiPlayer))
-            {
-                difficulty = ((AiPlayer)player).Difficulty;
-            }
-
-            GameBot gameBot;
-            switch (gameBotType)
-            {
-                case GameBotType.MonteCarloTreeSearchBot:
-                    gameBot = new MonteCarloTreeSearchBot(playerPerspective, difficulty, game.IsFogOfWar,
-                        restrictions);
-                    break;
-                case GameBotType.AggressiveBot:
-                    return new AggressiveBot(playerPerspective, difficulty,
-                        game.IsFogOfWar, restrictions);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
-            }
-
-            return gameBot;
-        }
-
-        public IOnlineBot<BotTurn> Create(GameBotType gameBotType, MapMin map,
-            Difficulty difficulty, byte playerEncoded, bool isFogOfWar,
+        public IOnlineBot<BotTurn> Create(GameBotType gameBotType,
+            MapMin map,
+            Difficulty difficulty,
+            byte playerEncoded,bool isFogOfWar,
             out IdsMappingDictionary regionsIdsMappingDictionary,
             Restrictions restrictions)
         {

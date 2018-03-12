@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="IGameActionGenerator.cs" />
     <Compile Include="IBot.cs" />
-    <Compile Include="IIdsTranslationUnit.cs" />
+    <Compile Include="IIdMapper.cs" />
     <Compile Include="INodeEvaluator.cs" />
     <Compile Include="IOnlineBot.cs" />
     <Compile Include="IOnlineBotHandler.cs" />

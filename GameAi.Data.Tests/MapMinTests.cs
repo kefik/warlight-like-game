@@ -1,8 +1,9 @@
-﻿namespace GameAi.Tests
+﻿namespace GameAi.Data.Tests
 {
     using System;
-    using Data.EvaluationStructures;
+    using EvaluationStructures;
     using NUnit.Framework;
+
     using static NUnit.Framework.Assert;
 
     [TestFixture]
@@ -28,7 +29,7 @@
             {
                 new SuperRegionMin(0, 5)
                 {
-                    RegionsIds = new []{0, 1}
+                    RegionsIds = new [] {0, 1}
                 }
             };
 
@@ -85,7 +86,7 @@
         private void IsCopyTest(MapMin newMapMin)
         {
             // test regions
-            for (int i = 0; i < Math.Max(newMapMin.RegionsMin.Length, mapMin.RegionsMin.Length); i++)
+            for (int i = 0; i < Math.Max((int) newMapMin.RegionsMin.Length, (int) mapMin.RegionsMin.Length); i++)
             {
                 var newMapMinRegion = newMapMin.RegionsMin[i];
                 var mapMinRegion = mapMin.RegionsMin[i];
@@ -95,13 +96,13 @@
                 AreEqual(mapMinRegion.OwnerId, newMapMinRegion.OwnerId);
 
                 // have same neighbours
-                for (int j = 0; j < Math.Max(newMapMinRegion.NeighbourRegionsIds.Length, mapMinRegion.NeighbourRegionsIds.Length); j++)
+                for (int j = 0; j < Math.Max((int) newMapMinRegion.NeighbourRegionsIds.Length, (int) mapMinRegion.NeighbourRegionsIds.Length); j++)
                 {
                     AreEqual(mapMinRegion.NeighbourRegionsIds[j], newMapMinRegion.NeighbourRegionsIds[j]);
                 }
             }
 
-            for (int i = 0; i < Math.Max(newMapMin.SuperRegionsMin.Length, mapMin.SuperRegionsMin.Length); i++)
+            for (int i = 0; i < Math.Max((int) newMapMin.SuperRegionsMin.Length, (int) mapMin.SuperRegionsMin.Length); i++)
             {
                 var oldSuperRegion = mapMin.SuperRegionsMin[i];
                 var newSuperRegion = newMapMin.SuperRegionsMin[i];
@@ -111,7 +112,7 @@
                 AreEqual(oldSuperRegion.OwnerId, newSuperRegion.OwnerId);
 
                 // have same regions
-                for (int j = 0; j < Math.Max(oldSuperRegion.RegionsIds.Length, newSuperRegion.RegionsIds.Length); j++)
+                for (int j = 0; j < Math.Max((int) oldSuperRegion.RegionsIds.Length, (int) newSuperRegion.RegionsIds.Length); j++)
                 {
                     AreEqual(oldSuperRegion.RegionsIds[j], newSuperRegion.RegionsIds[j]);
                 }

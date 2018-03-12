@@ -1,8 +1,9 @@
-﻿namespace GameAi.Tests
+﻿namespace GameAi.Data.Tests
 {
-    using Data;
-    using Data.EvaluationStructures;
+    using EvaluationStructures;
     using NUnit.Framework;
+
+    using static NUnit.Framework.Assert;
 
     [TestFixture]
     public class RegionMinTests
@@ -14,7 +15,6 @@
         public void SetUp()
         {
             regionMin = new RegionMin(1, 2, 2, 3) { NeighbourRegionsIds = new[] {2, 3, 4}};
-
         }
 
         [Test]
@@ -49,6 +49,10 @@
             regionMin.OwnerId = 30;
 
             Assert.AreEqual(30, regionMin.OwnerId);
+
+            regionMin.OwnerId = 255;
+
+            AreNotEqual(255, regionMin.OwnerId);
 
             regionMin.IsVisible = true;
 

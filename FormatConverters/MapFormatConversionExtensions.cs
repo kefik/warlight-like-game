@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameAi.Data;
     using GameAi.Data.EvaluationStructures;
+    using GameAi.Interfaces;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.Players;
 
@@ -17,21 +19,48 @@
         /// to <seealso cref="MapMin"/> minified format.
         /// </summary>
         /// <param name="map"></param>
+        /// <param name="playerIdsMapper">
+        /// Collection mapping IDs of players to IDs of bot players
+        /// and the other way around.
+        /// </param>
         /// <returns></returns>
-        public static MapMin ToMapMin(this Map map)
+        public static MapMin ToMapMin(this Map map,
+            IIdMapper playerIdsMapper)
         {
+            // add empty value
+
             // setup super regions
             var superRegions = map.SuperRegions
-                .Select(x => x.Owner == null ? new SuperRegionMin(x.Id, x.Bonus)
-                : new SuperRegionMin(x.Id, x.Bonus, (byte)x.Owner.Id))
+                .Select(x =>
+                {
+                    if (x.Owner == null)
+                    {
+                        return new SuperRegionMin(x.Id, x.Bonus);
+                    }
+                    if (playerIdsMapper.TryGetNewId(x.Owner.Id, out int ownerId))
+                    {
+                        return new SuperRegionMin(x.Id, x.Bonus,
+                            (byte) ownerId);
+                    }
+                    throw new ArgumentException("Player not mapped");
+                })
                 .ToArray();
 
             // setup regions
             var regions = map.Regions
-                .Select(x => x.Owner == null ?
-                new RegionMin(x.Id, x.SuperRegion.Id, x.Army)
-                : new RegionMin(x.Id, x.SuperRegion.Id, x.Army,
-                (byte)x.Owner.Id)).ToArray();
+                .Select(x =>
+                {
+                    if (x.Owner == null)
+                    {
+                        return new RegionMin(x.Id, x.SuperRegion.Id, x.Army);
+                    }
+                    if (playerIdsMapper.TryGetNewId(x.Owner.Id, out int ownerId))
+                    {
+                        return new RegionMin(x.Id, x.SuperRegion.Id, x.Army,
+                            (byte) ownerId);
+                    }
+                    throw new ArgumentException("Player not mapped");
+                }).ToArray();
 
             // setup neighbours to those regions
             for (int index = 0; index < regions.Length; index++)
@@ -41,7 +70,8 @@
                 var originalNeighbours = map.Regions
                     .First(x => x.Id == region.Id).NeighbourRegions;
 
-                region.NeighbourRegionsIds = originalNeighbours.Select(x => x.Id).ToArray();
+                region.NeighbourRegionsIds = originalNeighbours
+                    .Select(x => x.Id).ToArray();
 
                 regions[index] = region;
             }
@@ -51,7 +81,9 @@
                 var superRegion = superRegions[index];
 
                 // get original SuperRegion regions
-                var originalRegionsIds = map.SuperRegions.First(x => x.Id == superRegion.Id).Regions.Select(x => x.Id);
+                var originalRegionsIds = map.SuperRegions
+                    .First(x => x.Id == superRegion.Id)
+                    .Regions.Select(x => x.Id);
 
                 superRegion.RegionsIds = originalRegionsIds.ToArray();
 
@@ -59,7 +91,7 @@
             }
 
             var mapMin = new MapMin(regions, superRegions);
-            
+
             return mapMin;
         }
 
@@ -70,7 +102,8 @@
         /// <param name="mapMin">Minified map.</param>
         /// <param name="players">List of players.</param>
         /// <returns>Map created from <see cref="MapMin"/> instance.</returns>
-        public static Map ToMap(this MapMin mapMin, IList<Player> players)
+        public static Map ToMap(this MapMin mapMin,
+            IList<Player> players)
         {
             SuperRegion[] superRegions = mapMin.SuperRegionsMin
                 .Select(x => new SuperRegion(x.Id, null, x.Bonus))
