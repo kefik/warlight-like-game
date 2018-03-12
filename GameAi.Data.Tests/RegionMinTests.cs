@@ -61,6 +61,10 @@
             regionMin.Army = 500;
 
             Assert.AreEqual(500, regionMin.Army);
+
+            regionMin.IsVisible = false;
+
+            IsFalse(regionMin.IsVisible);
         }
 
         [Test]

@@ -62,7 +62,7 @@
 
             foreach (var region in regionsWithHighestArmy)
             {
-                var neighbourRegions = currentGameState.MapMin.GetNeighbourRegions(region.Id).OrderBy(x => x.Army);
+                var neighbourRegions = currentGameState.GetNeighbourRegions(region.Id).OrderBy(x => x.Army);
 
                 var neighbourToAttack =
                     neighbourRegions.FirstOrDefault(x => x.IsVisible &&
@@ -83,7 +83,7 @@
         {
             foreach (var (regionId, army, deployingPlayerId) in deployments)
             {
-                ref var region = ref gameState.MapMin.GetRegion(regionId);
+                ref var region = ref gameState.GetRegion(regionId);
                 region.Army += army;
             }
         }

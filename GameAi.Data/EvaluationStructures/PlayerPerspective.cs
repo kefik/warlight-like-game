@@ -16,7 +16,7 @@ namespace GameAi.Data.EvaluationStructures
         /// <summary>
         /// Represents encoded identification of the player.
         /// </summary>
-        public byte PlayerId { get; internal set; }
+        public byte PlayerId { get; set; }
         
         public PlayerPerspective(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, byte playerId)
         {
@@ -111,6 +111,24 @@ namespace GameAi.Data.EvaluationStructures
             }
 
             return basicIncome;
+        }
+
+        /// <summary>
+        /// Obtains region by specified Id.
+        /// </summary>
+        /// <param name="regionId"></param>
+        /// <returns></returns>
+        public ref RegionMin GetRegion(int regionId)
+        {
+            return ref MapMin.RegionsMin[regionId];
+        }
+
+        public IEnumerable<RegionMin> GetNeighbourRegions(int regionId)
+        {
+            foreach (var neighbourRegionIds in GetRegion(regionId).NeighbourRegionsIds)
+            {
+                yield return GetRegion(neighbourRegionIds);
+            }
         }
     }
 }

@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Map xmlns="http://tempuri.org/XMLSchema.xsd">
+  <SuperRegions>
+    <SuperRegion Name="Europe" Bonus="5">
+      <Region Name="Czechia">
+        <Neighbours>
+          <Region Name="Germany" />
+          <Region Name="Slovakia"/>
+          <Region Name="Austria" />
+          <Region Name="Poland" />
+        </Neighbours>
+      </Region>
+      <Region Name="Germany">
+        <Neighbours>
+          <Region Name="Czechia"/>
+          <Region Name="Poland"/>
+          <Region Name="Austria"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Poland">
+        <Neighbours>
+          <Region Name="Czechia"/>
+          <Region Name="Slovakia"/>
+          <Region Name="Germany"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Slovakia">
+        <Neighbours>
+          <Region Name="Czechia"/>
+          <Region Name="Poland"/>
+          <Region Name="Austria"/>
+        </Neighbours>
+      </Region>
+      <Region Name="Austria">
+        <Neighbours>
+          <Region Name="Germany"/>
+          <Region Name="Czechia"/>
+          <Region Name="Slovakia" />
+        </Neighbours>
+      </Region>
+    </SuperRegion>
+  </SuperRegions>
+</Map>

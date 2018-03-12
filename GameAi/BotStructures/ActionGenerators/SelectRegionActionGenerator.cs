@@ -59,7 +59,7 @@
             {
                 foreach (int regionsRestriction in regionsRestrictions)
                 {
-                    regionsMin[index++] = playerPerspective.MapMin.GetRegion(regionsRestriction);
+                    regionsMin[index++] = playerPerspective.GetRegion(regionsRestriction);
                 }
             }
             // indices of regions that were chosen by the algorithm

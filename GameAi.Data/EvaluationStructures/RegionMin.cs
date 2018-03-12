@@ -112,11 +112,15 @@ namespace GameAi.Data.EvaluationStructures
         /// </remarks>
         public unsafe bool IsVisible
         {
-            get { return (ownerAndArmyEncoded & 0b100000) != 0; }
+            get { return (ownerAndArmyEncoded & 0b10_0000) != 0; }
             set
             {
                 // get byte value (faster than if)
                 byte byteValue = *((byte*) (&value));
+                
+                // reset is visible bit
+                ushort isVisibleMask = 0b1111_1111_1101_1111;
+                ownerAndArmyEncoded &= isVisibleMask;
 
                 ushort shiftedValue = (ushort)(byteValue << 5);
                 ownerAndArmyEncoded = (ushort)(shiftedValue | ownerAndArmyEncoded);

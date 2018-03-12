@@ -31,7 +31,7 @@
             MapMin mapMin = CreateMapForBot(map, out regionsIdsMappingDictionary, out _);
 
             PlayerPerspective playerPerspective = new PlayerPerspective(mapMin, playerEncoded);
-            InitializeVisibility(playerPerspective, isFogOfWar);
+            InitializeVisibility(ref playerPerspective, isFogOfWar);
 
             switch (gameBotType)
             {
@@ -51,7 +51,7 @@
         /// </summary>
         /// <param name="playerPerspective"></param>
         /// <param name="isFogOfWar"></param>
-        private void InitializeVisibility(PlayerPerspective playerPerspective, bool isFogOfWar)
+        internal void InitializeVisibility(ref PlayerPerspective playerPerspective, bool isFogOfWar)
         {
             if (!isFogOfWar)
             {
@@ -64,11 +64,17 @@
             {
                 for (int index = 0; index < playerPerspective.MapMin.RegionsMin.Length; index++)
                 {
-                    var regionMin = playerPerspective.MapMin.RegionsMin[index];
+                    ref var regionMin = ref playerPerspective.MapMin.RegionsMin[index];
+
+                    // region is mine or neighbour to my region => it is visible
                     if (playerPerspective.IsRegionMine(regionMin)
                         || playerPerspective.IsNeighbourToAnyMyRegion(regionMin))
                     {
-                        playerPerspective.MapMin.RegionsMin[index].IsVisible = true;
+                        regionMin.IsVisible = true;
+                    }
+                    else
+                    {
+                        regionMin.IsVisible = false;
                     }
                 }
             }
@@ -81,7 +87,7 @@
         /// <param name="regionIdsMappingDictionary"></param>
         /// <param name="superRegionsIdsMappingDictionary"></param>
         /// <returns></returns>
-        private MapMin CreateMapForBot(MapMin map, out IdsMappingDictionary regionIdsMappingDictionary,
+        internal MapMin CreateMapForBot(MapMin map, out IdsMappingDictionary regionIdsMappingDictionary,
             out IdsMappingDictionary superRegionsIdsMappingDictionary)
         {
             return CreateMapForBot(map.RegionsMin, map.SuperRegionsMin, out regionIdsMappingDictionary,
@@ -95,7 +101,8 @@
         /// <param name="regionIdsMappingDictionary"></param>
         /// <param name="superRegionsIdsMappingDictionary"></param>
         /// <returns></returns>
-        private MapMin CreateMapForBot(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin, out IdsMappingDictionary regionIdsMappingDictionary, out IdsMappingDictionary superRegionsIdsMappingDictionary)
+        internal MapMin CreateMapForBot(RegionMin[] regionsMin, SuperRegionMin[] superRegionsMin,
+            out IdsMappingDictionary regionIdsMappingDictionary, out IdsMappingDictionary superRegionsIdsMappingDictionary)
         {
             regionIdsMappingDictionary = new IdsMappingDictionary();
             superRegionsIdsMappingDictionary = new IdsMappingDictionary();

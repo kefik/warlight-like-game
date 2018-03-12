@@ -85,23 +85,5 @@ namespace GameAi.Data.EvaluationStructures
         {
             return RegionsMin.All(x => x.OwnerId == 0);
         }
-
-        /// <summary>
-        /// Obtains region by specified Id.
-        /// </summary>
-        /// <param name="regionId"></param>
-        /// <returns></returns>
-        public ref RegionMin GetRegion(int regionId)
-        {
-            return ref RegionsMin[regionId];
-        }
-
-        public IEnumerable<RegionMin> GetNeighbourRegions(int regionId)
-        {
-            foreach (var neighbourRegionIds in GetRegion(regionId).NeighbourRegionsIds)
-            {
-                yield return GetRegion(neighbourRegionIds);
-            }
-        }
     }
 }

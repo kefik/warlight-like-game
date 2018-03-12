@@ -14,26 +14,68 @@
         [SetUp]
         public void Initialize()
         {
-            RegionMin[] regionsMin = {
-                new RegionMin(0, 0, 2)
-                {
-                    NeighbourRegionsIds = new []{1}
-                }, 
-                new RegionMin(1, 0, 4, 1)
-                {
-                    NeighbourRegionsIds = new []{0}
-                }, 
-            };
+            byte pc1 = 1;
+            byte pc2 = 2;
 
-            SuperRegionMin[] superRegionsMin =
+            SuperRegionMin europe = new SuperRegionMin(0, 5);
+
+            var czechia = new RegionMin(0, europe.Id, 2);
+            var germany = new RegionMin(1, europe.Id, 2);
+            var poland = new RegionMin(2, europe.Id, 2)
             {
-                new SuperRegionMin(0, 5)
-                {
-                    RegionsIds = new [] {0, 1}
-                }
+                OwnerId = pc1
+            };
+            var slovakia = new RegionMin(3, europe.Id, 2);
+            var austria = new RegionMin(4, europe.Id, 2)
+            {
+                OwnerId = pc2
             };
 
-            mapMin = new MapMin(regionsMin, superRegionsMin);
+            czechia.NeighbourRegionsIds = new[]
+            {
+                germany.Id,
+                poland.Id,
+                slovakia.Id,
+                austria.Id
+            };
+            germany.NeighbourRegionsIds = new[]
+            {
+                czechia.Id,
+                austria.Id,
+                poland.Id
+            };
+            poland.NeighbourRegionsIds = new[]
+            {
+                czechia.Id,
+                germany.Id,
+                slovakia.Id
+            };
+            slovakia.NeighbourRegionsIds = new[]
+            {
+                czechia.Id,
+                poland.Id,
+                austria.Id
+            };
+            austria.NeighbourRegionsIds = new[]
+            {
+                czechia.Id,
+                germany.Id,
+                slovakia.Id
+            };
+
+            var regions = new[]
+            {
+                czechia, germany, poland, slovakia, austria
+            };
+
+            europe.RegionsIds = new[]
+            {
+                czechia.Id, germany.Id, poland.Id, slovakia.Id, austria.Id
+            };
+
+            var superRegions = new[] { europe };
+
+            mapMin = new MapMin(regions, superRegions);
         }
 
         [Test]
