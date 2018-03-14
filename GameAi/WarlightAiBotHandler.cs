@@ -18,20 +18,26 @@
     public class WarlightAiBotHandler : IOnlineBotHandler<BotTurn>
     {
         private readonly IOnlineBot<BotTurn> onlineBot;
-        private readonly IIdMapper regionIdMapper;
+        private readonly RegionsIdsMappingHandler regionsIdsMappingHandler;
         
         public WarlightAiBotHandler(GameBotType gameBotType,
             MapMin mapMin, Difficulty difficulty,
             byte playerEncoded, bool isFogOfWar,
             Restrictions restrictions)
         {
+            regionsIdsMappingHandler = new RegionsIdsMappingHandler(
+                    mapMin.RegionsMin.Select(x => x.Id),
+                    mapMin.SuperRegionsMin.Select(x => x.Id)
+                );
+
+            // create remapped map
+            mapMin = regionsIdsMappingHandler.TranslateToNew(mapMin);
+
+            // remap restrictions
+            var newRestrictions = regionsIdsMappingHandler.TranslateToNew(restrictions);
+            
             onlineBot = new GameBotCreator().Create(gameBotType, mapMin, difficulty, playerEncoded,
-                isFogOfWar, out var regionsIdsMappingDictionary, restrictions);
-
-            regionIdMapper = regionsIdsMappingDictionary;
-
-            // remap restrictions (region ids)
-            RemapRestrictions(restrictions);
+                isFogOfWar, newRestrictions);
         }
 
         public BotTurn GetCurrentBestMove()
@@ -45,58 +51,7 @@
         {
             var turn = await onlineBot.FindBestMoveAsync();
 
-            return TranslateTurn(turn);
-        }
-
-        private BotTurn TranslateTurn(BotTurn turn)
-        {
-            switch (turn)
-            {
-                case BotGameBeginningTurn gameBeginningTurn:
-                    var translatedRegions = gameBeginningTurn.SeizedRegionsIds.Select(x =>
-                    {
-                        if (regionIdMapper.TryGetOriginalId(x, out int originalId))
-                        {
-                            return originalId;
-                        }
-
-                        throw new ArgumentException("Exception");
-                    }).ToList();
-
-                    return new BotGameBeginningTurn(turn.PlayerId)
-                    {
-                        SeizedRegionsIds = translatedRegions
-                    };
-                case BotGameTurn gameTurn:
-                    var attacks = gameTurn.Attacks.Select(x =>
-                    {
-                        if (!regionIdMapper.TryGetOriginalId(x.AttackingRegionId,
-                            out int originalAttackingRegion))
-                        {
-                            throw new ArgumentException();
-                        }
-
-                        if (!regionIdMapper.TryGetOriginalId(x.DefendingRegionId,
-                            out int originalDefendingRegion))
-                        {
-                            throw new ArgumentException();
-                        }
-
-                        return (x.AttackingPlayerId, originalAttackingRegion, x.AttackingArmy, originalDefendingRegion);
-                    }).ToList();
-
-                    var deploys = gameTurn.Deployments.Select(x =>
-                        (regionIdMapper.GetOriginalId(x.RegionId),
-                            x.Army, x.DeployingPlayerId)).ToList();
-
-                    return new BotGameTurn(turn.PlayerId)
-                    {
-                        Attacks = attacks,
-                        Deployments = deploys
-                    };
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return regionsIdsMappingHandler.TranslateToOriginal(turn);
         }
 
         public void StopEvaluation()
@@ -107,18 +62,6 @@
         public Task StopEvaluation(TimeSpan timeSpan)
         {
             return Task.Delay(timeSpan).ContinueWith(x => onlineBot.StopEvaluation());
-        }
-
-        private void RemapRestrictions(Restrictions restrictions)
-        {
-            foreach (GameBeginningRestriction gameBeginningRestriction
-                in restrictions.GameBeginningRestrictions)
-            {
-                gameBeginningRestriction.RestrictedRegions =
-                    gameBeginningRestriction.RestrictedRegions
-                    .Select(x => regionIdMapper.GetNewId(x))
-                    .ToList();
-            }
         }
     }
 }

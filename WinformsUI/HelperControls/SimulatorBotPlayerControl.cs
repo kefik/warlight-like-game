@@ -26,7 +26,7 @@ namespace WinformsUI.HelperControls
             InitializeBotTypeDropdownList();
 
             player = new AiPlayer(Difficulty.Hard,
-                "PC1", KnownColor.Blue,
+                uniqueName, KnownColor.Blue,
                 GameBotType.MonteCarloTreeSearchBot);
 
             PlayerColor = player.Color;

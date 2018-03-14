@@ -16,6 +16,11 @@ namespace GameObjectsLib.GameRecording
         [ProtoMember(1, AsReference = true)]
         public Player AttackingPlayer { get; internal set; }
 
+        public bool RanSuccessfully
+        {
+            get { return PostAttackMapChange != null; }
+        }
+
         public Player ActionInvoker
         {
             get { return AttackingPlayer; }

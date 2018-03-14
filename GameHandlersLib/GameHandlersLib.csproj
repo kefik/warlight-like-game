@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameFinishedException.cs" />
     <Compile Include="GameHandlers\BotEvaluationHandler.cs" />
     <Compile Include="GameHandlers\GameFlowHandler.cs" />
     <Compile Include="GameHandlers\ActionEnumerator.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="MapHandlers\MapImageTemplateProcessor.cs" />
     <Compile Include="MapHandlers\SelectRegionHandler.cs" />
     <Compile Include="MapHandlers\TextDrawingHandler.cs" />
+    <Compile Include="NotifyUserException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameHandlers\SingleplayerGameFlowHandler.cs" />
   </ItemGroup>

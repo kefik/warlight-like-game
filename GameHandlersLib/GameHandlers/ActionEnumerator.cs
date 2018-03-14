@@ -150,7 +150,7 @@
                     if (round.Deploying.ArmiesDeployed.Count < actionIndex)
                     {
                         int attackIndex = actionIndex -
-                                          round.Attacking.Attacks.Count;
+                                          round.Deploying.ArmiesDeployed.Count;
                         // attacks can overflow
                         return round.Attacking.Attacks.Count <= attackIndex ?
                             null : round.Attacking.Attacks[attackIndex];

@@ -14,6 +14,6 @@
         public int RegionsToChooseCount { get; set; }
 
         [ProtoMember(3, AsReference = true)]
-        public ICollection<Region> RegionsPlayersCanChoose { get; set; }
+        public ICollection<Region> RegionsPlayersCanChoose { get; set; } = new List<Region>();
     }
 }

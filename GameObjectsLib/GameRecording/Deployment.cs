@@ -19,6 +19,14 @@ namespace GameObjectsLib.GameRecording
         [ProtoMember(3, AsReference = true)]
         public Player DeployingPlayer { get; internal set; }
 
+        public bool RanSuccessfully
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public Player ActionInvoker
         {
             get { return DeployingPlayer; }

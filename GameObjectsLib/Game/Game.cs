@@ -252,7 +252,7 @@
                             attack.AttackingPlayer = Players.First(x => x == attack.AttackingPlayer);
 
                             var mapChange = attack.PostAttackMapChange;
-                            if (mapChange.DefendingRegionOwner != null)
+                            if (mapChange?.DefendingRegionOwner != null)
                             {
                                 mapChange.DefendingRegionOwner = Players.First(x => x == mapChange.DefendingRegionOwner);
                             }

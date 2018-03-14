@@ -25,7 +25,7 @@
             var deploying = GenerateDeploying(currentState);
 
             // update game state after deploying
-            UpdateGameStateAfterDeploying(ref currentGameState, deploying);
+            UpdateGameStateAfterDeploying(ref currentState, deploying);
 
             // generate attacking
             var attacking = GenerateAttacking(currentState);
@@ -43,12 +43,12 @@
             int canDeployUnitsCount = currentGameState.GetMyIncome();
             
             // must have region
-            int regionToDeployToId = myRegions.First().Id;
+            var regionToDeployTo = myRegions.First();
             
             // TODO: deploy reasonably
             return new List<(int RegionId, int Army, int DeployingPlayerId)>()
             {
-                (regionToDeployToId, canDeployUnitsCount, currentGameState.PlayerId)
+                (regionToDeployTo.Id, regionToDeployTo.Army + canDeployUnitsCount, currentGameState.PlayerId)
             };
         }
 
@@ -69,11 +69,16 @@
                                                          x.GetOwnerPerspective(currentGameState.PlayerId) !=
                                                          OwnerPerspective.Mine);
 
-                int attackingArmy = region.Army - 1;
-                
-                // attack on not mine region with lowest army
-                attacks.Add((region.OwnerId, region.Id, attackingArmy,
-                    neighbourToAttack.Id));
+                // if you can attack on neighbour, attack
+                if (!neighbourToAttack.Equals(default(RegionMin))
+                    && region.Army > 2 && region.Army > neighbourToAttack.Army)
+                {
+                    int attackingArmy = region.Army - 1;
+
+                    // attack on not mine region with lowest army
+                    attacks.Add((region.OwnerId, region.Id, attackingArmy,
+                        neighbourToAttack.Id));
+                }
             }
 
             return attacks;
@@ -84,7 +89,7 @@
             foreach (var (regionId, army, deployingPlayerId) in deployments)
             {
                 ref var region = ref gameState.GetRegion(regionId);
-                region.Army += army;
+                region.Army = army;
             }
         }
     }

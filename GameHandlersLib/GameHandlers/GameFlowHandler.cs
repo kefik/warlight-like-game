@@ -123,8 +123,6 @@
             var linearizedRound = LastRound.Linearize();
 
             roundHandler.PlayRound(linearizedRound);
-            
-            Game.Refresh();
 
             AllRounds.Add(linearizedRound);
 

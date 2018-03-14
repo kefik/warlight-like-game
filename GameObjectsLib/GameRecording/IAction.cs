@@ -9,6 +9,13 @@
     public interface IAction
     {
         /// <summary>
+        /// True, if the action was run successfully (
+        /// meaning it really happened, e.g. attack can be canceled
+        /// by circumstances).
+        /// </summary>
+        bool RanSuccessfully { get; }
+
+        /// <summary>
         /// Player who invoked this action.
         /// </summary>
         Player ActionInvoker { get; }

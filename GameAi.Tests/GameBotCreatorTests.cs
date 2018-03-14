@@ -36,16 +36,16 @@
             pc1 = 1;
             pc2 = 2;
 
-            SuperRegionMin europe = new SuperRegionMin(1, 5);
+            SuperRegionMin europe = new SuperRegionMin(0, 5);
 
-            var czechia = new RegionMin(1, europe.Id, 2);
-            var germany = new RegionMin(2, europe.Id, 2);
-            var poland = new RegionMin(3, europe.Id, 2)
+            var czechia = new RegionMin(0, europe.Id, 2);
+            var germany = new RegionMin(1, europe.Id, 2);
+            var poland = new RegionMin(2, europe.Id, 2)
             {
                 OwnerId = pc1
             };
-            var slovakia = new RegionMin(4, europe.Id, 2);
-            var austria = new RegionMin(5, europe.Id, 2)
+            var slovakia = new RegionMin(3, europe.Id, 2);
+            var austria = new RegionMin(4, europe.Id, 2)
             {
                 OwnerId = pc2
             };
@@ -96,39 +96,9 @@
         }
 
         [Test]
-        public void CreateMapForBotTest()
-        {
-            var mapMin = creator.CreateMapForBot(regions, superRegions,
-                out var regionIdsMappingDictionary,
-                out var superRegionsIdsMappingDictionary);
-
-            // check regions
-            // czechia
-            AreEqual(0, regionIdsMappingDictionary.GetNewId(1));
-            AreEqual(1, regionIdsMappingDictionary.GetOriginalId(0));
-
-            // austria
-            AreEqual(4, regionIdsMappingDictionary.GetNewId(5));
-            AreEqual(5, regionIdsMappingDictionary.GetOriginalId(4));
-
-            // check super regions
-            AreEqual(0, superRegionsIdsMappingDictionary.GetNewId(1));
-            AreEqual(1, superRegionsIdsMappingDictionary.GetOriginalId(0));
-
-            // check for correct neighbours
-            ref var poland = ref mapMin.RegionsMin[2];
-            AreEqual(pc1, poland.OwnerId);
-            Contains(0, poland.NeighbourRegionsIds);
-            Contains(1, poland.NeighbourRegionsIds);
-            Contains(3, poland.NeighbourRegionsIds);
-        }
-
-        [Test]
         public void VisibilityTest()
         {
-            var mapMin = creator.CreateMapForBot(regions, superRegions,
-                out var regionIdsMappingDictionary,
-                out var superRegionsIdsMappingDictionary);
+            var mapMin = new MapMin(regions, superRegions);
 
             // take pc1 as referenced player
             var playerPerspective = new PlayerPerspective(mapMin, pc1);

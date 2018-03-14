@@ -14,6 +14,11 @@ namespace GameObjectsLib.GameRecording
         [ProtoMember(2, AsReference = true)]
         public Region Region { get; internal set; }
 
+        public bool RanSuccessfully
+        {
+            get { return true; }
+        }
+
         public Player ActionInvoker
         {
             get { return SeizingPlayer; }

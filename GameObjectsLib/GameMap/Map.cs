@@ -113,14 +113,14 @@
             {
                 #region SuperRegion stats
 
-                int superRegionCounter = 1;
+                int superRegionCounter = 100;
                 bool isSuperRegionElement = false;
 
                 #endregion
 
                 #region Region stats
 
-                int regionCounter = 1;
+                int regionCounter = 100;
                 bool isRegionElement = false;
 
                 #endregion

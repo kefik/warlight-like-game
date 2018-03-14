@@ -18,6 +18,8 @@ namespace WinformsUI.HelperControls
         ///     Limit for players number.
         /// </summary>
         public int PlayersLimit { get; set; }
+
+        private int pcNameIndex = 1;
         
         public SimulatorBotSettingsControl()
         {
@@ -42,11 +44,12 @@ namespace WinformsUI.HelperControls
                 throw new ArgumentException();
             }
 
-            SimulatorBotPlayerControl control = new SimulatorBotPlayerControl("PC")
+            SimulatorBotPlayerControl control = new SimulatorBotPlayerControl($"PC{pcNameIndex}")
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Right
             }; // TODO: generate unique name
             playersTableLayoutPanel.Controls.Add(control);
+            pcNameIndex++;
         }
 
         /// <summary>
@@ -60,6 +63,7 @@ namespace WinformsUI.HelperControls
             }
 
             playersTableLayoutPanel.Controls.RemoveAt(PlayersCount - 1);
+            pcNameIndex--;
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -41,15 +42,22 @@
 
         public async Task StartOrContinueEvaluationAsync(TimeSpan timeForBotMove)
         {
-            var token = cancellationTokenSource.Token;
-            do
+            try
             {
-                await PlayOrContinuePlayingRoundAsync(timeForBotMove);
-                if (token.IsCancellationRequested)
+                var token = cancellationTokenSource.Token;
+                do
                 {
-                    throw new OperationCanceledException();
-                }
-            } while (true);
+                    await PlayOrContinuePlayingRoundAsync(timeForBotMove);
+                    if (token.IsCancellationRequested)
+                    {
+                        throw new OperationCanceledException();
+                    }
+                } while (true);
+            }
+            catch (GameFinishedException)
+            {
+                Debug.WriteLine("Game was finished.");
+            }
         }
 
         /// <summary>
@@ -77,6 +85,12 @@
             // play from index you stopped playing at
             for (int i = currentlyEvaluatingIndex; i < botHandlers.Length; i++)
             {
+                // if the game is finished, don't play more moves
+                if (game.IsFinished())
+                {
+                    throw new GameFinishedException();
+                }
+
                 // fixing closure issue
                 int currentIndex = i;
 
@@ -100,10 +114,10 @@
                         mapMin, aiPlayer.Difficulty, (byte)evaluationPlayerId,
                         game.IsFogOfWar, restrictions);
                 }
-                var botTask = botHandlers[currentIndex].FindBestMoveAsync();
+                var botTask = Task.Run(botHandlers[currentIndex].FindBestMoveAsync);
                 // break after specified amount of time
                 //botHandlers[i].StopEvaluation(timeForBotMove);
-                var bestTurn = botTask.Result.ToTurn(game.Map, game.Players, playerIdsMapper);
+                var bestTurn = (await botTask).ToTurn(game.Map, game.Players, playerIdsMapper);
                 turns[i] = bestTurn;
                 
                 currentlyEvaluatingIndex++;

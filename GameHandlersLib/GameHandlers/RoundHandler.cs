@@ -47,16 +47,24 @@
                 // get real attacker
                 Region attacker = game.Map.Regions.First(region => region == attack.Attacker);
 
+                // get real defender
+                Region defender = game.Map.Regions.First(x => x == attack.Defender);
+
                 // if attacking region changed owner, cancel attack
                 if (attack.AttackingPlayer != attack.Attacker.Owner)
                 {
                     continue;
                 }
 
-                // get real defender
-                Region defender = game.Map.Regions.First(x => x == attack.Defender);
                 // situation might have changed => recalculate attacking army
-                int realAttackingArmy = Math.Min(attack.AttackingArmy, attacker.Army);
+                int realAttackingArmy = Math.Min(attack.AttackingArmy, attacker.Army - 1);
+
+                // attack did not happen, because there was no army to attack
+                if (realAttackingArmy <= 0)
+                {
+                    continue;
+                }
+
                 // if they have same owner == just moving armies
                 if (defender.Owner == attacker.Owner)
                 {
@@ -176,6 +184,8 @@
 
                 PlayGameBeginningRound(gameBeginningRound);
             }
+
+            game.Refresh();
         }
     }
 }

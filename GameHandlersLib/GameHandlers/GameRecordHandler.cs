@@ -58,7 +58,7 @@
             while (actionEnumerator.MovePrevious())
             {
                 var currentAction = actionEnumerator.GetCurrentAction();
-                if (predicate(currentAction))
+                if (predicate(currentAction) && currentAction.RanSuccessfully)
                 {
                     return currentAction;
                 }
@@ -113,12 +113,11 @@
 
         private bool MoveToNextActionPrivate()
         {
-            IAction currentAction = currentActionEnumerator.GetCurrentAction();
-
-            if (currentAction == null)
+            if (!MoveToNextFirstValid())
             {
                 return false;
             }
+            IAction currentAction = currentActionEnumerator.GetCurrentAction();
 
             switch (currentAction)
             {
@@ -140,6 +139,38 @@
 
             currentActionEnumerator.MoveNext();
             return true;
+        }
+
+        private bool MoveToNextFirstValid()
+        {
+            do
+            {
+                IAction currentAction = currentActionEnumerator
+                    .GetCurrentAction();
+
+                if (currentAction?.RanSuccessfully == true)
+                {
+                    return true;
+                }
+            } while (currentActionEnumerator.MoveNext());
+
+            return false;
+        }
+
+        private bool MoveToPreviousFirstValid()
+        {
+            while (currentActionEnumerator.MovePrevious())
+            {
+                IAction currentAction = currentActionEnumerator
+                    .GetCurrentAction();
+
+                if (currentAction?.RanSuccessfully == true)
+                {
+                    return true;
+                }
+            };
+
+            return false;
         }
 
         /// <summary>
@@ -183,7 +214,7 @@
             // us information about the current state
 
             // cannot move backwards => return false
-            if (!currentActionEnumerator.MovePrevious())
+            if (!MoveToPreviousFirstValid())
             {
                 return false;
             }
@@ -218,6 +249,17 @@
         {
             // moving to next round is successful
             // if at least one action has been moved
+            bool wasSuccessful = MoveToNextRoundPrivate();
+
+            mapImageProcessor.RedrawMap(Game, PlayerPerspective);
+
+            return wasSuccessful;
+        }
+
+        private bool MoveToNextRoundPrivate()
+        {
+            // moving to next round is successful
+            // if at least one action has been moved
             bool wasSuccessful = false;
             do
             {
@@ -225,8 +267,6 @@
                 // action index == 0 => its beginning of the new round
                 // => round has been reset
             } while (currentActionEnumerator.ActionIndex != 0);
-            
-            mapImageProcessor.RedrawMap(Game, PlayerPerspective);
 
             return wasSuccessful;
         }
@@ -241,15 +281,24 @@
         {
             // moving to previous round is successful
             // if at least one move was successful
+            bool wasSuccessful = MoveToPreviousRoundPrivate();
+
+            mapImageProcessor.RedrawMap(Game, PlayerPerspective);
+
+            return wasSuccessful;
+        }
+
+        private bool MoveToPreviousRoundPrivate()
+        {
+            // moving to previous round is successful
+            // if at least one move was successful
             bool wasSuccessful = false;
             do
             {
-                wasSuccessful |= MoveToPreviousAction();
+                wasSuccessful |= MoveToPreviousActionPrivate();
                 // action index == 0 => its beginning of the round
                 // => round has been reset
             } while (currentActionEnumerator.ActionIndex != 0);
-
-            mapImageProcessor.RedrawMap(Game, PlayerPerspective);
 
             return wasSuccessful;
         }
@@ -268,7 +317,7 @@
             do
             {
                 // move to previous round while function returns true
-                continueEvaluation &= MoveToPreviousRound();
+                continueEvaluation &= MoveToPreviousRoundPrivate();
 
                 // first iteration and function returned false
                 // => it wasnt successful
@@ -282,6 +331,8 @@
                 }
                 i++;
             } while (continueEvaluation);
+
+            mapImageProcessor.RedrawMap(Game, PlayerPerspective);
 
             return wasSuccessful;
         }
@@ -299,7 +350,7 @@
             do
             {
                 // move to previous round while function returns true
-                continueEvaluation &= MoveToNextRound();
+                continueEvaluation &= MoveToNextRoundPrivate();
 
                 // first iteration and function returned false
                 // => it wasnt successful
@@ -313,6 +364,8 @@
                 }
                 i++;
             } while (continueEvaluation);
+
+            mapImageProcessor.RedrawMap(Game, PlayerPerspective);
 
             return wasSuccessful;
         }
@@ -343,12 +396,19 @@
                 case Deployment action:
                     // revert to army that was there after the previous deploy
                     action.Region.Army = action.Army;
+
+                    // change owner
+                    action.Region.ChangeOwner(action.DeployingPlayer);
                     break;
                 case Attack action:
                     // attacker => get army what was there after previous attacking
                     if (action.Attacker == concernedRegion)
                     {
+                        // revert army
                         action.Attacker.Army = action.PostAttackMapChange.AttackingRegionArmy;
+
+                        // chage owner
+                        action.Attacker.ChangeOwner(action.AttackingPlayer);
                     }
                     // defender => get army that was there after previous defending
                     else if (action.Defender == concernedRegion)
@@ -357,7 +417,8 @@
                             = action.PostAttackMapChange.DefendingRegionArmy;
 
                         // change owner
-                        action.Defender.ChangeOwner(action.PostAttackMapChange.DefendingRegionOwner);
+                        action.Defender.ChangeOwner(action
+                            .PostAttackMapChange.DefendingRegionOwner);
                     }
                     else
                     {
@@ -369,14 +430,15 @@
                     // revert seize => seized owner was previously null
                     // TODO: default not fixed value
                     action.Region.Army = 2;
+
+                    action.Region.ChangeOwner(action.SeizingPlayer);
                     break;
                 default:
                     // there is no concerned action => set up default values
+                    concernedRegion.Army = 2;
 
                     // if the region has owner => remove it from his ownership
                     concernedRegion.ChangeOwner(null);
-                    // TODO: not fixed value
-                    concernedRegion.Army = 2;
                     break;
             }
         }

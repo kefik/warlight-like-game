@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GameObjectsLib.Tests {
+namespace FormatConverters.Tests {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace GameObjectsLib.Tests {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GameObjectsLib.Tests.TestMaps", typeof(TestMaps).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FormatConverters.Tests.TestMaps", typeof(TestMaps).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,8 +61,22 @@ namespace GameObjectsLib.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt; 
-        ///.
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;Map xmlns=&quot;http://tempuri.org/XMLSchema.xsd&quot;&gt;
+        ///  &lt;SuperRegions&gt;
+        ///    &lt;SuperRegion Name=&quot;Europe&quot; Bonus=&quot;5&quot;&gt;
+        ///      &lt;Region Name=&quot;Czechia&quot;&gt;
+        ///        &lt;Neighbours&gt;
+        ///          &lt;Region Name=&quot;Germany&quot; /&gt;
+        ///          &lt;Region Name=&quot;Slovakia&quot;/&gt;
+        ///          &lt;Region Name=&quot;Austria&quot; /&gt;
+        ///          &lt;Region Name=&quot;Poland&quot; /&gt;
+        ///        &lt;/Neighbours&gt;
+        ///      &lt;/Region&gt;
+        ///      &lt;Region Name=&quot;Germany&quot;&gt;
+        ///        &lt;Neighbours&gt;
+        ///          &lt;Region Name=&quot;Czechia&quot;/&gt;
+        ///          &lt;Region Name=&quot;Poland&quot;/&gt; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TestMap {
             get {

@@ -23,7 +23,8 @@
             switch (turn)
             {
                 case GameBeginningTurn gameBeginingTurn:
-                    return gameBeginingTurn.ToBotGameBeginningTurn(playerIdsMapper);
+                    return gameBeginingTurn
+                        .ToBotGameBeginningTurn(playerIdsMapper);
                 case GameTurn gameTurn:
                     return gameTurn.ToBotGameTurn(playerIdsMapper);
                 default:
