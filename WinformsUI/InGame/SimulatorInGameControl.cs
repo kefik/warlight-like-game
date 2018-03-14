@@ -11,9 +11,13 @@ using System.Windows.Forms;
 namespace WinformsUI.InGame
 {
     using Client.Entities;
+    using Common.Extensions;
+    using GameAi.Data;
     using GameHandlersLib.GameHandlers;
     using GameHandlersLib.MapHandlers;
     using GameObjectsLib.Game;
+    using GameObjectsLib.Players;
+    using HelperObjects;
 
     public partial class SimulatorInGameControl : UserControl
     {
@@ -22,6 +26,31 @@ namespace WinformsUI.InGame
         public SimulatorInGameControl()
         {
             InitializeComponent();
+        }
+
+        private void InitializePlayersPerspectiveComboBox(IEnumerable<Player> players)
+        {
+            var list = new List<ComboBoxItem>()
+            {
+                // prepend empty value
+                new ComboBoxItem()
+                {
+                    Value = null,
+                    Text = "GOD"
+                }
+            };
+            foreach (var player in players)
+            {
+                list.Add(new ComboBoxItem()
+                {
+                    Text = player.Name,
+                    Value = player.Id
+                });
+            }
+
+            playerPerspectiveComboBox.ValueMember = "Value";
+            playerPerspectiveComboBox.DisplayMember = "Text";
+            playerPerspectiveComboBox.DataSource = list;
         }
 
         public void Initialize(Game game)
@@ -49,6 +78,17 @@ namespace WinformsUI.InGame
             gameMapPictureBox.Height = gameMapPictureBox.Image.Height;
             gameMapPictureBox.Width = gameMapPictureBox.Image.Width;
             gameMapPictureBox.BackgroundImage = simulationFlowHandler.ImageProcessor.TemplateImage;
+
+            if (game.IsFogOfWar)
+            {
+                InitializePlayersPerspectiveComboBox(game.Players);
+                playerPerspectiveComboBox.DrawMode = DrawMode.OwnerDrawVariable;
+            }
+            else
+            {
+                playerPerspectiveLabel.Hide();
+                playerPerspectiveComboBox.Hide();
+            }
 
             this.simulationFlowHandler.OnImageChanged += gameMapPictureBox.Refresh;
         }
@@ -113,6 +153,47 @@ namespace WinformsUI.InGame
             {
                 simulationFlowHandler.MoveToBeginning();
             }
+        }
+
+        private void PlayerPerspectiveDrawItem(object sender, DrawItemEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Rectangle rect = e.Bounds;
+            if (e.Index >= 0)
+            {
+                var comboBoxItem = (ComboBoxItem)((ComboBox) sender)
+                    .Items[e.Index];
+                var selectedPlayer = simulationFlowHandler.Game.Players.FirstOrDefault(x => x.Id == comboBoxItem.Value);
+
+                Color playerColor;
+                playerColor = selectedPlayer == null ? Color.White
+                    : Color.FromKnownColor(selectedPlayer.Color);
+
+                Font f = new Font("Arial", 9, FontStyle.Regular);
+                Color c = playerColor;
+                Brush b = new SolidBrush(c);
+                g.FillRectangle(b, rect.X, rect.Y,
+                    rect.Width, rect.Height);
+                
+                g.DrawString(comboBoxItem.Text, f, Brushes.Black, rect.X, rect.Top);
+            }
+        }
+
+        private void PlayerPerspectiveChanged(object sender, EventArgs e)
+        {
+            var typedSender = (ComboBox) sender;
+            int selectedIndex = typedSender.SelectedIndex;
+
+            var comboBoxItem = typedSender.Items[selectedIndex] as ComboBoxItem;
+            if (comboBoxItem == null)
+            {
+                return;
+            }
+
+            var player = simulationFlowHandler
+                .Game.Players.FirstOrDefault(x => x.Id == comboBoxItem.Value);
+            
+            simulationFlowHandler.ChangePlayerPerspective(player);
         }
     }
 }

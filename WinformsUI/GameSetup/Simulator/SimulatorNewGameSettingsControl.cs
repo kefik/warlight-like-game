@@ -15,6 +15,7 @@ namespace WinformsUI.GameSetup.Simulator
     using GameAi.Data.Restrictions;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
+    using GameObjectsLib.GameRestrictions;
     using GameObjectsLib.Players;
 
     public partial class SimulatorNewGameSettingsControl : UserControl
@@ -35,6 +36,9 @@ namespace WinformsUI.GameSetup.Simulator
                 aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit;
                 simulatorBotSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit;
             };
+
+            // TODO: solve generate restrictions
+            generateRestrictionsCheckBox.Enabled = false;
         }
         private void PlayersNumberChanged(object sender, EventArgs e)
         {
@@ -67,18 +71,30 @@ namespace WinformsUI.GameSetup.Simulator
                 IList<AiPlayer> aiPlayers = simulatorBotSettingsControl.GetPlayers();
                 var players = aiPlayers.Cast<Player>().ToList();
 
-                Restrictions restrictions = null;
+                GameObjectsRestrictions restrictions = null;
                 if (generateRestrictionsCheckBox.Checked)
                 {
                     restrictions = new RestrictionsGenerator(map.Regions.Select(x => x.Id),
-                        aiPlayers.Select(x => x.Id)).Generate();
+                            aiPlayers.Select(x => x.Id)).Generate()
+                            .ToGameRestrictions(map, players);
                 }
-                var gameRestrictions = restrictions
-                    ?.ToGameRestrictions(map, players);
+                else
+                {
+                    restrictions = new GameObjectsRestrictions()
+                    {
+                        GameBeginningRestrictions = aiPlayers
+                            .Select(x => new GameObjectsBeginningRestriction()
+                            {
+                                Player = x,
+                                RegionsToChooseCount = 2, // TODO: not fix
+                                RegionsPlayersCanChoose = map.Regions
+                            }).ToList()
+                    };
+                }
 
                 var factory = new GameFactory();
                 var game = factory.CreateGame(0, GameType.Simulator, map, players, fogOfWar: fogOfWarCheckBox.Checked,
-                    objectsRestrictions: gameRestrictions);
+                    objectsRestrictions: restrictions);
                 
                 OnSimulationStarted?.Invoke(game);
             }

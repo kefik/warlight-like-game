@@ -82,7 +82,7 @@
             Map = map;
             Players = players;
             IsFogOfWar = isFogOfWar;
-            ObjectsRestrictions = objectsRestrictions;
+            ObjectsRestrictions = objectsRestrictions ?? throw new ArgumentException("Restrictions cannot be null.");
         }
 
         /// <summary>

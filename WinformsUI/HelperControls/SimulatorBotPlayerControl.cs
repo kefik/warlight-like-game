@@ -31,6 +31,7 @@ namespace WinformsUI.HelperControls
 
             PlayerColor = player.Color;
             BotType = GameBotType.AggressiveBot;
+            PlayerName = player.Name;
         }
 
         public SimulatorBotPlayerControl(AiPlayer player)
