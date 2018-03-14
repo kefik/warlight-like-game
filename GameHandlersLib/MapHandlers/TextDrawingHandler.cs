@@ -16,7 +16,6 @@
     {
         private readonly MapImageTemplateProcessor templateProcessor;
         private readonly ColoringHandler coloringHandler;
-        private SelectRegionHandler selectRegionHandler;
         private readonly Bitmap mapImage;
 
         public TextDrawingHandler(Bitmap mapImage, MapImageTemplateProcessor templateProcessor, ColoringHandler coloringHandler)
@@ -29,16 +28,6 @@
             this.templateProcessor = templateProcessor;
             this.coloringHandler = coloringHandler;
             this.mapImage = mapImage;
-        }
-
-        /// <summary>
-        /// Initializes <see cref="TextDrawingHandler"/>.
-        /// Must be called before any other method.
-        /// </summary>
-        /// <param name="selectRegionHandler"></param>
-        public void Initialize(SelectRegionHandler selectRegionHandler)
-        {
-            this.selectRegionHandler = selectRegionHandler;
         }
 
         /// <summary>
@@ -61,7 +50,7 @@
             BitmapData bmpData =
                 templateProcessor.RegionHighlightedImage.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
 
-            PointF point = default(PointF);
+            PointF point;
             try
             {
                 IntPtr ptr = bmpData.Scan0;
@@ -107,7 +96,8 @@
             gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
             // draw the string onto map
             gr.DrawString(army.ToString(),
-                new Font("Tahoma", 8), Brushes.Black,
+                new Font("Tahoma", Global.TextSize),
+                new SolidBrush(Global.TextColor), 
                 point);
             gr.Flush();
         }

@@ -141,7 +141,7 @@
             int unitsKilled = 0;
             for (int i = 0; i < killingArmy && unitsKilled < armyToKill; i++)
             {
-                double attackingUnitWillKillPercentage = random.Next(100) / 100d;
+                double attackingUnitWillKillPercentage = random.NextDouble();
 
                 // attacking unit has {probabilityToKill} percent chance to kill defending unit
                 bool attackingUnitKills = attackingUnitWillKillPercentage < probabilityToKill;

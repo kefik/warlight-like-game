@@ -15,5 +15,7 @@
 
         internal const double AttackingUnitWillKillProbability = 0.6;
         internal const double DefendingUnitWillKillProbability = 0.7;
+
+        internal const int TextSize = 7;
     }
 }
