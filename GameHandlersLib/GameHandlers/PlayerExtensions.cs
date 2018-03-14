@@ -19,6 +19,17 @@ namespace GameHandlersLib.GameHandlers
         }
 
         /// <summary>
+        /// Reports whether player is defeated.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="roundsCount"></param>
+        /// <returns></returns>
+        public static bool IsDefeated(this Player player, int roundsCount)
+        {
+            return player.ControlledRegions.Count == 0 && roundsCount != 0;
+        }
+
+        /// <summary>
         /// Reports how much army can player deploy based on what he has deployed already.
         /// </summary>
         /// <param name="player"></param>

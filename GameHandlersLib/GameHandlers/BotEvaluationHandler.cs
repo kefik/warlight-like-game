@@ -90,9 +90,28 @@
                 {
                     throw new GameFinishedException();
                 }
-
                 // fixing closure issue
                 int currentIndex = i;
+
+                // player is defeated => skip him
+                if (players[currentIndex].IsDefeated(game.AllRounds.Count))
+                {
+                    currentlyEvaluatingIndex++;
+
+                    // all bots have returned their turn => play it
+                    // and quit the evaluation
+                    if (currentlyEvaluatingIndex >= players.Count)
+                    {
+                        PlayRound(turns);
+                        currentlyEvaluatingIndex = 0;
+                        break;
+                    }
+                    if (token.IsCancellationRequested)
+                    {
+                        throw new OperationCanceledException();
+                    }
+                    continue;
+                }
 
                 if (!playerIdsMapper.TryGetNewId(players[currentIndex].Id, out int evaluationPlayerId))
                 {
@@ -140,18 +159,18 @@
         private void PlayRound(Turn[] turns)
         {
             ILinearizedRound linearizedRound;
-            switch (turns?.FirstOrDefault())
+            switch (turns?.FirstOrDefault(x => x != null))
             {
                 case GameBeginningTurn turn:
                     linearizedRound = new GameBeginningRound()
                     {
-                        Turns = turns
+                        Turns = turns.Where(x => x != null).ToList()
                     }.Linearize();
                     break;
                 case GameTurn turn:
                     linearizedRound = new GameRound()
                     {
-                        Turns = turns
+                        Turns = turns.Where(x => x != null).ToList()
                     }.Linearize();
                     break;
                 default:
