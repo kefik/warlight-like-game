@@ -4,8 +4,9 @@
     using System.Linq;
     using Data.EvaluationStructures;
     using Interfaces;
+    using Interfaces.Evaluators.StructureEvaluators;
 
-    public class SuperRegionMinEvaluator : IBotStructureEvaluator<PlayerPerspective, SuperRegionMin>
+    public class SuperRegionMinEvaluator : ISuperRegionMinEvaluator
     {
         /// <summary>
         /// Dictionary where the key is SuperRegion Id

@@ -46,16 +46,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IGameActionsGenerator.cs" />
+    <Compile Include="ActionsGenerators\IGameActionsGenerator.cs" />
+    <Compile Include="ActionsGenerators\IGameBeginningActionsGenerator.cs" />
+    <Compile Include="Evaluators\StructureEvaluators\IPlayerPerspectiveEvaluator.cs" />
+    <Compile Include="Evaluators\StructureEvaluators\IRegionMinEvaluator.cs" />
+    <Compile Include="ActionsGenerators\IActionsGenerator.cs" />
     <Compile Include="IBot.cs" />
-    <Compile Include="INodeEvaluator.cs" />
-    <Compile Include="IBotStructureEvaluator.cs" />
+    <Compile Include="Evaluators\NodeEvaluators\INodeEvaluator.cs" />
+    <Compile Include="Evaluators\StructureEvaluators\IBotStructureEvaluator.cs" />
     <Compile Include="IOnlineBot.cs" />
     <Compile Include="IOnlineBotHandler.cs" />
+    <Compile Include="Evaluators\StructureEvaluators\ISuperRegionMinEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
+      <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
+      <Name>GameAi.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

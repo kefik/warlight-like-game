@@ -1,4 +1,4 @@
-﻿namespace GameAi.Interfaces
+﻿namespace GameAi.Interfaces.Evaluators.NodeEvaluators
 {
     /// <summary>
     /// Component that can evaluate specified node.

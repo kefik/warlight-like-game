@@ -11,6 +11,8 @@
     using Data.Restrictions;
     using GameObjectsLib.GameRecording;
     using Interfaces;
+    using Interfaces.ActionsGenerators;
+    using Interfaces.Evaluators.NodeEvaluators;
 
     /// <summary>
     /// Component handling Monte Carlo tree search evaluation.
@@ -53,7 +55,6 @@
             for (int index = 0; index < treeHandlers.Length; index++)
             {
                 treeHandlers[index] = new MCTSTreeHandler(initialGameState, nodeEvaluator,
-                    GetGameActionGenerator(),
                     GetGameActionGenerator(),
                     GetGameBeginningActionGenerator(restrictions?.GameBeginningRestrictions?.FirstOrDefault()));
             }
@@ -139,12 +140,12 @@
             ClearEvaluationCache();
         }
 
-        private IGameActionsGenerator<BotGameTurn, PlayerPerspective> GetGameActionGenerator()
+        private IGameActionsGenerator GetGameActionGenerator()
         {
             return new AggressiveBotActionsGenerator();
         }
 
-        private IGameActionsGenerator<BotGameBeginningTurn, PlayerPerspective> GetGameBeginningActionGenerator(
+        private IGameBeginningActionsGenerator GetGameBeginningActionGenerator(
             GameBeginningRestriction gameBeginningRestriction)
         {
             if (gameBeginningRestriction == null)

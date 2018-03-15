@@ -8,6 +8,8 @@
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Interfaces;
+    using Interfaces.ActionsGenerators;
+    using Interfaces.Evaluators.NodeEvaluators;
 
     /// <summary>
     /// Handles single-threaded MCTS evaluation.
@@ -15,8 +17,8 @@
     internal class MCTSTreeHandler
     {
         private readonly INodeEvaluator<MCTSTreeNode> nodeEvaluator;
-        private readonly IGameActionsGenerator<BotGameTurn, PlayerPerspective> expansionActionsGenerator;
-        private readonly IGameActionsGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionsGenerator;
+        private readonly IGameActionsGenerator gameActionsGenerator;
+        private readonly IGameBeginningActionsGenerator beginningActionsGenerator;
         
         /// <summary>
         /// Tree representing the evaluation.
@@ -25,9 +27,8 @@
 
         public MCTSTreeHandler(PlayerPerspective initialBoardState,
             INodeEvaluator<MCTSTreeNode> nodeEvaluator,
-            IGameActionsGenerator<BotGameTurn, PlayerPerspective> expansionActionsGenerator,
-            IGameActionsGenerator<BotGameTurn, PlayerPerspective> simulationActionsGenerator,
-            IGameActionsGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionsGenerator)
+            IGameActionsGenerator gameActionsGenerator,
+            IGameBeginningActionsGenerator beginningActionsGenerator)
         {
             var state = new NodeState()
             {
@@ -39,7 +40,7 @@
             Tree = new MCTSTree(state);
 
             this.nodeEvaluator = nodeEvaluator;
-            this.expansionActionsGenerator = expansionActionsGenerator;
+            this.gameActionsGenerator = gameActionsGenerator;
             this.beginningActionsGenerator = beginningActionsGenerator;
         }
 
@@ -122,7 +123,7 @@
                 }
                 else
                 {
-                    var botTurn = expansionActionsGenerator.Generate(node.GameState);
+                    var botTurn = gameActionsGenerator.Generate(node.GameState);
 
                     // TODO: get gameState this action leads to
 

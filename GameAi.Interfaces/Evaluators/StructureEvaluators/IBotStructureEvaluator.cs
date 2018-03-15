@@ -1,4 +1,4 @@
-﻿namespace GameAi.Interfaces
+﻿namespace GameAi.Interfaces.Evaluators.StructureEvaluators
 {
     /// <summary>
     /// Component used for evaluating game structures.

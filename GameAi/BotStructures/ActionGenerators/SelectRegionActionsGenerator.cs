@@ -5,11 +5,12 @@
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Interfaces;
+    using Interfaces.ActionsGenerators;
 
     /// <summary>
     /// Represents action generator for selecting regions at the beginning of the game.
     /// </summary>
-    internal class SelectRegionActionsGenerator : IGameActionsGenerator<BotGameBeginningTurn, PlayerPerspective>
+    internal class SelectRegionActionsGenerator : IGameBeginningActionsGenerator
     {
         private readonly int playerId;
         private readonly ICollection<int> regionsRestrictions;

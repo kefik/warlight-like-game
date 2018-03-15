@@ -6,11 +6,12 @@
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Interfaces;
+    using Interfaces.ActionsGenerators;
 
     /// <summary>
     /// Represents action generator for bot that always plays aggressively.
     /// </summary>
-    internal class AggressiveBotActionsGenerator : IGameActionsGenerator<BotGameTurn, PlayerPerspective>
+    internal class AggressiveBotActionsGenerator : IGameActionsGenerator
     {
         /// <summary>
         /// Generates bot game turn based on current state of the game.
