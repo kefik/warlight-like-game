@@ -15,8 +15,13 @@
     using GameObjectsLib.GameRestrictions;
     using GameObjectsLib.Players;
 
+    /// <summary>
+    /// Component that handles evaluation of bot players.
+    /// </summary>
     public class BotEvaluationHandler
     {
+        private object botEvaluationLock = new object();
+
         private readonly IList<Player> players;
         private readonly Game game;
         private readonly GameObjectsRestrictions objectsRestrictions;
@@ -44,19 +49,15 @@
         {
             try
             {
-                var token = cancellationTokenSource.Token;
                 do
                 {
-                    await PlayOrContinuePlayingRoundAsync(timeForBotMove);
-                    if (token.IsCancellationRequested)
-                    {
-                        throw new OperationCanceledException();
-                    }
+                    await Task.Run(() =>
+                        PlayOrContinuePlayingRoundAsync(timeForBotMove));
                 } while (true);
             }
-            catch (GameFinishedException)
+            finally
             {
-                Debug.WriteLine("Game was finished.");
+                cancellationTokenSource = new CancellationTokenSource();
             }
         }
 
@@ -65,10 +66,10 @@
         /// already started, then it continues evaluating that round.
         /// </summary>
         /// <returns></returns>
-        public async Task PlayOrContinuePlayingRoundAsync(TimeSpan timeForBotMove)
+        private async Task PlayOrContinuePlayingRoundAsync(TimeSpan timeForBotMove)
         {
             var token = cancellationTokenSource.Token;
-            
+
             // no turn was played so far
             if (currentlyEvaluatingIndex == 0)
             {
@@ -83,7 +84,7 @@
             var mapMin = game.Map.ToMapMin(playerIdsMapper);
 
             // play from index you stopped playing at
-            for (int i = currentlyEvaluatingIndex; i < botHandlers.Length; i++)
+            while (true)
             {
                 // if the game is finished, don't play more moves
                 if (game.IsFinished())
@@ -91,13 +92,43 @@
                     throw new GameFinishedException();
                 }
                 // fixing closure issue
-                int currentIndex = i;
+                int currentIndex = currentlyEvaluatingIndex;
 
-                // player is defeated => skip him
-                if (players[currentIndex].IsDefeated(game.AllRounds.Count))
+                // player isnt defeated => play him
+                if (!players[currentIndex].IsDefeated(game.AllRounds.Count))
+                {
+                    if (!playerIdsMapper.TryGetNewId(players[currentIndex].Id, out int evaluationPlayerId))
+                    {
+                        throw new ArgumentException("Player ID must be correclty mapped in the dictionary");
+                    }
+
+                    if (players[currentIndex].GetType() == typeof(HumanPlayer))
+                    {
+                        botHandlers[currentIndex] = new WarlightAiBotHandler(
+                            GameBotType.AggressiveBot,
+                            mapMin, Difficulty.Hard, (byte)evaluationPlayerId,
+                            game.IsFogOfWar, restrictions);
+                    }
+                    else
+                    {
+                        var aiPlayer = (AiPlayer)players[currentIndex];
+                        botHandlers[currentIndex] = new WarlightAiBotHandler(
+                            aiPlayer.BotType,
+                            mapMin, aiPlayer.Difficulty, (byte)evaluationPlayerId,
+                            game.IsFogOfWar, restrictions);
+                    }
+                    var botTask = Task.Run(botHandlers[currentIndex].FindBestMoveAsync);
+                    // break after specified amount of time
+                    botHandlers[currentIndex].StopEvaluation(timeForBotMove);
+                    var bestTurn = (await botTask).ToTurn(game.Map, game.Players, playerIdsMapper);
+                    turns[currentlyEvaluatingIndex] = bestTurn;
+                }
+
+                // lock because currentlyEvaluatingIndex could overflow
+                // + pause => index out of range exception
+                lock (botEvaluationLock)
                 {
                     currentlyEvaluatingIndex++;
-
                     // all bots have returned their turn => play it
                     // and quit the evaluation
                     if (currentlyEvaluatingIndex >= players.Count)
@@ -106,48 +137,6 @@
                         currentlyEvaluatingIndex = 0;
                         break;
                     }
-                    if (token.IsCancellationRequested)
-                    {
-                        throw new OperationCanceledException();
-                    }
-                    continue;
-                }
-
-                if (!playerIdsMapper.TryGetNewId(players[currentIndex].Id, out int evaluationPlayerId))
-                {
-                    throw new ArgumentException("Player ID must be correclty mapped in the dictionary");
-                }
-
-                if (players[currentIndex].GetType() == typeof(HumanPlayer))
-                {
-                    botHandlers[currentIndex] = new WarlightAiBotHandler(
-                        GameBotType.AggressiveBot,
-                        mapMin, Difficulty.Hard, (byte)evaluationPlayerId,
-                        game.IsFogOfWar, restrictions);
-                }
-                else
-                {
-                    var aiPlayer = (AiPlayer) players[currentIndex];
-                    botHandlers[currentIndex] = new WarlightAiBotHandler(
-                        aiPlayer.BotType,
-                        mapMin, aiPlayer.Difficulty, (byte)evaluationPlayerId,
-                        game.IsFogOfWar, restrictions);
-                }
-                var botTask = Task.Run(botHandlers[currentIndex].FindBestMoveAsync);
-                // break after specified amount of time
-                //botHandlers[i].StopEvaluation(timeForBotMove);
-                var bestTurn = (await botTask).ToTurn(game.Map, game.Players, playerIdsMapper);
-                turns[i] = bestTurn;
-                
-                currentlyEvaluatingIndex++;
-
-                // all bots have returned their turn => play it
-                // and quit the evaluation
-                if (currentlyEvaluatingIndex >= players.Count)
-                {
-                    PlayRound(turns);
-                    currentlyEvaluatingIndex = 0;
-                    break;
                 }
                 if (token.IsCancellationRequested)
                 {
@@ -182,9 +171,11 @@
 
         public void PauseEvaluation()
         {
-            cancellationTokenSource.Cancel();
-            cancellationTokenSource = new CancellationTokenSource();
-            botHandlers[currentlyEvaluatingIndex].StopEvaluation();
+            lock (botEvaluationLock)
+            {
+                cancellationTokenSource.Cancel();
+                botHandlers[currentlyEvaluatingIndex]?.StopEvaluation();
+            }
         }
     }
 }

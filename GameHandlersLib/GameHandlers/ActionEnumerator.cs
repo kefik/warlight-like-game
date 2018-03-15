@@ -102,6 +102,12 @@
             return GetAction(RoundIndex, ActionIndex);
         }
 
+        /// <summary>
+        /// Gets index of the last action in specified round,
+        /// if there's any.
+        /// </summary>
+        /// <param name="roundIndex"></param>
+        /// <returns></returns>
         private int? GetLastActionIndex(int roundIndex)
         {
             // invalid => report invalid by -1
@@ -121,6 +127,13 @@
             }
         }
 
+        /// <summary>
+        /// Returns action based on specified coordinates,
+        /// or null.
+        /// </summary>
+        /// <param name="roundIndex"></param>
+        /// <param name="actionIndex"></param>
+        /// <returns></returns>
         private IAction GetAction(int roundIndex, int actionIndex)
         {
             // arguments out of range => return null

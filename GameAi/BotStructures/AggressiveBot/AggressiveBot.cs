@@ -16,6 +16,8 @@
         private readonly AggressiveBotActionGenerator actionGenerator;
         private BotTurn generatedBestTurn;
 
+        private readonly object botLock = new object();
+
         public AggressiveBot(PlayerPerspective playerPerspective, Difficulty difficulty,
             bool isFogOfWar, Restrictions restrictions)
             : base(playerPerspective, difficulty, isFogOfWar, restrictions)
@@ -36,12 +38,16 @@
 
         public override async Task<BotTurn> FindBestMoveAsync()
         {
-            if (EvaluationState != BotEvaluationState.NotRunning)
+            lock (botLock)
             {
-                throw new ArgumentException($"Cannot start evaluation if the current evaluation state is {EvaluationState}");
-            }
+                if (EvaluationState != BotEvaluationState.NotRunning)
+                {
+                    throw new ArgumentException(
+                        $"Cannot start evaluation if the current evaluation state is {EvaluationState}");
+                }
 
-            EvaluationState = BotEvaluationState.Running;
+                EvaluationState = BotEvaluationState.Running;
+            }
 
             if (PlayerPerspective.MapMin.IsGameBeginning())
             {
@@ -53,7 +59,10 @@
                 generatedBestTurn = actionGenerator.Generate(PlayerPerspective);
             }
 
-            EvaluationState = BotEvaluationState.NotRunning;
+            lock (botLock)
+            {
+                EvaluationState = BotEvaluationState.NotRunning;
+            }
 
             return generatedBestTurn;
         }
@@ -65,10 +74,12 @@
 
         public override void StopEvaluation()
         {
-            if (EvaluationState != BotEvaluationState.NotRunning)
+            lock (botLock)
             {
-                EvaluationState = BotEvaluationState.ShouldStop;
-                //evaluationHandler.Stop();
+                if (EvaluationState != BotEvaluationState.NotRunning)
+                {
+                    EvaluationState = BotEvaluationState.ShouldStop;
+                }
             }
         }
     }

@@ -17,12 +17,24 @@
     /// </summary>
     internal class GameRecordHandler
     {
+        /// <summary>
+        /// Copied game instance for purpose of
+        /// record handling.
+        /// </summary>
         internal Game Game { get; private set; }
+        /// <summary>
+        /// Player from which the game is to be observed
+        /// (or null == GOD).
+        /// </summary>
         internal Player PlayerPerspective { get; private set; }
+
         private readonly IMapImageProcessor mapImageProcessor;
 
         private ActionEnumerator currentActionEnumerator;
 
+        /// <summary>
+        /// Rounds that can be traversed by this handler.
+        /// </summary>
         internal IList<ILinearizedRound> Rounds
         {
             get { return Game.AllRounds; }
@@ -51,6 +63,12 @@
             mapImageProcessor.RedrawMap(Game, playerPerspective);
         }
 
+        /// <summary>
+        /// Returns first action that is before current action enumerator
+        /// position and satisfies specified predicate.
+        /// </summary>
+        /// <param name="predicate">Condition that action has to satisfy.</param>
+        /// <returns>Action that satisfies the predicate or null.</returns>
         private IAction GetFirstPreviousActionOrDefault(Predicate<IAction> predicate)
         {
             ActionEnumerator actionEnumerator = currentActionEnumerator;
@@ -66,18 +84,28 @@
             return null;
         }
 
+        /// <summary>
+        /// Obtains current action (meaning first not played).
+        /// </summary>
+        /// <returns></returns>
         internal IAction GetCurrentAction()
         {
             return currentActionEnumerator.GetCurrentAction();
         }
 
+        /// <summary>
+        /// Reports whether the record handler is
+        /// on the newest position it can see.
+        /// </summary>
+        /// <returns></returns>
         public bool IsOnNewestPosition()
         {
             return GetCurrentAction() == null;
         }
 
         /// <summary>
-        /// Moves perspective to the next action.
+        /// Moves perspective to the next action the given
+        /// <see cref="PlayerPerspective"/> can observe.
         /// </summary>
         public bool MoveToNextAction()
         {
@@ -174,7 +202,8 @@
         }
 
         /// <summary>
-        /// Moves record perspective to the previous action.
+        /// Moves perspective to the previous action the given
+        /// <see cref="PlayerPerspective"/> can observe.
         /// </summary>
         public bool MoveToPreviousAction()
         {
@@ -370,6 +399,11 @@
             return wasSuccessful;
         }
 
+        /// <summary>
+        /// Returns the game record to state like
+        /// <see cref="deployment"/> never happened.
+        /// </summary>
+        /// <param name="deployment">Deployment to revert.</param>
         private void RevertDeploymentAction(Deployment deployment)
         {
             var concernedRegion = deployment.Region;
@@ -377,6 +411,11 @@
             RevertByFirstConcernedRegion(concernedRegion);
         }
 
+        /// <summary>
+        /// Returns the game record to the state like
+        /// <see cref="attack"/> never happened.
+        /// </summary>
+        /// <param name="attack">Attack to revert.</param>
         private void RevertAttackAction(Attack attack)
         {
             var attackingRegion = attack.Attacker;
@@ -387,6 +426,12 @@
             RevertByFirstConcernedRegion(defendingRegion);
         }
 
+        /// <summary>
+        /// Finds first previous entry specifying this
+        /// region state and refreshes current state based
+        /// on that information.
+        /// </summary>
+        /// <param name="concernedRegion"></param>
         private void RevertByFirstConcernedRegion(Region concernedRegion)
         {
             // get first previous action that have contains information about concernedRegion

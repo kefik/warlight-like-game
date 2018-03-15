@@ -26,6 +26,8 @@ namespace WinformsUI.InGame
         public SimulatorInGameControl()
         {
             InitializeComponent();
+
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
         }
 
         private void InitializePlayersPerspectiveComboBox(IEnumerable<Player> players)
