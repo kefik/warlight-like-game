@@ -85,10 +85,6 @@
       <Project>{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}</Project>
       <Name>GameAi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GameObjectsLib\GameObjectsLib.csproj">
-      <Project>{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}</Project>
-      <Name>GameObjectsLib</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

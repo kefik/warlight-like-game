@@ -82,6 +82,7 @@
             Map = map;
             Players = players;
             IsFogOfWar = isFogOfWar;
+            ObjectsRestrictions = objectsRestrictions;
         }
 
         /// <summary>

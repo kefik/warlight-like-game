@@ -36,7 +36,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IdsMappingDictionaryTests.cs" />
     <Compile Include="MapMinTests.cs" />
     <Compile Include="PlayerPerspectiveTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -48,13 +47,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FormatConverters\FormatConverters.csproj">
+      <Project>{A5D00DC5-CACC-444C-9BAD-AE47F72AF010}</Project>
+      <Name>FormatConverters</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
       <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
       <Name>GameAi.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GameAi.Interfaces\GameAi.Interfaces.csproj">
-      <Project>{f02ff366-6835-45ef-9eee-2df857830184}</Project>
-      <Name>GameAi.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

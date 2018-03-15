@@ -1,16 +1,15 @@
-﻿namespace GameAi.Data
+﻿namespace FormatConverters
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Common.Collections;
-    using Interfaces;
 
     /// <summary>
     /// Wrapper around BidirectionalDictionary, whose purpose is to map Ids of structures
     /// both ways with more friendly interface.
     /// </summary>
-    public class IdsMappingDictionary : IIdMapper
+    public class IdsMappingDictionary : IIdsMapper
     {
         /// <summary>
         /// First parameter is Original Id, second parameter is Mapped Id.

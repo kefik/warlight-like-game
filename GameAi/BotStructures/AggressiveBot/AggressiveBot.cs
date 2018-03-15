@@ -12,8 +12,8 @@
 
     internal class AggressiveBot : GameBot
     {
-        private readonly SelectRegionActionGenerator selectRegionActionGenerator;
-        private readonly AggressiveBotActionGenerator actionGenerator;
+        private readonly SelectRegionActionsGenerator selectRegionActionsGenerator;
+        private readonly AggressiveBotActionsGenerator actionsGenerator;
         private BotTurn generatedBestTurn;
 
         private readonly object botLock = new object();
@@ -24,11 +24,11 @@
         {
             var gameBeginningRestriction = restrictions
                 .GameBeginningRestrictions.First(x => x.PlayerId == playerPerspective.PlayerId);
-            selectRegionActionGenerator = new SelectRegionActionGenerator(
+            selectRegionActionsGenerator = new SelectRegionActionsGenerator(
                 gameBeginningRestriction.RegionsPlayerCanChooseCount, 
                 gameBeginningRestriction.PlayerId,
                 gameBeginningRestriction.RestrictedRegions);
-            actionGenerator = new AggressiveBotActionGenerator();
+            actionsGenerator = new AggressiveBotActionsGenerator();
         }
 
         public override BotTurn GetCurrentBestMove()
@@ -52,11 +52,11 @@
             if (PlayerPerspective.MapMin.IsGameBeginning())
             {
                 generatedBestTurn =
-                    selectRegionActionGenerator.Generate(PlayerPerspective);
+                    selectRegionActionsGenerator.Generate(PlayerPerspective)[0];
             }
             else
             {
-                generatedBestTurn = actionGenerator.Generate(PlayerPerspective);
+                generatedBestTurn = actionsGenerator.Generate(PlayerPerspective)[0];
             }
 
             lock (botLock)

@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using GameAi.Data.GameRecording;
-    using GameAi.Interfaces;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
@@ -15,18 +14,18 @@
         /// Converts from <see cref="Turn"/> to <seealso cref="BotTurn"/>.
         /// </summary>
         /// <param name="turn"></param>
-        /// <param name="playerIdsMapper"></param>
+        /// <param name="playerIdsesMapper"></param>
         /// <returns></returns>
         public static BotTurn ToBotTurn(this Turn turn,
-            IIdMapper playerIdsMapper)
+            IIdsMapper playerIdsesMapper)
         {
             switch (turn)
             {
                 case GameBeginningTurn gameBeginingTurn:
                     return gameBeginingTurn
-                        .ToBotGameBeginningTurn(playerIdsMapper);
+                        .ToBotGameBeginningTurn(playerIdsesMapper);
                 case GameTurn gameTurn:
-                    return gameTurn.ToBotGameTurn(playerIdsMapper);
+                    return gameTurn.ToBotGameTurn(playerIdsesMapper);
                 default:
                     throw new ArgumentException($"Invalid type of {nameof(turn)} for conversion.");
             }
@@ -36,12 +35,12 @@
         /// Converts from <see cref="GameTurn"/> to <seealso cref="BotGameTurn"/>.
         /// </summary>
         /// <param name="gameTurn"></param>
-        /// <param name="playerIdsMapper"></param>
+        /// <param name="playerIdsesMapper"></param>
         /// <returns></returns>
         public static BotGameTurn ToBotGameTurn(this GameTurn gameTurn,
-            IIdMapper playerIdsMapper)
+            IIdsMapper playerIdsesMapper)
         {
-            var botGameTurn = new BotGameTurn(playerIdsMapper
+            var botGameTurn = new BotGameTurn(playerIdsesMapper
                 .GetNewId(gameTurn.PlayerOnTurn.Id));
             
             // deploys
@@ -50,7 +49,7 @@
             {
                 botGameTurn.Deployments
                     .Add((deployment.Region.Id, deployment.Army,
-                    playerIdsMapper.GetNewId(deployment.DeployingPlayer.Id)));
+                    playerIdsesMapper.GetNewId(deployment.DeployingPlayer.Id)));
             }
 
             // attacks
@@ -68,13 +67,13 @@
         /// Converts from <see cref="GameBeginningTurn"/> to <seealso cref="BotGameBeginningTurn"/>.
         /// </summary>
         /// <param name="gameBeginningTurn"></param>
-        /// <param name="playerIdsMapper"></param>
+        /// <param name="playerIdsesMapper"></param>
         /// <returns></returns>
         public static BotGameBeginningTurn ToBotGameBeginningTurn(this GameBeginningTurn gameBeginningTurn,
-            IIdMapper playerIdsMapper)
+            IIdsMapper playerIdsesMapper)
         {
             var botGameBeginningTurn = new BotGameBeginningTurn(
-                playerIdsMapper
+                playerIdsesMapper
                 .GetNewId(gameBeginningTurn.PlayerOnTurn.Id));
             foreach (Seize selectedRegion in gameBeginningTurn.SelectedRegions)
             {
@@ -84,14 +83,14 @@
         }
 
         public static Turn ToTurn(this BotTurn botTurn, Map map, ICollection<Player> players,
-            IIdMapper playerIdsMapper)
+            IIdsMapper playerIdsesMapper)
         {
             switch (botTurn)
             {
                 case BotGameBeginningTurn gameBeginningTurn:
-                    return gameBeginningTurn.ToGameBeginningTurn(map, players, playerIdsMapper);
+                    return gameBeginningTurn.ToGameBeginningTurn(map, players, playerIdsesMapper);
                 case BotGameTurn gameTurn:
-                    return gameTurn.ToGameTurn(map, players, playerIdsMapper);
+                    return gameTurn.ToGameTurn(map, players, playerIdsesMapper);
                 default:
                     throw new ArgumentException($"Invalid type of {nameof(botTurn)} for conversion.");
             }
@@ -99,10 +98,10 @@
 
         public static GameTurn ToGameTurn(this BotGameTurn botGameTurn,
             Map map, ICollection<Player> players,
-            IIdMapper playerIdsMapper)
+            IIdsMapper playerIdsesMapper)
         {
             var gameTurn = new GameTurn(players
-                .First(x => x.Id == playerIdsMapper
+                .First(x => x.Id == playerIdsesMapper
                     .GetOriginalId(botGameTurn.PlayerId)));
             // deploying
             var deployments = new List<Deployment>();
@@ -111,7 +110,7 @@
                 deployments.Add(new Deployment(
                         map.Regions.First(x => x.Id == regionId),
                         army,
-                        players.First(x => x.Id == playerIdsMapper.GetOriginalId(deployingPlayerId))
+                        players.First(x => x.Id == playerIdsesMapper.GetOriginalId(deployingPlayerId))
                     ));
             }
             var deploying = new Deploying(deployments);
@@ -121,7 +120,7 @@
             foreach ((int attackingPlayerId, int attackingRegionId, int attackingArmy, int defendingRegionId) in botGameTurn.Attacks)
             {
                 attacks.Add(new Attack(
-                        players.First(x => x.Id == playerIdsMapper.GetOriginalId(attackingPlayerId)),
+                        players.First(x => x.Id == playerIdsesMapper.GetOriginalId(attackingPlayerId)),
                         map.Regions.First(x => x.Id == attackingRegionId),
                         attackingArmy,
                         map.Regions.First(x => x.Id == defendingRegionId)
@@ -138,16 +137,16 @@
 
         public static GameBeginningTurn ToGameBeginningTurn(this BotGameBeginningTurn botGameBeginningTurn,
             Map map, ICollection<Player> players,
-            IIdMapper playerIdsMapper)
+            IIdsMapper playerIdsesMapper)
         {
             var gameBeginningTurn = new GameBeginningTurn(players
-                .First(x => x.Id == playerIdsMapper
+                .First(x => x.Id == playerIdsesMapper
                     .GetOriginalId(botGameBeginningTurn.PlayerId)));
 
             foreach (int regionId in botGameBeginningTurn.SeizedRegionsIds)
             {
                 gameBeginningTurn.SelectedRegions.Add(
-                    new Seize(players.First(x => x.Id == playerIdsMapper
+                    new Seize(players.First(x => x.Id == playerIdsesMapper
                         .GetOriginalId(botGameBeginningTurn.PlayerId)),
                         map.Regions.First(x => x.Id == regionId)));
             }

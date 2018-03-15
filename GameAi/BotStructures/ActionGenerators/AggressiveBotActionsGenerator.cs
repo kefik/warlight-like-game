@@ -10,14 +10,14 @@
     /// <summary>
     /// Represents action generator for bot that always plays aggressively.
     /// </summary>
-    internal class AggressiveBotActionGenerator : IGameActionGenerator<BotGameTurn, PlayerPerspective>
+    internal class AggressiveBotActionsGenerator : IGameActionsGenerator<BotGameTurn, PlayerPerspective>
     {
         /// <summary>
         /// Generates bot game turn based on current state of the game.
         /// </summary>
         /// <param name="currentGameState">Current state of the game.</param>
         /// <returns></returns>
-        public BotGameTurn Generate(PlayerPerspective currentGameState)
+        public IReadOnlyList<BotGameTurn> Generate(PlayerPerspective currentGameState)
         {
             var currentState = currentGameState.ShallowCopy();
 
@@ -30,10 +30,13 @@
             // generate attacking
             var attacking = GenerateAttacking(currentState);
 
-            return new BotGameTurn(currentState.PlayerId)
+            return new List<BotGameTurn>()
             {
-                Deployments = deploying,
-                Attacks = attacking
+                new BotGameTurn(currentState.PlayerId)
+                {
+                    Deployments = deploying,
+                    Attacks = attacking
+                }
             };
         }
 

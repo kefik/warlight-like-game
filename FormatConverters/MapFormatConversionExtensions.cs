@@ -5,7 +5,6 @@
     using System.Linq;
     using GameAi.Data;
     using GameAi.Data.EvaluationStructures;
-    using GameAi.Interfaces;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.Players;
 
@@ -19,13 +18,13 @@
         /// to <seealso cref="MapMin"/> minified format.
         /// </summary>
         /// <param name="map"></param>
-        /// <param name="playerIdsMapper">
+        /// <param name="playerIdsesMapper">
         /// Collection mapping IDs of players to IDs of bot players
         /// and the other way around.
         /// </param>
         /// <returns></returns>
         public static MapMin ToMapMin(this Map map,
-            IIdMapper playerIdsMapper)
+            IIdsMapper playerIdsesMapper)
         {
             // add empty value
 
@@ -37,7 +36,7 @@
                     {
                         return new SuperRegionMin(x.Id, x.Bonus);
                     }
-                    if (playerIdsMapper.TryGetNewId(x.Owner.Id, out int ownerId))
+                    if (playerIdsesMapper.TryGetNewId(x.Owner.Id, out int ownerId))
                     {
                         return new SuperRegionMin(x.Id, x.Bonus,
                             (byte) ownerId);
@@ -54,7 +53,7 @@
                     {
                         return new RegionMin(x.Id, x.SuperRegion.Id, x.Army);
                     }
-                    if (playerIdsMapper.TryGetNewId(x.Owner.Id, out int ownerId))
+                    if (playerIdsesMapper.TryGetNewId(x.Owner.Id, out int ownerId))
                     {
                         return new RegionMin(x.Id, x.SuperRegion.Id, x.Army,
                             (byte) ownerId);

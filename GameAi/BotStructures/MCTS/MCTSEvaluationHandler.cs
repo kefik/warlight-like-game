@@ -139,19 +139,19 @@
             ClearEvaluationCache();
         }
 
-        private IGameActionGenerator<BotGameTurn, PlayerPerspective> GetGameActionGenerator()
+        private IGameActionsGenerator<BotGameTurn, PlayerPerspective> GetGameActionGenerator()
         {
-            return new AggressiveBotActionGenerator();
+            return new AggressiveBotActionsGenerator();
         }
 
-        private IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> GetGameBeginningActionGenerator(
+        private IGameActionsGenerator<BotGameBeginningTurn, PlayerPerspective> GetGameBeginningActionGenerator(
             GameBeginningRestriction gameBeginningRestriction)
         {
             if (gameBeginningRestriction == null)
             {
                 return null;
             }
-            return new SelectRegionActionGenerator(gameBeginningRestriction.RegionsPlayerCanChooseCount,
+            return new SelectRegionActionsGenerator(gameBeginningRestriction.RegionsPlayerCanChooseCount,
                 gameBeginningRestriction.PlayerId, gameBeginningRestriction.RestrictedRegions);
         }
     }

@@ -45,14 +45,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BotEvaluationState.cs" />
-    <Compile Include="BotStructures\ActionGenerators\AggressiveBotActionGenerator.cs" />
-    <Compile Include="BotStructures\ActionGenerators\SelectRegionActionGenerator.cs" />
+    <Compile Include="BotStructures\ActionGenerators\AggressiveBotActionsGenerator.cs" />
+    <Compile Include="BotStructures\ActionGenerators\SelectRegionActionsGenerator.cs" />
     <Compile Include="BotStructures\AggressiveBot\AggressiveBot.cs" />
     <Compile Include="BotStructures\MCTS\MCTSEvaluationHandler.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTree.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTreeHandler.cs" />
     <Compile Include="BotStructures\MCTS\NodeState.cs" />
     <Compile Include="BotStructures\MCTS\UctEvaluator.cs" />
+    <Compile Include="BotStructures\StructuresEvaluators\SuperRegionMinEvaluator.cs" />
     <Compile Include="GameBotCreator.cs" />
     <Compile Include="BotStructures\GameBot.cs" />
     <Compile Include="BotStructures\MCTS\MonteCarloTreeSearchBot.cs" />

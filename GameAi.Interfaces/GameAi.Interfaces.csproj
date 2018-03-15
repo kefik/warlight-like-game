@@ -46,10 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IGameActionGenerator.cs" />
+    <Compile Include="IGameActionsGenerator.cs" />
     <Compile Include="IBot.cs" />
-    <Compile Include="IIdMapper.cs" />
     <Compile Include="INodeEvaluator.cs" />
+    <Compile Include="IBotStructureEvaluator.cs" />
     <Compile Include="IOnlineBot.cs" />
     <Compile Include="IOnlineBotHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

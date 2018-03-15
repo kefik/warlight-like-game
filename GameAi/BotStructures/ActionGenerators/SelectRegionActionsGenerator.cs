@@ -9,14 +9,14 @@
     /// <summary>
     /// Represents action generator for selecting regions at the beginning of the game.
     /// </summary>
-    internal class SelectRegionActionGenerator : IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective>
+    internal class SelectRegionActionsGenerator : IGameActionsGenerator<BotGameBeginningTurn, PlayerPerspective>
     {
         private readonly int playerId;
         private readonly ICollection<int> regionsRestrictions;
         private readonly int regionsToChooseCount;
         private readonly Random random;
 
-        public SelectRegionActionGenerator(int regionsToChooseCount, int playerId = 0, ICollection<int> regionsRestrictions = null)
+        public SelectRegionActionsGenerator(int regionsToChooseCount, int playerId = 0, ICollection<int> regionsRestrictions = null)
         {
             // regions that player can choose > regions options count => error
             if (regionsRestrictions != null
@@ -32,23 +32,16 @@
             random = new Random();
         }
 
-        private bool HasAnyRestrictions()
+        public IReadOnlyList<BotGameBeginningTurn> Generate(PlayerPerspective currentGameState)
         {
-            return regionsRestrictions != null && regionsRestrictions.Count != 0;
-        }
-
-        public BotGameBeginningTurn Generate(PlayerPerspective currentGameState)
-        {
-            if (currentGameState.PlayerId == playerId
-                && HasAnyRestrictions())
+            if (currentGameState.PlayerId != playerId)
             {
-                return GenerateWhenRestrictions(currentGameState);
+                return null;
             }
-
-            return GenerateWhenNoRestrictions(currentGameState);
+            return GenerateAction(currentGameState);
         }
 
-        private BotGameBeginningTurn GenerateWhenRestrictions(PlayerPerspective playerPerspective)
+        private IReadOnlyList<BotGameBeginningTurn> GenerateAction(PlayerPerspective playerPerspective)
         {
             BotGameBeginningTurn gameBeginningTurn = new BotGameBeginningTurn(playerPerspective.PlayerId);
 
@@ -80,12 +73,7 @@
 
             gameBeginningTurn.SeizedRegionsIds = chosenIndices;
 
-            return gameBeginningTurn;
-        }
-
-        private BotGameBeginningTurn GenerateWhenNoRestrictions(PlayerPerspective playerPerspective)
-        {
-            throw new NotImplementedException();
+            return new []{ gameBeginningTurn };
         }
     }
 }

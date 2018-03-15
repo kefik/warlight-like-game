@@ -7,6 +7,7 @@
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Data.Restrictions;
+    using FormatConverters;
 
     /// <summary>
     /// Component handling issues related with mapping regions ids.

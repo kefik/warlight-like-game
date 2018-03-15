@@ -7,7 +7,7 @@ namespace GameAi.Data.EvaluationStructures
     using System.Runtime.CompilerServices;
 
     /// <summary>
-    /// Represents minified version of the <see cref="GameObjectsLib.GameMap.Map"/>.
+    /// Represents minified version of the Map.
     /// </summary>
     public struct MapMin
     {

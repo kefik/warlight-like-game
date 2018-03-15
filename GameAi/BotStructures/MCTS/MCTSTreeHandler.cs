@@ -15,8 +15,8 @@
     internal class MCTSTreeHandler
     {
         private readonly INodeEvaluator<MCTSTreeNode> nodeEvaluator;
-        private readonly IGameActionGenerator<BotGameTurn, PlayerPerspective> expansionActionGenerator;
-        private readonly IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionGenerator;
+        private readonly IGameActionsGenerator<BotGameTurn, PlayerPerspective> expansionActionsGenerator;
+        private readonly IGameActionsGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionsGenerator;
         
         /// <summary>
         /// Tree representing the evaluation.
@@ -25,9 +25,9 @@
 
         public MCTSTreeHandler(PlayerPerspective initialBoardState,
             INodeEvaluator<MCTSTreeNode> nodeEvaluator,
-            IGameActionGenerator<BotGameTurn, PlayerPerspective> expansionActionGenerator,
-            IGameActionGenerator<BotGameTurn, PlayerPerspective> simulationActionGenerator,
-            IGameActionGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionGenerator)
+            IGameActionsGenerator<BotGameTurn, PlayerPerspective> expansionActionsGenerator,
+            IGameActionsGenerator<BotGameTurn, PlayerPerspective> simulationActionsGenerator,
+            IGameActionsGenerator<BotGameBeginningTurn, PlayerPerspective> beginningActionsGenerator)
         {
             var state = new NodeState()
             {
@@ -39,8 +39,8 @@
             Tree = new MCTSTree(state);
 
             this.nodeEvaluator = nodeEvaluator;
-            this.expansionActionGenerator = expansionActionGenerator;
-            this.beginningActionGenerator = beginningActionGenerator;
+            this.expansionActionsGenerator = expansionActionsGenerator;
+            this.beginningActionsGenerator = beginningActionsGenerator;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@
             {
                 if (node.GameState.MapMin.IsGameBeginning())
                 {
-                    var botTurn = beginningActionGenerator.Generate(node.GameState);
+                    var botTurn = beginningActionsGenerator.Generate(node.GameState);
 
                     // TODO: try to generate best moves from opponents perspective (fog of war problem)
                     // TODO: get gameState this action leads to
@@ -122,7 +122,7 @@
                 }
                 else
                 {
-                    var botTurn = expansionActionGenerator.Generate(node.GameState);
+                    var botTurn = expansionActionsGenerator.Generate(node.GameState);
 
                     // TODO: get gameState this action leads to
 

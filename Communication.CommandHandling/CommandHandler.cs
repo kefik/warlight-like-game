@@ -9,8 +9,6 @@
     using GameAi.Data.GameRecording;
     using GameAi.Data.Restrictions;
     using GameAi.Interfaces;
-    using GameObjectsLib;
-    using GameObjectsLib.GameRecording;
     using Shared;
     using Tokens;
     using Tokens.Settings;

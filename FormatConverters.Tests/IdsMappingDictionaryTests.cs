@@ -1,10 +1,7 @@
-﻿namespace GameAi.Data.Tests
+﻿namespace FormatConverters.Tests
 {
     using System.Collections.Generic;
-    using EvaluationStructures;
     using NUnit.Framework;
-
-    using static NUnit.Framework.Assert;
 
     [TestFixture]
     public class IdsMappingDictionaryTests
@@ -28,19 +25,19 @@
             // check insert
             foreach (int regionId in regionIds)
             {
-                AreEqual(regionId - 1, dictionary.GetMappedIdOrInsert(regionId));
+                Assert.AreEqual(regionId - 1, dictionary.GetMappedIdOrInsert(regionId));
             }
 
             // check getting new value
             foreach (int regionId in regionIds)
             {
-                AreEqual(regionId - 1, dictionary.GetNewId(regionId));
+                Assert.AreEqual(regionId - 1, dictionary.GetNewId(regionId));
             }
 
             // check getting old values
             foreach (int regionId in regionIds)
             {
-                AreEqual(regionId, dictionary.GetOriginalId(regionId - 1));
+                Assert.AreEqual(regionId, dictionary.GetOriginalId(regionId - 1));
             }
         }
     }

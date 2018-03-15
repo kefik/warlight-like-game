@@ -1,7 +1,6 @@
 ﻿namespace GameAi.Data.Restrictions
 {
     using System.Collections.Generic;
-    using Interfaces;
     using ProtoBuf;
 
     /// <summary>

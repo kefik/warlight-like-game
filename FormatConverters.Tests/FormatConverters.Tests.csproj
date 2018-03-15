@@ -37,6 +37,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IdsMappingDictionaryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestrictionsFormatConverterExtensionsTests.cs" />
     <Compile Include="TestMaps.Designer.cs">
@@ -65,14 +66,6 @@
     <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
       <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
       <Name>GameAi.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GameAi.Interfaces\GameAi.Interfaces.csproj">
-      <Project>{f02ff366-6835-45ef-9eee-2df857830184}</Project>
-      <Name>GameAi.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GameAi\GameAi.csproj">
-      <Project>{1C45EF91-9586-4FC0-AABB-34751A8AAFEF}</Project>
-      <Name>GameAi</Name>
     </ProjectReference>
     <ProjectReference Include="..\GameObjectsLib\GameObjectsLib.csproj">
       <Project>{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}</Project>

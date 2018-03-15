@@ -4,16 +4,10 @@
     using System.Collections.Generic;
     using System.Drawing;
     using System.IO;
-    using System.Linq;
     using Common.Extensions;
     using Data;
     using Data.EvaluationStructures;
     using Data.Restrictions;
-    using GameObjectsLib;
-    using GameObjectsLib.Game;
-    using GameObjectsLib.GameMap;
-    using GameObjectsLib.GameRecording;
-    using GameObjectsLib.Players;
     using NUnit.Framework;
 
     using static NUnit.Framework.Assert;

@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using GameAi.Data.Restrictions;
-    using GameAi.Interfaces;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameRestrictions;
     using GameObjectsLib.Players;
@@ -64,13 +63,13 @@
             return restrictions;
         }
 
-        public static Restrictions ToRemappedRestrictions(this Restrictions restrictions, IIdMapper playerIdsMapper)
+        public static Restrictions ToRemappedRestrictions(this Restrictions restrictions, IIdsMapper playerIdsesMapper)
         {
             var beginningRestrictions = restrictions.GameBeginningRestrictions;
             foreach (GameBeginningRestriction gameBeginningRestriction
                 in beginningRestrictions)
             {
-                gameBeginningRestriction.PlayerId = playerIdsMapper
+                gameBeginningRestriction.PlayerId = playerIdsesMapper
                     .GetNewId(gameBeginningRestriction.PlayerId);
             }
 

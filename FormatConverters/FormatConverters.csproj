@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IdsMappingDictionary.cs" />
+    <Compile Include="IIdsMapper.cs" />
     <Compile Include="PlayersCollectionExtensions.cs" />
     <Compile Include="MapFormatConversionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -48,13 +50,13 @@
     <Compile Include="TurnFormatConversionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{E4CBE100-724B-4097-9EBD-DB0CFBE41375}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameAi.Data\GameAi.Data.csproj">
       <Project>{55CE83A4-73F0-4AE4-9AF2-CC96FB90C201}</Project>
       <Name>GameAi.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GameAi.Interfaces\GameAi.Interfaces.csproj">
-      <Project>{F02FF366-6835-45EF-9EEE-2DF857830184}</Project>
-      <Name>GameAi.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\GameObjectsLib\GameObjectsLib.csproj">
       <Project>{57A48D5C-6E58-4EC7-ACD0-565A4DF58DAF}</Project>
