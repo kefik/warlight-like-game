@@ -11,6 +11,7 @@
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameRecording;
+    using GameObjectsLib.GameRestrictions;
     using GameObjectsLib.Players;
     using MapHandlers;
     using Moq;
@@ -59,7 +60,8 @@
                 pc2
             };
 
-            var game = new GameFactory().CreateGame(1, GameType.Simulator, map, players, true, null);
+            var game = new GameFactory().CreateGame(1, GameType.Simulator, map, players, true,
+                new GameObjectsRestrictions());
 
             
             #region Initialize game state

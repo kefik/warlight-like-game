@@ -62,11 +62,6 @@
     <Compile Include="RoundHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Assets\Maps\Map.xsd">
-      <Link>Resources\Map.xsd</Link>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="App.config">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -103,11 +98,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
+    <Copy SourceFiles="$(SolutionDir)/Assets/Maps/Map.xsd" DestinationFolder="$(OutDir)" />
   </Target>
-  -->
 </Project>

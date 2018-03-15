@@ -10,6 +10,7 @@
     using GameAi.Data;
     using GameMap;
     using GameRecording;
+    using GameRestrictions;
     using GameUser;
     using NUnit.Framework;
     using Players;
@@ -55,7 +56,7 @@
                 pc1,
                 testUser
             };
-            var game = new GameFactory().CreateGame(0, GameType.SinglePlayer, map, players, true, null);
+            var game = new GameFactory().CreateGame(0, GameType.SinglePlayer, map, players, true, new GameObjectsRestrictions());
 
             #region Initialize game state
 

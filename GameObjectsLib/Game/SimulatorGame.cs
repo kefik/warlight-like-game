@@ -1,5 +1,6 @@
 ﻿namespace GameObjectsLib.Game
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using GameAi.Data.Restrictions;
@@ -28,7 +29,10 @@
         public SimulatorGame(int id, Map map, IList<Player> players, bool isFogOfWar, GameObjectsRestrictions objectsRestrictions)
             : base(id, map, players, isFogOfWar, objectsRestrictions)
         {
-            
+            if (objectsRestrictions == null)
+            {
+                throw new ArgumentException("Restrictions cannot be null.");
+            }
         }
 
         public override void Validate()

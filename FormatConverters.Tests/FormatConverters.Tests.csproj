@@ -47,11 +47,6 @@
     <Compile Include="TurnFormatConversionExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Assets\Maps\Map.xsd">
-      <Link>Resources\Map.xsd</Link>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="App.config">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -96,4 +91,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="$(SolutionDir)/Assets/Maps/Map.xsd" DestinationFolder="$(OutDir)" />
+  </Target>
 </Project>
