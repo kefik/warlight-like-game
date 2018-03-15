@@ -6,8 +6,15 @@
     using Interfaces;
     using Interfaces.Evaluators.StructureEvaluators;
 
-    public class SuperRegionMinEvaluator : ISuperRegionMinEvaluator
+    /// <summary>
+    /// Component that can evaluate <see cref="SuperRegionMin"/>
+    /// instance.
+    /// </summary>
+    internal class SuperRegionMinEvaluator : ISuperRegionMinEvaluator
     {
+        private const double SuperRegionsRegionsCountCoeficient = 5;
+        private const double ForeignNeighboursCoefficient = 4;
+
         /// <summary>
         /// Dictionary where the key is SuperRegion Id
         /// and the value is cached result of static evaluation.
@@ -25,7 +32,6 @@
         public double GetValue(PlayerPerspective currentGameState,
             SuperRegionMin gameStructure)
         {
-
             double staticResult;
             if (superRegionStaticCache.TryGetValue(gameStructure.Id, out var cachedValue))
             {
@@ -38,7 +44,7 @@
                 superRegionStaticCache.Add(gameStructure.Id, staticResult);
             }
 
-            // TODO: calculate dynamic part based on current state
+            // TODO: better calculation
 
             return staticResult;
         }
@@ -54,15 +60,6 @@
         private double CalculateStaticResult(PlayerPerspective currentGameState,
             SuperRegionMin gameStructure)
         {
-            int regionsCount = currentGameState
-                .MapMin.RegionsMin.Length;
-            int superRegionsCount = currentGameState
-                .MapMin.SuperRegionsMin.Length;
-            int neighbourSuperRegionsCount;
-
-            int maxSuperRegionBonus = currentGameState
-                .MapMin.SuperRegionsMin.Max(x => x.Bonus);
-
             var regions = gameStructure
                 .RegionsIds
                 .Select(x => currentGameState.GetRegion(x))
@@ -74,17 +71,17 @@
                                               where region.Id != neighbourId
                                               select neighbourId).ToList();
 
-            int foreignNeighboursCount = foreignNeighbourRegionsIds.Count();
+            int foreignNeighboursCount = foreignNeighbourRegionsIds.Count;
 
-            neighbourSuperRegionsCount = foreignNeighbourRegionsIds
+            int neighbourSuperRegionsCount = foreignNeighbourRegionsIds
                 .Select(x => currentGameState.GetRegion(x).SuperRegionId)
                 .Distinct().Count();
 
             double staticResult =
-                (double)gameStructure.Bonus / maxSuperRegionBonus
-                + (double)neighbourSuperRegionsCount / superRegionsCount
-                - 5d * gameStructure.RegionsIds.Length / regionsCount
-                - 4d * foreignNeighboursCount / regionsCount;
+                (double)gameStructure.Bonus
+                + neighbourSuperRegionsCount
+                - SuperRegionsRegionsCountCoeficient * gameStructure.RegionsIds.Length
+                - ForeignNeighboursCoefficient * foreignNeighboursCount;
 
             return staticResult;
         }

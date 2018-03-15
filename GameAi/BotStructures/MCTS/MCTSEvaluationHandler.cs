@@ -152,7 +152,7 @@
             {
                 return null;
             }
-            return new SelectRegionActionsGenerator(gameBeginningRestriction.RegionsPlayerCanChooseCount,
+            return new RandomSelectRegionActionsGenerator(gameBeginningRestriction.RegionsPlayerCanChooseCount,
                 gameBeginningRestriction.PlayerId, gameBeginningRestriction.RestrictedRegions);
         }
     }

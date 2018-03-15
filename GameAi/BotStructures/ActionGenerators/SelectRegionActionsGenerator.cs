@@ -10,14 +10,14 @@
     /// <summary>
     /// Represents action generator for selecting regions at the beginning of the game.
     /// </summary>
-    internal class SelectRegionActionsGenerator : IGameBeginningActionsGenerator
+    internal class RandomSelectRegionActionsGenerator : IGameBeginningActionsGenerator
     {
         private readonly int playerId;
         private readonly ICollection<int> regionsRestrictions;
         private readonly int regionsToChooseCount;
         private readonly Random random;
 
-        public SelectRegionActionsGenerator(int regionsToChooseCount, int playerId = 0, ICollection<int> regionsRestrictions = null)
+        public RandomSelectRegionActionsGenerator(int regionsToChooseCount, int playerId = 0, ICollection<int> regionsRestrictions = null)
         {
             // regions that player can choose > regions options count => error
             if (regionsRestrictions != null
@@ -74,7 +74,7 @@
 
             gameBeginningTurn.SeizedRegionsIds = chosenIndices;
 
-            return new []{ gameBeginningTurn };
+            return new[] { gameBeginningTurn };
         }
     }
 }

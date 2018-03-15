@@ -123,6 +123,16 @@ namespace GameAi.Data.EvaluationStructures
             return ref MapMin.RegionsMin[regionId];
         }
 
+        /// <summary>
+        /// Returns <see cref="SuperRegionMin"/> based on its ID.
+        /// </summary>
+        /// <param name="superRegionId"></param>
+        /// <returns></returns>
+        public ref SuperRegionMin GetSuperRegion(int superRegionId)
+        {
+            return ref MapMin.SuperRegionsMin[superRegionId];
+        }
+
         public IEnumerable<RegionMin> GetNeighbourRegions(int regionId)
         {
             foreach (var neighbourRegionIds in GetRegion(regionId).NeighbourRegionsIds)

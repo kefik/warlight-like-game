@@ -12,7 +12,7 @@
 
     internal class AggressiveBot : GameBot
     {
-        private readonly SelectRegionActionsGenerator selectRegionActionsGenerator;
+        private readonly RandomSelectRegionActionsGenerator randomSelectRegionActionsGenerator;
         private readonly AggressiveBotActionsGenerator actionsGenerator;
         private BotTurn generatedBestTurn;
 
@@ -24,7 +24,7 @@
         {
             var gameBeginningRestriction = restrictions
                 .GameBeginningRestrictions.First(x => x.PlayerId == playerPerspective.PlayerId);
-            selectRegionActionsGenerator = new SelectRegionActionsGenerator(
+            randomSelectRegionActionsGenerator = new RandomSelectRegionActionsGenerator(
                 gameBeginningRestriction.RegionsPlayerCanChooseCount, 
                 gameBeginningRestriction.PlayerId,
                 gameBeginningRestriction.RestrictedRegions);
@@ -52,7 +52,7 @@
             if (PlayerPerspective.MapMin.IsGameBeginning())
             {
                 generatedBestTurn =
-                    selectRegionActionsGenerator.Generate(PlayerPerspective)[0];
+                    randomSelectRegionActionsGenerator.Generate(PlayerPerspective)[0];
             }
             else
             {

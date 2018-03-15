@@ -129,6 +129,32 @@ when we need to choose best unexpanded node.
 - *MCTSEvaluationHandler* - handles parallel
 evaluation using *MCTSTreeHandler*s.
 
+#### Bot structures evaluators
+State space is too big in the Warlight game, so clever heuristics must be
+used in order to generate good actions.
+There has to be implemented bot structures evaluators in order to
+generate good actions. There has to be possibility to evaluate each
+Region's and SuperRegion's value.
+
+In next sections I'll examine which criteria should be used in evaluating the Regions.
+
+##### Super region evaluation
+1. **Bonus** - how many bonus army does the super region add
+2. **Regions count** - how many regions does the Super region contain.
+This criterion is very important. The more regions the super region has,
+harder it is to conquer it.
+3. **Number of regions neighbouring the super region** -
+if the super region has many
+neighbours regions, it becomes very hard to defend it against enemies.
+
+##### Region evaluation
+1. **Army** - army of the region. More units it has, harder is to conquer it.
+2. **Neighbours count** - more it has, harder is to defend it.
+3. **Super region** - take into account how easy/good it would be to
+conquer entire super region, how easy it is
+4. **Owner** - if it has owner. If we fight with neutral region,
+we won't later have that many units to fight the enemy.
+
 #### Action generators
 Action generators are components responsible
 for generating sequence of moves for a player
@@ -151,8 +177,6 @@ Must generate beginning game region selection. There can be specified
 regions options from which given bot must choose from (e.g. choose from 2 regions
 from regions with IDs 2, 4 or 7).
 
-There will be used following heuristics:
-TODO
 
 ##### Game action generators
 Must generate deploying/attacking. There is no known restriction
