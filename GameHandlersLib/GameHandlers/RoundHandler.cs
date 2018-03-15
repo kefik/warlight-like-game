@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using Common.Interfaces;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
@@ -12,10 +13,10 @@
     /// <summary>
     /// Handler handling <see cref="Round"/> issues, like calculation of the new round.
     /// </summary>
-    internal class RoundHandler
+    internal class RoundHandler : IRandomInjectable
     {
         private readonly Game game;
-        private readonly Random random;
+        private Random random;
 
         /// <summary>
         /// Initializes instance of <see cref="RoundHandler"/> with <see cref="game"/> parameter.
@@ -186,6 +187,11 @@
             }
 
             game.Refresh();
+        }
+
+        void IRandomInjectable.Inject(Random random)
+        {
+            this.random = random;
         }
     }
 }

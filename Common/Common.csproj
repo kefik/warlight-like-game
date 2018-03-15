@@ -50,8 +50,10 @@
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Interfaces\IRandomInjectable.cs" />
     <Compile Include="ObjectPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomInjector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

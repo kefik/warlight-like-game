@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Reflection;
     using Common.Extensions;
+    using Common.Interfaces;
     using GameAi.Data;
     using GameHandlers;
     using GameObjectsLib.Game;
@@ -70,18 +71,13 @@
         [Test]
         public void PlayGameRoundTest()
         {
-            // assign moq to random via reflection
-            var roundHandlerType = typeof(RoundHandler);
-
+            // assign moq to random
             var randomMoq = new Mock<Random>();
             randomMoq.Setup(x => x.NextDouble()).Returns(0);
 
             var randomInstance = randomMoq.Object;
-
-            var randomField = roundHandlerType.GetField("random", BindingFlags.Instance
-                                                                  | BindingFlags.NonPublic);
-            randomField.SetValue(roundHandler, randomInstance);
-
+            ((IRandomInjectable)roundHandler).Inject(randomInstance);
+            
             #region Initialize seizes
             var initialSeizes = new List<Seize>();
             initialSeizes.Add(new Seize(pc1, austria));
@@ -144,16 +140,12 @@
         public void PlayGameRoundNoKillTest()
         {
             // assign moq to random via reflection
-            var roundHandlerType = typeof(RoundHandler);
-
+            // assign moq to random
             var randomMoq = new Mock<Random>();
             randomMoq.Setup(x => x.NextDouble()).Returns(1);
 
             var randomInstance = randomMoq.Object;
-
-            var randomField = roundHandlerType.GetField("random", BindingFlags.Instance
-                                                                  | BindingFlags.NonPublic);
-            randomField.SetValue(roundHandler, randomInstance);
+            ((IRandomInjectable)roundHandler).Inject(randomInstance);
 
             #region Initialize seizes
             var initialSeizes = new List<Seize>();
