@@ -5,7 +5,7 @@
 
     internal class PlayerPerspectiveEvaluator : IPlayerPerspectiveEvaluator
     {
-        private IRegionMinEvaluator regionMinEvaluator;
+        private readonly IRegionMinEvaluator regionMinEvaluator;
 
         public PlayerPerspectiveEvaluator(IRegionMinEvaluator regionMinEvaluator)
         {
@@ -17,11 +17,6 @@
             double value = 0;
 
             // sum the regions you have
-            var myRegions = playerPerspective.GetMyRegions();
-            foreach (RegionMin regionMin in myRegions)
-            {
-                value += regionMinEvaluator.GetValue(playerPerspective, regionMin);
-            }
 
             return value;
         }

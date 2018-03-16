@@ -15,6 +15,7 @@ namespace GameAi.Data.EvaluationStructures
         private class RegionMinStatic
         {
             public int Id { get; internal set; }
+            public string Name { get; internal set; }
             public int[] NeighboursIds { get; set; }
             public int SuperRegionId { get; set; }
             public bool IsWasteland { get; }
@@ -51,7 +52,8 @@ namespace GameAi.Data.EvaluationStructures
         /// </summary>
         /// <remarks>
         /// First 5 bits of <see cref="ownerAndArmyEncoded"/>
-        /// are used for owner identification.
+        /// are used for owner identification => maximum ID
+        /// of player is 32.
         /// </remarks>
         public byte OwnerId
         {
@@ -128,6 +130,15 @@ namespace GameAi.Data.EvaluationStructures
         }
 
         /// <summary>
+        /// Gets or sets name of the <see cref="RegionMin"/> instance.
+        /// </summary>
+        public string Name
+        {
+            get { return Static.Name; }
+            set { Static.Name = value; }
+        }
+
+        /// <summary>
         /// SuperRegion in which this region is contained.
         /// </summary>
         public int SuperRegionId
@@ -183,7 +194,7 @@ namespace GameAi.Data.EvaluationStructures
 
         public override string ToString()
         {
-            return Id.ToString();
+            return $"{Id}, {Name}";
         }
     }
 }

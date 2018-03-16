@@ -10,10 +10,11 @@
     /// Component that can evaluate <see cref="SuperRegionMin"/>
     /// instance.
     /// </summary>
-    internal class SuperRegionMinEvaluator : ISuperRegionMinEvaluator
+    internal class GameBeginningSuperRegionMinEvaluator : ISuperRegionMinEvaluator
     {
         private const double SuperRegionsRegionsCountCoeficient = 5;
         private const double ForeignNeighboursCoefficient = 4;
+        private const double BonusCoefficient = 1;
 
         /// <summary>
         /// Dictionary where the key is SuperRegion Id
@@ -29,24 +30,13 @@
         /// <param name="currentGameState"></param>
         /// <param name="gameStructure"></param>
         /// <returns></returns>
-        public double GetValue(PlayerPerspective currentGameState,
+        public double GetCost(PlayerPerspective currentGameState,
             SuperRegionMin gameStructure)
         {
-            double staticResult;
-            if (superRegionStaticCache.TryGetValue(gameStructure.Id, out var cachedValue))
-            {
-                staticResult = cachedValue;
-            }
-            else
-            {
-                staticResult = CalculateStaticResult(currentGameState,
-                    gameStructure);
-                superRegionStaticCache.Add(gameStructure.Id, staticResult);
-            }
-
+            double staticCost = GetStaticCost(currentGameState, gameStructure);
             // TODO: better calculation
 
-            return staticResult;
+            return staticCost;
         }
 
         /// <summary>
@@ -57,9 +47,17 @@
         /// <param name="currentGameState"></param>
         /// <param name="gameStructure"></param>
         /// <returns></returns>
-        private double CalculateStaticResult(PlayerPerspective currentGameState,
+        private double GetStaticCost(PlayerPerspective currentGameState,
             SuperRegionMin gameStructure)
         {
+            if (superRegionStaticCache.TryGetValue(gameStructure.Id, out var cachedValue))
+            {
+                return cachedValue;
+            }
+
+            // hint: greater bonus => lesser cost
+            double bonusCost = -BonusCoefficient * gameStructure.Bonus;
+
             var regions = gameStructure
                 .RegionsIds
                 .Select(x => currentGameState.GetRegion(x))
@@ -71,17 +69,22 @@
                                               where region.Id != neighbourId
                                               select neighbourId).ToList();
 
+            // hint: more foreign neighbour it has, worse it is
             int foreignNeighboursCount = foreignNeighbourRegionsIds.Count;
+            double foreignNeighboursCost = ForeignNeighboursCoefficient * foreignNeighboursCount;
 
+            // hint: more super region neighbours, the better it is
             int neighbourSuperRegionsCount = foreignNeighbourRegionsIds
                 .Select(x => currentGameState.GetRegion(x).SuperRegionId)
                 .Distinct().Count();
+            double neighbourSuperRegionsCost = neighbourSuperRegionsCount;
 
-            double staticResult =
-                (double)gameStructure.Bonus
-                + neighbourSuperRegionsCount
-                - SuperRegionsRegionsCountCoeficient * gameStructure.RegionsIds.Length
-                - ForeignNeighboursCoefficient * foreignNeighboursCount;
+            // hint: more regions it has, worse it is (harder to conquer especially at the beginning)
+            double regionsCost = SuperRegionsRegionsCountCoeficient * gameStructure.RegionsIds.Length;
+
+           double staticResult = bonusCost + neighbourSuperRegionsCost + regionsCost + foreignNeighboursCount;
+
+            superRegionStaticCache.Add(gameStructure.Id, staticResult);
 
             return staticResult;
         }

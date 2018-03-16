@@ -79,7 +79,7 @@
     public abstract class TreeNode<TNodeType, TValue> where TNodeType : TreeNode<TNodeType, TValue>, new()
     {
         public TNodeType Parent { get; set; }
-        public List<TNodeType> Children { get; set; }
+        public List<TNodeType> Children { get; set; } = new List<TNodeType>();
 
         public TValue Value { get; set; }
 

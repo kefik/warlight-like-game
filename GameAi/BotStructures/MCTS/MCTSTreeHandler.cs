@@ -19,7 +19,7 @@
         private readonly INodeEvaluator<MCTSTreeNode> nodeEvaluator;
         private readonly IGameActionsGenerator gameActionsGenerator;
         private readonly IGameBeginningActionsGenerator beginningActionsGenerator;
-        
+
         /// <summary>
         /// Tree representing the evaluation.
         /// </summary>
@@ -34,7 +34,7 @@
             {
                 BoardState = initialBoardState,
                 VisitCount = 0,
-                WinCount =  0
+                WinCount = 0
             };
 
             Tree = new MCTSTree(state);
@@ -53,7 +53,7 @@
             while (!token.IsCancellationRequested)
             {
                 var bestNode = SelectBestNode();
-                
+
                 var nodesToSimulate = Expand(bestNode);
 
                 Simulate(nodesToSimulate);
@@ -61,7 +61,7 @@
                 Backpropagate(nodesToSimulate);
             }
         }
-        
+
         /// <summary>
         /// Selects the best node.
         /// </summary>
@@ -69,7 +69,7 @@
         private MCTSTreeNode SelectBestNode()
         {
             MCTSTreeNode currentNode = Tree.Root;
-            
+
             while (!currentNode.IsLeaf)
             {
                 currentNode = GetBestChild(currentNode);
@@ -108,29 +108,26 @@
         /// <returns>New children <see cref="node"/> was expanded to.</returns>
         private IList<MCTSTreeNode> Expand(MCTSTreeNode node)
         {
-            for (int i = 0; i < 9; i++)
+            if (node.GameState.MapMin.IsGameBeginning())
             {
-                if (node.GameState.MapMin.IsGameBeginning())
+                var botTurn = beginningActionsGenerator.Generate(node.GameState);
+
+                // TODO: try to generate best moves from opponents perspective (fog of war problem)
+                // TODO: get gameState this action leads to
+
+                node.AddChild(new NodeState()
                 {
-                    var botTurn = beginningActionsGenerator.Generate(node.GameState);
+                });
+            }
+            else
+            {
+                var botTurn = gameActionsGenerator.Generate(node.GameState);
 
-                    // TODO: try to generate best moves from opponents perspective (fog of war problem)
-                    // TODO: get gameState this action leads to
+                // TODO: get gameState this action leads to
 
-                    node.AddChild(new NodeState()
-                    {
-                    });
-                }
-                else
+                node.AddChild(new NodeState()
                 {
-                    var botTurn = gameActionsGenerator.Generate(node.GameState);
-
-                    // TODO: get gameState this action leads to
-
-                    node.AddChild(new NodeState()
-                    {
-                    });
-                }
+                });
             }
 
             return node.Children;

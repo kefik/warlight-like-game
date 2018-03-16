@@ -62,14 +62,11 @@
             this.botTypeComboBox.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.botTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.botTypeComboBox.FormattingEnabled = true;
-            this.botTypeComboBox.Items.AddRange(new object[] {
-            "Easy",
-            "Medium",
-            "Hard"});
             this.botTypeComboBox.Location = new System.Drawing.Point(146, 5);
             this.botTypeComboBox.Name = "botTypeComboBox";
             this.botTypeComboBox.Size = new System.Drawing.Size(156, 21);
             this.botTypeComboBox.TabIndex = 3;
+            this.botTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.ChangeBotType);
             // 
             // SimulatorBotPlayerControl
             // 

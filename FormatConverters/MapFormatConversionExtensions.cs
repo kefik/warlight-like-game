@@ -34,12 +34,18 @@
                 {
                     if (x.Owner == null)
                     {
-                        return new SuperRegionMin(x.Id, x.Bonus);
+                        return new SuperRegionMin(x.Id, x.Bonus)
+                        {
+                            Name = x.Name
+                        };
                     }
                     if (playerIdsesMapper.TryGetNewId(x.Owner.Id, out int ownerId))
                     {
                         return new SuperRegionMin(x.Id, x.Bonus,
-                            (byte) ownerId);
+                            (byte) ownerId)
+                        {
+                            Name = x.Name
+                        };
                     }
                     throw new ArgumentException("Player not mapped");
                 })
@@ -51,12 +57,18 @@
                 {
                     if (x.Owner == null)
                     {
-                        return new RegionMin(x.Id, x.SuperRegion.Id, x.Army);
+                        return new RegionMin(x.Id, x.SuperRegion.Id, x.Army)
+                        {
+                            Name = x.Name
+                        };
                     }
                     if (playerIdsesMapper.TryGetNewId(x.Owner.Id, out int ownerId))
                     {
                         return new RegionMin(x.Id, x.SuperRegion.Id, x.Army,
-                            (byte) ownerId);
+                            (byte) ownerId)
+                        {
+                            Name = x.Name
+                        };
                     }
                     throw new ArgumentException("Player not mapped");
                 }).ToArray();
@@ -105,11 +117,11 @@
             IList<Player> players)
         {
             SuperRegion[] superRegions = mapMin.SuperRegionsMin
-                .Select(x => new SuperRegion(x.Id, null, x.Bonus))
+                .Select(x => new SuperRegion(x.Id, x.Name, x.Bonus))
                 .ToArray();
 
             Region[] regions = mapMin.RegionsMin
-                .Select(x => new Region(x.Id, null, superRegions.FirstOrDefault(y => y.Id == x.SuperRegionId))
+                .Select(x => new Region(x.Id, x.Name, superRegions.FirstOrDefault(y => y.Id == x.SuperRegionId))
                 {
                     Army = x.Army
                 })

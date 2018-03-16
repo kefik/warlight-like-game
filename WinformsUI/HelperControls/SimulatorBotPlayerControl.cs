@@ -22,8 +22,6 @@ namespace WinformsUI.HelperControls
         public SimulatorBotPlayerControl(string uniqueName)
         {
             InitializeComponent();
-            
-            InitializeBotTypeDropdownList();
 
             player = new AiPlayer(Difficulty.Hard,
                 uniqueName, KnownColor.Blue,
@@ -32,6 +30,8 @@ namespace WinformsUI.HelperControls
             PlayerColor = player.Color;
             BotType = GameBotType.AggressiveBot;
             PlayerName = player.Name;
+
+            InitializeBotTypeDropdownList();
         }
 
         public SimulatorBotPlayerControl(AiPlayer player)
@@ -60,6 +60,8 @@ namespace WinformsUI.HelperControls
             botTypeComboBox.ValueMember = "Value";
             botTypeComboBox.DisplayMember = "Text";
             botTypeComboBox.DataSource = list;
+
+            botTypeComboBox.SelectedIndex = 1;
         }
 
         /// <summary>
@@ -84,7 +86,7 @@ namespace WinformsUI.HelperControls
             private set
             {
                 player = new AiPlayer(player.Difficulty, player.Name, player.Color, value);
-                botTypeComboBox.SelectedIndex = (int)player.BotType;
+                botTypeComboBox.SelectedValue = (int)player.BotType;
             }
         }
 
@@ -135,6 +137,12 @@ namespace WinformsUI.HelperControls
         public Player GetPlayer()
         {
             return new AiPlayer(player.Difficulty, player.Name, player.Color, player.BotType);
+        }
+
+        private void ChangeBotType(object sender, EventArgs e)
+        {
+            var selectedBotType = (GameBotType)botTypeComboBox.SelectedValue;
+            BotType = selectedBotType;
         }
     }
 }

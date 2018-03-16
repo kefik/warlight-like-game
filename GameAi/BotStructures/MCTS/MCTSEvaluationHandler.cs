@@ -13,6 +13,8 @@
     using Interfaces;
     using Interfaces.ActionsGenerators;
     using Interfaces.Evaluators.NodeEvaluators;
+    using Interfaces.Evaluators.StructureEvaluators;
+    using StructuresEvaluators;
 
     /// <summary>
     /// Component handling Monte Carlo tree search evaluation.
@@ -148,12 +150,13 @@
         private IGameBeginningActionsGenerator GetGameBeginningActionGenerator(
             GameBeginningRestriction gameBeginningRestriction)
         {
+            IRegionMinEvaluator regionMinEvaluator = new GameBeginningRegionMinEvaluator(new GameBeginningSuperRegionMinEvaluator());
             if (gameBeginningRestriction == null)
             {
                 return null;
             }
-            return new RandomSelectRegionActionsGenerator(gameBeginningRestriction.RegionsPlayerCanChooseCount,
-                gameBeginningRestriction.PlayerId, gameBeginningRestriction.RestrictedRegions);
+            return new SelectRegionActionsGenerator(regionMinEvaluator, gameBeginningRestriction.RegionsPlayerCanChooseCount,
+                (byte)gameBeginningRestriction.PlayerId, gameBeginningRestriction.RestrictedRegions);
         }
     }
 }

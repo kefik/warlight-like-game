@@ -8,6 +8,7 @@
         private class SuperRegionMinStatic
         {
             public int Id { get; internal set; }
+            public string Name { get; internal set; }
             public int[] RegionsIds { get; set; }
             public int Bonus { get; }
             
@@ -30,6 +31,15 @@
             {
                 Static.Id = value;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets <see cref="SuperRegionMin"/> name.
+        /// </summary>
+        public string Name
+        {
+            get { return Static.Name; }
+            set { Static.Name = value; }
         }
 
         /// <summary>
@@ -63,7 +73,7 @@
 
         public override string ToString()
         {
-            return Id.ToString();
+            return $"{Id}, {Name}";
         }
     }
 }

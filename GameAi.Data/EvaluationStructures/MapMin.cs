@@ -43,9 +43,12 @@ namespace GameAi.Data.EvaluationStructures
 
             for (int i = 0; i < RegionsMin.Length; i++)
             {
-                var region = RegionsMin[i];
+                ref var region = ref RegionsMin[i];
 
-                var newRegion = new RegionMin(region.Id, region.SuperRegionId, region.Army, region.OwnerId, region.IsWasteland);
+                var newRegion = new RegionMin(region.Id, region.SuperRegionId, region.Army, region.OwnerId, region.IsWasteland)
+                {
+                    Name = region.Name
+                };
 
                 int[] neighbourIds = new int[region.NeighbourRegionsIds.Length];
                 Array.Copy(region.NeighbourRegionsIds, neighbourIds, neighbourIds.Length);
@@ -59,15 +62,17 @@ namespace GameAi.Data.EvaluationStructures
 
             for (int i = 0; i < SuperRegionsMin.Length; i++)
             {
-                var superRegion = SuperRegionsMin[i];
+                ref var superRegion = ref SuperRegionsMin[i];
 
-                var newSuperRegion = new SuperRegionMin(superRegion.Id, superRegion.Bonus);
+                var newSuperRegion = new SuperRegionMin(superRegion.Id, superRegion.Bonus, superRegion.OwnerId)
+                {
+                    Name = superRegion.Name
+                };
 
                 int[] regionsIds = new int[superRegion.RegionsIds.Length];
                 Array.Copy(superRegion.RegionsIds, regionsIds, regionsIds.Length);
 
                 newSuperRegion.RegionsIds = regionsIds;
-                newSuperRegion.OwnerId = superRegion.OwnerId;
 
                 superRegionsMin[i] = newSuperRegion;
             }
