@@ -168,12 +168,13 @@
         /// <summary>
         /// Plays round passed in parameter, changing regions,... in game instance specified in constructor.
         /// </summary>
-        /// <param name="linearizedRound"></param>
-        public void PlayRound(ILinearizedRound linearizedRound)
+        /// <param name="round"></param>
+        public void PlayRound(Round round)
         {
+            var linearizedRound = round.Linearize();
             if (linearizedRound.GetType() == typeof(LinearizedGameRound))
             {
-                var gameRound = (LinearizedGameRound) linearizedRound;
+                var gameRound = (LinearizedGameRound)linearizedRound;
 
                 PlayDeploying(gameRound);
 
@@ -181,11 +182,12 @@
             }
             else
             {
-                var gameBeginningRound = (LinearizedGameBeginningRound) linearizedRound;
+                var gameBeginningRound = (LinearizedGameBeginningRound)linearizedRound;
 
                 PlayGameBeginningRound(gameBeginningRound);
             }
 
+            game.AllRounds.Add(linearizedRound);
             game.Refresh();
         }
 

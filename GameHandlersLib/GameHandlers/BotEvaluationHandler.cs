@@ -147,26 +147,25 @@
 
         private void PlayRound(Turn[] turns)
         {
-            ILinearizedRound linearizedRound;
+            Round round;
             switch (turns?.FirstOrDefault(x => x != null))
             {
                 case GameBeginningTurn turn:
-                    linearizedRound = new GameBeginningRound()
+                    round = new GameBeginningRound()
                     {
                         Turns = turns.Where(x => x != null).ToList()
-                    }.Linearize();
+                    };
                     break;
                 case GameTurn turn:
-                    linearizedRound = new GameRound()
+                    round = new GameRound()
                     {
                         Turns = turns.Where(x => x != null).ToList()
-                    }.Linearize();
+                    };
                     break;
                 default:
                     throw new ArgumentException();
-            }
-            game.AllRounds.Add(linearizedRound);
-            roundHandler.PlayRound(linearizedRound);
+            };
+            roundHandler.PlayRound(round);
         }
 
         public void PauseEvaluation()

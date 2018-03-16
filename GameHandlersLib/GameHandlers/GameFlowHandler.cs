@@ -120,11 +120,7 @@
         /// </summary>
         public virtual void PlayRound()
         {
-            var linearizedRound = LastRound.Linearize();
-
-            roundHandler.PlayRound(linearizedRound);
-
-            AllRounds.Add(linearizedRound);
+            roundHandler.PlayRound(LastRound);
 
             // if I played a round it means that next round will surelly wont be GameBeginningRound
             LastRound = new GameRound();

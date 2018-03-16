@@ -393,13 +393,28 @@
             wasMoved = gameRecordHandler.MoveToPreviousAction();
             IsFalse(wasMoved);
 
-            // next -> to deploy poland
+            // next -> after seizing austria
             wasMoved = gameRecordHandler.MoveToNextAction();
             IsTrue(wasMoved);
             AreEqual(1, pc1.ControlledRegions.Count);
-            AreEqual(1, pc2.ControlledRegions.Count);
+            AreEqual(0, pc2.ControlledRegions.Count);
+
+            // next -> before deploying to poland
+            wasMoved = gameRecordHandler.MoveToNextAction();
+            IsTrue(wasMoved);
             currentAction = (Deployment)gameRecordHandler.GetCurrentAction();
-            AreEqual(pc1, currentAction.DeployingPlayer);
+            AreEqual(pc2, currentAction.DeployingPlayer);
+
+            // next -> after austria attack, before poland attack
+            wasMoved = gameRecordHandler.MoveToNextAction();
+            IsTrue(wasMoved);
+            var currentAttack = (Attack)gameRecordHandler.GetCurrentAction();
+            AreEqual(poland, currentAttack.Attacker);
+
+            // next after poland attack
+            wasMoved = gameRecordHandler.MoveToNextAction();
+            IsTrue(wasMoved);
+            AreEqual(null, gameRecordHandler.GetCurrentAction());
         }
     }
 }

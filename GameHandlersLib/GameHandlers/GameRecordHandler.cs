@@ -111,22 +111,12 @@
         {
             bool wasSuccessful;
             bool foundTheAction;
-            ActionEnumerator tempEnumerator;
             do
             {
-                // temp enumerator
-                tempEnumerator = currentActionEnumerator;
-                tempEnumerator.MoveNext();
-
                 // get current action and whether it is related to players perspective
-                foundTheAction =
-                    PlayerPerspective == null
-                    || tempEnumerator
-                        .GetCurrentAction()
-                        ?.IsCloseOrRelatedTo(PlayerPerspective) == true;
-
                 // move to next action if there's any
-                wasSuccessful = MoveToNextActionPrivate();
+                wasSuccessful = MoveToNextActionPrivate(out bool foundTheCorrectPlayerPerspectiveViewedAction);
+                foundTheAction = foundTheCorrectPlayerPerspectiveViewedAction;
 
                 // repeat while you can move to next action
                 // and it does not concern our player perspective
@@ -139,12 +129,23 @@
             return wasSuccessful;
         }
 
-        private bool MoveToNextActionPrivate()
+        private bool MoveToNextActionPrivate(out bool foundThePlayerPerspectiveViewedAction)
         {
             if (!MoveToNextFirstValid())
             {
+                foundThePlayerPerspectiveViewedAction = false;
                 return false;
             }
+
+            // get current action and whether it is related to players perspective
+            // must be called before the playing itself so
+            // attack defender has correct owner
+            foundThePlayerPerspectiveViewedAction =
+                PlayerPerspective == null
+                || currentActionEnumerator
+                    .GetCurrentAction()
+                    ?.IsCloseOrRelatedTo(PlayerPerspective) == true;
+
             IAction currentAction = currentActionEnumerator.GetCurrentAction();
 
             switch (currentAction)
@@ -212,20 +213,10 @@
             ActionEnumerator tempEnumerator;
             do
             {
-                // temp enumerator ... we need to have correct game context
-                // for IsCloseOrRelated function
-                tempEnumerator = currentActionEnumerator;
-                tempEnumerator.MovePrevious();
-
-                // get current action and whether it is related to players perspective
-                foundTheAction = PlayerPerspective == null
-                                           || tempEnumerator
-                                               .GetCurrentAction()
-                                               ?.IsCloseOrRelatedTo(PlayerPerspective) == true;
-
                 // move to previous action
-                wasSuccessful = MoveToPreviousActionPrivate();
-                
+                wasSuccessful = MoveToPreviousActionPrivate(out bool foundTheCorrectAction);
+                foundTheAction = foundTheCorrectAction;
+
                 // repeat while you can move to previous action
                 // and it does not concern our player perspective
                 // only if it is fog of war
@@ -237,14 +228,12 @@
             return wasSuccessful;
         }
 
-        private bool MoveToPreviousActionPrivate()
+        private bool MoveToPreviousActionPrivate(out bool foundTheCorrectPlayerPerspectiveViewedAction)
         {
-            // get first previous action that gives
-            // us information about the current state
-
             // cannot move backwards => return false
             if (!MoveToPreviousFirstValid())
             {
+                foundTheCorrectPlayerPerspectiveViewedAction = false;
                 return false;
             }
 
@@ -263,8 +252,22 @@
                     action.Region.ChangeOwner(null);
                     break;
                 default:
+                    foundTheCorrectPlayerPerspectiveViewedAction = false;
                     return false;
             }
+
+            // get first previous action that gives
+            // us information about the current state
+            // for IsCloseOrRelated function
+            // get current action and whether it is related to players perspective
+            // must be tested after reverting the last action
+            // with to have correct attack defender owner (otherwise if
+            // the defending region was conquered, owner would be incorrect)
+            foundTheCorrectPlayerPerspectiveViewedAction = PlayerPerspective == null
+                                                           || currentActionEnumerator
+                                                               .GetCurrentAction()
+                                                               ?.IsCloseOrRelatedTo(PlayerPerspective) == true;
+
             return true;
         }
 
@@ -292,7 +295,7 @@
             bool wasSuccessful = false;
             do
             {
-                wasSuccessful |= MoveToNextActionPrivate();
+                wasSuccessful |= MoveToNextActionPrivate(out _);
                 // action index == 0 => its beginning of the new round
                 // => round has been reset
             } while (currentActionEnumerator.ActionIndex != 0);
@@ -324,7 +327,7 @@
             bool wasSuccessful = false;
             do
             {
-                wasSuccessful |= MoveToPreviousActionPrivate();
+                wasSuccessful |= MoveToPreviousActionPrivate(out _);
                 // action index == 0 => its beginning of the round
                 // => round has been reset
             } while (currentActionEnumerator.ActionIndex != 0);

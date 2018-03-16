@@ -109,12 +109,10 @@
                     }), pc2)
                 }
             };
+            roundHandler.PlayRound(gameRound);
 
-            var linearizedGameRound = (LinearizedGameRound)gameRound.Linearize();
-
-            roundHandler.PlayRound(linearizedGameRound);
-
-            var attacks = linearizedGameRound.Attacking.Attacks;
+            var lastLinearizedRound = (LinearizedGameRound)game.AllRounds.Last();
+            var attacks = lastLinearizedRound.Attacking.Attacks;
 
             var pc1Attack = attacks.First(x => x.AttackingPlayer == pc1);
             var pc2Attack = attacks.First(x => x.AttackingPlayer == pc2);
@@ -179,9 +177,10 @@
                 }
             };
 
-            var linearizedGameRound = (LinearizedGameRound)gameRound.Linearize();
+            roundHandler.PlayRound(gameRound);
 
-            roundHandler.PlayRound(linearizedGameRound);
+
+            var linearizedGameRound = (LinearizedGameRound)game.AllRounds.Last();
 
             var attacks = linearizedGameRound.Attacking.Attacks;
 
@@ -221,9 +220,8 @@
                 new Seize(pc2, poland)
             }, pc2));
             #endregion
-
-            var linearizedSeizes = seizeRound.Linearize();
-            roundHandler.PlayRound(linearizedSeizes);
+            
+            roundHandler.PlayRound(seizeRound);
         }
     }
 }
