@@ -22,20 +22,24 @@
         public IOnlineBot<BotTurn> Create(GameBotType gameBotType,
             MapMin map,
             Difficulty difficulty,
-            byte playerEncoded, bool isFogOfWar,
+            byte playerPerspectiveId,
+            byte[] playersIds,
+            bool isFogOfWar,
             Restrictions restrictions)
         {
             PlayerPerspective playerPerspective =
-                new PlayerPerspective(map, playerEncoded);
+                new PlayerPerspective(map, playerPerspectiveId);
             InitializeVisibility(ref playerPerspective, isFogOfWar);
 
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    return new MonteCarloTreeSearchBot(playerPerspective, difficulty, isFogOfWar,
+                    return new MonteCarloTreeSearchBot(playerPerspective, playersIds,
+                        difficulty, isFogOfWar,
                         restrictions);
                 case GameBotType.AggressiveBot:
-                    return new AggressiveBot(playerPerspective, difficulty,
+                    return new AggressiveBot(playerPerspective, playersIds,
+                        difficulty,
                         isFogOfWar, restrictions);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);

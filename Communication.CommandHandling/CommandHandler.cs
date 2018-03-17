@@ -28,6 +28,7 @@
         public TimeSpan? TimeBank { get; private set; }
         public TimeSpan? TimePerMove { get; private set; }
         public int? StartingPickRegionsCount { get; private set; }
+        public ICollection<int> StartingPickRegionsIds { get; set; }
         public int? MaxRoundsCount { get; private set; }
         public int? StartingArmyCount { get; private set; }
         // TODO: option to set it dynamically
@@ -70,6 +71,31 @@
 
         private ICommandToken ExecuteCommand(PlaceArmiesRequestToken token)
         {
+            // specify restrictions
+            var restrictions = new Restrictions()
+            {
+                GameBeginningRestrictions = new List<GameBeginningRestriction>()
+                {
+                    new GameBeginningRestriction()
+                    {
+                        RegionsPlayerCanChooseCount = StartingPickRegionsCount.Value,
+                        RestrictedRegions = StartingPickRegionsIds
+                    }
+                }
+            };
+            // create bot
+
+            int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
+
+            var mapMin = mapController.GetMap();
+            botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot,
+                mapMin, Difficulty.Hard,
+                (byte)myPlayerId,
+                playerDictionary.Where(x => x.Value != OwnerPerspective.Unoccupied).Select(x => (byte)x.Key).ToArray(),
+                IsFogOfWar, restrictions);
+
+            // find the best move
+            botHandler.FindBestMoveAsync();
             // TODO: solve request
             // stop evaluation in specified timespan
             botHandler.StopEvaluation(token.Timeout.Value - new TimeSpan(0, 0, 0, 0, milliseconds: 30)).Wait();
@@ -93,6 +119,32 @@
 
         private ICommandToken ExecuteCommand(PickStartingRegionsRequestToken token)
         {
+            // specify restrictions
+            var restrictions = new Restrictions()
+            {
+                GameBeginningRestrictions = new List<GameBeginningRestriction>()
+                {
+                    new GameBeginningRestriction()
+                    {
+                        RegionsPlayerCanChooseCount = StartingPickRegionsCount.Value,
+                        RestrictedRegions = StartingPickRegionsIds
+                    }
+                }
+            };
+            // create bot
+
+            int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
+
+            var mapMin = mapController.GetMap();
+            botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot,
+                mapMin, Difficulty.Hard,
+                (byte)myPlayerId,
+                playerDictionary.Where(x => x.Value != OwnerPerspective.Unoccupied).Select(x => (byte)x.Key).ToArray(),
+                IsFogOfWar, restrictions);
+
+            // find the best move
+            botHandler.FindBestMoveAsync();
+            // TODO: solve request
             // stop evaluation in specified timespan
             botHandler.StopEvaluation(token.Timeout.Value - new TimeSpan(0, 0, 0, 0, milliseconds: 30)).Wait();
 
@@ -112,28 +164,7 @@
         {
             mapController.Start();
 
-            // specify restrictions
-            var restrictions = new Restrictions()
-            {
-                GameBeginningRestrictions = new List<GameBeginningRestriction>()
-                {
-                    new GameBeginningRestriction()
-                    {
-                        RegionsPlayerCanChooseCount = StartingPickRegionsCount.Value,
-                        RestrictedRegions = token.RegionIds
-                    }
-                }
-            };
-            // create bot
-
-            int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
-
-            var mapMin = mapController.GetMap();
-            botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot, mapMin, Difficulty.Hard,
-                (byte)myPlayerId, IsFogOfWar, restrictions);
-            
-            // find the best move
-            botHandler.FindBestMoveAsync();
+            StartingPickRegionsIds = token.RegionIds;
 
             return null;
         }

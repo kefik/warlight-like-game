@@ -21,9 +21,11 @@
     {
         private readonly MCTSEvaluationHandler evaluationHandler;
 
-        public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective, Difficulty difficulty, bool isFogOfWar,
+        public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective,
+            byte[] playersIds,
+            Difficulty difficulty, bool isFogOfWar,
             Restrictions restrictions)
-            : base(playerPerspective, difficulty, isFogOfWar, restrictions)
+            : base(playerPerspective, playersIds, difficulty, isFogOfWar, restrictions)
         {
             evaluationHandler = new MCTSEvaluationHandler(PlayerPerspective,
                 restrictions);

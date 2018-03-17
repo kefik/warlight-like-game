@@ -18,9 +18,11 @@
 
         private readonly object botLock = new object();
 
-        public AggressiveBot(PlayerPerspective playerPerspective, Difficulty difficulty,
+        public AggressiveBot(PlayerPerspective playerPerspective,
+            byte[] playersIds,
+            Difficulty difficulty,
             bool isFogOfWar, Restrictions restrictions)
-            : base(playerPerspective, difficulty, isFogOfWar, restrictions)
+            : base(playerPerspective, playersIds, difficulty, isFogOfWar, restrictions)
         {
             var gameBeginningRestriction = restrictions
                 .GameBeginningRestrictions.First(x => x.PlayerId == playerPerspective.PlayerId);

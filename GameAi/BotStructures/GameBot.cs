@@ -31,7 +31,9 @@
             get { return EvaluationState == BotEvaluationState.NotRunning; }
         }
 
-        internal GameBot(PlayerPerspective playerPerspective,
+        internal GameBot(
+            PlayerPerspective playerPerspective,
+            byte[] playersIds,
             Difficulty difficulty, bool isFogOfWar,
             Restrictions restrictions)
         {

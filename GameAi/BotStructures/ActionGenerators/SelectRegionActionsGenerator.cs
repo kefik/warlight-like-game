@@ -9,12 +9,25 @@
     using Interfaces.ActionsGenerators;
     using Interfaces.Evaluators.StructureEvaluators;
 
+    /// <summary>
+    /// Its value <see cref="Common.Collections.TreeNode{GameAi.BotStructures.ActionGenerators.SelectRegionEvaluationNode,int}.Value"/>
+    /// represents <seealso cref="RegionMin.Id"/>.
+    /// </summary>
     internal class SelectRegionEvaluationNode : TreeNode<SelectRegionEvaluationNode, int>
     {
     }
 
+    /// <summary>
+    /// Tree of <see cref="SelectRegionEvaluationNode"/>s.
+    /// </summary>
     internal class SelectRegionEvaluationTree : Tree<SelectRegionEvaluationNode, int>
     {
+        /// <summary>
+        /// Translates <see cref="SelectRegionEvaluationTree"/> into <seealso cref="IReadOnlyList{t}"/>
+        /// of <seealso cref="BotGameBeginningTurn"/>s.
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <returns></returns>
         public IReadOnlyList<BotGameBeginningTurn> ToBotGameBeginningTurns(int playerId)
         {
             var leaves = GetLeaves();
@@ -41,6 +54,10 @@
             return turns;
         }
 
+        /// <summary>
+        /// Obtains leaves returning them in left-to-right order.
+        /// </summary>
+        /// <returns></returns>
         public IList<SelectRegionEvaluationNode> GetLeaves()
         {
             List<SelectRegionEvaluationNode> leaves = new List<SelectRegionEvaluationNode>();
@@ -105,7 +122,7 @@
 
             int combinationsPicked = 0;
 
-            ChooseBestRegions(80, ref combinationsPicked, 0, playerPerspective, tree.Root, new HashSet<double>(), 0);
+            ChooseBestRegions(9, ref combinationsPicked, 0, playerPerspective, tree.Root, new HashSet<double>(), 0);
 
             var botTurns = tree.ToBotGameBeginningTurns(playerId);
 
@@ -151,7 +168,7 @@
                 double pathSum = value + currentPathSum;
 
                 ref var region = ref playerPerspective.GetRegion(sortedRegions[i].RegionId);
-                // the region is not mine => pick it
+                // the region is not mine and I wasn't at this situation on the branch => pick it
                 if (region.OwnerId != playerId && !pathsValues.Contains(pathSum))
                 {
                     var playerPerspectiveCopy = playerPerspective.ShallowCopy();

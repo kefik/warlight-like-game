@@ -22,7 +22,9 @@
         
         public WarlightAiBotHandler(GameBotType gameBotType,
             MapMin mapMin, Difficulty difficulty,
-            byte playerEncoded, bool isFogOfWar,
+            byte playerEncoded,
+            byte[] playersIds,
+            bool isFogOfWar,
             Restrictions restrictions)
         {
             regionsIdsMappingHandler = new RegionsIdsMappingHandler(
@@ -36,7 +38,8 @@
             // remap restrictions
             var newRestrictions = regionsIdsMappingHandler.TranslateToNew(restrictions);
             
-            onlineBot = new GameBotCreator().Create(gameBotType, mapMin, difficulty, playerEncoded,
+            onlineBot = new GameBotCreator().Create(gameBotType, mapMin, difficulty,
+                playerEncoded, playersIds,
                 isFogOfWar, newRestrictions);
         }
 
