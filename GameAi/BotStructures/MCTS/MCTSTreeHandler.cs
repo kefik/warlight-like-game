@@ -9,6 +9,7 @@
     using Data.GameRecording;
     using Interfaces;
     using Interfaces.ActionsGenerators;
+    using Interfaces.Evaluators;
     using Interfaces.Evaluators.NodeEvaluators;
 
     /// <summary>
@@ -19,6 +20,8 @@
         private readonly INodeEvaluator<MCTSTreeNode> nodeEvaluator;
         private readonly IGameActionsGenerator gameActionsGenerator;
         private readonly IGameBeginningActionsGenerator beginningActionsGenerator;
+        private byte myPlayerId;
+        private byte[] playersIds;
 
         /// <summary>
         /// Tree representing the evaluation.
@@ -26,7 +29,9 @@
         public MCTSTree Tree { get; }
 
         public MCTSTreeHandler(PlayerPerspective initialBoardState,
+            byte[] playersIds,
             INodeEvaluator<MCTSTreeNode> nodeEvaluator,
+            IRoundEvaluator roundEvaluator,
             IGameActionsGenerator gameActionsGenerator,
             IGameBeginningActionsGenerator beginningActionsGenerator)
         {
@@ -42,6 +47,9 @@
             this.nodeEvaluator = nodeEvaluator;
             this.gameActionsGenerator = gameActionsGenerator;
             this.beginningActionsGenerator = beginningActionsGenerator;
+
+            myPlayerId = initialBoardState.PlayerId;
+            this.playersIds = playersIds;
         }
 
         /// <summary>
@@ -110,10 +118,17 @@
         {
             if (node.GameState.MapMin.IsGameBeginning())
             {
-                var botTurn = beginningActionsGenerator.Generate(node.GameState);
+                var myBotTurn = beginningActionsGenerator.Generate(node.GameState);
 
                 // TODO: try to generate best moves from opponents perspective (fog of war problem)
                 // TODO: get gameState this action leads to
+                foreach (byte playerId in playersIds.Where(x => x != myPlayerId))
+                {
+                    var playerPerspective = node.Value.BoardState;
+                    playerPerspective.PlayerId = playerId;
+
+                    var botTurn = beginningActionsGenerator.Generate(playerPerspective).First();
+                }
 
                 node.AddChild(new NodeState()
                 {

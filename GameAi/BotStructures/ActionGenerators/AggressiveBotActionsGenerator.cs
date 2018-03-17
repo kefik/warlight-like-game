@@ -41,7 +41,7 @@
             };
         }
 
-        private ICollection<(int RegionId, int Army, int DeployingPlayer)> GenerateDeploying(PlayerPerspective currentGameState)
+        private IList<(int RegionId, int Army, int DeployingPlayer)> GenerateDeploying(PlayerPerspective currentGameState)
         {
             var myRegions = currentGameState.GetMyRegions();
             int canDeployUnitsCount = currentGameState.GetMyIncome();
@@ -56,7 +56,7 @@
             };
         }
 
-        private ICollection<(int AttackingPlayerId, int AttackingRegionId, int AttackingArmy, int DefendingRegionId)> GenerateAttacking(
+        private IList<(int AttackingPlayerId, int AttackingRegionId, int AttackingArmy, int DefendingRegionId)> GenerateAttacking(
             PlayerPerspective currentGameState)
         {
             IList<(int AttackingPlayerId, int AttackingRegionId, int AttackingArmy, int DefendingRegionId)> attacks

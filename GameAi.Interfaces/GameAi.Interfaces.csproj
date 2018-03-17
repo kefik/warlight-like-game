@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ActionsGenerators\IGameActionsGenerator.cs" />
     <Compile Include="ActionsGenerators\IGameBeginningActionsGenerator.cs" />
+    <Compile Include="Evaluators\IRoundEvaluator.cs" />
     <Compile Include="Evaluators\StructureEvaluators\IPlayerPerspectiveEvaluator.cs" />
     <Compile Include="Evaluators\StructureEvaluators\IRegionMinEvaluator.cs" />
     <Compile Include="ActionsGenerators\IActionsGenerator.cs" />

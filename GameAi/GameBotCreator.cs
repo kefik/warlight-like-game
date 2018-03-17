@@ -11,10 +11,6 @@
     using Data.GameRecording;
     using Data.Restrictions;
     using FormatConverters;
-    using GameObjectsLib;
-    using GameObjectsLib.Game;
-    using GameObjectsLib.GameRecording;
-    using GameObjectsLib.Players;
     using Interfaces;
 
     internal class GameBotCreator

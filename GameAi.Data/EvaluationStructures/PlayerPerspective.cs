@@ -120,7 +120,7 @@ namespace GameAi.Data.EvaluationStructures
         /// <returns></returns>
         public ref RegionMin GetRegion(int regionId)
         {
-            return ref MapMin.RegionsMin[regionId];
+            return ref MapMin.GetRegion(regionId);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace GameAi.Data.EvaluationStructures
         /// <returns></returns>
         public ref SuperRegionMin GetSuperRegion(int superRegionId)
         {
-            return ref MapMin.SuperRegionsMin[superRegionId];
+            return ref MapMin.GetSuperRegion(superRegionId);
         }
 
         public IEnumerable<RegionMin> GetNeighbourRegions(int regionId)

@@ -8,10 +8,6 @@
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Data.Restrictions;
-    using GameObjectsLib;
-    using GameObjectsLib.Game;
-    using GameObjectsLib.GameRecording;
-    using GameObjectsLib.Players;
     using Interfaces;
 
     /// <summary>

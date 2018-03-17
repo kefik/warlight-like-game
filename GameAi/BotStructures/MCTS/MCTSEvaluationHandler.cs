@@ -9,9 +9,9 @@
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Data.Restrictions;
-    using GameObjectsLib.GameRecording;
     using Interfaces;
     using Interfaces.ActionsGenerators;
+    using Interfaces.Evaluators;
     using Interfaces.Evaluators.NodeEvaluators;
     using Interfaces.Evaluators.StructureEvaluators;
     using StructuresEvaluators;
@@ -26,10 +26,13 @@
     {
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private MCTSTreeHandler[] treeHandlers;
+        private readonly byte[] playersIds;
 
         public MCTSEvaluationHandler(PlayerPerspective initialGameState,
+                byte[] playersIds,
                 Restrictions restrictions)
         {
+            this.playersIds = playersIds;
             Initialize(initialGameState, restrictions);
         }
 
@@ -46,6 +49,7 @@
             Restrictions restrictions)
         {
             INodeEvaluator<MCTSTreeNode> nodeEvaluator = new UctEvaluator();
+            IRoundEvaluator roundEvaluator = new RoundEvaluator();
 
             // clear what was left after previous evaluation
             CancellationTokenSource = new CancellationTokenSource();
@@ -56,7 +60,10 @@
 
             for (int index = 0; index < treeHandlers.Length; index++)
             {
-                treeHandlers[index] = new MCTSTreeHandler(initialGameState, nodeEvaluator,
+                treeHandlers[index] = new MCTSTreeHandler(initialGameState,
+                    playersIds,
+                    nodeEvaluator,
+                    roundEvaluator,
                     GetGameActionGenerator(),
                     GetGameBeginningActionGenerator(restrictions?.GameBeginningRestrictions?.FirstOrDefault()));
             }

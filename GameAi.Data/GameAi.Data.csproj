@@ -54,7 +54,11 @@
     <Compile Include="GameBotType.cs" />
     <Compile Include="GameRecording\BotGameBeginningTurn.cs" />
     <Compile Include="GameRecording\BotGameTurn.cs" />
+    <Compile Include="GameRecording\BotRound.cs" />
     <Compile Include="GameRecording\BotTurn.cs" />
+    <Compile Include="GameRecording\LinearizedBotBotGameBeginningRound.cs" />
+    <Compile Include="GameRecording\LinearizedBotBotGameRound.cs" />
+    <Compile Include="GameRecording\LinearizedBotRound.cs" />
     <Compile Include="OwnerPerspective.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Restrictions\GameBeginningRestriction.cs" />

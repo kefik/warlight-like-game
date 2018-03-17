@@ -11,7 +11,6 @@
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Data.Restrictions;
-    using GameObjectsLib;
     using Interfaces;
 
     /// <summary>
@@ -20,6 +19,7 @@
     internal class MonteCarloTreeSearchBot : GameBot
     {
         private readonly MCTSEvaluationHandler evaluationHandler;
+        private object botLock = new object();
 
         public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective,
             byte[] playersIds,
@@ -28,6 +28,7 @@
             : base(playerPerspective, playersIds, difficulty, isFogOfWar, restrictions)
         {
             evaluationHandler = new MCTSEvaluationHandler(PlayerPerspective,
+                playersIds,
                 restrictions);
         }
 
