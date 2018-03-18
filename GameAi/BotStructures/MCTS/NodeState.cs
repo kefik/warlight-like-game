@@ -9,9 +9,9 @@
     internal class NodeState
     {
         public int VisitCount { get; set; }
-        public int WinCount { get; set; }
+        public double WinCount { get; set; }
 
-        public PlayerPerspective BoardState { get; set; }
+        public MapMin BoardState { get; set; }
 
         /// <summary>
         /// Represents turn that led to this particular <see cref="BoardState"/>.

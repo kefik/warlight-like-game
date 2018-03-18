@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Difficulty.cs" />
+    <Compile Include="EvaluationStructures\DistanceMatrix.cs" />
     <Compile Include="EvaluationStructures\MapMin.cs" />
     <Compile Include="EvaluationStructures\PlayerPerspective.cs" />
     <Compile Include="EvaluationStructures\RegionMin.cs" />

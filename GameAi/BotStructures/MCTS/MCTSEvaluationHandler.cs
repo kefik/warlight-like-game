@@ -26,14 +26,14 @@
     {
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private MCTSTreeHandler[] treeHandlers;
-        private readonly byte[] playersIds;
+        private readonly byte enemyPlayerId;
 
-        public MCTSEvaluationHandler(PlayerPerspective initialGameState,
-                byte[] playersIds,
+        public MCTSEvaluationHandler(PlayerPerspective playerPerspective,
+                byte enemyPlayerId,
                 Restrictions restrictions)
         {
-            this.playersIds = playersIds;
-            Initialize(initialGameState, restrictions);
+            this.enemyPlayerId = enemyPlayerId;
+            Initialize(playerPerspective, restrictions);
         }
 
         /// <summary>
@@ -50,6 +50,10 @@
         {
             INodeEvaluator<MCTSTreeNode> nodeEvaluator = new UctEvaluator();
             IRoundEvaluator roundEvaluator = new RoundEvaluator();
+            IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator
+                = new PlayerPerspectiveEvaluator(
+                new GameBeginningRegionMinEvaluator(
+                    new GameBeginningSuperRegionMinEvaluator(initialGameState.MapMin)));
 
             // clear what was left after previous evaluation
             CancellationTokenSource = new CancellationTokenSource();
@@ -61,11 +65,14 @@
             for (int index = 0; index < treeHandlers.Length; index++)
             {
                 treeHandlers[index] = new MCTSTreeHandler(initialGameState,
-                    playersIds,
+                    enemyPlayerId,
                     nodeEvaluator,
                     roundEvaluator,
-                    GetGameActionGenerator(),
-                    GetGameBeginningActionGenerator(restrictions?.GameBeginningRestrictions?.FirstOrDefault()));
+                    GetGameActionGenerator(initialGameState.MapMin),
+                    GetGameBeginningActionGenerator(restrictions?.GameBeginningRestrictions,
+                        initialGameState.MapMin),
+                    gameBeginningPlayerPerspectiveEvaluator,
+                    gameBeginningPlayerPerspectiveEvaluator);
             }
         }
 
@@ -149,21 +156,20 @@
             ClearEvaluationCache();
         }
 
-        private IGameActionsGenerator GetGameActionGenerator()
+        private IGameActionsGenerator GetGameActionGenerator(MapMin mapMin)
         {
-            return new AggressiveBotActionsGenerator();
+            return new AggressiveBotActionsGenerator(new GameRegionMinEvaluator(new GameSuperRegionMinEvaluator(mapMin)), mapMin);
         }
 
         private IGameBeginningActionsGenerator GetGameBeginningActionGenerator(
-            GameBeginningRestriction gameBeginningRestriction)
+            ICollection<GameBeginningRestriction> gameBeginningRestrictions, MapMin map)
         {
-            IRegionMinEvaluator regionMinEvaluator = new GameBeginningRegionMinEvaluator(new GameBeginningSuperRegionMinEvaluator());
-            if (gameBeginningRestriction == null)
+            IRegionMinEvaluator regionMinEvaluator = new GameBeginningRegionMinEvaluator(new GameBeginningSuperRegionMinEvaluator(map));
+            if (gameBeginningRestrictions == null)
             {
                 return null;
             }
-            return new SelectRegionActionsGenerator(regionMinEvaluator, gameBeginningRestriction.RegionsPlayerCanChooseCount,
-                (byte)gameBeginningRestriction.PlayerId, gameBeginningRestriction.RestrictedRegions);
+            return new SelectRegionActionsGenerator(regionMinEvaluator, gameBeginningRestrictions);
         }
     }
 }

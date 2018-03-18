@@ -59,12 +59,12 @@
             get { return Value.VisitCount; }
         }
 
-        public int WinCount
+        public double WinCount
         {
             get { return Value.WinCount; }
         }
 
-        public PlayerPerspective GameState
+        public MapMin GameState
         {
             get { return Value.BoardState; }
         }

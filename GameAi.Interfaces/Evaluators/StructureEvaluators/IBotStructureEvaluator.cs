@@ -7,6 +7,6 @@
     /// <typeparam name="TPlayerPerspective"></typeparam>
     public interface IBotStructureEvaluator<in TPlayerPerspective, in TBotStructure>
     {
-        double GetCost(TPlayerPerspective currentGameState, TBotStructure gameStructure);
+        double GetValue(TPlayerPerspective currentGameState, TBotStructure gameStructure);
     }
 }

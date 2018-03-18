@@ -1,6 +1,8 @@
 namespace GameAi.Data.EvaluationStructures
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Runtime.CompilerServices;
 
     /// <summary>
@@ -139,6 +141,36 @@ namespace GameAi.Data.EvaluationStructures
             {
                 yield return GetRegion(neighbourRegionIds);
             }
+        }
+        
+        public RegionMin GetClosestRegion(
+            RegionMin sourceRegion,
+            Func<RegionMin, bool> condition)
+        {
+            // BFS search for closest Region that is not mine
+            // used region == key + parent region == value
+            var usedRegions = new Dictionary<int, int>();
+            
+            Queue<RegionMin> nodesToProcess = new Queue<RegionMin>();
+            nodesToProcess.Enqueue(sourceRegion);
+            usedRegions.Add(sourceRegion.Id, sourceRegion.Id);
+            do
+            {
+                var nodeToProcess = nodesToProcess.Dequeue();
+
+                var neighbourRegions = GetNeighbourRegions(nodeToProcess.Id)
+                    .Where(x => !usedRegions.ContainsKey(x.Id));
+                foreach (RegionMin neighbourRegion in neighbourRegions)
+                {
+                    if (condition(neighbourRegion))
+                    {
+                        return neighbourRegion;
+                    }
+
+                    nodesToProcess.Enqueue(neighbourRegion);
+                    usedRegions.Add(neighbourRegion.Id, nodeToProcess.Id);
+                }
+            } while (true);
         }
     }
 }

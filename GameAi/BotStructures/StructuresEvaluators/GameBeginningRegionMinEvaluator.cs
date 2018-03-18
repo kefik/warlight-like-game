@@ -29,15 +29,15 @@
         /// <param name="currentGameState"></param>
         /// <param name="gameStructure"></param>
         /// <returns></returns>
-        public double GetCost(PlayerPerspective currentGameState, RegionMin gameStructure)
+        public double GetValue(PlayerPerspective currentGameState, RegionMin gameStructure)
         {
-            double staticCost = GetStaticCost(gameStructure);
+            double staticValue = GetStaticValue(gameStructure);
             ref SuperRegionMin superRegion = ref currentGameState.GetSuperRegion(gameStructure.SuperRegionId);
             var myRegions = currentGameState.GetMyRegions().ToList();
 
             // hint: super region value has influence on how good the given super region is
             double superRegionValue = SuperRegionCoefficient
-                * superRegionMinEvaluator.GetCost(currentGameState, superRegion);
+                * superRegionMinEvaluator.GetValue(currentGameState, superRegion);
 
             // hint: clustered regions are not good to choose
             // greater from owned neighbour, lesser the cost
@@ -45,12 +45,12 @@
             double clusterValue = 0;
             if (currentGameState.IsNeighbourToAnyMyRegion(gameStructure))
             {
-                clusterValue -= ClusterCoefficient; //TODO: * distance
+                clusterValue += ClusterCoefficient; //TODO: * distance
             }
 
             double dynamicCost = superRegionValue;
 
-            return dynamicCost + staticCost;
+            return dynamicCost + staticValue;
         }
 
         /// <summary>
@@ -58,12 +58,12 @@
         /// </summary>
         /// <param name="gameStructure"></param>
         /// <returns></returns>
-        private double GetStaticCost(RegionMin gameStructure)
+        private double GetStaticValue(RegionMin gameStructure)
         {
             int neighboursCount = gameStructure.NeighbourRegionsIds.Length;
 
             // hint: more neighbours => harder it is to defend the region
-            double staticResult = NeighboursCoefficient * neighboursCount;
+            double staticResult = -NeighboursCoefficient * neighboursCount;
 
             return staticResult;
         }

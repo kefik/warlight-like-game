@@ -22,13 +22,13 @@
         private object botLock = new object();
 
         public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective,
-            byte[] playersIds,
+            byte enemyPlayerId,
             Difficulty difficulty, bool isFogOfWar,
             Restrictions restrictions)
-            : base(playerPerspective, playersIds, difficulty, isFogOfWar, restrictions)
+            : base(playerPerspective, new byte[] { enemyPlayerId }, difficulty, isFogOfWar, restrictions)
         {
             evaluationHandler = new MCTSEvaluationHandler(PlayerPerspective,
-                playersIds,
+                enemyPlayerId,
                 restrictions);
         }
 

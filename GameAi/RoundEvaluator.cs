@@ -20,13 +20,13 @@
             {
                 case BotGameTurn _:
                 {
-                    BotGameTurn[] gameTurns = (BotGameTurn[]) turns;
+                    BotGameTurn[] gameTurns = turns.Cast<BotGameTurn>().ToArray();
                     var linearized = Linearize(gameTurns);
                     return PlayBotGameRound(mapMin, linearized);
                 }
                 case BotGameBeginningTurn _:
                 {
-                    BotGameBeginningTurn[] gameBeginningTurns = (BotGameBeginningTurn[]) turns;
+                    BotGameBeginningTurn[] gameBeginningTurns = turns.Cast<BotGameBeginningTurn>().ToArray();
                     var linearized = Linearize(gameBeginningTurns);
                     return PlayBotGameBeginningRound(mapMin, linearized);
                 }

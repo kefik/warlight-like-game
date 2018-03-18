@@ -6,6 +6,7 @@
     using BotStructures;
     using BotStructures.AggressiveBot;
     using BotStructures.MCTS;
+    using Common.Extensions;
     using Data;
     using Data.EvaluationStructures;
     using Data.GameRecording;
@@ -30,7 +31,14 @@
             switch (gameBotType)
             {
                 case GameBotType.MonteCarloTreeSearchBot:
-                    return new MonteCarloTreeSearchBot(playerPerspective, playersIds,
+                    if (playersIds.Length > 2)
+                    {
+                        throw new ArgumentException($"{GameBotType.MonteCarloTreeSearchBot.GetDisplayName()} " +
+                                                    $"cannot be used for games with more than 2 players.");
+                    }
+                    return new MonteCarloTreeSearchBot(playerPerspective,
+                        playersIds
+                        .First(x => x != playerPerspectiveId),
                         difficulty, isFogOfWar,
                         restrictions);
                 case GameBotType.AggressiveBot:

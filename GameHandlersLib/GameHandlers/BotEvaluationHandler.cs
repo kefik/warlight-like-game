@@ -108,7 +108,8 @@
                             GameBotType.AggressiveBot,
                             mapMin, Difficulty.Hard,
                             (byte)evaluationPlayerId,
-                            game.Players.Where(x => x.IsDefeated(game.RoundNumber)).Select(x => (byte)x.Id).ToArray(),
+                            game.Players.Where(x => !x.IsDefeated(game.RoundNumber))
+                                .Select(x => (byte)playerIdsMapper.GetNewId(x.Id)).ToArray(),
                             game.IsFogOfWar, restrictions);
                     }
                     else
@@ -117,7 +118,8 @@
                         botHandlers[currentIndex] = new WarlightAiBotHandler(
                             aiPlayer.BotType,
                             mapMin, aiPlayer.Difficulty, (byte)evaluationPlayerId,
-                            game.Players.Where(x => x.IsDefeated(game.RoundNumber)).Select(x => (byte)x.Id).ToArray(),
+                            game.Players.Where(x => !x.IsDefeated(game.RoundNumber))
+                                .Select(x => (byte)playerIdsMapper.GetNewId(x.Id)).ToArray(),
                             game.IsFogOfWar, restrictions);
                     }
                     var botTask = Task.Run(botHandlers[currentIndex].FindBestMoveAsync);

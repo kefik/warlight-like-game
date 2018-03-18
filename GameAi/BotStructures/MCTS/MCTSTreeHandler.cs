@@ -1,6 +1,7 @@
 ﻿namespace GameAi.BotStructures.MCTS
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -11,6 +12,8 @@
     using Interfaces.ActionsGenerators;
     using Interfaces.Evaluators;
     using Interfaces.Evaluators.NodeEvaluators;
+    using Interfaces.Evaluators.StructureEvaluators;
+    using StructuresEvaluators;
 
     /// <summary>
     /// Handles single-threaded MCTS evaluation.
@@ -18,10 +21,16 @@
     internal class MCTSTreeHandler
     {
         private readonly INodeEvaluator<MCTSTreeNode> nodeEvaluator;
+        private readonly IRoundEvaluator roundEvaluator;
         private readonly IGameActionsGenerator gameActionsGenerator;
         private readonly IGameBeginningActionsGenerator beginningActionsGenerator;
+        private readonly IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator;
+        private readonly IPlayerPerspectiveEvaluator gamePerspectiveEvaluator;
+
+        private MinimaxCalculator minimaxCalculator;
+
         private byte myPlayerId;
-        private byte[] playersIds;
+        private byte enemyPlayerId;
 
         /// <summary>
         /// Tree representing the evaluation.
@@ -29,15 +38,17 @@
         public MCTSTree Tree { get; }
 
         public MCTSTreeHandler(PlayerPerspective initialBoardState,
-            byte[] playersIds,
+            byte enemyPlayerId,
             INodeEvaluator<MCTSTreeNode> nodeEvaluator,
             IRoundEvaluator roundEvaluator,
             IGameActionsGenerator gameActionsGenerator,
-            IGameBeginningActionsGenerator beginningActionsGenerator)
+            IGameBeginningActionsGenerator beginningActionsGenerator,
+            IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator,
+            IPlayerPerspectiveEvaluator gamePerspectiveEvaluator)
         {
             var state = new NodeState()
             {
-                BoardState = initialBoardState,
+                BoardState = initialBoardState.MapMin,
                 VisitCount = 0,
                 WinCount = 0
             };
@@ -45,11 +56,17 @@
             Tree = new MCTSTree(state);
 
             this.nodeEvaluator = nodeEvaluator;
+            this.roundEvaluator = roundEvaluator;
             this.gameActionsGenerator = gameActionsGenerator;
             this.beginningActionsGenerator = beginningActionsGenerator;
+            this.gameBeginningPlayerPerspectiveEvaluator = gameBeginningPlayerPerspectiveEvaluator;
+            this.gamePerspectiveEvaluator = gamePerspectiveEvaluator;
+
+            minimaxCalculator = new MinimaxCalculator(roundEvaluator,
+                gameBeginningPlayerPerspectiveEvaluator);
 
             myPlayerId = initialBoardState.PlayerId;
-            this.playersIds = playersIds;
+            this.enemyPlayerId = enemyPlayerId;
         }
 
         /// <summary>
@@ -116,33 +133,51 @@
         /// <returns>New children <see cref="node"/> was expanded to.</returns>
         private IList<MCTSTreeNode> Expand(MCTSTreeNode node)
         {
-            if (node.GameState.MapMin.IsGameBeginning())
+            var boardState = node.Value.BoardState;
+
+            if (node.GameState.IsGameBeginning())
             {
-                var myBotTurn = beginningActionsGenerator.Generate(node.GameState);
+                var playerPerspective = new PlayerPerspective(boardState, myPlayerId);
+                // generate select moves for my bot
+                var myBotTurns = beginningActionsGenerator.Generate(playerPerspective);
 
-                // TODO: try to generate best moves from opponents perspective (fog of war problem)
-                // TODO: get gameState this action leads to
-                foreach (byte playerId in playersIds.Where(x => x != myPlayerId))
+                playerPerspective.PlayerId = enemyPlayerId;
+
+                // generate select moves for enemy bot
+                var enemyBotTurns = beginningActionsGenerator.Generate(playerPerspective);
+
+                var expandedNodeStates = minimaxCalculator.CalculateBestActions(
+                    boardState,
+                    myPlayerId, enemyPlayerId,
+                    myBotTurns, enemyBotTurns);
+
+                // add expanded node states
+                foreach (var nodeState in expandedNodeStates)
                 {
-                    var playerPerspective = node.Value.BoardState;
-                    playerPerspective.PlayerId = playerId;
-
-                    var botTurn = beginningActionsGenerator.Generate(playerPerspective).First();
+                    node.AddChild(nodeState);
                 }
-
-                node.AddChild(new NodeState()
-                {
-                });
             }
             else
             {
-                var botTurn = gameActionsGenerator.Generate(node.GameState);
+                var playerPerspective = new PlayerPerspective(boardState, myPlayerId);
+                // generate select moves for my bot
+                var myBotTurns = gameActionsGenerator.Generate(playerPerspective);
 
-                // TODO: get gameState this action leads to
+                playerPerspective.PlayerId = enemyPlayerId;
 
-                node.AddChild(new NodeState()
+                // generate select moves for enemy bot
+                var enemyBotTurns = gameActionsGenerator.Generate(playerPerspective);
+
+                var expandedNodeStates = minimaxCalculator.CalculateBestActions(
+                    boardState,
+                    myPlayerId, enemyPlayerId,
+                    myBotTurns, enemyBotTurns);
+
+                // add expanded node states
+                foreach (var nodeState in expandedNodeStates)
                 {
-                });
+                    node.AddChild(nodeState);
+                }
             }
 
             return node.Children;

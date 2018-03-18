@@ -16,6 +16,7 @@
     internal abstract class GameBot : IOnlineBot<BotTurn>
     {
         protected readonly PlayerPerspective PlayerPerspective;
+        protected readonly byte[] PlayersIds;
         protected Restrictions Restrictions;
         protected BotEvaluationState EvaluationState;
 
@@ -38,6 +39,7 @@
             IsFogOfWar = isFogOfWar;
             this.Restrictions = restrictions;
             this.EvaluationState = BotEvaluationState.NotRunning;
+            PlayersIds = playersIds;
         }
 
         public abstract BotTurn GetCurrentBestMove();

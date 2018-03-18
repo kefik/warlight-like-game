@@ -46,17 +46,22 @@
   <ItemGroup>
     <Compile Include="BotEvaluationState.cs" />
     <Compile Include="BotStructures\ActionGenerators\AggressiveBotActionsGenerator.cs" />
+    <Compile Include="BotStructures\ActionGenerators\MCTSBotActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\RandomSelectRegionActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\SelectRegionActionsGenerator.cs" />
     <Compile Include="BotStructures\AggressiveBot\AggressiveBot.cs" />
     <Compile Include="BotStructures\MCTS\MCTSEvaluationHandler.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTree.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTreeHandler.cs" />
+    <Compile Include="BotStructures\MCTS\MinimaxCalculator.cs" />
     <Compile Include="BotStructures\MCTS\NodeState.cs" />
     <Compile Include="BotStructures\MCTS\UctEvaluator.cs" />
+    <Compile Include="BotStructures\StructuresEvaluators\CacheableEvaluator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\PlayerPerspectiveEvaluator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\GameBeginningRegionMinEvaluator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\GameBeginningSuperRegionMinEvaluator.cs" />
+    <Compile Include="BotStructures\StructuresEvaluators\GameRegionMinEvaluator.cs" />
+    <Compile Include="BotStructures\StructuresEvaluators\GameSuperRegionMinEvaluator.cs" />
     <Compile Include="GameBotCreator.cs" />
     <Compile Include="BotStructures\GameBot.cs" />
     <Compile Include="BotStructures\MCTS\MonteCarloTreeSearchBot.cs" />

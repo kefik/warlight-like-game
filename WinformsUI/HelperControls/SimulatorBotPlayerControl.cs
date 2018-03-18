@@ -61,7 +61,7 @@ namespace WinformsUI.HelperControls
             botTypeComboBox.DisplayMember = "Text";
             botTypeComboBox.DataSource = list;
 
-            botTypeComboBox.SelectedIndex = 1;
+            botTypeComboBox.SelectedIndex = 0;
         }
 
         /// <summary>

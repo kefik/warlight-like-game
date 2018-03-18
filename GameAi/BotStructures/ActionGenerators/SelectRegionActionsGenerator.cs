@@ -1,16 +1,18 @@
 ﻿namespace GameAi.BotStructures.ActionGenerators
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using Common.Collections;
     using Data.EvaluationStructures;
     using Data.GameRecording;
+    using Data.Restrictions;
     using Interfaces.ActionsGenerators;
     using Interfaces.Evaluators.StructureEvaluators;
 
     /// <summary>
-    /// Its value <see cref="Common.Collections.TreeNode{GameAi.BotStructures.ActionGenerators.SelectRegionEvaluationNode,int}.Value"/>
+    /// Its value <see cref="SelectRegionEvaluationNode.Value"/>
     /// represents <seealso cref="RegionMin.Id"/>.
     /// </summary>
     internal class SelectRegionEvaluationNode : TreeNode<SelectRegionEvaluationNode, int>
@@ -75,45 +77,52 @@
 
     public class SelectRegionActionsGenerator : IGameBeginningActionsGenerator
     {
-        private readonly byte playerId;
-        private readonly int[] regionsRestrictions;
-        private readonly int regionsToChooseCount;
         private readonly Random random;
 
         private readonly IRegionMinEvaluator regionMinEvaluator;
+        private IDictionary<byte, GameBeginningRestriction> restrictions;
 
         public SelectRegionActionsGenerator(IRegionMinEvaluator regionMinEvaluator,
-            int regionsToChooseCount, byte playerId = 0, ICollection<int> regionsRestrictions = null)
+            ICollection<GameBeginningRestriction> gameBeginningRestrictions)
         {
-            // regions that player can choose > regions options count => error
-            if (regionsRestrictions == null
-                || regionsToChooseCount > regionsRestrictions.Count)
-            {
-                throw new ArgumentException("Count of regions that player can choose cannot" +
-                                            "be lower than number of regions that he can choose.");
-            }
+            restrictions = gameBeginningRestrictions.ToDictionary(x => (byte)x.PlayerId, x => x);
 
-            this.regionsToChooseCount = regionsToChooseCount;
             this.regionMinEvaluator = regionMinEvaluator;
-            this.regionsRestrictions = regionsRestrictions.OrderBy(x => x).ToArray();
-            this.playerId = playerId;
             random = new Random();
         }
 
         public IReadOnlyList<BotGameBeginningTurn> Generate(PlayerPerspective currentGameState)
         {
             var copiedState = currentGameState.ShallowCopy();
-            if (currentGameState.PlayerId != playerId)
-            {
-                return null;
-            }
             return GenerateActions(copiedState);
         }
+
+        /// <summary>
+        /// Temp variable for <see cref="GenerateActions"/>
+        /// method to be faster.
+        /// </summary>
+        private byte playerId;
+
+        /// <summary>
+        /// Temp variable for <see cref="GenerateActions"/>
+        /// method to be faster.
+        /// </summary>
+        private int regionsToChooseCount;
+
+        /// <summary>
+        /// Temp variable for <see cref="GenerateActions"/>
+        /// method to be faster.
+        /// </summary>
+        private ICollection<int> regionsRestrictions;
 
         private IReadOnlyList<BotGameBeginningTurn> GenerateActions(PlayerPerspective playerPerspective)
         {
             // obtain best regions based on restrictions
             // choose regionsToChooseCount regions recursively, take n best combinations
+            var dictionaryEntry = restrictions[playerPerspective.PlayerId];
+            playerId = (byte)dictionaryEntry.PlayerId;
+            regionsToChooseCount = dictionaryEntry.RegionsPlayerCanChooseCount;
+            regionsRestrictions = dictionaryEntry.RestrictedRegions;
 
             SelectRegionEvaluationTree tree = new SelectRegionEvaluationTree()
             {
@@ -150,7 +159,7 @@
                     .Select(x => new
                     {
                         RegionId = x,
-                        Value = regionMinEvaluator.GetCost(playerPerspective, playerPerspective.GetRegion(x))
+                        Value = regionMinEvaluator.GetValue(playerPerspective, playerPerspective.GetRegion(x))
                     })
                     .OrderBy(x => x.Value)
                     .ToList();

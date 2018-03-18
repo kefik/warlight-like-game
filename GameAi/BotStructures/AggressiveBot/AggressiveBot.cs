@@ -9,28 +9,29 @@
     using Data.GameRecording;
     using Data.Restrictions;
     using Interfaces;
+    using Interfaces.ActionsGenerators;
+    using StructuresEvaluators;
 
     internal class AggressiveBot : GameBot
     {
-        private readonly RandomSelectRegionActionsGenerator randomSelectRegionActionsGenerator;
+        private readonly IGameBeginningActionsGenerator selectRegionActionsGenerator;
         private readonly AggressiveBotActionsGenerator actionsGenerator;
         private BotTurn generatedBestTurn;
 
         private readonly object botLock = new object();
 
         public AggressiveBot(PlayerPerspective playerPerspective,
-            byte[] playersIds,
+            byte[] enemyPlayerId,
             Difficulty difficulty,
             bool isFogOfWar, Restrictions restrictions)
-            : base(playerPerspective, playersIds, difficulty, isFogOfWar, restrictions)
+            : base(playerPerspective, enemyPlayerId, difficulty, isFogOfWar, restrictions)
         {
-            var gameBeginningRestriction = restrictions
-                .GameBeginningRestrictions.First(x => x.PlayerId == playerPerspective.PlayerId);
-            randomSelectRegionActionsGenerator = new RandomSelectRegionActionsGenerator(
-                gameBeginningRestriction.RegionsPlayerCanChooseCount, 
-                gameBeginningRestriction.PlayerId,
-                gameBeginningRestriction.RestrictedRegions);
-            actionsGenerator = new AggressiveBotActionsGenerator();
+            selectRegionActionsGenerator = new SelectRegionActionsGenerator(
+                new GameRegionMinEvaluator(new GameSuperRegionMinEvaluator(playerPerspective.MapMin)), 
+                restrictions.GameBeginningRestrictions);
+            actionsGenerator = new AggressiveBotActionsGenerator(
+                new GameRegionMinEvaluator(new GameSuperRegionMinEvaluator(playerPerspective.MapMin)),
+                playerPerspective.MapMin);
         }
 
         public override BotTurn GetCurrentBestMove()
@@ -54,7 +55,7 @@
             if (PlayerPerspective.MapMin.IsGameBeginning())
             {
                 generatedBestTurn =
-                    randomSelectRegionActionsGenerator.Generate(PlayerPerspective)[0];
+                    selectRegionActionsGenerator.Generate(PlayerPerspective)[0];
             }
             else
             {
