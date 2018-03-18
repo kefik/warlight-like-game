@@ -292,11 +292,22 @@
             // moving to next round is successful
             // if at least one action has been moved
             bool wasSuccessful = false;
+            int roundIndex = currentActionEnumerator.RoundIndex;
             do
             {
                 wasSuccessful |= MoveToNextActionPrivate(out _);
                 // action index == 0 => its beginning of the new round
                 // => round has been reset
+                
+                // last move of round is invalid => first valid is deploy
+                // => gets played and moves action index to 1 =>
+                // we have to revert it to the beginning of the round
+                if (currentActionEnumerator.RoundIndex != roundIndex
+                    && currentActionEnumerator.ActionIndex != 0)
+                {
+                    MoveToPreviousAction();
+                    break;
+                }
             } while (currentActionEnumerator.ActionIndex != 0);
 
             return wasSuccessful;
