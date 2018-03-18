@@ -48,12 +48,14 @@
         public void Initialize(PlayerPerspective initialGameState,
             Restrictions restrictions)
         {
+            var distanceMatrix = new DistanceMatrix(initialGameState.MapMin.RegionsMin);
             INodeEvaluator<MCTSTreeNode> nodeEvaluator = new UctEvaluator();
             IRoundEvaluator roundEvaluator = new RoundEvaluator();
             IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator
                 = new PlayerPerspectiveEvaluator(
                 new GameBeginningRegionMinEvaluator(
-                    new GameBeginningSuperRegionMinEvaluator(initialGameState.MapMin)));
+                    new GameBeginningSuperRegionMinEvaluator(initialGameState.MapMin),
+                    distanceMatrix));
 
             // clear what was left after previous evaluation
             CancellationTokenSource = new CancellationTokenSource();
@@ -162,9 +164,12 @@
         }
 
         private IGameBeginningActionsGenerator GetGameBeginningActionGenerator(
-            ICollection<GameBeginningRestriction> gameBeginningRestrictions, MapMin map)
+            ICollection<GameBeginningRestriction> gameBeginningRestrictions,
+            MapMin map)
         {
-            IRegionMinEvaluator regionMinEvaluator = new GameBeginningRegionMinEvaluator(new GameBeginningSuperRegionMinEvaluator(map));
+            IRegionMinEvaluator regionMinEvaluator = new GameBeginningRegionMinEvaluator(
+                new GameBeginningSuperRegionMinEvaluator(map),
+                new DistanceMatrix(map.RegionsMin));
             if (gameBeginningRestrictions == null)
             {
                 return null;

@@ -210,7 +210,6 @@
         {
             bool wasSuccessful;
             bool foundTheAction;
-            ActionEnumerator tempEnumerator;
             do
             {
                 // move to previous action

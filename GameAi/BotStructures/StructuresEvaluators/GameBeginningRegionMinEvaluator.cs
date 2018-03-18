@@ -13,13 +13,17 @@
     {
         private const double NeighboursCoefficient = 1;
         private const double SuperRegionCoefficient = 3;
-        private const double ClusterCoefficient = 3;
+        private const double ClusterCoefficient = 2;
+
+        private readonly DistanceMatrix distanceMatrix;
 
         private readonly ISuperRegionMinEvaluator superRegionMinEvaluator;
 
-        public GameBeginningRegionMinEvaluator(ISuperRegionMinEvaluator superRegionMinEvaluator)
+        public GameBeginningRegionMinEvaluator(ISuperRegionMinEvaluator superRegionMinEvaluator,
+            DistanceMatrix distanceMatrix)
         {
             this.superRegionMinEvaluator = superRegionMinEvaluator;
+            this.distanceMatrix = distanceMatrix;
         }
 
         /// <summary>
@@ -41,14 +45,18 @@
 
             // hint: clustered regions are not good to choose
             // greater from owned neighbour, lesser the cost
-            // TODO: distance <= 3 means clustered
             double clusterValue = 0;
             if (currentGameState.IsNeighbourToAnyMyRegion(gameStructure))
             {
-                clusterValue += ClusterCoefficient; //TODO: * distance
+                clusterValue += ClusterCoefficient
+                    // get distance closest region of the same player
+                    * currentGameState.MapMin.RegionsMin
+                        .Where(x => x.OwnerId == currentGameState.PlayerId)
+                        .Where(x => x.Id != gameStructure.Id)
+                        .Min(x => distanceMatrix.GetDistance(x.Id, gameStructure.Id));
             }
 
-            double dynamicCost = superRegionValue;
+            double dynamicCost = superRegionValue - clusterValue;
 
             return dynamicCost + staticValue;
         }

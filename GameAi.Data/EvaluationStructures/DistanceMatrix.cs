@@ -97,5 +97,10 @@
                 return firstPart.Concat(otherPart);
             }
         }
+
+        public int GetDistance(int firstRegionId, int secondRegionId)
+        {
+            return matrix[firstRegionId, secondRegionId].Distance;
+        }
     }
 }
