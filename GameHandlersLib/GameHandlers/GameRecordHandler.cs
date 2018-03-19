@@ -305,7 +305,7 @@
                 if (currentActionEnumerator.RoundIndex != roundIndex
                     && currentActionEnumerator.ActionIndex != 0)
                 {
-                    MoveToPreviousAction();
+                    MoveToPreviousActionPrivate(out _);
                     break;
                 }
             } while (currentActionEnumerator.ActionIndex != 0);

@@ -1,6 +1,8 @@
 ﻿namespace GameAi.BotStructures.StructuresEvaluators
 {
+    using System;
     using System.Linq;
+    using Data;
     using Data.EvaluationStructures;
     using Interfaces.Evaluators.StructureEvaluators;
 
@@ -21,8 +23,8 @@
         public double GetValue(PlayerPerspective currentGameState, RegionMin gameStructure)
         {
             double staticValue = GetStaticValue(gameStructure);
-            ref SuperRegionMin superRegion = ref currentGameState.GetSuperRegion(gameStructure.SuperRegionId);
-            var myRegions = currentGameState.GetMyRegions().ToList();
+            ref SuperRegionMin superRegion = ref currentGameState
+                .GetSuperRegion(gameStructure.SuperRegionId);
 
             // hint: more regions of the super region the region owner has,
             // the higher value it has
@@ -44,7 +46,17 @@
             }
 
             // hint: larger army => higher (if mine) or lower (if not mine) the value
-
+            switch (gameStructure.GetOwnerPerspective(currentGameState.PlayerId))
+            {
+                case OwnerPerspective.Unoccupied:
+                    break;
+                case OwnerPerspective.Enemy:
+                case OwnerPerspective.Mine:
+                    superRegionValue *= 2;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             
 
             double dynamicValue = superRegionValue;

@@ -13,7 +13,7 @@
     /// <summary>
     /// Represents action generator for bot that always plays aggressively.
     /// </summary>
-    internal class AggressiveBotActionsGenerator : IGameActionsGenerator
+    internal class AggressiveBotActionsGenerator : GameActionsGenerator, IGameActionsGenerator
     {
         private readonly IRegionMinEvaluator regionMinEvaluator;
         private readonly DistanceMatrix distanceMatrix;
@@ -121,15 +121,6 @@
             }
 
             return botGameTurns;
-        }
-
-        private void UpdateGameStateAfterDeploying(ref PlayerPerspective gameState, ICollection<(int RegionId, int Army, int DeployingPlayerId)> deployments)
-        {
-            foreach (var (regionId, army, deployingPlayerId) in deployments)
-            {
-                ref var region = ref gameState.GetRegion(regionId);
-                region.Army = army;
-            }
         }
     }
 }

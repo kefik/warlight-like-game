@@ -172,5 +172,15 @@ namespace GameAi.Data.EvaluationStructures
                 }
             } while (true);
         }
+
+        /// <summary>
+        /// True, if the player specified by 
+        /// <see cref="PlayerId"/> has lost.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasLost()
+        {
+            return !GetMyRegions().Any();
+        }
     }
 }

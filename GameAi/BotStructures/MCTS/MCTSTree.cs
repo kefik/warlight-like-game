@@ -76,6 +76,11 @@
             node.Value = value;
             node.Parent = this;
 
+            if (Children == null)
+            {
+                Children = new List<MCTSTreeNode>();
+            }
+
             Children.Add(node);
         }
     }

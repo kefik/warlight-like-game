@@ -47,6 +47,7 @@
     <Compile Include="Collections\BidirectionalDictionary.cs" />
     <Compile Include="Collections\Tree.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
+    <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />

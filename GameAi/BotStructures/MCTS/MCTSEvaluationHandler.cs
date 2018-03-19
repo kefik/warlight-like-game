@@ -82,7 +82,8 @@
         public BotTurn GetBestMove()
         {
             // TODO: merge the trees and get the most visited node
-            throw new NotImplementedException();
+            return treeHandlers[0].Tree.Root.Children
+                .OrderByDescending(x => x.VisitCount).First().Value.BotTurn;
         }
 
         /// <summary>
@@ -92,6 +93,8 @@
         public async Task StartEvaluationAsync()
         {
             Task[] tasks = new Task[treeHandlers.Length];
+
+            CancellationTokenSource = new CancellationTokenSource();
 
             for (int i = 0; i < tasks.Length; i++)
             {
@@ -111,7 +114,6 @@
         public void Stop()
         {
             CancellationTokenSource.Cancel();
-            CancellationTokenSource = new CancellationTokenSource();
         }
 
         /// <summary>

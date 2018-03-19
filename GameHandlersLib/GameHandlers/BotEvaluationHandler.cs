@@ -79,7 +79,8 @@
             // create ids mapper
             var playerIdsMapper = players.CreateCompressedAiMapper();
 
-            var restrictions = objectsRestrictions.ToRestrictions().ToRemappedRestrictions(playerIdsMapper);
+            var restrictions = objectsRestrictions.ToRestrictions()
+                .ToRemappedRestrictions(playerIdsMapper);
 
             var mapMin = game.Map.ToMapMin(playerIdsMapper);
 
@@ -124,7 +125,7 @@
                     }
                     var botTask = Task.Run(botHandlers[currentIndex].FindBestMoveAsync);
                     // break after specified amount of time
-                    botHandlers[currentIndex].StopEvaluation(timeForBotMove);
+                    var waitTask = botHandlers[currentIndex].StopEvaluation(timeForBotMove);
                     var bestTurn = (await botTask).ToTurn(game.Map, game.Players, playerIdsMapper);
                     turns[currentlyEvaluatingIndex] = bestTurn;
                 }

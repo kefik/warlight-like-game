@@ -81,6 +81,11 @@
 
                 var nodesToSimulate = Expand(bestNode);
 
+                if (nodesToSimulate == null)
+                {
+                    continue;
+                }
+
                 Simulate(nodesToSimulate);
 
                 Backpropagate(nodesToSimulate);
@@ -159,15 +164,29 @@
             }
             else
             {
-                var playerPerspective = new PlayerPerspective(boardState, myPlayerId);
+                var myPlayerPerspective = new PlayerPerspective(boardState, myPlayerId);
+
+                if (myPlayerPerspective.HasLost())
+                {
+                    node.Value.WinCount = 0;
+                    node.Value.VisitCount = 1;
+                    return null;
+                }
+
+                var enemyPlayerPerspective = new PlayerPerspective(boardState, enemyPlayerId);
+
+                if (enemyPlayerPerspective.HasLost())
+                {
+                    node.Value.WinCount = 1;
+                    node.Value.VisitCount = 1;
+                    return null;
+                }
+
                 // generate select moves for my bot
-                var myBotTurns = gameActionsGenerator.Generate(playerPerspective);
-
-                playerPerspective.PlayerId = enemyPlayerId;
-
+                var myBotTurns = gameActionsGenerator.Generate(myPlayerPerspective);
                 // generate select moves for enemy bot
-                var enemyBotTurns = gameActionsGenerator.Generate(playerPerspective);
-
+                var enemyBotTurns = gameActionsGenerator.Generate(enemyPlayerPerspective);
+                
                 var expandedNodeStates = minimaxCalculator.CalculateBestActions(
                     boardState,
                     myPlayerId, enemyPlayerId,
@@ -187,13 +206,66 @@
         {
             foreach (var node in nodes)
             {
-                Simulate(node);
+                Simulate(node, 1);
             }
         }
 
-        private void Simulate(MCTSTreeNode sourceNode)
+        private void Simulate(MCTSTreeNode sourceNode, int depth)
         {
-            throw new NotImplementedException();
+            // too far in the depth
+            if (depth > 4)
+            {
+                var perspective = new PlayerPerspective(sourceNode.GameState, myPlayerId);
+
+                double myValue = gamePerspectiveEvaluator.GetValue(perspective);
+                perspective.PlayerId = enemyPlayerId;
+
+                double enemyValue = gamePerspectiveEvaluator.GetValue(perspective);
+
+                double winRatio = myValue / (enemyValue + myValue);
+
+                sourceNode.Value.WinCount = winRatio;
+                sourceNode.Value.VisitCount = 1;
+                return;
+            }
+
+            var myPlayerPerspective = new PlayerPerspective(sourceNode.GameState, myPlayerId);
+            var enemyPlayerPerspective = new PlayerPerspective(sourceNode.GameState, enemyPlayerId);
+
+            // I lost => return
+            if (myPlayerPerspective.HasLost())
+            {
+                sourceNode.Value.WinCount = 0;
+                sourceNode.Value.VisitCount = 1;
+                return;
+            }
+            // enemy lost => return
+            if (enemyPlayerPerspective.HasLost())
+            {
+                sourceNode.Value.WinCount = 1;
+                sourceNode.Value.VisitCount = 1;
+                return;
+            }
+
+            // otherwise generate actions and simulate
+            var myBotActions = gameActionsGenerator.Generate(myPlayerPerspective);
+            var enemyBotActions = gameActionsGenerator.Generate(enemyPlayerPerspective);
+
+            var bestNodeState = minimaxCalculator.CalculateBestActions(myPlayerPerspective.MapMin,
+                myPlayerId, enemyPlayerId, myBotActions, enemyBotActions).Take(5);
+
+            foreach (NodeState nodeState in bestNodeState)
+            {
+                sourceNode.AddChild(nodeState);
+            }
+
+            foreach (MCTSTreeNode sourceNodeChild in sourceNode.Children)
+            {
+                Simulate(sourceNodeChild, depth + 1);
+            }
+
+            sourceNode.Value.WinCount = sourceNode.Children.Sum(x => x.WinCount);
+            sourceNode.Value.VisitCount = sourceNode.Children.Sum(x => x.VisitCount);
         }
 
         private void Backpropagate(IEnumerable<MCTSTreeNode> nodes)
