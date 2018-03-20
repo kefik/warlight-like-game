@@ -17,5 +17,10 @@
         /// Represents turn that led to this particular <see cref="BoardState"/>.
         /// </summary>
         public BotTurn BotTurn { get; set; }
+
+        public override string ToString()
+        {
+            return $"{WinCount:F1} / {VisitCount}";
+        }
     }
 }

@@ -18,7 +18,7 @@
             this.playerPerspectiveEvaluator = playerPerspectiveEvaluator;
         }
 
-        public IReadOnlyList<NodeState> CalculateBestActions(
+        public IReadOnlyList<BoardEvaluationResult> CalculateBestActions(
             MapMin map,
             byte myPlayerId,
             byte enemyPlayerId,
@@ -68,10 +68,11 @@
                 results.Add((bestResultForEnemyMap, myBotTurn, bestResultForEnemy));
             }
 
-            return results.OrderByDescending(x => x.Value).Select(x => new NodeState()
+            return results.OrderByDescending(x => x.Value).Select(x => new BoardEvaluationResult()
             {
                 BoardState = x.Map,
-                BotTurn = x.Turn
+                BotTurn = x.Turn,
+                Result = x.Value
             }).ToList();
         }
     }

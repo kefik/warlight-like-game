@@ -31,6 +31,8 @@
             this.gameMenuPanel = new System.Windows.Forms.Panel();
             this.menuButton = new System.Windows.Forms.Button();
             this.gameStateMenuPanel = new System.Windows.Forms.Panel();
+            this.playerPerspectiveLabel = new System.Windows.Forms.Label();
+            this.playerPerspectiveComboBox = new System.Windows.Forms.ComboBox();
             this.botThinkingTimeLabel = new System.Windows.Forms.Label();
             this.botThinkingTimeNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.nextActionButton = new System.Windows.Forms.Button();
@@ -41,8 +43,6 @@
             this.nextTurnButton = new System.Windows.Forms.Button();
             this.playPauseButton = new System.Windows.Forms.Button();
             this.gameMapPictureBox = new System.Windows.Forms.PictureBox();
-            this.playerPerspectiveComboBox = new System.Windows.Forms.ComboBox();
-            this.playerPerspectiveLabel = new System.Windows.Forms.Label();
             this.gameMenuPanel.SuspendLayout();
             this.gameStateMenuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.botThinkingTimeNumericUpDown)).BeginInit();
@@ -89,6 +89,26 @@
             this.gameStateMenuPanel.Size = new System.Drawing.Size(177, 358);
             this.gameStateMenuPanel.TabIndex = 0;
             // 
+            // playerPerspectiveLabel
+            // 
+            this.playerPerspectiveLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.playerPerspectiveLabel.AutoSize = true;
+            this.playerPerspectiveLabel.Location = new System.Drawing.Point(12, 273);
+            this.playerPerspectiveLabel.Name = "playerPerspectiveLabel";
+            this.playerPerspectiveLabel.Size = new System.Drawing.Size(88, 13);
+            this.playerPerspectiveLabel.TabIndex = 10;
+            this.playerPerspectiveLabel.Text = "View perspective";
+            // 
+            // playerPerspectiveComboBox
+            // 
+            this.playerPerspectiveComboBox.FormattingEnabled = true;
+            this.playerPerspectiveComboBox.Location = new System.Drawing.Point(58, 289);
+            this.playerPerspectiveComboBox.Name = "playerPerspectiveComboBox";
+            this.playerPerspectiveComboBox.Size = new System.Drawing.Size(105, 21);
+            this.playerPerspectiveComboBox.TabIndex = 9;
+            this.playerPerspectiveComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.PlayerPerspectiveDrawItem);
+            this.playerPerspectiveComboBox.SelectedIndexChanged += new System.EventHandler(this.PlayerPerspectiveChanged);
+            // 
             // botThinkingTimeLabel
             // 
             this.botThinkingTimeLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -118,7 +138,7 @@
             this.botThinkingTimeNumericUpDown.TabIndex = 7;
             this.botThinkingTimeNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.botThinkingTimeNumericUpDown.Value = new decimal(new int[] {
-            2000,
+            400,
             0,
             0,
             0});
@@ -200,26 +220,6 @@
             this.gameMapPictureBox.Size = new System.Drawing.Size(578, 439);
             this.gameMapPictureBox.TabIndex = 5;
             this.gameMapPictureBox.TabStop = false;
-            // 
-            // playerPerspectiveComboBox
-            // 
-            this.playerPerspectiveComboBox.FormattingEnabled = true;
-            this.playerPerspectiveComboBox.Location = new System.Drawing.Point(58, 289);
-            this.playerPerspectiveComboBox.Name = "playerPerspectiveComboBox";
-            this.playerPerspectiveComboBox.Size = new System.Drawing.Size(105, 21);
-            this.playerPerspectiveComboBox.TabIndex = 9;
-            this.playerPerspectiveComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.PlayerPerspectiveDrawItem);
-            this.playerPerspectiveComboBox.SelectedIndexChanged += new System.EventHandler(this.PlayerPerspectiveChanged);
-            // 
-            // playerPerspectiveLabel
-            // 
-            this.playerPerspectiveLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.playerPerspectiveLabel.AutoSize = true;
-            this.playerPerspectiveLabel.Location = new System.Drawing.Point(12, 273);
-            this.playerPerspectiveLabel.Name = "playerPerspectiveLabel";
-            this.playerPerspectiveLabel.Size = new System.Drawing.Size(88, 13);
-            this.playerPerspectiveLabel.TabIndex = 10;
-            this.playerPerspectiveLabel.Text = "View perspective";
             // 
             // SimulatorInGameControl
             // 

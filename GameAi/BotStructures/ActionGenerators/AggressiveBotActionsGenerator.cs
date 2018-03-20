@@ -15,14 +15,9 @@
     /// </summary>
     internal class AggressiveBotActionsGenerator : GameActionsGenerator, IGameActionsGenerator
     {
-        private readonly IRegionMinEvaluator regionMinEvaluator;
-        private readonly DistanceMatrix distanceMatrix;
-
         public AggressiveBotActionsGenerator(IRegionMinEvaluator regionMinEvaluator,
-            MapMin mapMin)
+            MapMin mapMin) : base(new DistanceMatrix(mapMin.RegionsMin), regionMinEvaluator)
         {
-            this.regionMinEvaluator = regionMinEvaluator;
-            distanceMatrix = new DistanceMatrix(mapMin.RegionsMin);
         }
 
         /// <summary>
@@ -32,49 +27,59 @@
         /// <returns></returns>
         public IReadOnlyList<BotGameTurn> Generate(PlayerPerspective currentGameState)
         {
-            var botGameTurns = new List<BotGameTurn>();
+            IEnumerable<BotGameTurn> botGameTurns = new List<BotGameTurn>();
 
+            botGameTurns = botGameTurns.Concat(GenerateNoWaitAggressive(currentGameState));
+
+            return botGameTurns.ToList();
+        }
+
+        private IEnumerable<BotGameTurn> GenerateNoWaitAggressive(PlayerPerspective playerPerspective)
+        {
+            var botTurns = new List<BotGameTurn>();
             // hint: regions that are near valuable not owned places should be deployed to
             // and later attacked
-            var regionsToDeploy = (from region in currentGameState.GetMyRegions()
+            var regionsToDeploy = (from region in playerPerspective.GetMyRegions()
                                    from neighbour in region.NeighbourRegionsIds
-                                       .Select(x => currentGameState.GetRegion(x))
-                                   where neighbour.OwnerId != currentGameState.PlayerId
-                                   orderby regionMinEvaluator.GetValue(currentGameState, neighbour) descending
+                                       .Select(x => playerPerspective.GetRegion(x))
+                                   where neighbour.OwnerId != playerPerspective.PlayerId
+                                   orderby RegionMinEvaluator.GetValue(playerPerspective, neighbour) descending
                                    select region.Id).Distinct();
 
-            foreach (int regionId in regionsToDeploy.Take(10))
+            foreach (int regionToDeployId in regionsToDeploy)
             {
-                var copiedState = currentGameState.ShallowCopy();
+                var copiedState = playerPerspective.ShallowCopy();
 
                 var botGameTurn = new BotGameTurn(copiedState.PlayerId);
 
-                ref var region = ref copiedState.GetRegion(regionId);
+                ref var regionToDeploy = ref copiedState.GetRegion(regionToDeployId);
 
-                botGameTurn.Deployments.Add((region.Id, region.Army + currentGameState.GetMyIncome(),
-                        currentGameState.PlayerId));
+                botGameTurn.Deployments.Add((regionToDeploy.Id, regionToDeploy.Army + playerPerspective.GetMyIncome(),
+                    playerPerspective.PlayerId));
 
                 UpdateGameStateAfterDeploying(ref copiedState, botGameTurn.Deployments);
 
                 // attack on most valuable neighbours
-                foreach (RegionMin regionMin in copiedState.GetMyRegions())
+                foreach (var regionToAttackFromId in copiedState.GetMyRegions().Select(x => x.Id))
                 {
+                    ref var regionToAttackFrom = ref copiedState.GetRegion(regionToAttackFromId);
                     // get neighbours ordered by their value
-                    var neighbours = regionMin.NeighbourRegionsIds
+                    var neighbours = regionToAttackFrom.NeighbourRegionsIds
                         .Select(x => copiedState.GetRegion(x))
                         .Where(x => x.OwnerId != copiedState.PlayerId)
-                        .OrderByDescending(x => regionMinEvaluator.GetValue(copiedState, x));
+                        .OrderByDescending(x => RegionMinEvaluator.GetValue(copiedState, x));
 
+                    var copiedRegionMin = regionToAttackFrom;
                     // attack on first neighbour that doesnt have large army
                     var neighboursToAttack = neighbours
-                        .Where(x => (regionMin.Army - 1) * 9d / 10 >= x.Army)
+                        .Where(x => (copiedRegionMin.Army - 1) * 9d / 10 >= x.Army)
                         .ToList();
 
                     foreach (RegionMin neighbour in neighboursToAttack)
                     {
                         // check the condition once more
                         // (with every attack regionMin.Army changes)
-                        if ((regionMin.Army - 1) * 9d / 10 >= neighbour.Army)
+                        if ((regionToAttackFrom.Army - 1) * 9d / 10 >= neighbour.Army)
                         {
                             int attackingArmy;
                             // if I can attack more than 1 neighbour => don't use
@@ -84,43 +89,27 @@
                                 attackingArmy = Math.Min(2 * (neighbour.Army
                                                               + new PlayerPerspective(copiedState.MapMin,
                                                                   neighbour.OwnerId).GetMyIncome()),
-                                    region.Army - 1);
+                                    regionToAttackFrom.Army - 1);
                             }
                             else
                             {
-                                attackingArmy = region.Army - 1;
+                                attackingArmy = regionToAttackFrom.Army - 1;
                             }
 
-                            botGameTurn.Attacks.Add((copiedState.PlayerId, regionMin
+
+                            botGameTurn.Attacks.Add((copiedState.PlayerId, regionToAttackFrom
                                 .Id, attackingArmy, neighbour.Id));
-                            ref var refRegionMin = ref currentGameState.GetRegion(region.Id);
-                            refRegionMin.Army = refRegionMin.Army - attackingArmy;
+                            regionToAttackFrom.Army -= attackingArmy;
                         }
                     }
                 }
 
-                // hint: move army from inland territory to the edge of the area
-                var inlandRegionsWithArmy = from regionMin in currentGameState.MapMin.RegionsMin
-                                            where regionMin.Army > 1 && regionMin.OwnerId == currentGameState.PlayerId
-                                            where regionMin.NeighbourRegionsIds
-                                                .All(x => currentGameState.GetRegion(x).OwnerId == currentGameState.PlayerId)
-                                            select regionMin;
-                foreach (RegionMin regionMin in inlandRegionsWithArmy)
-                {
-                    var closestRegion = currentGameState.GetClosestRegion(regionMin,
-                        x => x.OwnerId != currentGameState.PlayerId);
+                AppendRedistributeInlandArmy(copiedState, botGameTurn.Attacks);
 
-                    var path = distanceMatrix.GetPath(regionMin, closestRegion);
-                    var regionIdToMoveTo = path.Skip(1).First();
-
-                    botGameTurn.Attacks.Add((currentGameState.PlayerId,
-                        regionMin.Id, regionMin.Army - 1, regionIdToMoveTo));
-                }
-
-                botGameTurns.Add(botGameTurn);
+                botTurns.Add(botGameTurn);
             }
 
-            return botGameTurns;
+            return botTurns;
         }
     }
 }

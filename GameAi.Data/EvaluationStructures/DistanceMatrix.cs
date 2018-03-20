@@ -76,7 +76,7 @@
             int sourceId = source.Id;
             int destinationId = destination.Id;
 
-            return GetPath(sourceId, destinationId);
+            return GetPath(sourceId, destinationId).Distinct();
         }
 
         private IEnumerable<int> GetPath(int sourceId, int destinationId)

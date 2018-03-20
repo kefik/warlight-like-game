@@ -46,12 +46,12 @@
   <ItemGroup>
     <Compile Include="BotEvaluationState.cs" />
     <Compile Include="BotStructures\ActionGenerators\AggressiveBotActionsGenerator.cs" />
-    <Compile Include="BotStructures\ActionGenerators\DefensiveBotActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\GameActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\MCTSBotActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\RandomSelectRegionActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\SelectRegionActionsGenerator.cs" />
     <Compile Include="BotStructures\AggressiveBot\AggressiveBot.cs" />
+    <Compile Include="BotStructures\MCTS\BoardEvaluationResult.cs" />
     <Compile Include="BotStructures\MCTS\MCTSEvaluationHandler.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTree.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTreeHandler.cs" />

@@ -21,20 +21,6 @@
 
         public IReadOnlyList<BotGameTurn> Generate(PlayerPerspective currentGameState)
         {
-            // deploy
-
-            // hint: threatened regions == enemy is near them
-            var threatenedRegions = from myRegion in currentGameState.GetMyRegions()
-                                    where currentGameState.GetNeighbourRegions(myRegion.Id)
-                                        .Any(x => x.OwnerId == enemyPlayerId)
-                                    select myRegion;
-
-            // hint: regions that are near ones I'd like to attack
-            var regionsNearRegionstoAttack = from myRegion in currentGameState.GetMyRegions()
-                                             from neighbour in currentGameState.GetNeighbourRegions(myRegion.Id)
-                                             orderby regionMinEvaluator.GetValue(currentGameState, neighbour) descending ,
-                                                regionMinEvaluator.GetValue(currentGameState, myRegion) descending 
-                                             select myRegion;
 
             // attack
 

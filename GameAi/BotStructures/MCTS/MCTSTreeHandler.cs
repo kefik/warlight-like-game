@@ -39,7 +39,6 @@
 
         public MCTSTreeHandler(PlayerPerspective initialBoardState,
             byte enemyPlayerId,
-            INodeEvaluator<MCTSTreeNode> nodeEvaluator,
             IRoundEvaluator roundEvaluator,
             IGameActionsGenerator gameActionsGenerator,
             IGameBeginningActionsGenerator beginningActionsGenerator,
@@ -55,7 +54,7 @@
 
             Tree = new MCTSTree(state);
 
-            this.nodeEvaluator = nodeEvaluator;
+            this.nodeEvaluator = new UctEvaluator(Tree.Root);
             this.roundEvaluator = roundEvaluator;
             this.gameActionsGenerator = gameActionsGenerator;
             this.beginningActionsGenerator = beginningActionsGenerator;
@@ -154,7 +153,14 @@
                 var expandedNodeStates = minimaxCalculator.CalculateBestActions(
                     boardState,
                     myPlayerId, enemyPlayerId,
-                    myBotTurns, enemyBotTurns);
+                    myBotTurns, enemyBotTurns)
+                    .Where(x => x.Result > -100)
+                    .Take(5)
+                    .Select(x => new NodeState()
+                    {
+                        BoardState = x.BoardState,
+                        BotTurn = x.BotTurn
+                    });
 
                 // add expanded node states
                 foreach (var nodeState in expandedNodeStates)
@@ -190,7 +196,12 @@
                 var expandedNodeStates = minimaxCalculator.CalculateBestActions(
                     boardState,
                     myPlayerId, enemyPlayerId,
-                    myBotTurns, enemyBotTurns);
+                    myBotTurns, enemyBotTurns)
+                    .Select(x => new NodeState()
+                    {
+                        BoardState = x.BoardState,
+                        BotTurn = x.BotTurn
+                    });
 
                 // add expanded node states
                 foreach (var nodeState in expandedNodeStates)
@@ -252,20 +263,30 @@
             var enemyBotActions = gameActionsGenerator.Generate(enemyPlayerPerspective);
 
             var bestNodeState = minimaxCalculator.CalculateBestActions(myPlayerPerspective.MapMin,
-                myPlayerId, enemyPlayerId, myBotActions, enemyBotActions).Take(5);
+                myPlayerId, enemyPlayerId, myBotActions, enemyBotActions)
+                .Where(x => x.Result > -100)
+                .Take(5)
+                .Select(x => new NodeState()
+                {
+                    BoardState = x.BoardState,
+                    BotTurn = x.BotTurn
+                });
 
             foreach (NodeState nodeState in bestNodeState)
             {
                 sourceNode.AddChild(nodeState);
             }
 
-            foreach (MCTSTreeNode sourceNodeChild in sourceNode.Children)
+            if (sourceNode.Children != null)
             {
-                Simulate(sourceNodeChild, depth + 1);
-            }
+                foreach (MCTSTreeNode sourceNodeChild in sourceNode.Children)
+                {
+                    Simulate(sourceNodeChild, depth + 1);
+                }
 
-            sourceNode.Value.WinCount = sourceNode.Children.Sum(x => x.WinCount);
-            sourceNode.Value.VisitCount = sourceNode.Children.Sum(x => x.VisitCount);
+                sourceNode.Value.WinCount = sourceNode.Children.Sum(x => x.WinCount);
+                sourceNode.Value.VisitCount = sourceNode.Children.Sum(x => x.VisitCount);
+            }
         }
 
         private void Backpropagate(IEnumerable<MCTSTreeNode> nodes)

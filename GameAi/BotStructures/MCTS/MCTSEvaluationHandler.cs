@@ -49,7 +49,6 @@
             Restrictions restrictions)
         {
             var distanceMatrix = new DistanceMatrix(initialGameState.MapMin.RegionsMin);
-            INodeEvaluator<MCTSTreeNode> nodeEvaluator = new UctEvaluator();
             IRoundEvaluator roundEvaluator = new RoundEvaluator();
             IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator
                 = new PlayerPerspectiveEvaluator(
@@ -68,7 +67,6 @@
             {
                 treeHandlers[index] = new MCTSTreeHandler(initialGameState,
                     enemyPlayerId,
-                    nodeEvaluator,
                     roundEvaluator,
                     GetGameActionGenerator(initialGameState.MapMin),
                     GetGameBeginningActionGenerator(restrictions?.GameBeginningRestrictions,

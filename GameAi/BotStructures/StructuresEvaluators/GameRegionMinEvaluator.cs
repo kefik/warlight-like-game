@@ -11,7 +11,7 @@
         private const double NeighboursCoefficient = 4;
         private const double SuperRegionCoefficient = 3;
         private const double ArmyCoefficient = 4;
-        private const double BonusCoefficient = 10;
+        private const double BonusCoefficient = 15;
 
         private readonly ISuperRegionMinEvaluator superRegionMinEvaluator;
 
@@ -32,8 +32,9 @@
                 .Select(x => currentGameState.GetRegion(x))
                 .Count(x => x.OwnerId == currentGameState.PlayerId);
             double superRegionValue;
-            if (superRegion.OwnerId == gameStructure.OwnerId)
+            if (superRegion.OwnerId == gameStructure.OwnerId && gameStructure.OwnerId != 0)
             {
+                // hint: region of completed super region has higher value
                 superRegionValue = SuperRegionCoefficient * superRegionsRegionsOwningCount
                                    + BonusCoefficient * superRegion.Bonus
                                    + superRegionMinEvaluator.GetValue(currentGameState, superRegion);
@@ -45,7 +46,7 @@
                                    + superRegionMinEvaluator.GetValue(currentGameState, superRegion);
             }
 
-            // hint: larger army => higher (if mine) or lower (if not mine) the value
+            // hint: mine or enemy region has higher value than not-occupied
             switch (gameStructure.GetOwnerPerspective(currentGameState.PlayerId))
             {
                 case OwnerPerspective.Unoccupied:

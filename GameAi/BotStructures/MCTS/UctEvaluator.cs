@@ -8,6 +8,13 @@
     {
         private const double Coefficient = 1.41;
 
+        private readonly MCTSTreeNode root;
+
+        public UctEvaluator(MCTSTreeNode root)
+        {
+            this.root = root;
+        }
+        
         public double GetValue(MCTSTreeNode node)
         {
             if (node.Value.VisitCount == 0)
@@ -15,8 +22,8 @@
                 return double.MaxValue;
             }
 
-            return ((double)node.Value.WinCount / node.Value.VisitCount) + Coefficient
-                   + Math.Sqrt(Math.Log(node.Parent.VisitCount) / node.VisitCount);
+            return node.WinCount / node.VisitCount + Coefficient
+                   * Math.Sqrt(Math.Log(root.VisitCount) / node.VisitCount);
         }
     }
 }
