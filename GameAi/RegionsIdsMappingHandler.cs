@@ -175,16 +175,15 @@
                         SeizedRegionsIds = translatedRegions
                     };
                 case BotGameTurn gameTurn:
-                    var attacks = gameTurn.Attacks.Select(x => (
-                        x.AttackingPlayerId,
-                        regionIdsMappingDictionary.GetOriginalId(x.AttackingRegionId),
-                        x.AttackingArmy,
-                        regionIdsMappingDictionary.GetOriginalId(x.DefendingRegionId)))
+                    var attacks = gameTurn.Attacks.Select(x => new BotAttack(x.AttackingPlayerId,
+                            regionIdsMappingDictionary.GetOriginalId(x.AttackingRegionId),
+                            x.AttackingArmy,
+                            regionIdsMappingDictionary.GetOriginalId(x.DefendingRegionId)))
                         .ToList();
 
                     var deploys = gameTurn.Deployments.Select(x =>
-                        (regionIdsMappingDictionary.GetOriginalId(x.RegionId),
-                        x.Army, x.DeployingPlayerId)).ToList();
+                        new BotDeployment(regionIdsMappingDictionary.GetOriginalId(x.RegionId),
+                            x.Army, x.DeployingPlayerId)).ToList();
 
                     return new BotGameTurn(turn.PlayerId)
                     {

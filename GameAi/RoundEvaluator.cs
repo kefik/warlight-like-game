@@ -51,9 +51,8 @@
 
         internal LinearizedBotBotGameRound Linearize(BotGameTurn[] gameTurns)
         {
-            var deploying = new List<(int RegionId, int Army, int DeployingPlayerId)>();
-            var attacking = new List<(int AttackingPlayerId, int AttackingRegionId,
-                int AttackingArmy, int DefendingRegionId)>();
+            var deploying = new List<BotDeployment>();
+            var attacking = new List<BotAttack>();
 
             int index = 0;
             while (true)
@@ -65,8 +64,8 @@
                 {
                     if (turn.Deployments.Count > index)
                     {
-                        var (regionId, army, deployingPlayerId) = turn.Deployments[index];
-                        deploying.Add((regionId, army, deployingPlayerId));
+                        var deployment = turn.Deployments[index];
+                        deploying.Add(deployment);
                     }
 
                     if (turn.Attacks.Count > index)
@@ -126,28 +125,27 @@
         private void PlayDeploying(ref MapMin map, LinearizedBotBotGameRound round)
         {
             var deploying = round.Deployments;
-            foreach ((int regionId, int army, int deployingPlayerId) in deploying)
+            foreach (var deployment in deploying)
             {
-                ref var region = ref map.GetRegion(regionId);
-                region.Army = army;
+                ref var region = ref map.GetRegion(deployment.RegionId);
+                region.Army = deployment.Army;
             }
         }
 
         private void PlayAttacking(ref MapMin map, LinearizedBotBotGameRound round)
         {
-            foreach ((int attackingPlayerId, int attackingRegionId,
-                int attackingArmy, int defendingRegionId) in round.Attacks)
+            foreach (var attack in round.Attacks)
             {
-                ref var attacker = ref map.GetRegion(attackingRegionId);
-                ref var defender = ref map.GetRegion(defendingRegionId);
+                ref var attacker = ref map.GetRegion(attack.AttackingRegionId);
+                ref var defender = ref map.GetRegion(attack.DefendingRegionId);
 
                 // attacking player changed => attack did not happen
-                if (attacker.OwnerId != attackingPlayerId)
+                if (attacker.OwnerId != attack.AttackingPlayerId)
                 {
                     continue;
                 }
 
-                int realAttackingArmy = Math.Min(attacker.Army - 1, attackingArmy);
+                int realAttackingArmy = Math.Min(attacker.Army - 1, attack.AttackingArmy);
 
                 // attack did not happen, because there was no army to attack
                 if (realAttackingArmy <= 0)
@@ -185,7 +183,7 @@
                         // move rest of the units
                         remainingDefendingArmy = remainingAttackingArmy;
                         // region was conquered
-                        defender.OwnerId = (byte)attackingPlayerId;
+                        defender.OwnerId = (byte)attack.AttackingPlayerId;
                         // cuz of negative units
                         defender.Army = remainingDefendingArmy;
                     }

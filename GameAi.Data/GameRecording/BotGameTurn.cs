@@ -4,15 +4,13 @@
 
     public class BotGameTurn : BotTurn
     {
-        public IList<(int RegionId, int Army, int DeployingPlayerId)> Deployments { get; set; }
-        public IList<(int AttackingPlayerId, int AttackingRegionId,
-            int AttackingArmy, int DefendingRegionId)> Attacks { get; set; }
+        public IList<BotDeployment> Deployments { get; set; }
+        public IList<BotAttack> Attacks { get; set; }
 
         public BotGameTurn(int playerId) : base(playerId)
         {
-            Deployments = new List<(int RegionId, int Army, int DeployingPlayerId)>();
-            Attacks = new List<(int AttackingPlayerId, int AttackingRegionId,
-                int AttackingArmy, int DefendingRegionId)>();
+            Deployments = new List<BotDeployment>();
+            Attacks = new List<BotAttack>();
         }
     }
 }

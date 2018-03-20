@@ -17,18 +17,17 @@
             this.RegionMinEvaluator = regionMinEvaluator;
         }
 
-        protected void UpdateGameStateAfterDeploying(ref PlayerPerspective gameState, ICollection<(int RegionId, int Army, int DeployingPlayerId)> deployments)
+        protected void UpdateGameStateAfterDeploying(ref PlayerPerspective gameState, ICollection<BotDeployment> deployments)
         {
-            foreach (var (regionId, army, deployingPlayerId) in deployments)
+            foreach (var deployment in deployments)
             {
-                ref var region = ref gameState.GetRegion(regionId);
-                region.Army = army;
+                ref var region = ref gameState.GetRegion(deployment.RegionId);
+                region.Army = deployment.Army;
             }
         }
 
         protected void AppendRedistributeInlandArmy(PlayerPerspective playerPerspective,
-            ICollection<(int AttackingPlayerId, int AttackingRegionId,
-                int AttackingArmy, int DefendingRegionId)> attacks)
+            ICollection<BotAttack> attacks)
         {
             // hint: move army from inland territory to the edge of the area
             // get those regions
@@ -51,7 +50,7 @@
 
                 int armyToBeMoved = regionMin.Army - 1;
                 // add to attacks
-                attacks.Add((playerPerspective.PlayerId,
+                attacks.Add(new BotAttack(playerPerspective.PlayerId,
                     regionMin.Id, armyToBeMoved, regionIdToMoveTo));
 
                 // move the units
@@ -63,16 +62,62 @@
             }
         }
 
-        protected void DeployOffensively(ref PlayerPerspective currentGameState)
+        protected IEnumerable<BotGameTurn> DeployOffensively(ref PlayerPerspective currentGameState)
         {
+            var botGameTurns = new List<BotGameTurn>();
             var playerPerspective = currentGameState;
 
+            // neighbours of regions that are valuable and should be attacked
             var regionsToDeploy = (from region in playerPerspective.GetMyRegions()
                                    from neighbour in region.NeighbourRegionsIds
                                        .Select(x => playerPerspective.GetRegion(x))
                                    where neighbour.OwnerId != playerPerspective.PlayerId
                                    orderby RegionMinEvaluator.GetValue(playerPerspective, neighbour) descending
-                                   select region.Id).Distinct();
+                                   select region).Distinct().ToList();
+
+            int unitsToDeploy = currentGameState.GetMyIncome();
+            foreach (RegionMin regionMin in regionsToDeploy)
+            {
+                botGameTurns.Add(new BotGameTurn(currentGameState.PlayerId)
+                {
+                    Deployments = new List<BotDeployment>()
+                    {
+                        new BotDeployment(regionMin.Id, regionMin.Army + unitsToDeploy, currentGameState.PlayerId)
+                    }
+                });
+            }
+
+            return botGameTurns;
         }
+
+        protected IEnumerable<BotGameTurn> DeployDefensively(ref PlayerPerspective currentGameState)
+        {
+            var botGameTurns = new List<BotGameTurn>();
+            var playerPerspective = currentGameState;
+
+            // valuable regions that should be defended
+            var regionsToDeploy = from region in playerPerspective.GetMyRegions()
+                                  orderby RegionMinEvaluator.GetValue(playerPerspective, region) descending 
+                                  select region;
+
+            int unitsToDeploy = currentGameState.GetMyIncome();
+            foreach (RegionMin regionMin in regionsToDeploy)
+            {
+                botGameTurns.Add(new BotGameTurn(currentGameState.PlayerId)
+                {
+                    Deployments = new List<BotDeployment>()
+                    {
+                        new BotDeployment(regionMin.Id, regionMin.Army + unitsToDeploy, currentGameState.PlayerId)
+                    }
+                });
+            }
+
+            return botGameTurns;
+        }
+
+        //protected IEnumerable<BotGameTurn> AttackNonAggressively(ref PlayerPerspective currentGameState)
+        //{
+            
+        //}
     }
 }

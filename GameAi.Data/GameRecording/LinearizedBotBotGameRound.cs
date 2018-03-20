@@ -4,9 +4,8 @@
 
     public class LinearizedBotBotGameRound : LinearizedBotRound
     {
-        public ICollection<(int RegionId, int Army, int DeployingPlayerId)> Deployments { get; set; }
-        public ICollection<(int AttackingPlayerId, int AttackingRegionId,
-            int AttackingArmy, int DefendingRegionId)> Attacks
+        public ICollection<BotDeployment> Deployments { get; set; }
+        public ICollection<BotAttack> Attacks
             { get; set; }
     }
 }

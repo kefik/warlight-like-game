@@ -48,14 +48,14 @@
                 .ArmiesDeployed)
             {
                 botGameTurn.Deployments
-                    .Add((deployment.Region.Id, deployment.Army,
-                    playerIdsesMapper.GetNewId(deployment.DeployingPlayer.Id)));
+                    .Add(new BotDeployment(deployment.Region.Id, deployment.Army,
+                        playerIdsesMapper.GetNewId(deployment.DeployingPlayer.Id)));
             }
 
             // attacks
             foreach (Attack attack in gameTurn.Attacking.Attacks)
             {
-                botGameTurn.Attacks.Add((attack.AttackingPlayer.Id,
+                botGameTurn.Attacks.Add(new BotAttack(attack.AttackingPlayer.Id,
                     attack.Attacker.Id, attack.AttackingArmy,
                     attack.Defender.Id));
             }
@@ -105,25 +105,25 @@
                     .GetOriginalId(botGameTurn.PlayerId)));
             // deploying
             var deployments = new List<Deployment>();
-            foreach ((int regionId, int army, int deployingPlayerId) in botGameTurn.Deployments)
+            foreach (var deployment in botGameTurn.Deployments)
             {
                 deployments.Add(new Deployment(
-                        map.Regions.First(x => x.Id == regionId),
-                        army,
-                        players.First(x => x.Id == playerIdsesMapper.GetOriginalId(deployingPlayerId))
+                        map.Regions.First(x => x.Id == deployment.RegionId),
+                        deployment.Army,
+                        players.First(x => x.Id == playerIdsesMapper.GetOriginalId(deployment.DeployingPlayerId))
                     ));
             }
             var deploying = new Deploying(deployments);
 
             // attacking
             var attacks = new List<Attack>();
-            foreach ((int attackingPlayerId, int attackingRegionId, int attackingArmy, int defendingRegionId) in botGameTurn.Attacks)
+            foreach (var attack in botGameTurn.Attacks)
             {
                 attacks.Add(new Attack(
-                        players.First(x => x.Id == playerIdsesMapper.GetOriginalId(attackingPlayerId)),
-                        map.Regions.First(x => x.Id == attackingRegionId),
-                        attackingArmy,
-                        map.Regions.First(x => x.Id == defendingRegionId)
+                        players.First(x => x.Id == playerIdsesMapper.GetOriginalId(attack.AttackingPlayerId)),
+                        map.Regions.First(x => x.Id == attack.AttackingRegionId),
+                        attack.AttackingArmy,
+                        map.Regions.First(x => x.Id == attack.DefendingRegionId)
                     ));
             }
 

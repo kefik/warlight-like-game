@@ -53,8 +53,8 @@
                 var botGameTurn = new BotGameTurn(copiedState.PlayerId);
 
                 ref var regionToDeploy = ref copiedState.GetRegion(regionToDeployId);
-
-                botGameTurn.Deployments.Add((regionToDeploy.Id, regionToDeploy.Army + playerPerspective.GetMyIncome(),
+                
+                botGameTurn.Deployments.Add(new BotDeployment(regionToDeploy.Id, regionToDeploy.Army + playerPerspective.GetMyIncome(),
                     playerPerspective.PlayerId));
 
                 UpdateGameStateAfterDeploying(ref copiedState, botGameTurn.Deployments);
@@ -95,10 +95,8 @@
                             {
                                 attackingArmy = regionToAttackFrom.Army - 1;
                             }
-
-
-                            botGameTurn.Attacks.Add((copiedState.PlayerId, regionToAttackFrom
-                                .Id, attackingArmy, neighbour.Id));
+                            
+                            botGameTurn.Attacks.Add(new BotAttack(copiedState.PlayerId, regionToAttackFrom.Id, attackingArmy, neighbour.Id));
                             regionToAttackFrom.Army -= attackingArmy;
                         }
                     }

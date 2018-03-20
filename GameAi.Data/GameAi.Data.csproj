@@ -53,6 +53,8 @@
     <Compile Include="EvaluationStructures\RegionMin.cs" />
     <Compile Include="EvaluationStructures\SuperRegionMin.cs" />
     <Compile Include="GameBotType.cs" />
+    <Compile Include="GameRecording\BotAttack.cs" />
+    <Compile Include="GameRecording\BotDeployment.cs" />
     <Compile Include="GameRecording\BotGameBeginningTurn.cs" />
     <Compile Include="GameRecording\BotGameTurn.cs" />
     <Compile Include="GameRecording\BotRound.cs" />
