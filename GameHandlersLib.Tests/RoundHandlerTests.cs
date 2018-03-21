@@ -66,6 +66,15 @@
             czechia = map.Regions.First(x => x.Name == "Czechia");
 
             roundHandler = new RoundHandler(game);
+
+            // inject moq random into list extensions
+            var randomFieldInfo = typeof(ListExtensions).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+                .First(x => x.FieldType == typeof(Random));
+
+            var randomMoq = new Mock<Random>();
+            randomMoq.Setup(x => x.Next(It.IsAny<int>())).Returns(1);
+
+            randomFieldInfo.SetValue(null, randomMoq.Object);
         }
 
         [Test]
