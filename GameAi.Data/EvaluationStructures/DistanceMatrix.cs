@@ -102,5 +102,19 @@
         {
             return matrix[firstRegionId, secondRegionId].Distance;
         }
+
+        public int GetMaximumDistance()
+        {
+            int maximumDistance = int.MinValue;
+            foreach ((int distance, int? intermediateNodeIndex) in matrix)
+            {
+                if (distance > maximumDistance)
+                {
+                    maximumDistance = distance;
+                }
+            }
+
+            return maximumDistance;
+        }
     }
 }

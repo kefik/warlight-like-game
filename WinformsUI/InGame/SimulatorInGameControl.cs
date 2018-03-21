@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define TIME_MEASURE
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -102,9 +104,11 @@ namespace WinformsUI.InGame
             if (!simulationFlowHandler.IsRunning)
             {
                 await simulationFlowHandler.StartOrContinueEvaluationAsync(timeForBotMove);
+                playPauseButton.Enabled = true;
             }
             else
             {
+                playPauseButton.Enabled = false;
                 simulationFlowHandler.PauseEvaluation();
             }
         }

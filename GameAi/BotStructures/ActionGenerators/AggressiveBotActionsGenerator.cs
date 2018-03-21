@@ -54,7 +54,7 @@
 
                 ref var regionToDeploy = ref copiedState.GetRegion(regionToDeployId);
                 
-                botGameTurn.Deployments.Add(new BotDeployment(regionToDeploy.Id, regionToDeploy.Army + playerPerspective.GetMyIncome(),
+                botGameTurn.Deployments.Add(new BotDeployment(regionToDeploy.Id, regionToDeploy.Army + copiedState.GetMyIncome(),
                     playerPerspective.PlayerId));
 
                 UpdateGameStateAfterDeploying(ref copiedState, botGameTurn.Deployments);

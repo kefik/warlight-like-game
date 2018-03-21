@@ -60,8 +60,8 @@ namespace GameAi.Data.EvaluationStructures
             get { return (byte) (ownerAndArmyEncoded & 0b11111); }
             set
             {
-                ownerAndArmyEncoded &= 0b1111111111100000; // 5 zeros, 11 ones
-                value &= 0b11111;
+                ownerAndArmyEncoded &= 0b1111_1111_1110_0000; // 5 zeros, 11 ones
+                value &= 0b1_1111;
                 ownerAndArmyEncoded |= value;
             }
         }
@@ -96,7 +96,7 @@ namespace GameAi.Data.EvaluationStructures
                 ushort armyValue = (ushort) value;
 
                 // army mask = 10x 0, 6x 1
-                ushort armyMask = 0b0000000000111111;
+                ushort armyMask = 0b0000_0000_0011_1111;
 
                 // reset army bits
                 ownerAndArmyEncoded &= armyMask;
@@ -125,7 +125,7 @@ namespace GameAi.Data.EvaluationStructures
                 ownerAndArmyEncoded &= isVisibleMask;
 
                 ushort shiftedValue = (ushort)(byteValue << 5);
-                ownerAndArmyEncoded = (ushort)(shiftedValue | ownerAndArmyEncoded);
+                ownerAndArmyEncoded |= shiftedValue;
             }
         }
 
@@ -194,7 +194,7 @@ namespace GameAi.Data.EvaluationStructures
 
         public override string ToString()
         {
-            return $"{Id}, {Name}";
+            return $"{Id}, {Name}, Army: {Army}";
         }
     }
 }

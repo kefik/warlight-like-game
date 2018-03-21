@@ -25,8 +25,8 @@
             IEnumerable<BotTurn> myBotTurns,
             IEnumerable<BotTurn> enemyBotTurns)
         {
-            List<(MapMin Map, BotTurn Turn, double Value)> results
-                = new List<(MapMin Map, BotTurn Turn, double Value)>();
+            List<BoardEvaluationResult> results
+                = new List<BoardEvaluationResult>();
 
             enemyBotTurns = enemyBotTurns.ToList();
 
@@ -47,16 +47,8 @@
                         }
                     };
 
-                    var newMap = roundEvaluator.Evaluate(map,
-                        round);
-
-                    var myPerspectiveValue = playerPerspectiveEvaluator
-                        .GetValue(new PlayerPerspective(newMap, myPlayerId));
-                    var enemyPerspectiveValue = playerPerspectiveEvaluator
-                        .GetValue(new PlayerPerspective(newMap, enemyPlayerId));
-
-                    // enemy wants to minimize this value
-                    double result = myPerspectiveValue - enemyPerspectiveValue;
+                    // get expected result
+                    (MapMin newMap, double result) = GetExpectedValueResult(map, round, myPlayerId, enemyPlayerId);
 
                     if (bestResultForEnemy > result)
                     {
@@ -65,15 +57,39 @@
                     }
                 }
 
-                results.Add((bestResultForEnemyMap, myBotTurn, bestResultForEnemy));
+                results.Add(
+                    new BoardEvaluationResult()
+                    {
+                        BoardState = bestResultForEnemyMap,
+                        BotTurn = myBotTurn,
+                        Result = bestResultForEnemy
+                    });
             }
 
-            return results.OrderByDescending(x => x.Value).Select(x => new BoardEvaluationResult()
+            return results.OrderByDescending(x => x.Result).ToList();
+        }
+
+        private (MapMin MapMin, double Value) GetExpectedValueResult(MapMin previousMap, BotRound round,
+            byte myPlayerId, byte enemyPlayerId)
+        {
+            var boardEvaluationResults = new List<(MapMin ResultMap, double Value)>();
+
+            // should be iterated only in case of non-deterministic algorithm
+            for (int i = 0; i < 20; i++)
             {
-                BoardState = x.Map,
-                BotTurn = x.Turn,
-                Result = x.Value
-            }).ToList();
+                var newMap = roundEvaluator.Evaluate(previousMap,
+                    round);
+                var myPerspectiveValue = playerPerspectiveEvaluator
+                    .GetValue(new PlayerPerspective(newMap, myPlayerId));
+                var enemyPerspectiveValue = playerPerspectiveEvaluator
+                    .GetValue(new PlayerPerspective(newMap, enemyPlayerId));
+
+                boardEvaluationResults.Add((newMap, myPerspectiveValue - enemyPerspectiveValue));
+            }
+
+            boardEvaluationResults = boardEvaluationResults.OrderBy(x => x.Value).ToList();
+
+            return boardEvaluationResults[boardEvaluationResults.Count / 2];
         }
     }
 }

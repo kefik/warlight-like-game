@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Xml;
+    using FormatConverters;
     using GameAi;
     using GameAi.Data;
     using GameAi.Data.Restrictions;
@@ -369,6 +370,26 @@
             else
             {
                 var lastTurn = (GameTurn) LastTurn;
+            }
+
+            foreach (AiPlayer aiPlayer in Game.Players.OfType<AiPlayer>())
+            {
+                var players = Game.Players;
+                var objectsRestrictions = Game.ObjectsRestrictions;
+                var playerIdsMapper = players.CreateCompressedAiMapper();
+
+                var restrictions = objectsRestrictions.ToRestrictions()
+                    .ToRemappedRestrictions(playerIdsMapper);
+
+                var mapMin = Game.Map.ToMapMin(playerIdsMapper);
+                var botHandler = new WarlightAiBotHandler(aiPlayer.BotType, mapMin, Difficulty.Hard, (byte)playerIdsMapper.GetNewId(aiPlayer.Id),
+                    players.Select(x => (byte)playerIdsMapper.GetNewId(x.Id)).ToArray(), true, restrictions);
+
+                var botTurnTask = Task.Run(() => botHandler.FindBestMoveAsync());
+                botHandler.StopEvaluation(new TimeSpan(0, 0, 0, 0, 500));
+                var turn = botTurnTask.Result.ToTurn(Game.Map, players, playerIdsMapper);
+
+                LastTurn = turn;
             }
         }
 

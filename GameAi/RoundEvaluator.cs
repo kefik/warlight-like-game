@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Common.Extensions;
     using Common.Interfaces;
     using Data.EvaluationStructures;
     using Data.GameRecording;
@@ -15,6 +16,7 @@
         public MapMin Evaluate(MapMin mapMin, BotRound round)
         {
             var turns = round.BotTurns;
+            mapMin = mapMin.ShallowCopy();
 
             switch (turns.First())
             {
@@ -51,6 +53,8 @@
 
         internal LinearizedBotBotGameRound Linearize(BotGameTurn[] gameTurns)
         {
+            gameTurns.Shuffle();
+
             var deploying = new List<BotDeployment>();
             var attacking = new List<BotAttack>();
 
@@ -60,7 +64,7 @@
                 // true if anything in this round of cycle was added
                 // false if nothing happened => everything was solved => can break out
                 bool didSomething = false;
-                foreach (var turn in gameTurns)
+                foreach (var turn in gameTurns.OrderBy(x => random.Next(2)))
                 {
                     if (turn.Deployments.Count > index)
                     {

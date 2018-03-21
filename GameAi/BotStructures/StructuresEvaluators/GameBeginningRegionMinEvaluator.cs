@@ -13,7 +13,7 @@
     {
         private const double NeighboursCoefficient = 1;
         private const double SuperRegionCoefficient = 3;
-        private const double ClusterCoefficient = 2;
+        private const double ClusterCoefficient = 50;
 
         private readonly DistanceMatrix distanceMatrix;
 
@@ -37,7 +37,6 @@
         {
             double staticValue = GetStaticValue(gameStructure);
             ref SuperRegionMin superRegion = ref currentGameState.GetSuperRegion(gameStructure.SuperRegionId);
-            var myRegions = currentGameState.GetMyRegions().ToList();
 
             // hint: super region value has influence on how good the given super region is
             double superRegionValue = SuperRegionCoefficient
@@ -46,17 +45,21 @@
             // hint: clustered regions are not good to choose
             // greater from owned neighbour, lesser the cost
             double clusterValue = 0;
-            if (currentGameState.IsNeighbourToAnyMyRegion(gameStructure))
+            var myOldRegions = currentGameState.MapMin.RegionsMin
+                .Where(x => x.OwnerId == currentGameState.PlayerId)
+                .Where(x => x.Id != gameStructure.Id).ToList();
+
+            if (myOldRegions.Count != 0)
             {
                 clusterValue += ClusterCoefficient
-                    // get distance closest region of the same player
-                    * currentGameState.MapMin.RegionsMin
-                        .Where(x => x.OwnerId == currentGameState.PlayerId)
-                        .Where(x => x.Id != gameStructure.Id)
-                        .Min(x => distanceMatrix.GetDistance(x.Id, gameStructure.Id));
+                                // get distance closest region of the same player
+                                * Math.Min(
+                                    myOldRegions
+                                    .Min(x => distanceMatrix.GetDistance(x.Id, gameStructure.Id)),
+                                    distanceMatrix.GetMaximumDistance() / 2);
             }
 
-            double dynamicCost = superRegionValue - clusterValue;
+            double dynamicCost = superRegionValue + clusterValue;
 
             return dynamicCost + staticValue;
         }

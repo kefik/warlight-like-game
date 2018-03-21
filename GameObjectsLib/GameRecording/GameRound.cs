@@ -1,6 +1,9 @@
 ﻿namespace GameObjectsLib.GameRecording
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using Common.Extensions;
     using ProtoBuf;
 
     /// <summary>
@@ -19,13 +22,16 @@
             Deploying deploying = new Deploying(new List<Deployment>());
             Attacking attacking = new Attacking(new List<Attack>());
 
+            var turns = Turns.ToArray();
+            turns.Shuffle();
+
             int index = 0;
             while (true)
             {
                 // true if anything in this round of cycle was added
                 // false if nothing happened => everything was solved => can break out
                 bool didSomething = false;
-                foreach (GameTurn round in Turns)
+                foreach (GameTurn round in turns)
                 {
                     if (round.Deploying.ArmiesDeployed.Count > index)
                     {

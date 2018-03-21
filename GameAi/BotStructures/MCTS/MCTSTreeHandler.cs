@@ -1,4 +1,6 @@
-﻿namespace GameAi.BotStructures.MCTS
+﻿//#define IGNORE_CANCELLATION
+
+namespace GameAi.BotStructures.MCTS
 {
     using System;
     using System.Collections;
@@ -10,7 +12,6 @@
     using Data.GameRecording;
     using Interfaces;
     using Interfaces.ActionsGenerators;
-    using Interfaces.Evaluators;
     using Interfaces.Evaluators.NodeEvaluators;
     using Interfaces.Evaluators.StructureEvaluators;
     using StructuresEvaluators;
@@ -21,16 +22,14 @@
     internal class MCTSTreeHandler
     {
         private readonly INodeEvaluator<MCTSTreeNode> nodeEvaluator;
-        private readonly IRoundEvaluator roundEvaluator;
         private readonly IGameActionsGenerator gameActionsGenerator;
         private readonly IGameBeginningActionsGenerator beginningActionsGenerator;
-        private readonly IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator;
-        private readonly IPlayerPerspectiveEvaluator gamePerspectiveEvaluator;
-
-        private MinimaxCalculator minimaxCalculator;
+        private readonly IPlayerPerspectiveEvaluator gamePlayerPerspectiveEvaluator;
 
         private byte myPlayerId;
         private byte enemyPlayerId;
+
+        private Random random;
 
         /// <summary>
         /// Tree representing the evaluation.
@@ -39,11 +38,9 @@
 
         public MCTSTreeHandler(PlayerPerspective initialBoardState,
             byte enemyPlayerId,
-            IRoundEvaluator roundEvaluator,
             IGameActionsGenerator gameActionsGenerator,
             IGameBeginningActionsGenerator beginningActionsGenerator,
-            IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator,
-            IPlayerPerspectiveEvaluator gamePerspectiveEvaluator)
+            IPlayerPerspectiveEvaluator gamePlayerPerspectiveEvaluator)
         {
             var state = new NodeState()
             {
@@ -55,17 +52,14 @@
             Tree = new MCTSTree(state);
 
             this.nodeEvaluator = new UctEvaluator(Tree.Root);
-            this.roundEvaluator = roundEvaluator;
             this.gameActionsGenerator = gameActionsGenerator;
             this.beginningActionsGenerator = beginningActionsGenerator;
-            this.gameBeginningPlayerPerspectiveEvaluator = gameBeginningPlayerPerspectiveEvaluator;
-            this.gamePerspectiveEvaluator = gamePerspectiveEvaluator;
-
-            minimaxCalculator = new MinimaxCalculator(roundEvaluator,
-                gameBeginningPlayerPerspectiveEvaluator);
+            this.gamePlayerPerspectiveEvaluator = gamePlayerPerspectiveEvaluator;
 
             myPlayerId = initialBoardState.PlayerId;
             this.enemyPlayerId = enemyPlayerId;
+
+            this.random = new Random();
         }
 
         /// <summary>
@@ -74,7 +68,11 @@
         /// <param name="token"></param>
         public void StartEvaluation(CancellationToken token)
         {
+#if IGNORE_CANCELLATION
+            while (true)
+#else
             while (!token.IsCancellationRequested)
+#endif
             {
                 var bestNode = SelectBestNode();
 
@@ -85,9 +83,11 @@
                     continue;
                 }
 
-                Simulate(nodesToSimulate);
+                var nodeToSimulate = nodesToSimulate[random.Next(nodesToSimulate.Count)];
 
-                Backpropagate(nodesToSimulate);
+                Simulate(nodeToSimulate);
+
+                Backpropagate(nodeToSimulate);
             }
         }
 
@@ -131,7 +131,7 @@
         }
 
         /// <summary>
-        /// Expand the node specified in parameter meaning choose nexta ctions that will be simulated.
+        /// Expand the node specified in parameter meaning choose next actions that will be simulated.
         /// </summary>
         /// <param name="node">Node to expand.</param>
         /// <returns>New children <see cref="node"/> was expanded to.</returns>
@@ -141,176 +141,44 @@
 
             if (node.GameState.IsGameBeginning())
             {
-                var playerPerspective = new PlayerPerspective(boardState, myPlayerId);
-                // generate select moves for my bot
-                var myBotTurns = beginningActionsGenerator.Generate(playerPerspective);
-
-                playerPerspective.PlayerId = enemyPlayerId;
-
-                // generate select moves for enemy bot
-                var enemyBotTurns = beginningActionsGenerator.Generate(playerPerspective);
-
-                var expandedNodeStates = minimaxCalculator.CalculateBestActions(
-                    boardState,
-                    myPlayerId, enemyPlayerId,
-                    myBotTurns, enemyBotTurns)
-                    .Where(x => x.Result > -100)
-                    .Take(5)
-                    .Select(x => new NodeState()
-                    {
-                        BoardState = x.BoardState,
-                        BotTurn = x.BotTurn
-                    });
-
-                // add expanded node states
-                foreach (var nodeState in expandedNodeStates)
-                {
-                    node.AddChild(nodeState);
-                }
+               
             }
             else
             {
-                var myPlayerPerspective = new PlayerPerspective(boardState, myPlayerId);
-
-                if (myPlayerPerspective.HasLost())
-                {
-                    node.Value.WinCount = 0;
-                    node.Value.VisitCount = 1;
-                    return null;
-                }
-
-                var enemyPlayerPerspective = new PlayerPerspective(boardState, enemyPlayerId);
-
-                if (enemyPlayerPerspective.HasLost())
-                {
-                    node.Value.WinCount = 1;
-                    node.Value.VisitCount = 1;
-                    return null;
-                }
-
-                // generate select moves for my bot
-                var myBotTurns = gameActionsGenerator.Generate(myPlayerPerspective);
-                // generate select moves for enemy bot
-                var enemyBotTurns = gameActionsGenerator.Generate(enemyPlayerPerspective);
                 
-                var expandedNodeStates = minimaxCalculator.CalculateBestActions(
-                    boardState,
-                    myPlayerId, enemyPlayerId,
-                    myBotTurns, enemyBotTurns)
-                    .Select(x => new NodeState()
-                    {
-                        BoardState = x.BoardState,
-                        BotTurn = x.BotTurn
-                    });
-
-                // add expanded node states
-                foreach (var nodeState in expandedNodeStates)
-                {
-                    node.AddChild(nodeState);
-                }
             }
 
             return node.Children;
         }
 
-        private void Simulate(ICollection<MCTSTreeNode> nodes)
+        /// <summary>
+        /// Play a simulation from specified node.
+        /// </summary>
+        /// <param name="sourceNode"></param>
+        private void Simulate(MCTSTreeNode sourceNode)
         {
-            foreach (var node in nodes)
-            {
-                Simulate(node, 1);
-            }
-        }
-
-        private void Simulate(MCTSTreeNode sourceNode, int depth)
-        {
-            // too far in the depth
-            if (depth > 4)
-            {
-                var perspective = new PlayerPerspective(sourceNode.GameState, myPlayerId);
-
-                double myValue = gamePerspectiveEvaluator.GetValue(perspective);
-                perspective.PlayerId = enemyPlayerId;
-
-                double enemyValue = gamePerspectiveEvaluator.GetValue(perspective);
-
-                double winRatio = myValue / (enemyValue + myValue);
-
-                sourceNode.Value.WinCount = winRatio;
-                sourceNode.Value.VisitCount = 1;
-                return;
-            }
-
-            var myPlayerPerspective = new PlayerPerspective(sourceNode.GameState, myPlayerId);
-            var enemyPlayerPerspective = new PlayerPerspective(sourceNode.GameState, enemyPlayerId);
-
-            // I lost => return
-            if (myPlayerPerspective.HasLost())
-            {
-                sourceNode.Value.WinCount = 0;
-                sourceNode.Value.VisitCount = 1;
-                return;
-            }
-            // enemy lost => return
-            if (enemyPlayerPerspective.HasLost())
-            {
-                sourceNode.Value.WinCount = 1;
-                sourceNode.Value.VisitCount = 1;
-                return;
-            }
-
-            // otherwise generate actions and simulate
-            var myBotActions = gameActionsGenerator.Generate(myPlayerPerspective);
-            var enemyBotActions = gameActionsGenerator.Generate(enemyPlayerPerspective);
-
-            var bestNodeState = minimaxCalculator.CalculateBestActions(myPlayerPerspective.MapMin,
-                myPlayerId, enemyPlayerId, myBotActions, enemyBotActions)
-                .Where(x => x.Result > -100)
-                .Take(5)
-                .Select(x => new NodeState()
-                {
-                    BoardState = x.BoardState,
-                    BotTurn = x.BotTurn
-                });
-
-            foreach (NodeState nodeState in bestNodeState)
-            {
-                sourceNode.AddChild(nodeState);
-            }
-
-            if (sourceNode.Children != null)
-            {
-                foreach (MCTSTreeNode sourceNodeChild in sourceNode.Children)
-                {
-                    Simulate(sourceNodeChild, depth + 1);
-                }
-
-                sourceNode.Value.WinCount = sourceNode.Children.Sum(x => x.WinCount);
-                sourceNode.Value.VisitCount = sourceNode.Children.Sum(x => x.VisitCount);
-            }
-        }
-
-        private void Backpropagate(IEnumerable<MCTSTreeNode> nodes)
-        {
-            foreach (MCTSTreeNode node in nodes)
-            {
-                Backpropagate(node);
-            }
+            // TODO: minimax simulation
         }
 
         /// <summary>
-        /// Backpropagates the changes back to the root.
+        /// Backpropagates the information about results
+        /// from newly expanded node back to root.
         /// </summary>
         /// <param name="newlyExpandedNode"></param>
         private void Backpropagate(MCTSTreeNode newlyExpandedNode)
         {
-            MCTSTreeNode currentNode = newlyExpandedNode.Parent;
+            MCTSTreeNode currentNode = newlyExpandedNode;
             // repeat until the current node is root node
-            do
+            while (!currentNode.IsRoot)
             {
+                MCTSTreeNode parent = currentNode.Parent;
+
                 // update the node
-                currentNode.Value.VisitCount += newlyExpandedNode.VisitCount;
-                currentNode.Value.WinCount += newlyExpandedNode.Value.WinCount;
-            } while (!(currentNode = newlyExpandedNode.Parent).IsRoot);
+                parent.Value.VisitCount += currentNode.VisitCount;
+                parent.Value.WinCount += currentNode.WinCount;
+
+                currentNode = currentNode.Parent;
+            }
         }
     }
 }

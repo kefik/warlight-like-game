@@ -5,6 +5,7 @@
     using Common;
     using Common.Collections;
     using Data.EvaluationStructures;
+    using Data.GameRecording;
     using Interfaces;
     using static Common.ObjectPool<MCTSTreeNode>;
 
@@ -69,7 +70,12 @@
             get { return Value.BoardState; }
         }
 
-        public override void AddChild(NodeState value)
+        public BotTurn Action
+        {
+            get { return Value.BotTurn; }
+        }
+
+        public override MCTSTreeNode AddChild(NodeState value)
         {
             var node = DefaultPool.Allocate();
 
@@ -82,6 +88,8 @@
             }
 
             Children.Add(node);
+
+            return node;
         }
     }
 }

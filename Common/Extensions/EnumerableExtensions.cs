@@ -1,0 +1,40 @@
+﻿namespace Common.Extensions
+{
+    using System;
+    using System.Collections.Generic;
+    using Collections;
+
+    public static class EnumerableExtensions
+    {
+        /// <summary>
+        /// Converts enumerable to HashSet.
+        /// </summary>
+        /// <typeparam name="TType"></typeparam>
+        /// <typeparam name="TSetType"></typeparam>
+        /// <param name="enumerable"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        public static HashSet<TSetType> ToHashSet<TType, TSetType>(this IEnumerable<TType> enumerable, Func<TType, TSetType> selector)
+        {
+            HashSet<TSetType> hashSet = new HashSet<TSetType>();
+
+            foreach (var item in enumerable)
+            {
+                hashSet.Add(selector(item));
+            }
+
+            return hashSet;
+        }
+
+        /// <summary>
+        /// Converts enumerable to HashSet.
+        /// </summary>
+        /// <typeparam name="TType"></typeparam>
+        /// <param name="enumerable"></param>
+        /// <returns></returns>
+        public static HashSet<TType> ToHashSet<TType>(this IEnumerable<TType> enumerable)
+        {
+            return ToHashSet(enumerable, x => x);
+        }
+    }
+}

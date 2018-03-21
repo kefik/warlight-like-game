@@ -55,6 +55,8 @@
                 new GameBeginningRegionMinEvaluator(
                     new GameBeginningSuperRegionMinEvaluator(initialGameState.MapMin),
                     distanceMatrix));
+            IPlayerPerspectiveEvaluator gamePlayerPerspectiveEvaluator = new PlayerPerspectiveEvaluator(
+                new GameRegionMinEvaluator(new GameSuperRegionMinEvaluator(initialGameState.MapMin)));
 
             // clear what was left after previous evaluation
             CancellationTokenSource = new CancellationTokenSource();
@@ -67,12 +69,10 @@
             {
                 treeHandlers[index] = new MCTSTreeHandler(initialGameState,
                     enemyPlayerId,
-                    roundEvaluator,
                     GetGameActionGenerator(initialGameState.MapMin),
                     GetGameBeginningActionGenerator(restrictions?.GameBeginningRestrictions,
                         initialGameState.MapMin),
-                    gameBeginningPlayerPerspectiveEvaluator,
-                    gameBeginningPlayerPerspectiveEvaluator);
+                    gamePlayerPerspectiveEvaluator);
             }
         }
 
@@ -81,7 +81,7 @@
         {
             // TODO: merge the trees and get the most visited node
             return treeHandlers[0].Tree.Root.Children
-                .OrderByDescending(x => x.VisitCount).First().Value.BotTurn;
+                .OrderByDescending(x => x.VisitCount).ThenByDescending(x => x.WinCount).First().Value.BotTurn;
         }
 
         /// <summary>

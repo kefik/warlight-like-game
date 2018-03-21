@@ -89,6 +89,7 @@
                 GameState = GameState.RoundBeginning;
                 if (!isNext)
                 {
+                    gameFlowHandler.Commit();
                     gameFlowHandler.PlayRound();
                 }
                 if (Game.IsFinished())

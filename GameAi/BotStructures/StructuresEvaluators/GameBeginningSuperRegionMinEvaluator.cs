@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Common.Extensions;
     using Data.EvaluationStructures;
     using Interfaces;
     using Interfaces.Evaluators.StructureEvaluators;
@@ -71,16 +72,19 @@
                 // hint: greater bonus => greater value
                 double bonusValue = BonusCoefficient * gameStructure.Bonus;
 
-                var regions = gameStructure
+                // regions of the super region
+                var regionsIds = gameStructure
                     .RegionsIds
-                    .Select(x => map.GetRegion(x))
+                    .Select(x => x)
                     .ToList();
 
-                var foreignNeighbourRegionsIds = (from region in regions
-                                                  from neighbourId in region
+                // foreign neighbours are neighbours that do not belong to the same super region
+                var foreignNeighbourRegionsIds = (from regionId in regionsIds
+                                                  from neighbourId in map.GetRegion(regionId)
                                                       .NeighbourRegionsIds
-                                                  where region.Id != neighbourId
-                                                  select neighbourId).ToList();
+                                                  where map.GetRegion(neighbourId).SuperRegionId != gameStructure.Id
+                                                  select neighbourId)
+                                                  .ToList();
 
                 // hint: more foreign neighbour it has, worse it is
                 int foreignNeighboursCount = foreignNeighbourRegionsIds.Count;

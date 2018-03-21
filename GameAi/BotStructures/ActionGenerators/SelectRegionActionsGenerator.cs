@@ -153,7 +153,7 @@
                 return;
             }
 
-            // sort regions by cost (lesser cost => better pick)
+            // sort regions by value (greater value => better)
             var sortedRegions =
                 regionsRestrictions
                     .Select(x => new
@@ -161,7 +161,7 @@
                         RegionId = x,
                         Value = regionMinEvaluator.GetValue(playerPerspective, playerPerspective.GetRegion(x))
                     })
-                    .OrderBy(x => x.Value)
+                    .OrderByDescending(x => x.Value)
                     .ToList();
 
             // choose best first option such that wasn't chosen before

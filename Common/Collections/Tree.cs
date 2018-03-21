@@ -98,7 +98,7 @@
             return Children[index];
         }
 
-        public virtual void AddChild(TValue value)
+        public virtual TNodeType AddChild(TValue value)
         {
             var node = new TNodeType()
             {
@@ -107,6 +107,8 @@
             };
 
             Children.Add(node);
+
+            return node;
         }
 
         public override string ToString()

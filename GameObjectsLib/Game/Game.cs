@@ -82,7 +82,30 @@
             Map = map;
             Players = players;
             IsFogOfWar = isFogOfWar;
-            ObjectsRestrictions = objectsRestrictions;
+
+            if (objectsRestrictions == null)
+            {
+                // initialize with all regions
+                var gameBeginningRestrictions = new List<GameObjectsBeginningRestriction>();
+                var regions = map.Regions;
+                foreach (Player player in players)
+                {
+                    gameBeginningRestrictions.Add(new GameObjectsBeginningRestriction()
+                    {
+                        Player = player,
+                        RegionsPlayersCanChoose = regions,
+                        RegionsToChooseCount = 2
+                    });
+                }
+                ObjectsRestrictions = new GameObjectsRestrictions()
+                {
+                    GameBeginningRestrictions = gameBeginningRestrictions
+                };
+            }
+            else
+            {
+                ObjectsRestrictions = objectsRestrictions;
+            }
         }
 
         /// <summary>
