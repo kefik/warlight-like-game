@@ -1,6 +1,7 @@
 ﻿namespace GameAi.BotStructures.ActionGenerators
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using Data.EvaluationStructures;
@@ -24,6 +25,15 @@
             {
                 ref var region = ref gameState.GetRegion(deployment.RegionId);
                 region.Army = deployment.Army;
+            }
+        }
+
+        protected void UpdateGameStateAfterAttack(ref PlayerPerspective gameState, ICollection<BotAttack> attacks)
+        {
+            foreach (BotAttack attack in attacks)
+            {
+                ref var attackingRegion = ref gameState.GetRegion(attack.AttackingArmy);
+                attackingRegion.Army -= attack.AttackingArmy;
             }
         }
 
@@ -64,14 +74,14 @@
         }
 
         /// <summary>
-        /// Deploy near valuable not owned Regions.
+        /// Deploy near valuable Regions.
         /// </summary>
         /// <param name="currentGameState"></param>
         /// <returns></returns>
         /// <remarks>
         /// Each instance of return value represents one way to deploy. Deploying is done only by full available units.
         /// </remarks>
-        protected IEnumerable<BotDeployment> DeployOffensively(ref PlayerPerspective currentGameState)
+        protected IList<BotDeployment> DeployOffensively(PlayerPerspective currentGameState)
         {
             var botDeployment = new List<BotDeployment>();
             var playerPerspective = currentGameState;
@@ -82,10 +92,10 @@
                                        .Select(x => playerPerspective.GetRegion(x))
                                    where neighbour.OwnerId != playerPerspective.PlayerId
                                    orderby RegionMinEvaluator.GetValue(playerPerspective, neighbour) descending
-                                   select region).Distinct().Take(5).ToList();
+                                   select region).Distinct().ToList();
 
             int unitsToDeploy = currentGameState.GetMyIncome();
-            foreach (RegionMin regionMin in regionsToDeploy)
+            foreach (RegionMin regionMin in regionsToDeploy.Take(5))
             {
                 botDeployment.Add(
                     new BotDeployment(regionMin.Id, regionMin.Army + unitsToDeploy, currentGameState.PlayerId));
@@ -93,65 +103,32 @@
 
             return botDeployment;
         }
-
-        /// <summary>
-        /// Deploy in my valuable Regions.
-        /// </summary>
-        /// <param name="currentGameState"></param>
-        /// <returns></returns>
-        protected IEnumerable<BotDeployment> DeployDefensively(ref PlayerPerspective currentGameState)
-        {
-            var botDeployments = new List<BotDeployment>();
-            var playerPerspective = currentGameState;
-
-            // valuable regions that should be defended
-            var regionsToDeploy = (from region in playerPerspective.GetMyRegions()
-                                   orderby RegionMinEvaluator.GetValue(playerPerspective, region) descending
-                                   select region).Take(5);
-
-            int unitsToDeploy = currentGameState.GetMyIncome();
-            foreach (RegionMin regionMin in regionsToDeploy)
-            {
-                botDeployments.Add(
-                        new BotDeployment(regionMin.Id, regionMin.Army + unitsToDeploy, currentGameState.PlayerId));
-            }
-
-            return botDeployments;
-        }
-
+        
         /// <summary>
         /// Deploy in regions near enemy strong force.
         /// </summary>
         /// <param name="currentGameState"></param>
         /// <returns></returns>
-        protected IEnumerable<BotDeployment> DeployToCounterEnemy(ref PlayerPerspective currentGameState)
+        protected IList<BotDeployment> DeployToCounterSecurityThreat(PlayerPerspective currentGameState)
         {
             var botDeployments = new List<BotDeployment>();
 
             var playerPerspective = currentGameState;
             var myRegions = currentGameState.GetMyRegions();
 
-            var regionsCloseToEnemy = myRegions
-                .Select(x => new
-                {
-                    MyRegion = x,
-                    EnemyRegion = playerPerspective.GetClosestRegion(x,
-                        y => y.OwnerId != playerPerspective.PlayerId && y.OwnerId != 0)
-                })
-                .Select(x => new
-                {
-                    x.MyRegion,
-                    x.EnemyRegion,
-                    Distance = DistanceMatrix.GetDistance(x.MyRegion.Id, x.EnemyRegion.Id)
-                })
-            .Where(x => x.Distance < 3)
-            .Where(x => x.EnemyRegion.Army > x.MyRegion.Army * 2)
-            .OrderBy(x => x.Distance);
+            // get my regions that have enemy army near them
+            var regionsBySecurityThreat = myRegions
+                // order by army enemy neighbours have in sum
+                .OrderByDescending(x => x.NeighbourRegionsIds
+                .Select(neighbourId => playerPerspective.GetRegion(neighbourId))
+                .Where(neighbour => neighbour.OwnerId != 0 && neighbour.OwnerId != currentGameState.PlayerId)
+                .Sum(neighbour => neighbour.Army));
 
-            foreach (var pairs in regionsCloseToEnemy)
+            // deploy
+            foreach (var region in regionsBySecurityThreat.Take(5))
             {
                 botDeployments.Add(
-                        new BotDeployment(pairs.MyRegion.Id, pairs.MyRegion.Army + playerPerspective.GetMyIncome(), currentGameState.PlayerId));
+                        new BotDeployment(region.Id, region.Army + playerPerspective.GetMyIncome(), currentGameState.PlayerId));
             }
 
             return botDeployments;
@@ -162,7 +139,8 @@
         /// </summary>
         /// <param name="currentGameState"></param>
         /// <returns></returns>
-        protected IEnumerable<BotDeployment> GenerateDeployments(PlayerPerspective currentGameState)
+        /// <remarks>Using this can be resource-exhausting due to many deployment options.</remarks>
+        protected IEnumerable<BotDeployment> DeployToAll(PlayerPerspective currentGameState)
         {
             foreach (RegionMin regionMin in currentGameState.GetMyRegions())
             {
@@ -175,15 +153,14 @@
         /// </summary>
         /// <param name="currentGameState"></param>
         /// <returns></returns>
-        protected IEnumerable<BotAttack> AttackSafely(PlayerPerspective currentGameState)
+        protected void AttackSafely(PlayerPerspective currentGameState, IList<BotAttack> botAttacks)
         {
-            var botAttacks = new List<BotAttack>();
-
             foreach (var regionMin in currentGameState.GetMyRegions())
             {
                 ref var refRegionMin = ref currentGameState.GetRegion(regionMin.Id);
-                var neighboursToAttack = regionMin.NeighbourRegionsIds
+                var neighboursToAttack = refRegionMin.NeighbourRegionsIds
                     .Select(x => currentGameState.GetRegion(x))
+                    .Where(x => x.OwnerId != currentGameState.PlayerId)
                     .ToList();
 
                 // if theres any neighbour where is the enemy, don't attack (we want to attack safely only)
@@ -200,11 +177,11 @@
 
                     // I have large enough army and
                     // theres no neighbour of neighbour that is not mine => attack
-                    if (regionMin.Army - 1 > neighbourToAttack.Army * 10d / 9
+                    if (refRegionMin.Army - 1 > neighbourToAttack.Army * 10d / 7
                         && !neighboursNeighbours.Any(x => x.OwnerId != 0 && x.OwnerId != currentGameState.PlayerId))
                     {
                         // don't attack with too large force
-                        int attackingArmy = Math.Min(neighbourToAttack.Army * 3, regionMin.Army - 1);
+                        int attackingArmy = Math.Min(neighbourToAttack.Army * 3, refRegionMin.Army - 1);
 
                         botAttacks.Add(new BotAttack(currentGameState.PlayerId, refRegionMin.Id,
                             attackingArmy, neighbourToAttack.Id));
@@ -213,13 +190,28 @@
                     }
                 }
             }
-
-            return botAttacks;
         }
 
-        protected IEnumerable<BotAttack> AttackAggressively(PlayerPerspective currentGameState)
+        protected void AttackAggressively(PlayerPerspective currentGameState, IList<BotAttack> botAttacks)
         {
-            return null;
+            var myRegions = currentGameState.GetMyRegions().Select(x => x.Id);
+
+            foreach (var myRegionId in myRegions)
+            {
+                ref var myRegion = ref currentGameState.GetRegion(myRegionId);
+                var neighbours = currentGameState.GetNeighbourRegions(myRegionId)
+                    .Where(x => x.OwnerId != currentGameState.PlayerId)
+                    .OrderByDescending(x => RegionMinEvaluator.GetValue(currentGameState, x));
+
+                foreach (RegionMin neighbour in neighbours)
+                {
+                    if (neighbour.Army < myRegion.Army)
+                    {
+                        botAttacks.Add(new BotAttack(myRegion.OwnerId, myRegionId, myRegion.Army - 1, neighbour.Id));
+                        myRegion.Army = 1;
+                    }
+                }
+            }
         }
     }
 }

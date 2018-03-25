@@ -1,6 +1,7 @@
 ﻿namespace GameAi.BotStructures.StructuresEvaluators
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
     using Data;
     using Data.EvaluationStructures;
@@ -26,12 +27,14 @@
             ref SuperRegionMin superRegion = ref currentGameState
                 .GetSuperRegion(gameStructure.SuperRegionId);
 
+            byte regionOwner = gameStructure.OwnerId;
             // hint: more regions of the super region the region owner has,
             // the higher value it has
             int superRegionsRegionsOwningCount = superRegion.RegionsIds
                 .Select(x => currentGameState.GetRegion(x))
-                .Count(x => x.OwnerId == currentGameState.PlayerId);
+                .Count(x => x.OwnerId == regionOwner);
             double superRegionValue;
+            
             if (superRegion.OwnerId == gameStructure.OwnerId && gameStructure.OwnerId != 0)
             {
                 // hint: region of completed super region has higher value

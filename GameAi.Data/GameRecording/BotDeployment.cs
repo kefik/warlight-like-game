@@ -15,7 +15,7 @@
 
         public override string ToString()
         {
-            return $"{DeployingPlayerId}, {RegionId}, {Army}";
+            return $"Player: {DeployingPlayerId}, Region: {RegionId}, Army: {Army}";
         }
     }
 }

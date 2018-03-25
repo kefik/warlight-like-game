@@ -9,6 +9,7 @@
     using Interfaces;
     using static Common.ObjectPool<MCTSTreeNode>;
 
+    
     /// <summary>
     /// Tree representing MCTS evaluation.
     /// </summary>

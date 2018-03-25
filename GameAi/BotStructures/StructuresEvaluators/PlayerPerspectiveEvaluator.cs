@@ -7,7 +7,7 @@
     {
         private readonly IRegionMinEvaluator regionMinEvaluator;
 
-        private const double ArmyCoefficient = 10;
+        private const double ArmyCoefficient = 20;
 
         public PlayerPerspectiveEvaluator(IRegionMinEvaluator regionMinEvaluator)
         {
@@ -29,10 +29,7 @@
             foreach (RegionMin regionMin in playerPerspective.GetMyRegions())
             {
                 value += regionMinEvaluator.GetValue(playerPerspective, regionMin);
-                if (regionMin.Army > 1)
-                {
-                    value += regionMin.Army * ArmyCoefficient;
-                }
+                value += regionMin.Army * ArmyCoefficient;
             }
 
             return value;

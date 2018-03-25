@@ -138,7 +138,7 @@
             this.botThinkingTimeNumericUpDown.TabIndex = 7;
             this.botThinkingTimeNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.botThinkingTimeNumericUpDown.Value = new decimal(new int[] {
-            400,
+            2000,
             0,
             0,
             0});

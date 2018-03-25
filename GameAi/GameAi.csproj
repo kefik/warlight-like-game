@@ -55,7 +55,7 @@
     <Compile Include="BotStructures\MCTS\MCTSEvaluationHandler.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTree.cs" />
     <Compile Include="BotStructures\MCTS\MCTSTreeHandler.cs" />
-    <Compile Include="BotStructures\MCTS\MinimaxCalculator.cs" />
+    <Compile Include="BotStructures\BestMoveEvaluator\MinimaxNodeStateEvaluator.cs" />
     <Compile Include="BotStructures\MCTS\NodeState.cs" />
     <Compile Include="BotStructures\MCTS\UctEvaluator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\CacheableEvaluator.cs" />
@@ -67,6 +67,7 @@
     <Compile Include="GameBotCreator.cs" />
     <Compile Include="BotStructures\GameBot.cs" />
     <Compile Include="BotStructures\MCTS\MonteCarloTreeSearchBot.cs" />
+    <Compile Include="ProbabilityAwareRoundEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionsIdsMappingHandler.cs" />
     <Compile Include="RoundEvaluator.cs" />

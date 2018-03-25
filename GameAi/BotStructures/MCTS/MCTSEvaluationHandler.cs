@@ -49,14 +49,18 @@
             Restrictions restrictions)
         {
             var distanceMatrix = new DistanceMatrix(initialGameState.MapMin.RegionsMin);
+            ISuperRegionMinEvaluator gameBeginningSuperRegionMinEvaluator = new GameBeginningSuperRegionMinEvaluator(initialGameState.MapMin);
+            IRegionMinEvaluator gameBeginningRegionMinEvaluator = new GameBeginningRegionMinEvaluator(gameBeginningSuperRegionMinEvaluator, distanceMatrix);
+            ISuperRegionMinEvaluator gameSuperRegionMinEvaluator = new GameSuperRegionMinEvaluator(initialGameState.MapMin);
+            IRegionMinEvaluator gameRegionMinEvaluator = new GameRegionMinEvaluator(gameSuperRegionMinEvaluator);
+
             IRoundEvaluator roundEvaluator = new RoundEvaluator();
-            IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator
-                = new PlayerPerspectiveEvaluator(
-                new GameBeginningRegionMinEvaluator(
-                    new GameBeginningSuperRegionMinEvaluator(initialGameState.MapMin),
-                    distanceMatrix));
+            IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator = new PlayerPerspectiveEvaluator(gameBeginningRegionMinEvaluator);
             IPlayerPerspectiveEvaluator gamePlayerPerspectiveEvaluator = new PlayerPerspectiveEvaluator(
-                new GameRegionMinEvaluator(new GameSuperRegionMinEvaluator(initialGameState.MapMin)));
+                gameRegionMinEvaluator);
+
+            var selectRegionActionsGenerator = new SelectRegionActionsGenerator(gameBeginningRegionMinEvaluator, restrictions.GameBeginningRestrictions);
+            var gameActionsGenerator = new MCTSBotActionsGenerator(gameRegionMinEvaluator, initialGameState.MapMin);
 
             // clear what was left after previous evaluation
             CancellationTokenSource = new CancellationTokenSource();
@@ -69,10 +73,10 @@
             {
                 treeHandlers[index] = new MCTSTreeHandler(initialGameState,
                     enemyPlayerId,
-                    GetGameActionGenerator(initialGameState.MapMin),
-                    GetGameBeginningActionGenerator(restrictions?.GameBeginningRestrictions,
-                        initialGameState.MapMin),
-                    gamePlayerPerspectiveEvaluator);
+                    gameActionsGenerator,
+                    selectRegionActionsGenerator,
+                    gamePlayerPerspectiveEvaluator,
+                    roundEvaluator);
             }
         }
 
@@ -156,25 +160,6 @@
         ~MCTSEvaluationHandler()
         {
             ClearEvaluationCache();
-        }
-
-        private IGameActionsGenerator GetGameActionGenerator(MapMin mapMin)
-        {
-            return new AggressiveBotActionsGenerator(new GameRegionMinEvaluator(new GameSuperRegionMinEvaluator(mapMin)), mapMin);
-        }
-
-        private IGameBeginningActionsGenerator GetGameBeginningActionGenerator(
-            ICollection<GameBeginningRestriction> gameBeginningRestrictions,
-            MapMin map)
-        {
-            IRegionMinEvaluator regionMinEvaluator = new GameBeginningRegionMinEvaluator(
-                new GameBeginningSuperRegionMinEvaluator(map),
-                new DistanceMatrix(map.RegionsMin));
-            if (gameBeginningRestrictions == null)
-            {
-                return null;
-            }
-            return new SelectRegionActionsGenerator(regionMinEvaluator, gameBeginningRestrictions);
         }
     }
 }

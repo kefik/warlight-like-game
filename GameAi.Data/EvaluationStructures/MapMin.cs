@@ -110,5 +110,18 @@ namespace GameAi.Data.EvaluationStructures
         {
             return ref SuperRegionsMin[superRegionId];
         }
+
+        /// <summary>
+        /// Returns list of neighbour regions of given <see cref="RegionMin"/>.
+        /// </summary>
+        /// <param name="region"></param>
+        /// <returns></returns>
+        public IEnumerable<RegionMin> GetNeighbourRegions(RegionMin region)
+        {
+            foreach (int regionNeighbourRegionsId in region.NeighbourRegionsIds)
+            {
+                yield return GetRegion(regionNeighbourRegionsId);
+            }
+        }
     }
 }

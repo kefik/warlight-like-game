@@ -182,5 +182,10 @@ namespace GameAi.Data.EvaluationStructures
         {
             return !GetMyRegions().Any();
         }
+
+        public IEnumerable<RegionMin> GetNeighbourRegions(RegionMin region)
+        {
+            return MapMin.GetNeighbourRegions(region);
+        }
     }
 }
