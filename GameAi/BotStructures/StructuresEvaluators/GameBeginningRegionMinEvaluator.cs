@@ -11,19 +11,29 @@
     /// </summary>
     internal class GameBeginningRegionMinEvaluator : IRegionMinEvaluator
     {
-        private const double NeighboursCoefficient = 1;
-        private const double SuperRegionCoefficient = 3;
-        private const double ClusterCoefficient = 50;
+        private readonly double superRegionCoefficient;
+        private readonly double clusterCoefficient;
 
         private readonly DistanceMatrix distanceMatrix;
 
         private readonly ISuperRegionMinEvaluator superRegionMinEvaluator;
 
         public GameBeginningRegionMinEvaluator(ISuperRegionMinEvaluator superRegionMinEvaluator,
-            DistanceMatrix distanceMatrix)
+            DistanceMatrix distanceMatrix,
+            double clusterCoefficient,
+            double superRegionCoefficient)
         {
+            this.clusterCoefficient = clusterCoefficient;
+            this.superRegionCoefficient = superRegionCoefficient;
             this.superRegionMinEvaluator = superRegionMinEvaluator;
             this.distanceMatrix = distanceMatrix;
+        }
+
+        public GameBeginningRegionMinEvaluator(ISuperRegionMinEvaluator superRegionMinEvaluator,
+            MapMin map, double clusterCoefficient,
+            double superRegionCoefficient) : this(superRegionMinEvaluator, new DistanceMatrix(map.RegionsMin), clusterCoefficient,
+                superRegionCoefficient)
+        {
         }
 
         /// <summary>
@@ -35,11 +45,10 @@
         /// <returns></returns>
         public double GetValue(PlayerPerspective currentGameState, RegionMin gameStructure)
         {
-            double staticValue = GetStaticValue(gameStructure);
             ref SuperRegionMin superRegion = ref currentGameState.GetSuperRegion(gameStructure.SuperRegionId);
 
             // hint: super region value has influence on how good the given super region is
-            double superRegionValue = SuperRegionCoefficient
+            double superRegionValue = superRegionCoefficient
                 * superRegionMinEvaluator.GetValue(currentGameState, superRegion);
 
             // hint: clustered regions are not good to choose
@@ -51,7 +60,7 @@
 
             if (myOldRegions.Count != 0)
             {
-                clusterValue += ClusterCoefficient
+                clusterValue += clusterCoefficient
                                 // get distance closest region of the same player
                                 * Math.Min(
                                     myOldRegions
@@ -61,22 +70,7 @@
 
             double dynamicCost = superRegionValue + clusterValue;
 
-            return dynamicCost + staticValue;
-        }
-
-        /// <summary>
-        /// Gets static cost of <see cref="RegionMin"/> structure.
-        /// </summary>
-        /// <param name="gameStructure"></param>
-        /// <returns></returns>
-        private double GetStaticValue(RegionMin gameStructure)
-        {
-            int neighboursCount = gameStructure.NeighbourRegionsIds.Length;
-
-            // hint: more neighbours => harder it is to defend the region
-            double staticResult = -NeighboursCoefficient * neighboursCount;
-
-            return staticResult;
+            return dynamicCost;
         }
     }
 }

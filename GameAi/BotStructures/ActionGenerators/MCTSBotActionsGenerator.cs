@@ -1,5 +1,6 @@
 ﻿namespace GameAi.BotStructures.ActionGenerators
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Data.EvaluationStructures;
@@ -20,7 +21,21 @@
 
         public IReadOnlyList<BotGameTurn> Generate(PlayerPerspective currentGameState)
         {
+            var myRegions = currentGameState.GetMyRegions().ToList();
+
+            // TODO: enemy region nearby => sort it out
+
             return GenerateAll(currentGameState);
+        }
+
+        private IReadOnlyList<BotGameTurn> GenerateExpand(PlayerPerspective playerPerspective)
+        {
+            throw new NotImplementedException();
+        }
+
+        private IReadOnlyList<BotGameTurn> GenerateAttackOrDefend(PlayerPerspective playerPerspective)
+        {
+            throw new NotImplementedException();
         }
 
         private List<BotGameTurn> GenerateAll(PlayerPerspective currentGameState)
@@ -34,7 +49,7 @@
             {
                 var deploymentCopy = currentGameState.ShallowCopy();
 
-                var deployment = new List<BotDeployment>() {botDeployment};
+                var deployment = new List<BotDeployment> { botDeployment };
                 UpdateGameStateAfterDeploying(ref deploymentCopy, deployment);
 
                 var noWaitAggressiveCopy = deploymentCopy.ShallowCopy();

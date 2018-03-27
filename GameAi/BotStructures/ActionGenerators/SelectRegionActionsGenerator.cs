@@ -131,7 +131,7 @@
 
             int combinationsPicked = 0;
 
-            ChooseBestRegions(9, ref combinationsPicked, 0, playerPerspective, tree.Root, new HashSet<double>(), 0);
+            ChooseBestRegions(3, ref combinationsPicked, 0, playerPerspective, tree.Root, new HashSet<double>(), 0);
 
             var botTurns = tree.ToBotGameBeginningTurns(playerId);
 

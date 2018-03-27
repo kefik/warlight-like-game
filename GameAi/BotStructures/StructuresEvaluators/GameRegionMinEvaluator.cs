@@ -9,21 +9,22 @@
 
     public class GameRegionMinEvaluator : IRegionMinEvaluator
     {
-        private const double NeighboursCoefficient = 4;
-        private const double SuperRegionCoefficient = 3;
-        private const double ArmyCoefficient = 4;
-        private const double BonusCoefficient = 15;
+        private readonly double superRegionCoefficient;
+        private readonly double bonusCoefficient;
 
         private readonly ISuperRegionMinEvaluator superRegionMinEvaluator;
 
-        public GameRegionMinEvaluator(ISuperRegionMinEvaluator superRegionMinEvaluator)
+        public GameRegionMinEvaluator(ISuperRegionMinEvaluator superRegionMinEvaluator,
+            double bonusCoefficient, double superRegionCoefficient)
         {
             this.superRegionMinEvaluator = superRegionMinEvaluator;
+
+            this.superRegionCoefficient = superRegionCoefficient;
+            this.bonusCoefficient = bonusCoefficient;
         }
         
         public double GetValue(PlayerPerspective currentGameState, RegionMin gameStructure)
         {
-            double staticValue = GetStaticValue(gameStructure);
             ref SuperRegionMin superRegion = ref currentGameState
                 .GetSuperRegion(gameStructure.SuperRegionId);
 
@@ -38,14 +39,14 @@
             if (superRegion.OwnerId == gameStructure.OwnerId && gameStructure.OwnerId != 0)
             {
                 // hint: region of completed super region has higher value
-                superRegionValue = SuperRegionCoefficient * superRegionsRegionsOwningCount
-                                   + BonusCoefficient * superRegion.Bonus
+                superRegionValue = superRegionCoefficient * superRegionsRegionsOwningCount
+                                   + bonusCoefficient * superRegion.Bonus
                                    + superRegionMinEvaluator.GetValue(currentGameState, superRegion);
             }
             else
             {
                 // hint: super region value has influence on how good the given super region is
-                superRegionValue = SuperRegionCoefficient * superRegionsRegionsOwningCount
+                superRegionValue = superRegionCoefficient * superRegionsRegionsOwningCount
                                    + superRegionMinEvaluator.GetValue(currentGameState, superRegion);
             }
 
@@ -65,22 +66,7 @@
 
             double dynamicValue = superRegionValue;
 
-            return dynamicValue + staticValue;
-        }
-
-        /// <summary>
-        /// Gets static cost of <see cref="RegionMin"/> structure.
-        /// </summary>
-        /// <param name="gameStructure"></param>
-        /// <returns></returns>
-        private double GetStaticValue(RegionMin gameStructure)
-        {
-            int neighboursCount = gameStructure.NeighbourRegionsIds.Length;
-
-            // hint: more neighbours => harder it is to defend the region
-            double staticResult = -NeighboursCoefficient * neighboursCount;
-
-            return staticResult;
+            return dynamicValue;
         }
     }
 }

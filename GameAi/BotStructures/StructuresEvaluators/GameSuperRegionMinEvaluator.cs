@@ -8,12 +8,17 @@
     internal sealed class GameSuperRegionMinEvaluator : CacheableEvaluator,
         ISuperRegionMinEvaluator
     {
-        private const double SuperRegionsRegionsCountCoeficient = 5;
-        private const double ForeignNeighboursCoefficient = 4;
-        private const double BonusCoefficient = 1;
+        private readonly double superRegionsRegionsCountCoeficient;
+        private readonly double foreignNeighboursCoefficient;
+        private readonly double bonusCoefficient;
 
-        public GameSuperRegionMinEvaluator(MapMin map)
+        public GameSuperRegionMinEvaluator(MapMin map,
+            double bonusCoefficient, double foreignNeighboursCoefficient,
+            double superRegionsRegionsCountCoefficient)
         {
+            this.superRegionsRegionsCountCoeficient = superRegionsRegionsCountCoefficient;
+            this.foreignNeighboursCoefficient = foreignNeighboursCoefficient;
+            this.bonusCoefficient = bonusCoefficient;
             // nothing added so far
             InitializeCache(map);
             // find out the minimum value
@@ -35,7 +40,7 @@
             foreach (SuperRegionMin gameStructure in map.SuperRegionsMin)
             {
                 // hint: greater bonus => lesser cost
-                double bonusValue = BonusCoefficient * gameStructure.Bonus;
+                double bonusValue = bonusCoefficient * gameStructure.Bonus;
 
                 var regions = gameStructure
                     .RegionsIds
@@ -50,7 +55,7 @@
 
                 // hint: more foreign neighbour it has, worse it is
                 int foreignNeighboursCount = foreignNeighbourRegionsIds.Count;
-                double foreignNeighbourValue = ForeignNeighboursCoefficient * foreignNeighboursCount;
+                double foreignNeighbourValue = foreignNeighboursCoefficient * foreignNeighboursCount;
 
                 // hint: more super region neighbours, the better it is
                 int neighbourSuperRegionsCount = foreignNeighbourRegionsIds
@@ -59,7 +64,7 @@
                 double neighbourSuperRegionsValue = neighbourSuperRegionsCount;
 
                 // hint: more regions it has, worse it is (harder to conquer especially at the beginning)
-                double regionsValue = SuperRegionsRegionsCountCoeficient
+                double regionsValue = superRegionsRegionsCountCoeficient
                                       * gameStructure.RegionsIds.Length;
 
                 double staticResult = bonusValue

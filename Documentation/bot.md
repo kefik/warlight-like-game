@@ -154,15 +154,39 @@ has *IsVisible* property reporting whether the region is visible
 for the player this bot tries to find the best move for.
 
 ##### Beginning game action generators
-Purpose of this component is to select
-regions from specified options.
+Generates regions selections based on their value. Value of the region
+at the beginning of the game is given by:
 
-Value of region that is to be selected is
-measured by evaluator:
+- value of the its super region
+- number of neighbours of the region - larger is better
 
 ##### Game action generators
-Must generate deploying/attacking. There is no known restriction
-concerning this phase like in previous section.
+Generates deploy/attack moves. There are 3 approaches the bot can use:
 
-There will be used following heuristics:
-TODO
+1. *Expand* - bot attacks on territories with purpose of having
+more territories than before this move. This type of action generating is
+led against unoccupied territories.
+2. *Defend* - bot defends territories against enemies
+3. *Attack* - bot attacks on enemy territories
+
+These approaches are combined in the resulting moves.
+In some positions there can be (for example) good to defend
+territory on one side of the map against the enemy, but
+expand with units left on the other side of the map.
+
+**Definition (local region area):** *Local region area* is set of
+regions with distance lesser or equal to 3 from the specified *region*.
+
+The bot obeys following rules / heuristics:
+
+1. If there's no danger, expand.
+2. If there's danger, don't expand, focus armies rather on
+fighting near the enemy.
+3. Do not attack on stronger armies.
+4. If you have much stronger army, try to attack first. If you have
+much weaker army, wait with attack or don't attack.
+5. Deploy only in regions neighbouring enemy or not owned regions.
+6. Deploy full income to one region always (for simplicity).
+7. Always move units from regions neighbouring only your regions
+to regions that don't.
+8. Consistently expand/attack/defend in local region area.

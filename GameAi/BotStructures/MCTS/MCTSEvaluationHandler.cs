@@ -49,15 +49,20 @@
             Restrictions restrictions)
         {
             var distanceMatrix = new DistanceMatrix(initialGameState.MapMin.RegionsMin);
-            ISuperRegionMinEvaluator gameBeginningSuperRegionMinEvaluator = new GameBeginningSuperRegionMinEvaluator(initialGameState.MapMin);
-            IRegionMinEvaluator gameBeginningRegionMinEvaluator = new GameBeginningRegionMinEvaluator(gameBeginningSuperRegionMinEvaluator, distanceMatrix);
-            ISuperRegionMinEvaluator gameSuperRegionMinEvaluator = new GameSuperRegionMinEvaluator(initialGameState.MapMin);
-            IRegionMinEvaluator gameRegionMinEvaluator = new GameRegionMinEvaluator(gameSuperRegionMinEvaluator);
+            ISuperRegionMinEvaluator gameBeginningSuperRegionMinEvaluator = new GameBeginningSuperRegionMinEvaluator(initialGameState.MapMin,
+                superRegionsRegionsCountCoefficient: 5, foreignNeighboursCoefficient: 4, bonusCoefficient: 1);
+            IRegionMinEvaluator gameBeginningRegionMinEvaluator = new GameBeginningRegionMinEvaluator(gameBeginningSuperRegionMinEvaluator, distanceMatrix,
+                clusterCoefficient: 50, superRegionCoefficient: 3);
+
+            ISuperRegionMinEvaluator gameSuperRegionMinEvaluator = new GameSuperRegionMinEvaluator(initialGameState.MapMin,
+                bonusCoefficient: 15, foreignNeighboursCoefficient: 4, superRegionsRegionsCountCoefficient: 5);
+            IRegionMinEvaluator gameRegionMinEvaluator = new GameRegionMinEvaluator(gameSuperRegionMinEvaluator,
+                bonusCoefficient: 15, superRegionCoefficient: 3);
 
             IRoundEvaluator roundEvaluator = new RoundEvaluator();
-            IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator = new PlayerPerspectiveEvaluator(gameBeginningRegionMinEvaluator);
+            IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator = new PlayerPerspectiveEvaluator(gameBeginningRegionMinEvaluator, 15);
             IPlayerPerspectiveEvaluator gamePlayerPerspectiveEvaluator = new PlayerPerspectiveEvaluator(
-                gameRegionMinEvaluator);
+                gameRegionMinEvaluator, 15);
 
             var selectRegionActionsGenerator = new SelectRegionActionsGenerator(gameBeginningRegionMinEvaluator, restrictions.GameBeginningRestrictions);
             var gameActionsGenerator = new MCTSBotActionsGenerator(gameRegionMinEvaluator, initialGameState.MapMin);
