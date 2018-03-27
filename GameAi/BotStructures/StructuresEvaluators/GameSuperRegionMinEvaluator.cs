@@ -76,7 +76,8 @@
             }
         }
 
-        public double GetValue(PlayerPerspective currentGameState, SuperRegionMin gameStructure)
+        public double GetValue(PlayerPerspective currentGameState,
+            SuperRegionMin gameStructure)
         {
             double staticValue = GetStaticValue(gameStructure);
 

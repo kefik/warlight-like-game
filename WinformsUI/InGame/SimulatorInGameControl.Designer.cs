@@ -43,6 +43,8 @@
             this.nextTurnButton = new System.Windows.Forms.Button();
             this.playPauseButton = new System.Windows.Forms.Button();
             this.gameMapPictureBox = new System.Windows.Forms.PictureBox();
+            this.displayedRoundLabel = new System.Windows.Forms.Label();
+            this.roundNumber = new System.Windows.Forms.Label();
             this.gameMenuPanel.SuspendLayout();
             this.gameStateMenuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.botThinkingTimeNumericUpDown)).BeginInit();
@@ -73,6 +75,8 @@
             // 
             this.gameStateMenuPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gameStateMenuPanel.Controls.Add(this.roundNumber);
+            this.gameStateMenuPanel.Controls.Add(this.displayedRoundLabel);
             this.gameStateMenuPanel.Controls.Add(this.playerPerspectiveLabel);
             this.gameStateMenuPanel.Controls.Add(this.playerPerspectiveComboBox);
             this.gameStateMenuPanel.Controls.Add(this.botThinkingTimeLabel);
@@ -221,6 +225,24 @@
             this.gameMapPictureBox.TabIndex = 5;
             this.gameMapPictureBox.TabStop = false;
             // 
+            // displayedRoundLabel
+            // 
+            this.displayedRoundLabel.AutoSize = true;
+            this.displayedRoundLabel.Location = new System.Drawing.Point(36, 56);
+            this.displayedRoundLabel.Name = "displayedRoundLabel";
+            this.displayedRoundLabel.Size = new System.Drawing.Size(83, 13);
+            this.displayedRoundLabel.TabIndex = 11;
+            this.displayedRoundLabel.Text = "Displayed round";
+            // 
+            // roundNumber
+            // 
+            this.roundNumber.AutoSize = true;
+            this.roundNumber.Location = new System.Drawing.Point(70, 69);
+            this.roundNumber.Name = "roundNumber";
+            this.roundNumber.Size = new System.Drawing.Size(13, 13);
+            this.roundNumber.TabIndex = 12;
+            this.roundNumber.Text = "0";
+            // 
             // SimulatorInGameControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -254,5 +276,7 @@
         private System.Windows.Forms.NumericUpDown botThinkingTimeNumericUpDown;
         private System.Windows.Forms.ComboBox playerPerspectiveComboBox;
         private System.Windows.Forms.Label playerPerspectiveLabel;
+        private System.Windows.Forms.Label displayedRoundLabel;
+        private System.Windows.Forms.Label roundNumber;
     }
 }

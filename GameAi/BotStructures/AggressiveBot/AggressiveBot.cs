@@ -1,6 +1,9 @@
-﻿namespace GameAi.BotStructures.AggressiveBot
+﻿#define EVALUATORS_TRACE
+
+namespace GameAi.BotStructures.AggressiveBot
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
     using ActionGenerators;
@@ -16,7 +19,7 @@
     internal class AggressiveBot : GameBot
     {
         private readonly IGameBeginningActionsGenerator gameBeginningActionsGenerator;
-        private readonly IGameActionsGenerator gameActionsGenerator;
+        private readonly AggressiveBotActionsGenerator gameActionsGenerator;
         private BotTurn generatedBestTurn;
 
         private readonly object botLock = new object();
@@ -33,9 +36,13 @@
                 bonusCoefficient: 15, superRegionCoefficient: 3);
 
             ISuperRegionMinEvaluator gameBeginningSuperRegionMinEvaluator = new GameBeginningSuperRegionMinEvaluator(playerPerspective.MapMin,
-                superRegionsRegionsCountCoefficient: 5, foreignNeighboursCoefficient: 4, bonusCoefficient: 1);
-            IRegionMinEvaluator gameBeginningRegionMinEvaluator = new GameBeginningRegionMinEvaluator(gameBeginningSuperRegionMinEvaluator,
-                playerPerspective.MapMin, clusterCoefficient: 50, superRegionCoefficient: 3);
+                superRegionsRegionsCountCoefficient: 5, foreignNeighboursCoefficient: 4, bonusCoefficient: 10);
+            IRegionMinEvaluator gameBeginningRegionMinEvaluator
+                = new GameBeginningRegionMinEvaluator(
+                    gameBeginningSuperRegionMinEvaluator,
+                    playerPerspective.MapMin,
+                    clusterCoefficient: 50,
+                    superRegionCoefficient: 15);
 
             gameBeginningActionsGenerator = new SelectRegionActionsGenerator(
                 gameBeginningRegionMinEvaluator, 
@@ -43,6 +50,56 @@
             gameActionsGenerator = new AggressiveBotActionsGenerator(
                 regionMinEvaluator,
                 playerPerspective.MapMin);
+
+
+#if EVALUATORS_TRACE
+            Trace.WriteLine($"STARTING EVALUATION POSITION (BOT {PlayerPerspective.PlayerId})");
+            Trace.WriteLine("------------");
+            
+            foreach (RegionMin regionMin in PlayerPerspective.MapMin.RegionsMin.OrderBy(x => x.Name))
+            {
+                Trace.WriteLine($"Name: {regionMin.Name}, Owner: {regionMin.OwnerId}, Army: {regionMin.Army}");
+            }
+            Trace.WriteLine("");
+            
+            if (PlayerPerspective.MapMin.IsGameBeginning())
+            {
+                Trace.WriteLine("Game beginning phase");
+                Trace.WriteLine("SuperRegions:");
+                foreach (var superRegion in PlayerPerspective.MapMin.SuperRegionsMin.OrderBy(x => x.Name))
+                {
+                    Trace.WriteLine($"Name: {superRegion.Name}, Value: " +
+                                    $"{gameBeginningSuperRegionMinEvaluator.GetValue(PlayerPerspective, superRegion):F1}");
+                }
+                Trace.WriteLine("");
+
+                Trace.WriteLine($"Regions:");
+                foreach (var region in PlayerPerspective.MapMin.RegionsMin.OrderBy(x => x.Name))
+                {
+                    Trace.WriteLine($"Name: {region.Name}, Value: " +
+                                    $"{gameBeginningRegionMinEvaluator.GetValue(PlayerPerspective, region):F1}");
+                }
+                Trace.WriteLine("");
+            }
+            else
+            {
+                Trace.WriteLine("SuperRegions:");
+                foreach (var superRegion in PlayerPerspective.MapMin.SuperRegionsMin.OrderBy(x => x.Name))
+                {
+                    Trace.WriteLine($"Name: {superRegion.Name}, Value: " +
+                                    $"{superRegionMinEvaluator.GetValue(PlayerPerspective, superRegion):F1}");
+                }
+                Trace.WriteLine("");
+
+                Trace.WriteLine($"Regions:");
+                foreach (var region in PlayerPerspective.MapMin.RegionsMin.OrderBy(x => x.Name))
+                {
+                    Trace.WriteLine($"Name: {region.Name}, Value: " +
+                                    $"{regionMinEvaluator.GetValue(PlayerPerspective, region):F1}");
+                }
+                Trace.WriteLine("");
+            }
+#endif
         }
 
         public override BotTurn GetCurrentBestMove()

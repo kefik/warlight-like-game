@@ -186,7 +186,7 @@
 
                 PlayGameBeginningRound(gameBeginningRound);
             }
-
+            
             game.AllRounds.Add(linearizedRound);
             game.Refresh();
         }

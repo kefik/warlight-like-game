@@ -1,7 +1,4 @@
-﻿//#define IGNORE_CANCELLATION
-//#define DETAIL_OUTPUT
-
-namespace GameAi.BotStructures.MCTS
+﻿namespace GameAi.BotStructures.MCTS
 {
     using System;
     using System.Collections;
@@ -112,9 +109,6 @@ namespace GameAi.BotStructures.MCTS
         /// <returns></returns>
         private MCTSTreeNode SelectBestNode()
         {
-            Debug.WriteLine("SELECTION PHASE");
-            Debug.WriteLine("--------");
-
             MCTSTreeNode currentNode = Tree.Root;
 
             while (!currentNode.IsLeaf)
@@ -155,9 +149,6 @@ namespace GameAi.BotStructures.MCTS
         /// <returns>New children <see cref="node"/> was expanded to.</returns>
         private IList<MCTSTreeNode> Expand(MCTSTreeNode node)
         {
-            Debug.WriteLine("EXPANSION PHASE");
-            Debug.WriteLine("--------");
-
             var boardState = node.Value.BoardState;
             
             PlayerPerspective myPlayerPerspective = new PlayerPerspective(boardState, myPlayerId);
@@ -234,8 +225,6 @@ namespace GameAi.BotStructures.MCTS
         /// <param name="sourceNode"></param>
         private void Simulate(MCTSTreeNode sourceNode)
         {
-            Debug.WriteLine("SIMULATION PHASE");
-            Debug.WriteLine("--------");
             // TODO: playout based on option moves
             MapMin boardState = sourceNode.GameState;
 
@@ -244,7 +233,6 @@ namespace GameAi.BotStructures.MCTS
 
             for (int i = 0; i < 20; i++)
             {
-                Debug.WriteLine($"{i}-th iteration:");
                 if (myPlayerPerspective.HasLost())
                 {
                     sourceNode.Value.WinCount = 1;
@@ -262,31 +250,6 @@ namespace GameAi.BotStructures.MCTS
                 var enemyActions = gameActionsGenerator.Generate(enemyPlayerPerspective);
 
                 var randomlySelectedMyAction = myActions[random.Next(myActions.Count)];
-#if DEBUG && DETAIL_OUTPUT
-                Debug.WriteLine("MY REGIONS:");
-                foreach (RegionMin regionMin in myPlayerPerspective.GetMyRegions())
-                {
-                    Debug.WriteLine($"Id: {regionMin.Id}, Name: {regionMin.Name}, Army: {regionMin.Army}");
-                }
-                Debug.WriteLine("ENEMY REGIONS:");
-                foreach (RegionMin regionMin in enemyPlayerPerspective.GetMyRegions())
-                {
-                    Debug.WriteLine($"Id: {regionMin.Id}, Name: {regionMin.Name}, Army: {regionMin.Army}");
-                }
-                Debug.WriteLine("ME:");
-                Debug.WriteLine($"Income: {myPlayerPerspective.GetMyIncome()}");
-                Debug.WriteLine("DEPLOYMENTS:");
-                foreach (var deployment in randomlySelectedMyAction.Deployments)
-                {
-                    Debug.WriteLine($"{deployment}");
-                }
-                Debug.WriteLine("ATTACKS:");
-                foreach (var attack in randomlySelectedMyAction.Attacks)
-                {
-                    ref var defendingRegion = ref enemyPlayerPerspective.GetRegion(attack.DefendingRegionId);
-                    Debug.WriteLine($"{attack}, Defending owner: {defendingRegion.OwnerId}, Defending army: {defendingRegion.Army}");
-                }
-#endif
                 var randomlySelectedEnemyAction = enemyActions[random.Next(enemyActions.Count)];
 
                 var round = new BotRound()
@@ -317,8 +280,6 @@ namespace GameAi.BotStructures.MCTS
         /// <param name="newlyExpandedNode"></param>
         private void Backpropagate(MCTSTreeNode newlyExpandedNode)
         {
-            Debug.WriteLine("BACKPROPAGATION PHASE");
-            Debug.WriteLine("--------");
             byte playerId = (byte)newlyExpandedNode.Action.PlayerId;
             double valueToBackPropagate = newlyExpandedNode.WinCount;
 

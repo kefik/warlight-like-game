@@ -84,6 +84,8 @@
 
             var mapMin = game.Map.ToMapMin(playerIdsMapper);
 
+            Trace.WriteLine($"ROUND {game.RoundNumber}");
+
             // play from index you stopped playing at
             while (true)
             {

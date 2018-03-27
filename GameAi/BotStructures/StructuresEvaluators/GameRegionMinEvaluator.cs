@@ -39,15 +39,19 @@
             if (superRegion.OwnerId == gameStructure.OwnerId && gameStructure.OwnerId != 0)
             {
                 // hint: region of completed super region has higher value
-                superRegionValue = superRegionCoefficient * superRegionsRegionsOwningCount
+                superRegionValue = superRegionCoefficient
+                                    * superRegionsRegionsOwningCount
                                    + bonusCoefficient * superRegion.Bonus
-                                   + superRegionMinEvaluator.GetValue(currentGameState, superRegion);
+                                   + superRegionMinEvaluator
+                                    .GetValue(currentGameState, superRegion);
             }
             else
             {
                 // hint: super region value has influence on how good the given super region is
-                superRegionValue = superRegionCoefficient * superRegionsRegionsOwningCount
-                                   + superRegionMinEvaluator.GetValue(currentGameState, superRegion);
+                superRegionValue = superRegionCoefficient 
+                                    * superRegionsRegionsOwningCount
+                                   + superRegionMinEvaluator
+                                    .GetValue(currentGameState, superRegion);
             }
 
             // hint: mine or enemy region has higher value than not-occupied

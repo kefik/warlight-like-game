@@ -12,7 +12,7 @@
     /// <summary>
     /// Actions generator for <see cref="MonteCarloTreeSearchBot"/>.
     /// </summary>
-    public class MCTSBotActionsGenerator : GameActionsGenerator, IGameActionsGenerator
+    internal class MCTSBotActionsGenerator : GameActionsGenerator, IGameActionsGenerator
     {
         public MCTSBotActionsGenerator(IRegionMinEvaluator regionMinEvaluator,
             MapMin mapMin) : base(new DistanceMatrix(mapMin.RegionsMin), regionMinEvaluator)

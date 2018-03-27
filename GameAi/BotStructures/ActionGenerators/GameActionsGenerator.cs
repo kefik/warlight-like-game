@@ -8,10 +8,10 @@
     using Data.GameRecording;
     using Interfaces.Evaluators.StructureEvaluators;
 
-    public abstract class GameActionsGenerator
+    internal abstract class GameActionsGenerator
     {
         protected DistanceMatrix DistanceMatrix;
-        protected readonly IRegionMinEvaluator RegionMinEvaluator;
+        protected internal readonly IRegionMinEvaluator RegionMinEvaluator;
 
         protected GameActionsGenerator(DistanceMatrix distanceMatrix, IRegionMinEvaluator regionMinEvaluator)
         {

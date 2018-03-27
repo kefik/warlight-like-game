@@ -119,16 +119,21 @@
             {
                 // ignore
             }
-            catch (GameFinishedException)
-            {
-                // ignore for now
-            }
             finally
             {
                 gameRecordHandler.Load(Game, playerPerspective);
 
                 IsRunning = false;
             }
+        }
+
+        /// <summary>
+        /// Returns currently displayed round number.
+        /// </summary>
+        /// <returns></returns>
+        public int GetDisplayedRoundNumber()
+        {
+            return gameRecordHandler.GetDisplayedRoundNumber();
         }
 
         /// <summary>

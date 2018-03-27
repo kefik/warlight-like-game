@@ -413,6 +413,15 @@
         }
 
         /// <summary>
+        /// Returns currently displayed round number.
+        /// </summary>
+        /// <returns></returns>
+        public int GetDisplayedRoundNumber()
+        {
+            return currentActionEnumerator.RoundIndex;
+        }
+
+        /// <summary>
         /// Returns the game record to state like
         /// <see cref="deployment"/> never happened.
         /// </summary>

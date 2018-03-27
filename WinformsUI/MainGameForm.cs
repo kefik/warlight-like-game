@@ -1,7 +1,10 @@
-﻿namespace WinformsUI
+﻿//#define DEBUG_CONSOLE
+namespace WinformsUI
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Runtime.InteropServices;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using Client.Entities;
@@ -384,11 +387,23 @@
         private void FormLoad(object sender, EventArgs e)
         {
             Global.OnUserChanged += UserChanged;
+
+#if DEBUG_CONSOLE && DEBUG
+            AllocConsole();
+            Debug.Listeners.Add(new ConsoleTraceListener());
+#endif
         }
 
         private void FormClose(object sender, FormClosedEventArgs e)
         {
             Global.OnUserChanged -= UserChanged;
         }
+
+#if DEBUG_CONSOLE && TRACE
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
+#endif
     }
 }

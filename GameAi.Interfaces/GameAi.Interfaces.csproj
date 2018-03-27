@@ -55,6 +55,7 @@
     <Compile Include="IBot.cs" />
     <Compile Include="Evaluators\NodeEvaluators\INodeEvaluator.cs" />
     <Compile Include="Evaluators\StructureEvaluators\IBotStructureEvaluator.cs" />
+    <Compile Include="IEvaluatorInjectable.cs" />
     <Compile Include="IOnlineBot.cs" />
     <Compile Include="IOnlineBotHandler.cs" />
     <Compile Include="Evaluators\StructureEvaluators\ISuperRegionMinEvaluator.cs" />

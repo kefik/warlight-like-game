@@ -1,4 +1,5 @@
 ﻿#define TIME_MEASURE
+#define TRACE_CONSOLE
 
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,13 @@ using System.Windows.Forms;
 
 namespace WinformsUI.InGame
 {
+    using System.Diagnostics;
+    using System.IO;
+    using System.Runtime.InteropServices;
     using Client.Entities;
     using Common.Extensions;
     using GameAi.Data;
+    using GameHandlersLib;
     using GameHandlersLib.GameHandlers;
     using GameHandlersLib.MapHandlers;
     using GameObjectsLib.Game;
@@ -95,6 +100,13 @@ namespace WinformsUI.InGame
             }
 
             this.simulationFlowHandler.OnImageChanged += gameMapPictureBox.Refresh;
+            this.simulationFlowHandler.OnImageChanged += RefreshRoundNumber;
+
+#if DEBUG
+            // add trace listener
+            Debug.Listeners.Add(new TextWriterTraceListener(
+                new StreamWriter($"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log", false)));
+#endif
         }
 
         public async void PlayOrStopButtonClick(object sender, EventArgs args)
@@ -103,8 +115,23 @@ namespace WinformsUI.InGame
                 0, 0, milliseconds: (int)botThinkingTimeNumericUpDown.Value);
             if (!simulationFlowHandler.IsRunning)
             {
-                await simulationFlowHandler.StartOrContinueEvaluationAsync(timeForBotMove);
-                playPauseButton.Enabled = true;
+                try
+                {
+                    await simulationFlowHandler.StartOrContinueEvaluationAsync(timeForBotMove);
+                    playPauseButton.Enabled = true;
+                }
+                catch (GameFinishedException)
+                {
+                    // ignore for now
+                    playPauseButton.Enabled = false;
+
+#if DEBUG
+                    // close the file listener
+                    var lastListener = Debug.Listeners[Debug.Listeners.Count - 1];
+                    lastListener.Close();
+                    Debug.Listeners.RemoveAt(Debug.Listeners.Count - 1);
+#endif
+                }
             }
             else
             {
@@ -200,6 +227,13 @@ namespace WinformsUI.InGame
                 .Game.Players.FirstOrDefault(x => x.Id == comboBoxItem.Value);
             
             simulationFlowHandler.ChangePlayerPerspective(player);
+        }
+
+        private void RefreshRoundNumber()
+        {
+            int displayedRoundNumber =
+                simulationFlowHandler.GetDisplayedRoundNumber();
+            roundNumber.Text = displayedRoundNumber.ToString();
         }
     }
 }
