@@ -386,7 +386,7 @@
                     players.Select(x => (byte)playerIdsMapper.GetNewId(x.Id)).ToArray(), true, restrictions);
 
                 var botTurnTask = Task.Run(() => botHandler.FindBestMoveAsync());
-                botHandler.StopEvaluation(new TimeSpan(0, 0, 0, 0, 500));
+                botHandler.StopEvaluation(new TimeSpan(0, 0, 0, 0, 2000));
                 var turn = botTurnTask.Result.ToTurn(Game.Map, players, playerIdsMapper);
 
                 LastTurn = turn;

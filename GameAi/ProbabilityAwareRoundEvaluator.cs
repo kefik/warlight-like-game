@@ -57,7 +57,7 @@
         private List<(MapMin MapMin, double Value)> GetSamples(MapMin mapMin, BotRound round)
         {
             var list = new List<(MapMin MapMin, double Value)>();
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 15; i++)
             {
                 var resultMapMin = roundEvaluator.Evaluate(mapMin, round);
 

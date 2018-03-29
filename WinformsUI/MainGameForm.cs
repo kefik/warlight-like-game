@@ -1,4 +1,9 @@
-﻿//#define DEBUG_CONSOLE
+﻿#define DEBUG_CONSOLE
+
+#if !DEBUG
+#undef DEBUG_CONSOLE
+#endif
+
 namespace WinformsUI
 {
     using System;
@@ -8,7 +13,6 @@ namespace WinformsUI
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using Client.Entities;
-    using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameUser;
     using GameObjectsLib.Players;
@@ -23,10 +27,14 @@ namespace WinformsUI
     {
         private int previousTabSelectedIndex;
 
-        private SingleplayerGameOptionsControl singleplayerGameOptionsControl;
+        private SingleplayerGameOptionsControl
+            singleplayerGameOptionsControl;
+
         private HotseatGameOptionsControl hotseatGameOptionsControl;
         private NetworkGameOptionsControl networkGameOptionsControl;
-        private SimulatorGameOptionsControl simulatorGameOptionsControl;
+
+        private SimulatorGameOptionsControl
+            simulatorGameOptionsControl;
 
         private InGameControl inGame;
         private SimulatorInGameControl simulatorInGame;
@@ -36,7 +44,8 @@ namespace WinformsUI
             InitializeComponent();
 
             // initialize default tab
-            previousTabSelectedIndex = typeGameChoiceTabControl.SelectedIndex = 0;
+            previousTabSelectedIndex =
+                typeGameChoiceTabControl.SelectedIndex = 0;
             LoadSingleplayerControls();
         }
 
@@ -92,7 +101,7 @@ namespace WinformsUI
             simulatorGameOptionsControl?.Dispose();
             simulatorGameOptionsControl = null;
             // load game screen
-            simulatorInGame = new SimulatorInGameControl()
+            simulatorInGame = new SimulatorInGameControl
             {
                 Parent = simulatorTabPage,
                 Dock = DockStyle.Fill
@@ -125,29 +134,33 @@ namespace WinformsUI
                         game.Save(db);
                     }
                     break;
-                case GameType.MultiplayerNetwork:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                case GameType.MultiplayerNetwork: break;
+                default: throw new ArgumentOutOfRangeException();
             }
             LoadInGameScreen(game);
         }
 
-        private async Task CreateNewGame(HumanPlayer creatingPlayer, ICollection<AiPlayer> aiPlayers, string mapName,
+        private async Task CreateNewGame(HumanPlayer creatingPlayer,
+            ICollection<AiPlayer> aiPlayers, string mapName,
             int freeSlotsCount)
         {
             if (TryToLogIn())
             {
-                MyNetworkUser networkUser = (MyNetworkUser) Global.MyUser;
-                bool successful = await networkUser.CreateGameAsync(creatingPlayer, aiPlayers, mapName, freeSlotsCount);
+                MyNetworkUser networkUser =
+                    (MyNetworkUser) Global.MyUser;
+                bool successful =
+                    await networkUser.CreateGameAsync(creatingPlayer,
+                        aiPlayers, mapName, freeSlotsCount);
                 if (successful == false)
                 {
-                    Invoke(new Action(() => MessageBox.Show($"The game could not be created.")));
+                    Invoke(new Action(() => MessageBox.Show(
+                        $"The game could not be created.")));
                     return;
                 }
 
                 // TODO: load appropriate screen
-                Invoke(new Action(() => typeGameChoiceTabControl.SelectedIndex = 0));
+                Invoke(new Action(() => typeGameChoiceTabControl
+                    .SelectedIndex = 0));
             }
         }
 
@@ -158,12 +171,14 @@ namespace WinformsUI
         {
             singleplayerGameOptionsControl?.Dispose();
 
-            singleplayerGameOptionsControl = new SingleplayerGameOptionsControl
-            {
-                Parent = singleplayerTabPage,
-                Dock = DockStyle.Fill
-            };
-            singleplayerGameOptionsControl.OnNewGameStarted += StartNewGame;
+            singleplayerGameOptionsControl =
+                new SingleplayerGameOptionsControl
+                {
+                    Parent = singleplayerTabPage,
+                    Dock = DockStyle.Fill
+                };
+            singleplayerGameOptionsControl.OnNewGameStarted +=
+                StartNewGame;
             singleplayerGameOptionsControl.OnGameLoaded += LoadGame;
             singleplayerGameOptionsControl.Show();
         }
@@ -178,14 +193,16 @@ namespace WinformsUI
                 hotseatGameOptionsControl?.Dispose();
                 networkGameOptionsControl?.Dispose();
                 networkGameOptionsControl = null;
-                hotseatGameOptionsControl = new HotseatGameOptionsControl
-                {
-                    Parent = multiplayerTabPage,
-                    Dock = DockStyle.Fill
-                };
+                hotseatGameOptionsControl =
+                    new HotseatGameOptionsControl
+                    {
+                        Parent = multiplayerTabPage,
+                        Dock = DockStyle.Fill
+                    };
                 hotseatGameOptionsControl.Show();
 
-                hotseatGameOptionsControl.OnGameStarted += StartNewGame;
+                hotseatGameOptionsControl.OnGameStarted +=
+                    StartNewGame;
                 hotseatGameOptionsControl.OnGameLoaded += LoadGame;
             }
 
@@ -194,17 +211,21 @@ namespace WinformsUI
                 networkGameOptionsControl?.Dispose();
                 hotseatGameOptionsControl?.Dispose();
                 hotseatGameOptionsControl = null;
-                networkGameOptionsControl = new NetworkGameOptionsControl
-                {
-                    Parent = multiplayerTabPage,
-                    Dock = DockStyle.Fill
-                };
-                networkGameOptionsControl.OnGameCreated += CreateNewGame;
+                networkGameOptionsControl =
+                    new NetworkGameOptionsControl
+                    {
+                        Parent = multiplayerTabPage,
+                        Dock = DockStyle.Fill
+                    };
+                networkGameOptionsControl.OnGameCreated +=
+                    CreateNewGame;
                 networkGameOptionsControl.Show();
             }
 
-            GameTypeChoiceForm gameTypeChoiceForm = new GameTypeChoiceForm();
-            DialogResult dialogResult = gameTypeChoiceForm.ShowDialog();
+            GameTypeChoiceForm gameTypeChoiceForm =
+                new GameTypeChoiceForm();
+            DialogResult dialogResult =
+                gameTypeChoiceForm.ShowDialog();
 
             switch (dialogResult)
             {
@@ -222,19 +243,23 @@ namespace WinformsUI
                             }
                             else
                             {
-                                typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                                typeGameChoiceTabControl
+                                        .SelectedIndex =
+                                    previousTabSelectedIndex;
                             }
                             break;
                         default:
                             // return back to previous stage
-                            typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                            typeGameChoiceTabControl.SelectedIndex =
+                                previousTabSelectedIndex;
                             return;
                     }
                     break;
                 case DialogResult.Cancel:
                 default:
                     // TODO: invokes select index event, I want it to return back to previous index without deleting it
-                    typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                    typeGameChoiceTabControl.SelectedIndex =
+                        previousTabSelectedIndex;
                     return;
             }
         }
@@ -243,13 +268,15 @@ namespace WinformsUI
         {
             simulatorGameOptionsControl?.Dispose();
 
-            simulatorGameOptionsControl = new SimulatorGameOptionsControl()
-            {
-                Parent = simulatorTabPage,
-                Dock = DockStyle.Fill
-            };
+            simulatorGameOptionsControl =
+                new SimulatorGameOptionsControl
+                {
+                    Parent = simulatorTabPage,
+                    Dock = DockStyle.Fill
+                };
 
-            simulatorGameOptionsControl.OnSimulationStarted += LoadSimulatorInGameScreen;
+            simulatorGameOptionsControl.OnSimulationStarted +=
+                LoadSimulatorInGameScreen;
             simulatorGameOptionsControl.Show();
         }
 
@@ -257,11 +284,13 @@ namespace WinformsUI
         {
             if (Global.MyUser.UserType == UserType.MyNetworkUser)
             {
-                loggedInLabel.Text = $"You are currently logged in as {Global.MyUser.Name}.";
+                loggedInLabel.Text =
+                    $"You are currently logged in as {Global.MyUser.Name}.";
             }
             else
             {
-                loggedInLabel.Text = $"You are currently logged in as a local user.";
+                loggedInLabel.Text =
+                    $"You are currently logged in as a local user.";
             }
         }
 
@@ -269,12 +298,15 @@ namespace WinformsUI
         {
             if (Global.MyUser.UserType != UserType.MyNetworkUser)
             {
-                ServerLoggingForm serverLoggingForm = new ServerLoggingForm();
+                ServerLoggingForm serverLoggingForm =
+                    new ServerLoggingForm();
 
                 DialogResult dialogResult;
                 if (InvokeRequired)
                 {
-                    dialogResult = (DialogResult) Invoke(new Action(() => serverLoggingForm.ShowDialog()));
+                    dialogResult =
+                        (DialogResult) Invoke(new Action(
+                            () => serverLoggingForm.ShowDialog()));
                 }
                 else
                 {
@@ -289,28 +321,38 @@ namespace WinformsUI
                     default:
                         if (InvokeRequired)
                         {
-                            Invoke(new Action(() => typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex));
+                            Invoke(
+                                new Action(
+                                    () => typeGameChoiceTabControl
+                                            .SelectedIndex =
+                                        previousTabSelectedIndex));
                         }
                         else
                         {
-                            typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                            typeGameChoiceTabControl.SelectedIndex =
+                                previousTabSelectedIndex;
                         }
                         return false;
                 }
             }
             else
             {
-                MyNetworkUser converted = (MyNetworkUser) Global.MyUser;
+                MyNetworkUser converted =
+                    (MyNetworkUser) Global.MyUser;
                 bool amILogged = converted.IsLoggedIn();
 
                 if (!amILogged)
                 {
-                    ServerLoggingForm serverLoggingForm = new ServerLoggingForm();
+                    ServerLoggingForm serverLoggingForm =
+                        new ServerLoggingForm();
 
                     DialogResult dialogResult;
                     if (InvokeRequired)
                     {
-                        dialogResult = (DialogResult) Invoke(new Action(() => serverLoggingForm.ShowDialog()));
+                        dialogResult =
+                            (DialogResult) Invoke(new Action(
+                                () => serverLoggingForm
+                                    .ShowDialog()));
                     }
                     else
                     {
@@ -325,12 +367,16 @@ namespace WinformsUI
                         default:
                             if (InvokeRequired)
                             {
-                                Invoke(new Action(() => typeGameChoiceTabControl.SelectedIndex =
-                                    previousTabSelectedIndex));
+                                Invoke(new Action(
+                                    () => typeGameChoiceTabControl
+                                            .SelectedIndex =
+                                        previousTabSelectedIndex));
                             }
                             else
                             {
-                                typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                                typeGameChoiceTabControl
+                                        .SelectedIndex =
+                                    previousTabSelectedIndex;
                             }
                             return false;
                     }
@@ -350,7 +396,8 @@ namespace WinformsUI
             }
             else
             {
-                typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex;
+                typeGameChoiceTabControl.SelectedIndex =
+                    previousTabSelectedIndex;
             }
         }
 
@@ -378,19 +425,22 @@ namespace WinformsUI
                 case 3: // simulator
                     LoadSimulatorControls();
                     break;
-                default:
-                    return;
+                default: return;
             }
-            previousTabSelectedIndex = typeGameChoiceTabControl.SelectedIndex;
+            previousTabSelectedIndex =
+                typeGameChoiceTabControl.SelectedIndex;
         }
 
         private void FormLoad(object sender, EventArgs e)
         {
             Global.OnUserChanged += UserChanged;
 
-#if DEBUG_CONSOLE && DEBUG
-            AllocConsole();
-            Debug.Listeners.Add(new ConsoleTraceListener());
+#if DEBUG_CONSOLE
+            if (!Debugger.IsAttached)
+            {
+                AllocConsole();
+                Debug.Listeners.Add(new ConsoleTraceListener());
+            }
 #endif
         }
 
@@ -399,11 +449,11 @@ namespace WinformsUI
             Global.OnUserChanged -= UserChanged;
         }
 
-#if DEBUG_CONSOLE && TRACE
+#if DEBUG_CONSOLE
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool AllocConsole();
+        private static extern bool AllocConsole();
 #endif
     }
 }

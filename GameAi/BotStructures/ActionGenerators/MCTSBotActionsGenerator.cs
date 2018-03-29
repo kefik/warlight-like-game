@@ -21,21 +21,9 @@
 
         public IReadOnlyList<BotGameTurn> Generate(PlayerPerspective currentGameState)
         {
-            var myRegions = currentGameState.GetMyRegions().ToList();
-
             // TODO: enemy region nearby => sort it out
 
             return GenerateAll(currentGameState);
-        }
-
-        private IReadOnlyList<BotGameTurn> GenerateExpand(PlayerPerspective playerPerspective)
-        {
-            throw new NotImplementedException();
-        }
-
-        private IReadOnlyList<BotGameTurn> GenerateAttackOrDefend(PlayerPerspective playerPerspective)
-        {
-            throw new NotImplementedException();
         }
 
         private List<BotGameTurn> GenerateAll(PlayerPerspective currentGameState)
@@ -43,7 +31,8 @@
             byte playerId = currentGameState.PlayerId;
             var gameTurns = new List<BotGameTurn>();
 
-            var deployments = DeployToAll(currentGameState);
+            IEnumerable<BotDeployment> deployments = DeployOffensively(currentGameState);
+            deployments = deployments.Union(DeployToCounterSecurityThreat(currentGameState));
 
             foreach (BotDeployment botDeployment in deployments)
             {
@@ -53,38 +42,38 @@
                 UpdateGameStateAfterDeploying(ref deploymentCopy, deployment);
 
                 var noWaitAggressiveCopy = deploymentCopy.ShallowCopy();
-                var attacks = new List<BotAttack>();
+                var noWaitAggressiveAttacks = new List<BotAttack>();
                 // generate no wait aggressive attacks
-                AttackAggressively(noWaitAggressiveCopy, attacks);
-                AppendRedistributeInlandArmy(noWaitAggressiveCopy, attacks);
+                AttackAggressively(noWaitAggressiveCopy, noWaitAggressiveAttacks);
+                AppendRedistributeInlandArmy(noWaitAggressiveCopy, noWaitAggressiveAttacks);
                 gameTurns.Add(new BotGameTurn(playerId)
                 {
                     Deployments = deployment,
-                    Attacks = attacks
+                    Attacks = noWaitAggressiveAttacks
                 });
 
                 var waitAggressiveCopy = deploymentCopy.ShallowCopy();
-                attacks = new List<BotAttack>();
+                var waitAggressiveAttacks = new List<BotAttack>();
                 // generate wait aggressive
                 // generate no wait aggressive attacks
-                AttackSafely(waitAggressiveCopy, attacks);
-                AppendRedistributeInlandArmy(waitAggressiveCopy, attacks);
-                AttackAggressively(waitAggressiveCopy, attacks);
+                AppendRedistributeInlandArmy(waitAggressiveCopy, waitAggressiveAttacks);
+                AttackNeutralSafely(waitAggressiveCopy, waitAggressiveAttacks);
+                AttackAggressively(waitAggressiveCopy, waitAggressiveAttacks);
                 gameTurns.Add(new BotGameTurn(playerId)
                 {
                     Deployments = deployment,
-                    Attacks = attacks
+                    Attacks = waitAggressiveAttacks
                 });
 
                 // play defensive
                 var defensiveCopy = deploymentCopy.ShallowCopy();
-                attacks = new List<BotAttack>();
-                AttackSafely(defensiveCopy, attacks);
-                AppendRedistributeInlandArmy(defensiveCopy, attacks);
+                var defensiveAttacks = new List<BotAttack>();
+                AppendRedistributeInlandArmy(defensiveCopy, defensiveAttacks);
+                AttackNeutralSafely(defensiveCopy, defensiveAttacks);
                 gameTurns.Add(new BotGameTurn(playerId)
                 {
                     Deployments = deployment,
-                    Attacks = attacks
+                    Attacks = defensiveAttacks
                 });
             }
 

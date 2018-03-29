@@ -1,4 +1,8 @@
-﻿#define EVALUATORS_TRACE
+﻿//#define EVALUATORS_DEBUG
+
+#if !DEBUG
+#undef EVALUATORS_DEBUG
+#endif
 
 namespace GameAi.BotStructures.AggressiveBot
 {
@@ -11,100 +15,116 @@ namespace GameAi.BotStructures.AggressiveBot
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Data.Restrictions;
-    using Interfaces;
     using Interfaces.ActionsGenerators;
     using Interfaces.Evaluators.StructureEvaluators;
     using StructuresEvaluators;
 
     internal class AggressiveBot : GameBot
     {
-        private readonly IGameBeginningActionsGenerator gameBeginningActionsGenerator;
-        private readonly AggressiveBotActionsGenerator gameActionsGenerator;
+        private readonly IGameBeginningActionsGenerator
+            gameBeginningActionsGenerator;
+
+        private readonly AggressiveBotActionsGenerator
+            gameActionsGenerator;
+
         private BotTurn generatedBestTurn;
 
         private readonly object botLock = new object();
 
         public AggressiveBot(PlayerPerspective playerPerspective,
-            byte[] enemyPlayerId,
-            Difficulty difficulty,
-            bool isFogOfWar, Restrictions restrictions)
-            : base(playerPerspective, enemyPlayerId, difficulty, isFogOfWar, restrictions)
+            byte[] enemyPlayerId, Difficulty difficulty,
+            bool isFogOfWar, Restrictions restrictions) : base(
+            playerPerspective, enemyPlayerId, difficulty, isFogOfWar,
+            restrictions)
         {
-            ISuperRegionMinEvaluator superRegionMinEvaluator = new GameSuperRegionMinEvaluator(playerPerspective.MapMin,
-                bonusCoefficient: 15, foreignNeighboursCoefficient: 4, superRegionsRegionsCountCoefficient: 5);
-            IRegionMinEvaluator regionMinEvaluator = new GameRegionMinEvaluator(superRegionMinEvaluator,
-                bonusCoefficient: 15, superRegionCoefficient: 3);
+            ISuperRegionMinEvaluator superRegionMinEvaluator =
+                new GameSuperRegionMinEvaluator(
+                    playerPerspective.MapMin, bonusCoefficient: 3,
+                    conqueredCoefficient: 5,
+                    foreignNeighboursCoefficient: 3,
+                    superRegionsRegionsCountCoefficient: 5);
+            IRegionMinEvaluator regionMinEvaluator =
+                new GameRegionMinEvaluator(superRegionMinEvaluator,
+                    superRegionCoefficient: 20);
 
-            ISuperRegionMinEvaluator gameBeginningSuperRegionMinEvaluator = new GameBeginningSuperRegionMinEvaluator(playerPerspective.MapMin,
-                superRegionsRegionsCountCoefficient: 5, foreignNeighboursCoefficient: 4, bonusCoefficient: 10);
-            IRegionMinEvaluator gameBeginningRegionMinEvaluator
-                = new GameBeginningRegionMinEvaluator(
+            ISuperRegionMinEvaluator
+                gameBeginningSuperRegionMinEvaluator =
+                    new GameBeginningSuperRegionMinEvaluator(
+                        playerPerspective.MapMin,
+                        superRegionsRegionsCountCoefficient: 6,
+                        foreignNeighboursCoefficient: 5,
+                        bonusCoefficient: 3);
+            IRegionMinEvaluator gameBeginningRegionMinEvaluator =
+                new GameBeginningRegionMinEvaluator(
                     gameBeginningSuperRegionMinEvaluator,
-                    playerPerspective.MapMin,
-                    clusterCoefficient: 50,
+                    playerPerspective.MapMin, clusterCoefficient: 50,
                     superRegionCoefficient: 15);
 
-            gameBeginningActionsGenerator = new SelectRegionActionsGenerator(
-                gameBeginningRegionMinEvaluator, 
-                restrictions.GameBeginningRestrictions);
-            gameActionsGenerator = new AggressiveBotActionsGenerator(
-                regionMinEvaluator,
-                playerPerspective.MapMin);
+            gameBeginningActionsGenerator =
+                new SelectRegionActionsGenerator(
+                    gameBeginningRegionMinEvaluator,
+                    restrictions.GameBeginningRestrictions);
+            gameActionsGenerator =
+                new AggressiveBotActionsGenerator(regionMinEvaluator,
+                    playerPerspective.MapMin);
 
 
-#if EVALUATORS_TRACE
-            Trace.WriteLine($"STARTING EVALUATION POSITION (BOT {PlayerPerspective.PlayerId})");
-            Trace.WriteLine("------------");
-            
-            foreach (RegionMin regionMin in PlayerPerspective.MapMin.RegionsMin.OrderBy(x => x.Name))
-            {
-                Trace.WriteLine($"Name: {regionMin.Name}, Owner: {regionMin.OwnerId}, Army: {regionMin.Army}");
-            }
-            Trace.WriteLine("");
-            
+#if EVALUATORS_DEBUG
+            Debug.WriteLine(
+                $"EVALUATION STARTED (BOT {PlayerPerspective.PlayerId})");
+            Debug.WriteLine("------------");
+
             if (PlayerPerspective.MapMin.IsGameBeginning())
             {
-                Trace.WriteLine("Game beginning phase");
-                Trace.WriteLine("SuperRegions:");
-                foreach (var superRegion in PlayerPerspective.MapMin.SuperRegionsMin.OrderBy(x => x.Name))
+                Debug.WriteLine("Game beginning phase");
+                Debug.WriteLine("SuperRegions:");
+                foreach (SuperRegionMin superRegion in
+                    PlayerPerspective.MapMin.SuperRegionsMin.OrderBy(
+                        x => x.Name))
                 {
-                    Trace.WriteLine($"Name: {superRegion.Name}, Value: " +
-                                    $"{gameBeginningSuperRegionMinEvaluator.GetValue(PlayerPerspective, superRegion):F1}");
+                    Debug.WriteLine(
+                        $"Name: {superRegion.Name}, Value: " +
+                        $"{gameBeginningSuperRegionMinEvaluator.GetValue(PlayerPerspective, superRegion):F1}");
                 }
-                Trace.WriteLine("");
+                Debug.WriteLine("");
 
-                Trace.WriteLine($"Regions:");
-                foreach (var region in PlayerPerspective.MapMin.RegionsMin.OrderBy(x => x.Name))
+                Debug.WriteLine($"Regions:");
+                foreach (RegionMin region in PlayerPerspective.MapMin
+                    .RegionsMin.OrderBy(x => x.Name))
                 {
-                    Trace.WriteLine($"Name: {region.Name}, Value: " +
+                    Debug.WriteLine($"Name: {region.Name}, Value: " +
                                     $"{gameBeginningRegionMinEvaluator.GetValue(PlayerPerspective, region):F1}");
                 }
-                Trace.WriteLine("");
+                Debug.WriteLine("");
             }
             else
             {
-                Trace.WriteLine("SuperRegions:");
-                foreach (var superRegion in PlayerPerspective.MapMin.SuperRegionsMin.OrderBy(x => x.Name))
+                Debug.WriteLine("SuperRegions:");
+                foreach (SuperRegionMin superRegion in
+                    PlayerPerspective.MapMin.SuperRegionsMin.OrderBy(
+                        x => x.Name))
                 {
-                    Trace.WriteLine($"Name: {superRegion.Name}, Value: " +
-                                    $"{superRegionMinEvaluator.GetValue(PlayerPerspective, superRegion):F1}");
+                    Debug.WriteLine(
+                        $"Name: {superRegion.Name}, Value: " +
+                        $"{superRegionMinEvaluator.GetValue(PlayerPerspective, superRegion):F1}");
                 }
-                Trace.WriteLine("");
+                Debug.WriteLine("");
 
-                Trace.WriteLine($"Regions:");
-                foreach (var region in PlayerPerspective.MapMin.RegionsMin.OrderBy(x => x.Name))
+                Debug.WriteLine($"Regions:");
+                foreach (RegionMin region in PlayerPerspective.MapMin
+                    .RegionsMin.OrderBy(x => x.Name))
                 {
-                    Trace.WriteLine($"Name: {region.Name}, Value: " +
+                    Debug.WriteLine($"Name: {region.Name}, Value: " +
                                     $"{regionMinEvaluator.GetValue(PlayerPerspective, region):F1}");
                 }
-                Trace.WriteLine("");
+                Debug.WriteLine("");
             }
 #endif
         }
 
         public override BotTurn GetCurrentBestMove()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override async Task<BotTurn> FindBestMoveAsync()
@@ -123,11 +143,14 @@ namespace GameAi.BotStructures.AggressiveBot
             if (PlayerPerspective.MapMin.IsGameBeginning())
             {
                 generatedBestTurn =
-                    gameBeginningActionsGenerator.Generate(PlayerPerspective)[0];
+                    gameBeginningActionsGenerator.Generate(
+                        PlayerPerspective)[index: 0];
             }
             else
             {
-                generatedBestTurn = gameActionsGenerator.Generate(PlayerPerspective)[0];
+                generatedBestTurn =
+                    gameActionsGenerator.Generate(PlayerPerspective)[
+                        index: 0];
             }
 
             lock (botLock)
@@ -140,7 +163,7 @@ namespace GameAi.BotStructures.AggressiveBot
 
         public override void UpdateMap()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override void StopEvaluation()

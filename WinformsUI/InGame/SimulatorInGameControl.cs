@@ -1,24 +1,18 @@
 ﻿#define TIME_MEASURE
+#if DEBUG
 #define TRACE_CONSOLE
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+#endif
 
 namespace WinformsUI.InGame
 {
+    using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Drawing;
     using System.IO;
-    using System.Runtime.InteropServices;
+    using System.Linq;
+    using System.Windows.Forms;
     using Client.Entities;
-    using Common.Extensions;
-    using GameAi.Data;
     using GameHandlersLib;
     using GameHandlersLib.GameHandlers;
     using GameHandlersLib.MapHandlers;
@@ -30,27 +24,27 @@ namespace WinformsUI.InGame
     {
         private SimulationFlowHandler simulationFlowHandler;
 
+        private string logFileName;
+
         public SimulatorInGameControl()
         {
             InitializeComponent();
 
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer,
+                value: true);
         }
 
-        private void InitializePlayersPerspectiveComboBox(IEnumerable<Player> players)
+        private void InitializePlayersPerspectiveComboBox(
+            IEnumerable<Player> players)
         {
-            var list = new List<ComboBoxItem>()
+            var list = new List<ComboBoxItem>
             {
                 // prepend empty value
-                new ComboBoxItem()
-                {
-                    Value = null,
-                    Text = "GOD"
-                }
+                new ComboBoxItem {Value = null, Text = "GOD"}
             };
-            foreach (var player in players)
+            foreach (Player player in players)
             {
-                list.Add(new ComboBoxItem()
+                list.Add(new ComboBoxItem
                 {
                     Text = player.Name,
                     Value = player.Id
@@ -72,26 +66,33 @@ namespace WinformsUI.InGame
             MapImageProcessor mapImageProcessor;
             using (UtilsDbContext db = new UtilsDbContext())
             {
-                MapInfo mapInfo = (from item in db.Maps
-                                   where item.Id == game.Map.Id
-                                   select item).First();
+                MapInfo mapInfo =
+                (from item in db.Maps
+                 where item.Id == game.Map.Id
+                 select item).First();
 
-                mapImageProcessor = MapImageProcessor.Create(game.Map, mapInfo.ImageColoredRegionsPath,
-                    mapInfo.ColorRegionsTemplatePath, mapInfo.ImagePath, game.IsFogOfWar);
+                mapImageProcessor = MapImageProcessor.Create(game.Map,
+                    mapInfo.ImageColoredRegionsPath,
+                    mapInfo.ColorRegionsTemplatePath,
+                    mapInfo.ImagePath, game.IsFogOfWar);
             }
 
-            simulationFlowHandler = new SimulationFlowHandler(game, mapImageProcessor, null);
+            simulationFlowHandler = new SimulationFlowHandler(game,
+                mapImageProcessor, playerPerspective: null);
 
             gameMapPictureBox.SizeMode = PictureBoxSizeMode.Normal;
-            gameMapPictureBox.Image = simulationFlowHandler.ImageProcessor.MapImage;
+            gameMapPictureBox.Image = simulationFlowHandler
+                .ImageProcessor.MapImage;
             gameMapPictureBox.Height = gameMapPictureBox.Image.Height;
             gameMapPictureBox.Width = gameMapPictureBox.Image.Width;
-            gameMapPictureBox.BackgroundImage = simulationFlowHandler.ImageProcessor.TemplateImage;
+            gameMapPictureBox.BackgroundImage = simulationFlowHandler
+                .ImageProcessor.TemplateImage;
 
             if (game.IsFogOfWar)
             {
                 InitializePlayersPerspectiveComboBox(game.Players);
-                playerPerspectiveComboBox.DrawMode = DrawMode.OwnerDrawVariable;
+                playerPerspectiveComboBox.DrawMode =
+                    DrawMode.OwnerDrawVariable;
             }
             else
             {
@@ -99,39 +100,53 @@ namespace WinformsUI.InGame
                 playerPerspectiveComboBox.Hide();
             }
 
-            this.simulationFlowHandler.OnImageChanged += gameMapPictureBox.Refresh;
-            this.simulationFlowHandler.OnImageChanged += RefreshRoundNumber;
+            simulationFlowHandler.OnImageChanged +=
+                gameMapPictureBox.Refresh;
+            simulationFlowHandler.OnImageChanged +=
+                RefreshRoundNumber;
 
 #if DEBUG
-            // add trace listener
-            Debug.Listeners.Add(new TextWriterTraceListener(
-                new StreamWriter($"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log", false)));
+            logFileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
 #endif
         }
 
-        public async void PlayOrStopButtonClick(object sender, EventArgs args)
+        public async void PlayOrStopButtonClick(object sender,
+            EventArgs args)
         {
-            var timeForBotMove = new TimeSpan(0, 0,
-                0, 0, milliseconds: (int)botThinkingTimeNumericUpDown.Value);
+            TimeSpan timeForBotMove = new TimeSpan(days: 0, hours: 0,
+                minutes: 0, seconds: 0,
+                milliseconds: (int) botThinkingTimeNumericUpDown
+                    .Value);
             if (!simulationFlowHandler.IsRunning)
             {
+#if DEBUG
+                // add trace listener
+                Debug.Listeners.Add(new TextWriterTraceListener(
+                    new StreamWriter(logFileName, append: true)));
+#endif
                 try
                 {
-                    await simulationFlowHandler.StartOrContinueEvaluationAsync(timeForBotMove);
+                    await simulationFlowHandler
+                        .StartOrContinueEvaluationAsync(
+                            timeForBotMove);
                     playPauseButton.Enabled = true;
                 }
                 catch (GameFinishedException)
                 {
                     // ignore for now
                     playPauseButton.Enabled = false;
-
-#if DEBUG
-                    // close the file listener
-                    var lastListener = Debug.Listeners[Debug.Listeners.Count - 1];
-                    lastListener.Close();
-                    Debug.Listeners.RemoveAt(Debug.Listeners.Count - 1);
-#endif
                 }
+#if DEBUG
+                finally
+                {
+                    // close the file listener
+                    TraceListener lastListener =
+                        Debug.Listeners[Debug.Listeners.Count - 1];
+                    lastListener.Close();
+                    Debug.Listeners.RemoveAt(
+                        Debug.Listeners.Count - 1);
+                }
+#endif
             }
             else
             {
@@ -140,7 +155,8 @@ namespace WinformsUI.InGame
             }
         }
 
-        public void NextActionButtonClick(object sender, EventArgs args)
+        public void NextActionButtonClick(object sender,
+            EventArgs args)
         {
             if (!simulationFlowHandler.IsRunning)
             {
@@ -148,7 +164,8 @@ namespace WinformsUI.InGame
             }
         }
 
-        public void PreviousActionButtonClick(object sender, EventArgs args)
+        public void PreviousActionButtonClick(object sender,
+            EventArgs args)
         {
             if (!simulationFlowHandler.IsRunning)
             {
@@ -156,7 +173,8 @@ namespace WinformsUI.InGame
             }
         }
 
-        public void NextRoundButtonClick(object sender, EventArgs args)
+        public void NextRoundButtonClick(object sender,
+            EventArgs args)
         {
             if (!simulationFlowHandler.IsRunning)
             {
@@ -164,7 +182,8 @@ namespace WinformsUI.InGame
             }
         }
 
-        public void PreviousRoundButtonClick(object sender, EventArgs args)
+        public void PreviousRoundButtonClick(object sender,
+            EventArgs args)
         {
             if (!simulationFlowHandler.IsRunning)
             {
@@ -172,7 +191,8 @@ namespace WinformsUI.InGame
             }
         }
 
-        public void EndOfTheGameButtonClick(object sender, EventArgs args)
+        public void EndOfTheGameButtonClick(object sender,
+            EventArgs args)
         {
             if (!simulationFlowHandler.IsRunning)
             {
@@ -180,7 +200,8 @@ namespace WinformsUI.InGame
             }
         }
 
-        public void BeginningOfTheGameButtonClick(object sender, EventArgs args)
+        public void BeginningOfTheGameButtonClick(object sender,
+            EventArgs args)
         {
             if (!simulationFlowHandler.IsRunning)
             {
@@ -188,51 +209,60 @@ namespace WinformsUI.InGame
             }
         }
 
-        private void PlayerPerspectiveDrawItem(object sender, DrawItemEventArgs e)
+        private void PlayerPerspectiveDrawItem(object sender,
+            DrawItemEventArgs e)
         {
             Graphics g = e.Graphics;
             Rectangle rect = e.Bounds;
             if (e.Index >= 0)
             {
-                var comboBoxItem = (ComboBoxItem)((ComboBox) sender)
-                    .Items[e.Index];
-                var selectedPlayer = simulationFlowHandler.Game.Players.FirstOrDefault(x => x.Id == comboBoxItem.Value);
+                ComboBoxItem comboBoxItem =
+                    (ComboBoxItem) ((ComboBox) sender).Items[e.Index];
+                Player selectedPlayer =
+                    simulationFlowHandler.Game.Players.FirstOrDefault(
+                        x => x.Id == comboBoxItem.Value);
 
                 Color playerColor;
-                playerColor = selectedPlayer == null ? Color.White
+                playerColor = selectedPlayer == null
+                    ? Color.White
                     : Color.FromKnownColor(selectedPlayer.Color);
 
-                Font f = new Font("Arial", 9, FontStyle.Regular);
+                Font f = new Font("Arial", emSize: 9,
+                    style: FontStyle.Regular);
                 Color c = playerColor;
                 Brush b = new SolidBrush(c);
-                g.FillRectangle(b, rect.X, rect.Y,
-                    rect.Width, rect.Height);
-                
-                g.DrawString(comboBoxItem.Text, f, Brushes.Black, rect.X, rect.Top);
+                g.FillRectangle(b, rect.X, rect.Y, rect.Width,
+                    rect.Height);
+
+                g.DrawString(comboBoxItem.Text, f, Brushes.Black,
+                    rect.X, rect.Top);
             }
         }
 
-        private void PlayerPerspectiveChanged(object sender, EventArgs e)
+        private void PlayerPerspectiveChanged(object sender,
+            EventArgs e)
         {
-            var typedSender = (ComboBox) sender;
+            ComboBox typedSender = (ComboBox) sender;
             int selectedIndex = typedSender.SelectedIndex;
 
-            var comboBoxItem = typedSender.Items[selectedIndex] as ComboBoxItem;
+            ComboBoxItem comboBoxItem =
+                typedSender.Items[selectedIndex] as ComboBoxItem;
             if (comboBoxItem == null)
             {
                 return;
             }
 
-            var player = simulationFlowHandler
-                .Game.Players.FirstOrDefault(x => x.Id == comboBoxItem.Value);
-            
+            Player player =
+                simulationFlowHandler.Game.Players.FirstOrDefault(
+                    x => x.Id == comboBoxItem.Value);
+
             simulationFlowHandler.ChangePlayerPerspective(player);
         }
 
         private void RefreshRoundNumber()
         {
-            int displayedRoundNumber =
-                simulationFlowHandler.GetDisplayedRoundNumber();
+            int displayedRoundNumber = simulationFlowHandler
+                .GetDisplayedRoundNumber();
             roundNumber.Text = displayedRoundNumber.ToString();
         }
     }

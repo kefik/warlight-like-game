@@ -1,4 +1,9 @@
-﻿namespace GameAi.BotStructures.MCTS
+﻿#if DEBUG
+#define LOG_TREEHANDLER
+//#define IGNORE_CANCELLATION
+#endif
+
+namespace GameAi.BotStructures.MCTS
 {
     using System;
     using System.Collections;
@@ -78,29 +83,88 @@
         /// <param name="token"></param>
         public void StartEvaluation(CancellationToken token)
         {
+#if LOG_TREEHANDLER
+            Debug.WriteLine($"EVALUATION STARTED (player {myPlayerId})");
+            Debug.WriteLine("-------------------");
+
+            try
+            {
+#endif
 #if IGNORE_CANCELLATION
             while (true)
 #else
-            while (!token.IsCancellationRequested)
+                while (!token.IsCancellationRequested)
 #endif
-            {
-                var bestNode = SelectBestNode();
-
-                var nodesToSimulate = Expand(bestNode);
-
-                foreach (var nodeToSimulate in nodesToSimulate)
                 {
-                    // cancellation requested => finish the evaluation
-                    if (token.IsCancellationRequested)
+                    var bestNode = SelectBestNode();
+
+                    var nodesToSimulate = Expand(bestNode);
+
+                    foreach (var nodeToSimulate in nodesToSimulate)
                     {
-                        return;
+                        // cancellation requested => finish the evaluation
+#if !IGNORE_CANCELLATION
+                        if (token.IsCancellationRequested)
+                        {
+                            return;
+                        }
+#endif
+
+                        Simulate(nodeToSimulate);
+
+                        Backpropagate(nodeToSimulate);
                     }
-
-                    Simulate(nodeToSimulate);
-
-                    Backpropagate(nodeToSimulate);
                 }
+
+#if LOG_TREEHANDLER
             }
+            finally
+            {
+                Debug.WriteLine("EVALUATION ENDED");
+                foreach (var mctsTreeNode in Tree.Root.Children
+                    .OrderByDescending(x => x.VisitCount)
+                    .ThenByDescending(x => x.WinCount))
+                {
+                    var gameState = mctsTreeNode.GameState;
+                    Debug.WriteLine($"{mctsTreeNode.WinCount:F}/{mctsTreeNode.VisitCount}");
+                    Debug.WriteLine($"ACTIONS:");
+                    Debug.WriteLine("");
+
+                    switch (mctsTreeNode.Action)
+                    {
+                        case BotGameBeginningTurn gameBeginningTurn:
+                            Debug.WriteLine($"Seizes:");
+                            foreach (int seizedRegionsId in gameBeginningTurn.SeizedRegionsIds)
+                            {
+                                Debug.WriteLine($"{gameState.GetRegion(seizedRegionsId).Name}");
+                            }
+                            break;
+                        case BotGameTurn gameTurn:
+                            var deployments = gameTurn.Deployments;
+                            Debug.WriteLine("Deployments:");
+                            foreach (BotDeployment botDeployment in deployments)
+                            {
+                                var region = gameState.GetRegion(botDeployment.RegionId);
+                                Debug.WriteLine($"Region: {region.Name}, New army: {botDeployment.Army}");
+                            }
+
+                            var attacks = gameTurn.Attacks;
+                            Debug.WriteLine("Attacks:");
+                            foreach (BotAttack botAttack in attacks)
+                            {
+                                var attackingRegion = gameState.GetRegion(botAttack.AttackingRegionId);
+                                var defendingRegion = gameState.GetRegion(botAttack.DefendingRegionId);
+                                Debug.WriteLine(
+                                    $"{attackingRegion.Name} -> {defendingRegion.Name}, Army: {botAttack.AttackingArmy}");
+                            }
+                            break;
+                    }
+                    Debug.WriteLine("");
+                }
+                Debug.WriteLine("");
+                Debug.WriteLine("");
+            }
+#endif
         }
 
         /// <summary>
@@ -150,7 +214,7 @@
         private IList<MCTSTreeNode> Expand(MCTSTreeNode node)
         {
             var boardState = node.Value.BoardState;
-            
+
             PlayerPerspective myPlayerPerspective = new PlayerPerspective(boardState, myPlayerId);
             PlayerPerspective enemyPlayerPerspective = new PlayerPerspective(boardState, enemyPlayerId);
 
@@ -222,11 +286,11 @@
         /// <summary>
         /// Play a simulation from specified node.
         /// </summary>
-        /// <param name="sourceNode"></param>
-        private void Simulate(MCTSTreeNode sourceNode)
+        /// <param name="newlyExpandedNode"></param>
+        private void Simulate(MCTSTreeNode newlyExpandedNode)
         {
             // TODO: playout based on option moves
-            MapMin boardState = sourceNode.GameState;
+            MapMin boardState = newlyExpandedNode.GameState;
 
             PlayerPerspective myPlayerPerspective = new PlayerPerspective(boardState, myPlayerId);
             PlayerPerspective enemyPlayerPerspective = new PlayerPerspective(boardState, enemyPlayerId);
@@ -235,14 +299,14 @@
             {
                 if (myPlayerPerspective.HasLost())
                 {
-                    sourceNode.Value.WinCount = 1;
-                    sourceNode.Value.VisitCount = 1;
+                    newlyExpandedNode.Value.WinCount = 1;
+                    newlyExpandedNode.Value.VisitCount = 1;
                     return;
                 }
                 if (enemyPlayerPerspective.HasLost())
                 {
-                    sourceNode.Value.WinCount = 0;
-                    sourceNode.Value.VisitCount = 1;
+                    newlyExpandedNode.Value.WinCount = 0;
+                    newlyExpandedNode.Value.VisitCount = 1;
                     return;
                 }
 
@@ -258,7 +322,7 @@
                 };
                 (MapMin expected, MapMin worstCase) = probabilityAwareRoundEvaluator.EvaluateInExpectedAndWorstCase(boardState, round);
 
-                boardState = worstCase;
+                boardState = expected;
                 myPlayerPerspective = new PlayerPerspective(boardState, myPlayerId);
                 enemyPlayerPerspective = new PlayerPerspective(boardState, enemyPlayerId);
             }
@@ -267,10 +331,9 @@
             double enemyValue = gamePlayerPerspectiveEvaluator.GetValue(enemyPlayerPerspective);
 
             double normalizedEnemyValue = enemyValue / (myValue + enemyValue);
-            Debug.WriteLine($"Normalized enemy value: {normalizedEnemyValue:F1}");
 
-            sourceNode.Value.WinCount = normalizedEnemyValue;
-            sourceNode.Value.VisitCount = 1;
+            newlyExpandedNode.Value.WinCount = normalizedEnemyValue;
+            newlyExpandedNode.Value.VisitCount = 1;
         }
 
         /// <summary>
@@ -280,7 +343,6 @@
         /// <param name="newlyExpandedNode"></param>
         private void Backpropagate(MCTSTreeNode newlyExpandedNode)
         {
-            byte playerId = (byte)newlyExpandedNode.Action.PlayerId;
             double valueToBackPropagate = newlyExpandedNode.WinCount;
 
             MCTSTreeNode currentNode = newlyExpandedNode;
@@ -289,7 +351,7 @@
             while (!currentNode.IsRoot)
             {
                 // update the node
-                if (parent.Action.PlayerId != playerId)
+                if (parent.Action.PlayerId != myPlayerId)
                 {
                     parent.Value.WinCount += valueToBackPropagate;
                 }

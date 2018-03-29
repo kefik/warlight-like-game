@@ -91,7 +91,7 @@
                                                       .NeighbourRegionsIds
                                                   where map.GetRegion(neighbourId).SuperRegionId != gameStructure.Id
                                                   select neighbourId)
-                                                  .ToList();
+                                                .ToList();
 
                 // hint: more foreign neighbour it has, worse it is
                 int foreignNeighboursCount = foreignNeighbourRegionsIds.Count;

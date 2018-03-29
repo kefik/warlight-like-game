@@ -56,6 +56,11 @@
     /// </summary>
     internal class MCTSTreeNode : TreeNode<MCTSTreeNode, NodeState>
     {
+        public MCTSTreeNode()
+        {
+            Children = new List<MCTSTreeNode>();
+        }
+
         public int VisitCount
         {
             get { return Value.VisitCount; }
@@ -82,11 +87,6 @@
 
             node.Value = value;
             node.Parent = this;
-
-            if (Children == null)
-            {
-                Children = new List<MCTSTreeNode>();
-            }
 
             Children.Add(node);
 

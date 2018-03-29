@@ -1,7 +1,10 @@
-﻿namespace GameAi.BotStructures.MCTS
+﻿#if DEBUG
+#define LOG_EVALUATOR
+#endif
+namespace GameAi.BotStructures.MCTS
 {
     using System;
-    using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -9,63 +12,140 @@
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Data.Restrictions;
-    using Interfaces;
-    using Interfaces.ActionsGenerators;
     using Interfaces.Evaluators;
-    using Interfaces.Evaluators.NodeEvaluators;
     using Interfaces.Evaluators.StructureEvaluators;
     using StructuresEvaluators;
 
     /// <summary>
-    /// Component handling Monte Carlo tree search evaluation.
-    /// It's purpose is to handle parallel evaluation,
-    /// action generators creation based on information
-    /// coming from bot instance.
+    ///     Component handling Monte Carlo tree search evaluation.
+    ///     It's purpose is to handle parallel evaluation,
+    ///     action generators creation based on information
+    ///     coming from bot instance.
     /// </summary>
     internal class MCTSEvaluationHandler : IDisposable
     {
-        private CancellationTokenSource CancellationTokenSource { get; set; }
+        private CancellationTokenSource CancellationTokenSource
+        {
+            get;
+            set;
+        }
+
         private MCTSTreeHandler[] treeHandlers;
         private readonly byte enemyPlayerId;
 
-        public MCTSEvaluationHandler(PlayerPerspective playerPerspective,
-                byte enemyPlayerId,
-                Restrictions restrictions)
+        public MCTSEvaluationHandler(
+            PlayerPerspective playerPerspective, byte enemyPlayerId,
+            Restrictions restrictions)
         {
             this.enemyPlayerId = enemyPlayerId;
             Initialize(playerPerspective, restrictions);
         }
 
         /// <summary>
-        /// Initializes components for MCTS evaluation.
+        ///     Initializes components for MCTS evaluation.
         /// </summary>
         /// <param name="initialGameState">Initial game state of the evaluation.</param>
         /// <param name="restrictions">Restrictions for the game.</param>
         /// <remarks>
-        /// Must be called only if the evaluation is stopped, 
-        /// otherwise it can cause unpredicted behaviour.
+        ///     Must be called only if the evaluation is stopped,
+        ///     otherwise it can cause unpredicted behaviour.
         /// </remarks>
         public void Initialize(PlayerPerspective initialGameState,
             Restrictions restrictions)
         {
-            var distanceMatrix = new DistanceMatrix(initialGameState.MapMin.RegionsMin);
-            ISuperRegionMinEvaluator gameBeginningSuperRegionMinEvaluator = new GameBeginningSuperRegionMinEvaluator(initialGameState.MapMin,
-                superRegionsRegionsCountCoefficient: 5, foreignNeighboursCoefficient: 4, bonusCoefficient: 1);
-            IRegionMinEvaluator gameBeginningRegionMinEvaluator = new GameBeginningRegionMinEvaluator(gameBeginningSuperRegionMinEvaluator, distanceMatrix,
-                clusterCoefficient: 50, superRegionCoefficient: 3);
+            DistanceMatrix distanceMatrix =
+                new DistanceMatrix(initialGameState.MapMin
+                    .RegionsMin);
+            ISuperRegionMinEvaluator
+                gameBeginningSuperRegionMinEvaluator =
+                    new GameBeginningSuperRegionMinEvaluator(
+                        initialGameState.MapMin,
+                        superRegionsRegionsCountCoefficient: 6,
+                        foreignNeighboursCoefficient: 5,
+                        bonusCoefficient: 3);
+            IRegionMinEvaluator gameBeginningRegionMinEvaluator =
+                new GameBeginningRegionMinEvaluator(
+                    gameBeginningSuperRegionMinEvaluator,
+                    distanceMatrix, clusterCoefficient: 50,
+                    superRegionCoefficient: 3);
 
-            ISuperRegionMinEvaluator gameSuperRegionMinEvaluator = new GameSuperRegionMinEvaluator(initialGameState.MapMin,
-                bonusCoefficient: 15, foreignNeighboursCoefficient: 4, superRegionsRegionsCountCoefficient: 5);
-            IRegionMinEvaluator gameRegionMinEvaluator = new GameRegionMinEvaluator(gameSuperRegionMinEvaluator,
-                bonusCoefficient: 15, superRegionCoefficient: 3);
+            ISuperRegionMinEvaluator gameSuperRegionMinEvaluator =
+                new GameSuperRegionMinEvaluator(
+                    initialGameState.MapMin, bonusCoefficient: 3,
+                    conqueredCoefficient: 30,
+                    foreignNeighboursCoefficient: 3,
+                    superRegionsRegionsCountCoefficient: 5);
+            IRegionMinEvaluator gameRegionMinEvaluator =
+                new GameRegionMinEvaluator(
+                    gameSuperRegionMinEvaluator,
+                    superRegionCoefficient: 20);
 
             IRoundEvaluator roundEvaluator = new RoundEvaluator();
-            IPlayerPerspectiveEvaluator gameBeginningPlayerPerspectiveEvaluator = new PlayerPerspectiveEvaluator(gameBeginningRegionMinEvaluator, 15);
-            IPlayerPerspectiveEvaluator gamePlayerPerspectiveEvaluator = new PlayerPerspectiveEvaluator(
-                gameRegionMinEvaluator, 15);
+            IPlayerPerspectiveEvaluator
+                gameBeginningPlayerPerspectiveEvaluator =
+                    new PlayerPerspectiveEvaluator(
+                        gameBeginningRegionMinEvaluator,
+                        armyCoefficient: 15);
+            IPlayerPerspectiveEvaluator gamePlayerPerspectiveEvaluator
+                = new PlayerPerspectiveEvaluator(
+                    gameRegionMinEvaluator, armyCoefficient: 10);
 
-            var selectRegionActionsGenerator = new SelectRegionActionsGenerator(gameBeginningRegionMinEvaluator, restrictions.GameBeginningRestrictions);
-            var gameActionsGenerator = new MCTSBotActionsGenerator(gameRegionMinEvaluator, initialGameState.MapMin);
+            SelectRegionActionsGenerator selectRegionActionsGenerator
+                = new SelectRegionActionsGenerator(
+                    gameBeginningRegionMinEvaluator,
+                    restrictions.GameBeginningRestrictions);
+            MCTSBotActionsGenerator gameActionsGenerator =
+                new MCTSBotActionsGenerator(gameRegionMinEvaluator,
+                    initialGameState.MapMin);
+
+#if LOG_EVALUATOR
+            Debug.WriteLine($"INITIAL POSITION (BOT {initialGameState.PlayerId})");
+            if (initialGameState.MapMin.IsGameBeginning())
+            {
+                Debug.WriteLine("Game beginning phase");
+                Debug.WriteLine("SuperRegions:");
+                foreach (SuperRegionMin superRegion in
+                    initialGameState.MapMin.SuperRegionsMin.OrderBy(
+                        x => x.Name))
+                {
+                    Debug.WriteLine(
+                        $"Name: {superRegion.Name}, Value: " +
+                        $"{gameBeginningSuperRegionMinEvaluator.GetValue(initialGameState, superRegion):F1}");
+                }
+                Debug.WriteLine("");
+
+                Debug.WriteLine($"Regions:");
+                foreach (RegionMin region in initialGameState.MapMin
+                    .RegionsMin.OrderBy(x => x.Name))
+                {
+                    Debug.WriteLine($"Name: {region.Name}, Value: " +
+                                    $"{gameBeginningRegionMinEvaluator.GetValue(initialGameState, region):F1}");
+                }
+                Debug.WriteLine("");
+            }
+            else
+            {
+                Debug.WriteLine("SuperRegions:");
+                foreach (SuperRegionMin superRegion in
+                    initialGameState.MapMin.SuperRegionsMin.OrderBy(
+                        x => x.Name))
+                {
+                    Debug.WriteLine(
+                        $"Name: {superRegion.Name}, Value: " +
+                        $"{gameSuperRegionMinEvaluator.GetValue(initialGameState, superRegion):F1}");
+                }
+                Debug.WriteLine("");
+
+                Debug.WriteLine($"Regions:");
+                foreach (RegionMin region in initialGameState.MapMin
+                    .RegionsMin.OrderBy(x => x.Name))
+                {
+                    Debug.WriteLine($"Name: {region.Name}, Value: " +
+                                    $"{gameRegionMinEvaluator.GetValue(initialGameState, region):F1}");
+                }
+                Debug.WriteLine("");
+            }
+#endif
 
             // clear what was left after previous evaluation
             CancellationTokenSource = new CancellationTokenSource();
@@ -76,47 +156,53 @@
 
             for (int index = 0; index < treeHandlers.Length; index++)
             {
-                treeHandlers[index] = new MCTSTreeHandler(initialGameState,
-                    enemyPlayerId,
-                    gameActionsGenerator,
-                    selectRegionActionsGenerator,
-                    gamePlayerPerspectiveEvaluator,
-                    roundEvaluator);
+                treeHandlers[index] =
+                    new MCTSTreeHandler(initialGameState,
+                        enemyPlayerId, gameActionsGenerator,
+                        selectRegionActionsGenerator,
+                        gamePlayerPerspectiveEvaluator,
+                        roundEvaluator);
             }
         }
 
-        
+
         public BotTurn GetBestMove()
         {
             // TODO: merge the trees and get the most visited node
             return treeHandlers[0].Tree.Root.Children
-                .OrderByDescending(x => x.VisitCount).ThenByDescending(x => x.WinCount).First().Value.BotTurn;
+                .OrderByDescending(x => x.VisitCount)
+                .ThenByDescending(x => x.WinCount).First().Value
+                .BotTurn;
         }
 
         /// <summary>
-        /// Asynchronously starts MCTS evaluation in parallel.
+        ///     Asynchronously starts MCTS evaluation in parallel.
         /// </summary>
         /// <returns></returns>
         public async Task StartEvaluationAsync()
         {
-            Task[] tasks = new Task[treeHandlers.Length];
+            var tasks = new Task[treeHandlers.Length];
 
             CancellationTokenSource = new CancellationTokenSource();
 
             for (int i = 0; i < tasks.Length; i++)
             {
-                var treeHandler = treeHandlers[i];
+                MCTSTreeHandler treeHandler = treeHandlers[i];
 
-                tasks[i] = Task.Factory.StartNew(() => treeHandler
-                    .StartEvaluation(CancellationTokenSource.Token), CancellationToken.None,
-                    TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                tasks[i] =
+                    Task.Factory.StartNew(
+                        () => treeHandler.StartEvaluation(
+                            CancellationTokenSource.Token),
+                        CancellationToken.None,
+                        TaskCreationOptions.LongRunning,
+                        TaskScheduler.Default);
             }
-            
+
             await Task.WhenAll(tasks);
         }
 
         /// <summary>
-        /// Stops the evaluation.
+        ///     Stops the evaluation.
         /// </summary>
         public void Stop()
         {
@@ -124,30 +210,31 @@
         }
 
         /// <summary>
-        /// Asynchronously clears cache after evaluation.
+        ///     Asynchronously clears cache after evaluation.
         /// </summary>
         /// <returns></returns>
         public async Task ClearEvaluationCacheAsync()
         {
-            Task[] tasks = new Task[treeHandlers.Length];
+            var tasks = new Task[treeHandlers.Length];
 
             for (int i = 0; i < tasks.Length; i++)
             {
                 int i1 = i;
-                tasks[i] = Task.Run(() => treeHandlers[i1].Tree.FreeEntireTree());
+                tasks[i] = Task.Run(() => treeHandlers[i1].Tree
+                    .FreeEntireTree());
             }
 
             await Task.WhenAll(tasks);
         }
 
         /// <summary>
-        /// Clears evaluation cache.
+        ///     Clears evaluation cache.
         /// </summary>
         public void ClearEvaluationCache()
         {
             if (treeHandlers != null)
             {
-                foreach (var treeHandler in treeHandlers)
+                foreach (MCTSTreeHandler treeHandler in treeHandlers)
                 {
                     treeHandler.Tree.FreeEntireTree();
                 }
@@ -155,7 +242,7 @@
         }
 
         /// <summary>
-        /// Disposes resources, clearing evaluation cache.
+        ///     Disposes resources, clearing evaluation cache.
         /// </summary>
         public void Dispose()
         {
