@@ -1,5 +1,5 @@
 ﻿#if DEBUG
-#define LOG_TREEHANDLER
+//#define LOG_TREEHANDLER
 //#define IGNORE_CANCELLATION
 #endif
 
@@ -121,6 +121,7 @@ namespace GameAi.BotStructures.MCTS
             finally
             {
                 Debug.WriteLine("EVALUATION ENDED");
+                Debug.WriteLine("BEST PATH");
                 foreach (var mctsTreeNode in Tree.Root.Children
                     .OrderByDescending(x => x.VisitCount)
                     .ThenByDescending(x => x.WinCount))
@@ -128,7 +129,6 @@ namespace GameAi.BotStructures.MCTS
                     var gameState = mctsTreeNode.GameState;
                     Debug.WriteLine($"{mctsTreeNode.WinCount:F}/{mctsTreeNode.VisitCount}");
                     Debug.WriteLine($"ACTIONS:");
-                    Debug.WriteLine("");
 
                     switch (mctsTreeNode.Action)
                     {

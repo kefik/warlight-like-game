@@ -7,6 +7,11 @@
     using Data.GameRecording;
     using Interfaces.Evaluators.StructureEvaluators;
 
+    /// <summary>
+    /// Class that serves as list of functions any
+    /// actions generator inheriting from it can choose
+    /// from and combine.
+    /// </summary>
     internal abstract class GameActionsGenerator
     {
         protected DistanceMatrix DistanceMatrix;
@@ -158,6 +163,9 @@
                     .Sum(x => x.Army - 1) + playerPerspective.GetMyIncome()
                 // region is under enemy threat
                 where threatArmy * 0.6 >= region.Army
+                // order by region to defend value
+                orderby RegionMinEvaluator.GetValue(playerPerspective, region) descending,
+                    region.Army
                 select region;
 
             // deploy
@@ -209,7 +217,11 @@
                         .Select(x => currentGameState.GetRegion(x))
                         .Where(
                             x => x.OwnerId !=
-                                 currentGameState.PlayerId).ToList();
+                                 currentGameState.PlayerId)
+                        .OrderByDescending(x => RegionMinEvaluator
+                            .GetValue(currentGameState, x))
+                            .ThenBy(x => x.Army)
+                            .ToList();
 
                 // if theres any neighbour where is the enemy, don't attack (we want to attack safely only)
                 if (neighboursToAttack.Any(
@@ -225,12 +237,6 @@
                 {
                     RegionMin neighbourToAttack =
                         neighboursToAttack[index];
-                    IOrderedEnumerable<RegionMin> neighboursNeighbours
-                        = neighbourToAttack.NeighbourRegionsIds
-                            .Select(
-                                x => currentGameState.GetRegion(x))
-                            .OrderByDescending(x => RegionMinEvaluator
-                                .GetValue(currentGameState, x));
 
                     // I have large enough army and
                     // theres no neighbour of neighbour that is not mine => attack
@@ -249,8 +255,12 @@
                         // don't attack with too large force
                         else
                         {
+                            // calculate minimum army that will surely succeed in conquering
+                            // the region
+                            int minArmyThatSucceeds = (int) (neighbourToAttack.Army /
+                                                             0.6);
                             attackingArmy =
-                                Math.Min(neighbourToAttack.Army * 3,
+                                Math.Min(minArmyThatSucceeds + 4,
                                     refRegionMin.Army - 1);
                         }
 
@@ -282,7 +292,9 @@
                             x => x.OwnerId !=
                                  currentGameState.PlayerId)
                         .OrderByDescending(x => RegionMinEvaluator
-                            .GetValue(currentGameState, x)).ToList();
+                            .GetValue(currentGameState, x))
+                            // neighbours with lowest army first
+                            .ThenBy(x => x.Army).ToList();
 
                 for (int index = 0; index < neighbours.Count; index++)
                 {
@@ -290,20 +302,28 @@
                     if ((myRegion.Army - 1) * 0.6 -
                         neighbour.Army * 0.7 >= 0)
                     {
-                        int attackingArmy;
-
-                        // its last => attack with remaining force
-                        if (index == neighbours.Count - 1)
+                        // calculate minimum army that will surely succeed in conquering
+                        // the region
+                        int minArmyThatSucceeds;
+                        if (neighbour.OwnerId != 0)
                         {
-                            attackingArmy = myRegion.Army - 1;
+                            var enemyPlayerPerspective =
+                                new PlayerPerspective(
+                                    currentGameState.MapMin,
+                                    neighbour.OwnerId);
+                            minArmyThatSucceeds =
+                                (int)((neighbour.Army + enemyPlayerPerspective.GetMyIncome()) /
+                                      0.6);
                         }
-                        // don't attack with too large force
                         else
                         {
-                            attackingArmy =
-                                Math.Min(neighbour.Army * 3,
-                                    myRegion.Army - 1);
+                            minArmyThatSucceeds =
+                                (int)(neighbour.Army /
+                                      0.6);
                         }
+
+                        int attackingArmy = Math.Min(minArmyThatSucceeds + 4,
+                            myRegion.Army - 1);
                         botAttacks.Add(new BotAttack(myRegion.OwnerId,
                             myRegionId, attackingArmy, neighbour.Id));
                         myRegion.Army -= attackingArmy;

@@ -152,7 +152,7 @@ namespace GameAi.BotStructures.MCTS
             ClearEvaluationCache();
 
             // # tree handlers == how much parallely do we want it to evaluate
-            treeHandlers = new MCTSTreeHandler[1];
+            treeHandlers = new MCTSTreeHandler[Environment.ProcessorCount];
 
             for (int index = 0; index < treeHandlers.Length; index++)
             {
@@ -168,11 +168,69 @@ namespace GameAi.BotStructures.MCTS
 
         public BotTurn GetBestMove()
         {
-            // TODO: merge the trees and get the most visited node
-            return treeHandlers[0].Tree.Root.Children
+            // merge the trees and get the most visited node
+            var nodesToCompare = treeHandlers.Select(x => x.Tree.Root)
+                .SelectMany(x => x.Children);
+
+            // groups by turns with summed counts
+            var turnsWithSums =
+            (from node in nodesToCompare
+             group node by node.Action).Select(x => new
+            {
+                Turn = x.Key,
+                WinCount = x.Sum(y => y.WinCount),
+                VisitCount = x.Sum(y => y.VisitCount)
+            });
+
+            // best move by visitcount and wincount
+            var turnsByVisitCount = turnsWithSums
                 .OrderByDescending(x => x.VisitCount)
-                .ThenByDescending(x => x.WinCount).First().Value
-                .BotTurn;
+                .ThenByDescending(x => x.WinCount);
+
+#if LOG_EVALUATOR
+            Debug.WriteLine("EVALUATION RESULT");
+            foreach (var mctsTreeNode in turnsByVisitCount)
+            {
+                var gameState = nodesToCompare.First().GameState;
+                Debug.WriteLine($"{mctsTreeNode.WinCount:F}/{mctsTreeNode.VisitCount}");
+                Debug.WriteLine($"ACTIONS:");
+
+                switch (mctsTreeNode.Turn)
+                {
+                    case BotGameBeginningTurn gameBeginningTurn:
+                        Debug.WriteLine($"Seizes:");
+                        foreach (int seizedRegionsId in gameBeginningTurn.SeizedRegionsIds)
+                        {
+                            Debug.WriteLine($"{gameState.GetRegion(seizedRegionsId).Name}");
+                        }
+                        break;
+                    case BotGameTurn gameTurn:
+                        var deployments = gameTurn.Deployments;
+                        Debug.WriteLine("Deployments:");
+                        foreach (BotDeployment botDeployment in deployments)
+                        {
+                            var region = gameState.GetRegion(botDeployment.RegionId);
+                            Debug.WriteLine($"Region: {region.Name}, New army: {botDeployment.Army}");
+                        }
+
+                        var attacks = gameTurn.Attacks;
+                        Debug.WriteLine("Attacks:");
+                        foreach (BotAttack botAttack in attacks)
+                        {
+                            var attackingRegion = gameState.GetRegion(botAttack.AttackingRegionId);
+                            var defendingRegion = gameState.GetRegion(botAttack.DefendingRegionId);
+                            Debug.WriteLine(
+                                $"{attackingRegion.Name} -> {defendingRegion.Name}, Army: {botAttack.AttackingArmy}");
+                        }
+                        break;
+                }
+                Debug.WriteLine("");
+            }
+            Debug.WriteLine("");
+            Debug.WriteLine("");
+#endif
+
+            return turnsByVisitCount.Select(x => x.Turn).First();
         }
 
         /// <summary>

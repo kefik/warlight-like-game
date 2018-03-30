@@ -50,5 +50,16 @@
                 return hashCode;
             }
         }
+
+        public static bool operator ==(BotAttack left,
+            BotAttack right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(BotAttack left, BotAttack right)
+        {
+            return !(left == right);
+        }
     }
 }

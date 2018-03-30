@@ -207,6 +207,8 @@
                     }
                 }
             }
+
+            RefreshSuperRegionsOwners(map);
         }
 
         private int GetUnitsKilled(int killingArmy, int armyToKill, double probabilityToKill)
@@ -225,6 +227,31 @@
             }
 
             return unitsKilled;
+        }
+
+        private void RefreshSuperRegionsOwners(MapMin map)
+        {
+            var superRegions = map.SuperRegionsMin;
+            foreach (var superRegionId in superRegions.Select(x => x.Id))
+            {
+                ref var refSuperRegion =
+                    ref map.GetSuperRegion(superRegionId);
+                var regions =
+                    refSuperRegion.RegionsIds.Select(
+                        x => map.GetRegion(x))
+                        .ToList();
+                byte ownerId = regions.Select(x => x.OwnerId).First();
+
+                // all regions have same id
+                if (regions.All(x => x.OwnerId == ownerId))
+                {
+                    refSuperRegion.OwnerId = ownerId;
+                }
+                else
+                {
+                    refSuperRegion.OwnerId = 0;
+                }
+            }
         }
 
         void IRandomInjectable.Inject(Random random)

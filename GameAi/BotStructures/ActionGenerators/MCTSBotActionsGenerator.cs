@@ -59,22 +59,31 @@
                 AppendRedistributeInlandArmy(waitAggressiveCopy, waitAggressiveAttacks);
                 AttackNeutralSafely(waitAggressiveCopy, waitAggressiveAttacks);
                 AttackAggressively(waitAggressiveCopy, waitAggressiveAttacks);
-                gameTurns.Add(new BotGameTurn(playerId)
+                // is not same as previous attacks
+                if (!noWaitAggressiveAttacks.SequenceEqual(waitAggressiveAttacks))
                 {
-                    Deployments = deployment,
-                    Attacks = waitAggressiveAttacks
-                });
+                    gameTurns.Add(new BotGameTurn(playerId)
+                    {
+                        Deployments = deployment,
+                        Attacks = waitAggressiveAttacks
+                    });
+                }
 
                 // play defensive
                 var defensiveCopy = deploymentCopy.ShallowCopy();
                 var defensiveAttacks = new List<BotAttack>();
                 AppendRedistributeInlandArmy(defensiveCopy, defensiveAttacks);
                 AttackNeutralSafely(defensiveCopy, defensiveAttacks);
-                gameTurns.Add(new BotGameTurn(playerId)
+                // is not same as previous attacks
+                if (!defensiveAttacks.SequenceEqual(noWaitAggressiveAttacks)
+                    && !defensiveAttacks.SequenceEqual(waitAggressiveAttacks))
                 {
-                    Deployments = deployment,
-                    Attacks = defensiveAttacks
-                });
+                    gameTurns.Add(new BotGameTurn(playerId)
+                    {
+                        Deployments = deployment,
+                        Attacks = defensiveAttacks
+                    });
+                }
             }
 
             return gameTurns;

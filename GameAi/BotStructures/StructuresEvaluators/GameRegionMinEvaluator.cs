@@ -45,9 +45,7 @@
                     .Count(x => x.OwnerId == gameStructure.OwnerId);
                 // hint: super region value has influence on how good the given super region is
                 superRegionValue += superRegionCoefficient
-                                   * enemyOwnedCount
-                                   + superRegionMinEvaluator
-                                       .GetValue(currentGameState, superRegion);
+                                   * enemyOwnedCount;
             }
 
             // TODO: regions with better neighbours have higher value

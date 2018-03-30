@@ -31,10 +31,6 @@
         /// <remarks>Works weirdly if called on non-leaf node.</remarks>
         public void FreeNode(MCTSTreeNode node)
         {
-            node.Children = null;
-            node.Parent = null;
-            node.Value = default(NodeState);
-
             DefaultPool.Free(node);
         }
 

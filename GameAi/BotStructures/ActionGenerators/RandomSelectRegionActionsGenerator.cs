@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Interfaces;
@@ -71,7 +72,7 @@
                 }
             } while (index < regionsToChooseCount);
 
-            gameBeginningTurn.SeizedRegionsIds = chosenIndices;
+            gameBeginningTurn.SeizedRegionsIds = chosenIndices.ToList();
 
             return new[] { gameBeginningTurn };
         }
