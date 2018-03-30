@@ -18,11 +18,12 @@
         private readonly MapImageTemplateProcessor templateProcessor;
         private readonly HighlightHandler highlightRegionHandler;
         private readonly bool isFogOfWar;
-        
+
         /// <summary>
         /// List of selected regions.
         /// </summary>
-        private readonly List<Region> selectedRegions = new List<Region>();
+        private readonly List<Region> selectedRegions =
+            new List<Region>();
 
         /// <summary>
         /// Read-only list of selected regions.
@@ -42,13 +43,16 @@
             return selectedRegions.Any(x => x == region);
         }
 
-        public SelectRegionHandler(MapImageTemplateProcessor templateProcessor, HighlightHandler highlightRegionHandler, bool isFogOfWar)
+        public SelectRegionHandler(
+            MapImageTemplateProcessor templateProcessor,
+            HighlightHandler highlightRegionHandler, bool isFogOfWar)
         {
-            if (templateProcessor == null || highlightRegionHandler == null)
+            if (templateProcessor == null ||
+                highlightRegionHandler == null)
             {
                 throw new ArgumentException();
             }
-            
+
             this.highlightRegionHandler = highlightRegionHandler;
             this.isFogOfWar = isFogOfWar;
             this.templateProcessor = templateProcessor;
@@ -62,7 +66,8 @@
         /// <param name="army">Army size of the (x,y) specified region.</param>
         /// <param name="x"></param>
         /// <returns>How many regions are selected at the moment.</returns>
-        public int SelectRegion(int x, int y, Player playerPerspective, int army)
+        public int SelectRegion(int x, int y,
+            Player playerPerspective, int army)
         {
             var region = templateProcessor.GetRegion(x, y);
 
@@ -70,30 +75,40 @@
             if (isFogOfWar)
             {
                 // owner is player and its my or neighbour region
-                if (region.Owner != null && (region.Owner == playerPerspective || region.IsNeighbourOf(playerPerspective)))
+                if (region.Owner != null &&
+                    (region.Owner == playerPerspective ||
+                     region.IsNeighbourOf(playerPerspective)))
                 {
-                    highlightRegionHandler.HighlightRegion(region, Color.FromKnownColor(region.Owner.Color), army);
+                    highlightRegionHandler.HighlightRegion(region,
+                        Color.FromKnownColor(region.Owner.Color),
+                        army);
                 }
                 // owner is nobody and its an neighbour
-                else if (region.Owner == null && region.IsNeighbourOf(playerPerspective))
+                else if (region.Owner == null &&
+                         region.IsNeighbourOf(playerPerspective))
                 {
-                    highlightRegionHandler.HighlightRegion(region, Global.RegionVisibleUnoccupiedColor, army);
+                    highlightRegionHandler.HighlightRegion(region,
+                        Global.RegionVisibleUnoccupiedColor, army);
                 }
                 // its not an neighbour
                 else
                 {
-                    highlightRegionHandler.HighlightRegion(region, Global.RegionNotVisibleColor, army);
+                    highlightRegionHandler.HighlightRegion(region,
+                        Global.RegionNotVisibleColor, army);
                 }
             }
             else
             {
                 if (region.Owner != null)
                 {
-                    highlightRegionHandler.HighlightRegion(region, Color.FromKnownColor(region.Owner.Color), army);
+                    highlightRegionHandler.HighlightRegion(region,
+                        Color.FromKnownColor(region.Owner.Color),
+                        army);
                 }
                 else
                 {
-                    highlightRegionHandler.HighlightRegion(region, Global.RegionVisibleUnoccupiedColor, army);
+                    highlightRegionHandler.HighlightRegion(region,
+                        Global.RegionVisibleUnoccupiedColor, army);
                 }
             }
 
@@ -108,7 +123,8 @@
         /// <returns></returns>
         public int ResetSelection()
         {
-            int resettedSelection = highlightRegionHandler.HighlightedRegionsCount;
+            int resettedSelection = highlightRegionHandler
+                .HighlightedRegionsCount;
 
             highlightRegionHandler.ResetHighlight();
 

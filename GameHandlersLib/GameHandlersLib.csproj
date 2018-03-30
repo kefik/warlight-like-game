@@ -63,6 +63,7 @@
     <Compile Include="MapHandlers\IMapImageProcessor.cs" />
     <Compile Include="MapHandlers\MapImageProcessor.cs" />
     <Compile Include="MapHandlers\MapImageTemplateProcessor.cs" />
+    <Compile Include="MapHandlers\SeizeRegionHandler.cs" />
     <Compile Include="MapHandlers\SelectRegionHandler.cs" />
     <Compile Include="MapHandlers\TextDrawingHandler.cs" />
     <Compile Include="NotifyUserException.cs" />

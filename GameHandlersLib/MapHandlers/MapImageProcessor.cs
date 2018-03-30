@@ -34,6 +34,7 @@ namespace GameHandlersLib.MapHandlers
 
         private readonly MapImageTemplateProcessor templateProcessor;
         private readonly SelectRegionHandler selectRegionHandler;
+        private readonly SeizeRegionHandler seizeRegionHandler;
         private readonly ColoringHandler coloringHandler;
         private readonly TextDrawingHandler textDrawingHandler;
 
@@ -50,8 +51,13 @@ namespace GameHandlersLib.MapHandlers
             get { return selectRegionHandler.SelectedRegions; }
         }
 
-        private MapImageProcessor(MapImageTemplateProcessor mapImageTemplateProcessor, Bitmap gameMapMapImage, TextDrawingHandler textDrawingHandler,
-            ColoringHandler coloringHandler, SelectRegionHandler selectRegionHandler, bool isFogOfWar)
+        private MapImageProcessor(
+            MapImageTemplateProcessor mapImageTemplateProcessor,
+            Bitmap gameMapMapImage,
+            TextDrawingHandler textDrawingHandler,
+            ColoringHandler coloringHandler,
+            SelectRegionHandler selectRegionHandler,
+            SeizeRegionHandler seizeRegionHandler, bool isFogOfWar)
         {
             MapImage = gameMapMapImage;
             templateProcessor = mapImageTemplateProcessor;
@@ -59,6 +65,7 @@ namespace GameHandlersLib.MapHandlers
             this.textDrawingHandler = textDrawingHandler;
             this.coloringHandler = coloringHandler;
             this.selectRegionHandler = selectRegionHandler;
+            this.seizeRegionHandler = seizeRegionHandler;
         }
 
         public Region GetRegion(int x, int y)
@@ -77,7 +84,8 @@ namespace GameHandlersLib.MapHandlers
 
             if (!isFogOfWar)
             {
-                textDrawingHandler.DrawArmyNumber(region, region.Army);
+                textDrawingHandler
+                    .DrawArmyNumber(region, region.Army);
             }
 
             OnImageChanged?.Invoke();
@@ -91,9 +99,12 @@ namespace GameHandlersLib.MapHandlers
         /// <param name="playerPerspective"></param>
         /// <param name="army"></param>
         /// <returns></returns>
-        public int Select(int x, int y, Player playerPerspective, int army)
+        public int Select(int x, int y, Player playerPerspective,
+            int army)
         {
-            int regionsSelectedCount = selectRegionHandler.SelectRegion(x, y, playerPerspective, army);
+            int regionsSelectedCount =
+                selectRegionHandler.SelectRegion(x, y,
+                    playerPerspective, army);
             OnImageChanged?.Invoke();
             return regionsSelectedCount;
         }
@@ -104,7 +115,8 @@ namespace GameHandlersLib.MapHandlers
         /// <returns></returns>
         public int ResetSelection()
         {
-            int resettedRegionsCount = selectRegionHandler.ResetSelection();
+            int resettedRegionsCount =
+                selectRegionHandler.ResetSelection();
             OnImageChanged?.Invoke();
             return resettedRegionsCount;
         }
@@ -129,13 +141,15 @@ namespace GameHandlersLib.MapHandlers
         {
             if (SelectedRegions.Count != 2)
             {
-                throw new ArgumentException("2 regions must be selected in order to properly attack.");
+                throw new ArgumentException(
+                    "2 regions must be selected in order to properly attack.");
             }
 
             var attacker = SelectedRegions[0];
 
             selectRegionHandler.ResetSelection();
-            textDrawingHandler.OverDrawArmyNumber(attacker, newRegionArmy);
+            textDrawingHandler.OverDrawArmyNumber(attacker,
+                newRegionArmy);
 
             OnImageChanged?.Invoke();
         }
@@ -170,7 +184,8 @@ namespace GameHandlersLib.MapHandlers
             {
                 Region region = tuple.Region;
 
-                coloringHandler.Recolor(region, Global.RegionNotVisibleColor);
+                coloringHandler.Recolor(region,
+                    Global.RegionNotVisibleColor);
             }
         }
 
@@ -195,34 +210,41 @@ namespace GameHandlersLib.MapHandlers
         /// </summary>
         /// <param name="attackingPhase">Attacking phase</param>
         /// <param name="deployingPhase">Deploying phase</param>
-        public void ResetAttackingPhase(Attacking attackingPhase, Deploying deployingPhase)
+        public void ResetAttackingPhase(Attacking attackingPhase,
+            Deploying deployingPhase)
         {
             // TODO: check + should not clear
             var attacks = attackingPhase.Attacks;
-            IEnumerable<IGrouping<Region, Attack>> attackerRegionsGroups = from attack in attacks
-                                                                           group attack by attack.Attacker;
-            var regionAttackingArmyPairEnumerable = from gr in attackerRegionsGroups
-                                                    select new
-                                                    {
-                                                        Attacker = gr.Key,
-                                                        AttackingArmy = gr.Sum(x => x.AttackingArmy)
-                                                    };
+            IEnumerable<IGrouping<Region, Attack>>
+                attackerRegionsGroups =
+                    from attack in attacks
+                    group attack by attack.Attacker;
+            var regionAttackingArmyPairEnumerable =
+                from gr in attackerRegionsGroups
+                select new
+                {
+                    Attacker = gr.Key,
+                    AttackingArmy = gr.Sum(x => x.AttackingArmy)
+                };
 
             foreach (var item in regionAttackingArmyPairEnumerable)
             {
                 Region attacker = item.Attacker;
 
-                IEnumerable<int> regionDeployedArmy = from tuple in deployingPhase.ArmiesDeployed
-                                                      where tuple.Region == attacker
-                                                      select tuple.Army;
+                IEnumerable<int> regionDeployedArmy =
+                    from tuple in deployingPhase.ArmiesDeployed
+                    where tuple.Region == attacker
+                    select tuple.Army;
                 if (!regionDeployedArmy.Any())
                 {
-                    textDrawingHandler.OverDrawArmyNumber(attacker, attacker.Army);
+                    textDrawingHandler.OverDrawArmyNumber(attacker,
+                        attacker.Army);
                 }
                 else
                 {
                     int army = regionDeployedArmy.First();
-                    textDrawingHandler.OverDrawArmyNumber(attacker, army);
+                    textDrawingHandler.OverDrawArmyNumber(attacker,
+                        army);
                 }
 
                 OnImageChanged?.Invoke();
@@ -243,10 +265,32 @@ namespace GameHandlersLib.MapHandlers
                 {
                     throw new ArgumentException();
                 }
-                coloringHandler.Recolor(region, Color.FromKnownColor(region.Owner.Color));
-                textDrawingHandler.DrawArmyNumber(region, region.Army);
+                coloringHandler.Recolor(region,
+                    Color.FromKnownColor(region.Owner.Color));
+                textDrawingHandler
+                    .DrawArmyNumber(region, region.Army);
             }
 
+            OnImageChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Highlights unavailable regions.
+        /// </summary>
+        /// <param name="unavailableRegions"></param>
+        public void HighlightUnavailableRegions(
+            IEnumerable<Region> unavailableRegions)
+        {
+            seizeRegionHandler.HighlightUnavailableOptions(unavailableRegions);
+            OnImageChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Resets highlighting of unavailable regions.
+        /// </summary>
+        public void ResetUnavailableRegionsHighlight()
+        {
+            seizeRegionHandler.ResetHighlight();
             OnImageChanged?.Invoke();
         }
 
@@ -256,7 +300,8 @@ namespace GameHandlersLib.MapHandlers
         /// </summary>
         /// <param name="game">Game from which it has source.</param>
         /// <param name="playerPerspective">Player, from whose perspective should be image redrawed.</param>
-        public virtual void RedrawMap(Game game, Player playerPerspective)
+        public virtual void RedrawMap(Game game,
+            Player playerPerspective)
         {
             if (isFogOfWar && playerPerspective != null)
             {
@@ -275,7 +320,8 @@ namespace GameHandlersLib.MapHandlers
         /// </summary>
         /// <param name="game"></param>
         /// <param name="playerPerspective"></param>
-        private void RedrawWithFogOfWar(Game game, Player playerPerspective)
+        private void RedrawWithFogOfWar(Game game,
+            Player playerPerspective)
         {
             // get owned regions
             var ownedRegions = playerPerspective.ControlledRegions;
@@ -283,37 +329,46 @@ namespace GameHandlersLib.MapHandlers
             // recolor them to players color
             foreach (Region ownedRegion in ownedRegions)
             {
-                coloringHandler.Recolor(ownedRegion, playerPerspective.Color);
+                coloringHandler.Recolor(ownedRegion,
+                    playerPerspective.Color);
 
-                textDrawingHandler.DrawArmyNumber(ownedRegion, ownedRegion.Army);
+                textDrawingHandler.DrawArmyNumber(ownedRegion,
+                    ownedRegion.Army);
             }
 
             // recolor neighbour regions local player does not own
-            IList<Region> neighbourNotOwnedRegions = (from ownedRegion in ownedRegions
-                                                            from neighbour in ownedRegion.NeighbourRegions
-                                                            where neighbour.Owner != playerPerspective
-                                                            select neighbour).Distinct().ToList();
+            IList<Region> neighbourNotOwnedRegions =
+            (from ownedRegion in ownedRegions
+             from neighbour in ownedRegion.NeighbourRegions
+             where neighbour.Owner != playerPerspective
+             select neighbour).Distinct().ToList();
 
             foreach (Region region in neighbourNotOwnedRegions)
             {
                 Player owner = region.Owner;
                 if (owner == null)
                 {
-                    coloringHandler.Recolor(region, Global.RegionVisibleUnoccupiedColor);
+                    coloringHandler.Recolor(region,
+                        Global.RegionVisibleUnoccupiedColor);
                 }
                 else
                 {
-                    Color ownerColor = Color.FromKnownColor(owner.Color);
+                    Color ownerColor =
+                        Color.FromKnownColor(owner.Color);
 
                     coloringHandler.Recolor(region, ownerColor);
                 }
-                textDrawingHandler.DrawArmyNumber(region, region.Army);
+                textDrawingHandler
+                    .DrawArmyNumber(region, region.Army);
             }
 
-            var allOtherRegions = game.Map.Regions.Except(neighbourNotOwnedRegions).Except(ownedRegions);
+            var allOtherRegions = game.Map.Regions
+                .Except(neighbourNotOwnedRegions)
+                .Except(ownedRegions);
             foreach (var region in allOtherRegions)
             {
-                coloringHandler.Recolor(region, Global.RegionNotVisibleColor);
+                coloringHandler.Recolor(region,
+                    Global.RegionNotVisibleColor);
             }
         }
 
@@ -328,13 +383,16 @@ namespace GameHandlersLib.MapHandlers
             {
                 if (region.Owner == null)
                 {
-                    coloringHandler.Recolor(region, Global.RegionVisibleUnoccupiedColor);
+                    coloringHandler.Recolor(region,
+                        Global.RegionVisibleUnoccupiedColor);
                 }
                 else
                 {
-                    coloringHandler.Recolor(region, region.Owner.Color);
+                    coloringHandler.Recolor(region,
+                        region.Owner.Color);
                 }
-                textDrawingHandler.DrawArmyNumber(region, region.Army);
+                textDrawingHandler
+                    .DrawArmyNumber(region, region.Army);
             }
         }
 
@@ -347,10 +405,13 @@ namespace GameHandlersLib.MapHandlers
         /// <param name="mapImageStream"></param>
         /// <param name="isFogOfWar"></param>
         /// <returns></returns>
-        public static MapImageProcessor Create(Map map, Stream regionHighlightedImageStream,
-            Stream regionColoringMappingStream, Stream mapImageStream, bool isFogOfWar)
+        public static MapImageProcessor Create(Map map,
+            Stream regionHighlightedImageStream,
+            Stream regionColoringMappingStream, Stream mapImageStream,
+            bool isFogOfWar)
         {
-            Bitmap regionHighlightedImage = new Bitmap(regionHighlightedImageStream);
+            Bitmap regionHighlightedImage =
+                new Bitmap(regionHighlightedImageStream);
             Bitmap image = new Bitmap(mapImageStream);
 
             // images are not equally sized
@@ -362,25 +423,30 @@ namespace GameHandlersLib.MapHandlers
             // read the file
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.ValidationType = ValidationType.Schema;
-            settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessInlineSchema;
-            settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessSchemaLocation;
-            settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
+            settings.ValidationFlags |= XmlSchemaValidationFlags
+                .ProcessInlineSchema;
+            settings.ValidationFlags |= XmlSchemaValidationFlags
+                .ProcessSchemaLocation;
+            settings.ValidationFlags |= XmlSchemaValidationFlags
+                .ReportValidationWarnings;
             settings.ValidationEventHandler += (sender, args) =>
             {
                 switch (args.Severity)
                 {
                     case XmlSeverityType.Error:
                         throw new XmlSchemaValidationException();
-                    case XmlSeverityType.Warning:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    case XmlSeverityType.Warning: break;
+                    default: throw new ArgumentOutOfRangeException();
                 }
             };
 
-            settings.Schemas.Add("http://palasekj.cz/", ConfigurationManager.AppSettings["RegionColorMappingSchemaPath"]);
+            settings.Schemas.Add("http://palasekj.cz/",
+                ConfigurationManager.AppSettings[
+                    "RegionColorMappingSchemaPath"]);
             var dictionary = new Dictionary<Color, Region>();
-            using (XmlReader reader = XmlReader.Create(regionColoringMappingStream, settings))
+            using (XmlReader reader =
+                XmlReader.Create(regionColoringMappingStream,
+                    settings))
             {
                 Color color = default(Color);
                 Region region = default(Region);
@@ -392,20 +458,26 @@ namespace GameHandlersLib.MapHandlers
                         case XmlNodeType.Element:
                             switch (reader.Name)
                             {
-                                case "Entry":
-                                    break;
+                                case "Entry": break;
                                 case nameof(Color):
                                     // TODO : maybe better way is possible
-                                    byte red = Convert.ToByte(reader.GetAttribute("Red"));
-                                    byte green = Convert.ToByte(reader.GetAttribute("Green"));
-                                    byte blue = Convert.ToByte(reader.GetAttribute("Blue"));
-                                    byte alpha = Convert.ToByte(reader.GetAttribute("Alpha"));
-                                    color = Color.FromArgb(alpha, red, green, blue);
+                                    byte red = Convert.ToByte(reader
+                                        .GetAttribute("Red"));
+                                    byte green = Convert.ToByte(reader
+                                        .GetAttribute("Green"));
+                                    byte blue = Convert.ToByte(reader
+                                        .GetAttribute("Blue"));
+                                    byte alpha = Convert.ToByte(reader
+                                        .GetAttribute("Alpha"));
+                                    color = Color.FromArgb(alpha, red,
+                                        green, blue);
                                     break;
                                 case nameof(Region):
-                                    region = (from item in map.Regions
-                                              where item.Name == reader.GetAttribute("Name")
-                                              select item).First();
+                                    region =
+                                    (from item in map.Regions
+                                     where item.Name ==
+                                           reader.GetAttribute("Name")
+                                     select item).First();
                                     break;
                             }
                             break;
@@ -420,17 +492,30 @@ namespace GameHandlersLib.MapHandlers
             }
 
             MapImageTemplateProcessor mapImageTemplateProcessor =
-                new MapImageTemplateProcessor(map, regionHighlightedImage, dictionary);
+                new MapImageTemplateProcessor(map,
+                    regionHighlightedImage, dictionary);
 
-            ColoringHandler coloringHandler = new ColoringHandler(image, mapImageTemplateProcessor);
+            ColoringHandler coloringHandler =
+                new ColoringHandler(image, mapImageTemplateProcessor);
 
-            TextDrawingHandler textDrawingHandler = new TextDrawingHandler(image, mapImageTemplateProcessor, coloringHandler);
+            TextDrawingHandler textDrawingHandler =
+                new TextDrawingHandler(image,
+                    mapImageTemplateProcessor, coloringHandler);
 
-            HighlightHandler highlightHandler = new HighlightHandler(image, mapImageTemplateProcessor, textDrawingHandler, coloringHandler);
+            HighlightHandler highlightHandler =
+                new HighlightHandler(image, mapImageTemplateProcessor,
+                    textDrawingHandler, coloringHandler);
 
-            SelectRegionHandler selectRegionHandler = new SelectRegionHandler(mapImageTemplateProcessor, highlightHandler, isFogOfWar);
+            SelectRegionHandler selectRegionHandler =
+                new SelectRegionHandler(mapImageTemplateProcessor,
+                    highlightHandler, isFogOfWar);
 
-            return new MapImageProcessor(mapImageTemplateProcessor, image, textDrawingHandler, coloringHandler, selectRegionHandler, isFogOfWar);
+            SeizeRegionHandler seizeRegionHandler =
+                new SeizeRegionHandler(highlightHandler, isFogOfWar);
+
+            return new MapImageProcessor(mapImageTemplateProcessor,
+                image, textDrawingHandler, coloringHandler,
+                selectRegionHandler, seizeRegionHandler, isFogOfWar);
         }
 
         /// <summary>
@@ -445,14 +530,22 @@ namespace GameHandlersLib.MapHandlers
         /// <param name="mapImagePath">Map of image that will be used as map and displayed to the user.</param>
         /// <param name="isFogOfWar">True, if the given map should be processed as fog of war type.</param>
         /// <returns>Initialized instance.</returns>
-        public static MapImageProcessor Create(Map map, string regionHighlightedImagePath,
-            string regionColorMappingPath, string mapImagePath, bool isFogOfWar)
+        public static MapImageProcessor Create(Map map,
+            string regionHighlightedImagePath,
+            string regionColorMappingPath, string mapImagePath,
+            bool isFogOfWar)
         {
-            using (var regionHighlightedImageStream = new FileStream(regionHighlightedImagePath, FileMode.Open))
-            using (var regionColorMappingStream = new FileStream(regionColorMappingPath, FileMode.Open))
-            using (var mapImageStream = new FileStream(mapImagePath, FileMode.Open))
+            using (var regionHighlightedImageStream =
+                new FileStream(regionHighlightedImagePath,
+                    FileMode.Open))
+            using (var regionColorMappingStream =
+                new FileStream(regionColorMappingPath, FileMode.Open))
+            using (var mapImageStream =
+                new FileStream(mapImagePath, FileMode.Open))
             {
-                return Create(map, regionHighlightedImageStream, regionColorMappingStream, mapImageStream, isFogOfWar);
+                return Create(map, regionHighlightedImageStream,
+                    regionColorMappingStream, mapImageStream,
+                    isFogOfWar);
             }
         }
     }

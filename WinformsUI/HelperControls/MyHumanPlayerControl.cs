@@ -100,13 +100,18 @@
             PlayerColor = KnownColor.Green;
         }
 
-        public new void Dispose()
+        protected override void DestroyHandle()
         {
             Global.OnUserChanged -= UserChanged;
+            base.DestroyHandle();
         }
 
         private void UserChanged(User user)
         {
+            if (playerNameTextBox?.IsDisposed == true)
+            {
+                return;
+            }
             Invoke(user.UserType == UserType.MyNetworkUser
                 ? new Action(() => playerNameTextBox.Enabled = false)
                 : new Action(() => playerNameTextBox.Enabled = true));

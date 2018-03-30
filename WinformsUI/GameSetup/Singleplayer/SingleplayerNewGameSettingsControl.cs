@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Windows.Forms;
     using Client.Entities;
+    using FormatConverters;
+    using GameAi.Data.Restrictions;
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
@@ -94,9 +96,15 @@
                         gameId = lastGame.Id + 1;
                     }
 
+                    // get restrictions
+                    var gameRestrictions = new RestrictionsGenerator(
+                            map.Regions.Select(x => x.Id),
+                            players.Select(x => x.Id)).Generate()
+                        .ToGameRestrictions(map, players);
+
                     var factory = new GameFactory();
                     game = factory.CreateGame(gameId, GameType.SinglePlayer, map,
-                        players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: null);
+                        players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: gameRestrictions);
                 }
 
 

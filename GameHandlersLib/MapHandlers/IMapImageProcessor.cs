@@ -23,6 +23,10 @@
         void ResetDeployingPhase(Deploying deployingPhase);
         void ResetRound(Turn round);
         int ResetSelection();
+        void HighlightUnavailableRegions(
+                    IEnumerable<GameObjectsLib.GameMap.Region> unavailableRegions);
+
+        void ResetUnavailableRegionsHighlight();
         void Seize(GameObjectsLib.GameMap.Region region, Player playerPerspective);
         int Select(int x, int y, Player playerPerspective, int army);
     }

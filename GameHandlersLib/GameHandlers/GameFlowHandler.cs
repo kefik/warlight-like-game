@@ -16,6 +16,7 @@
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameRecording;
+    using GameObjectsLib.GameRestrictions;
     using GameObjectsLib.Players;
     using IMapImageProcessor = MapHandlers.IMapImageProcessor;
 
@@ -138,15 +139,15 @@
         {
             if (region == null)
             {
-                throw new ArgumentException($"Region cannot be null.");
+                throw new NotifyUserException($"You have to deploy to no region.");
             }
             if (region.Owner == null)
             {
-                throw new ArgumentException($"Region {region.Name} owner cannot be null.");
+                throw new NotifyUserException($"Region {region.Name} has to have an owner.");
             }
             if (region.Owner != PlayerOnTurn)
             {
-                throw new ArgumentException("You cannot deploy to regions you do not own.");
+                throw new NotifyUserException("You cannot deploy to regions you do not own.");
             }
             
             var lastTurn = (GameTurn) LastTurn;
@@ -155,11 +156,11 @@
             if (bonusArmy > 0 && bonusArmy > PlayerOnTurn.GetArmyLeftToDeploy(lastTurn.Deploying))
             {
                 // bonus army > 0 and is more than i can deploy
-                throw new ArgumentException($"Cannot deploy. Your limit {PlayerOnTurn.GetIncome()} for deployed units would be exceeded.");
+                throw new NotifyUserException($"Cannot deploy. Your limit {PlayerOnTurn.GetIncome()} for deployed units would be exceeded.");
             }
-            else if (bonusArmy < 0 && region.Army > newArmy)
+            if (bonusArmy < 0 && region.Army > newArmy)
             {
-                throw new ArgumentException("You cannot deploy less than region had at this round beginning.");
+                throw new NotifyUserException("You cannot deploy less than region had at this round beginning.");
             }
             // if there exists deployment entry => remove that entry and create new one
             lastTurn.Deploying.AddDeployment(region, newArmy);
@@ -189,7 +190,7 @@
             // is 2 regions selected
             if (ImageProcessor.SelectedRegions.Count != 2)
             {
-                throw new ArgumentException("Attack cannot be performed. Not proper number of regions was selected.");
+                throw new NotifyUserException("Attack cannot be performed. Not proper number of regions was selected.");
             }
 
             var attacker = ImageProcessor.SelectedRegions[0];
@@ -197,7 +198,7 @@
             // is attacker neighbour of defender
             if (!attacker.IsNeighbourOf(defender))
             {
-                throw new ArgumentException($"Defender {defender.Name} is not a neighbour to attacker {attacker.Name}");
+                throw new NotifyUserException($"Defender {defender.Name} is not a neighbour to attacker {attacker.Name}");
             }
 
             // add to list of attacks
@@ -217,22 +218,52 @@
                 var lastTurn = (GameBeginningTurn) LastTurn;
 
                 var region = ImageProcessor.GetRegion(x, y);
+
+                var playerOnTurnRestriction =
+                    Game.ObjectsRestrictions.GameBeginningRestrictions
+                        .First(
+                            player => player.Player as HumanPlayer ==
+                                      PlayerOnTurn);
+
+                int regionsToChooseCount =
+                    playerOnTurnRestriction.RegionsToChooseCount;
+                var regionsToChoose =
+                    playerOnTurnRestriction.RegionsPlayersCanChoose;
+                
+                if (lastTurn.SelectedRegions.Count >= regionsToChooseCount)
+                {
+                    throw new NotifyUserException("Too many regions were selected.");
+                }
+                if (lastTurn.SelectedRegions.Any(
+                    z => z.Region == region &&
+                         z.SeizingPlayer == PlayerOnTurn))
+                {
+                    throw new NotifyUserException(
+                        $"The region {region.Name} has already been seized.");
+                }
+                if (region == null)
+                {
+                    throw new NotifyUserException($"You cannot seize no region.");
+                }
+                // user chose invalid region
+                if (regionsToChoose.All(
+                    regionToChoose => regionToChoose != region))
+                {
+                    throw new NotifyUserException(
+                        "You must choose region from options that were given to you.");
+                }
+
                 // seizes region
                 lastTurn.SeizeRegion(PlayerOnTurn, region);
 
                 ImageProcessor.Seize(region, PlayerOnTurn);
             }
-            catch (ArgumentNullException e)
+            catch (NotifyUserException e)
             {
                 Debug.Print(e.Message);
 #if DEBUG
                 throw;
 #endif
-            }
-            catch (ArgumentException e)
-            {
-                Debug.Print(e.Message);
-                throw;
             }
         }
 
@@ -342,6 +373,13 @@
             lastTurn.Attacking.ResetAttacking();
         }
 
+        private GameObjectsBeginningRestriction GetBeginningRestrictions(
+            Player player)
+        {
+            return Game.ObjectsRestrictions.GameBeginningRestrictions
+                .First(x => x.Player == player);
+        }
+
         /// <summary>
         /// Resets deploying phase.
         /// </summary>
@@ -362,10 +400,14 @@
             if (LastTurn.GetType() == typeof(GameBeginningTurn))
             {
                 int seizedRegionsCount = ((GameBeginningTurn) LastTurn).SelectedRegions.Count;
-                if (seizedRegionsCount < 2)
+                var gameObjectsBeginningRestrictions =
+                    GetBeginningRestrictions(PlayerOnTurn);
+                if (seizedRegionsCount < gameObjectsBeginningRestrictions.RegionsToChooseCount)
                 {
-                    throw new ArgumentException($"Only {seizedRegionsCount} regions were selected.");
+                    throw new NotifyUserException($"Only {seizedRegionsCount} regions were selected.");
                 }
+
+                ImageProcessor.ResetUnavailableRegionsHighlight();
             }
             else
             {
@@ -387,6 +429,7 @@
 
                 var botTurnTask = Task.Run(() => botHandler.FindBestMoveAsync());
                 botHandler.StopEvaluation(new TimeSpan(0, 0, 0, 0, 2000));
+                // TODO: POTENTIAL DEADLOCK
                 var turn = botTurnTask.Result.ToTurn(Game.Map, players, playerIdsMapper);
 
                 LastTurn = turn;
@@ -401,13 +444,21 @@
             if (Game.RoundNumber == 0)
             {
                 LastTurn = new GameBeginningTurn(PlayerOnTurn);
+
+                var y = Game.ObjectsRestrictions.GameBeginningRestrictions
+                    .First(x => x.Player == PlayerOnTurn).RegionsPlayersCanChoose;
+
+                var regionsPlayerCannotChoose =
+                    Game.Map.Regions.Except(y);
+
+                RedrawToPlayersPerspective();
+                ImageProcessor.HighlightUnavailableRegions(regionsPlayerCannotChoose);
             }
             else
             {
                 LastTurn = new GameTurn(PlayerOnTurn);
+                RedrawToPlayersPerspective();
             }
-
-            RedrawToPlayersPerspective();
 
             OnBegin?.Invoke();
             

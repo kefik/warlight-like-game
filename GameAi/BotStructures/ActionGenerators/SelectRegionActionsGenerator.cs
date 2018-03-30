@@ -77,8 +77,6 @@
 
     public class SelectRegionActionsGenerator : IGameBeginningActionsGenerator
     {
-        private readonly Random random;
-
         private readonly IRegionMinEvaluator regionMinEvaluator;
         private IDictionary<byte, GameBeginningRestriction> restrictions;
 
@@ -88,7 +86,6 @@
             restrictions = gameBeginningRestrictions.ToDictionary(x => (byte)x.PlayerId, x => x);
 
             this.regionMinEvaluator = regionMinEvaluator;
-            random = new Random();
         }
 
         public IReadOnlyList<BotGameBeginningTurn> Generate(PlayerPerspective currentGameState)

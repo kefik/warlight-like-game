@@ -60,7 +60,7 @@ namespace GameAi.BotStructures.MCTS
                 gameBeginningSuperRegionMinEvaluator =
                     new GameBeginningSuperRegionMinEvaluator(
                         initialGameState.MapMin,
-                        superRegionsRegionsCountCoefficient: 6,
+                        superRegionsRegionsCountCoefficient: 3,
                         foreignNeighboursCoefficient: 5,
                         bonusCoefficient: 3);
             IRegionMinEvaluator gameBeginningRegionMinEvaluator =
@@ -81,11 +81,6 @@ namespace GameAi.BotStructures.MCTS
                     superRegionCoefficient: 20);
 
             IRoundEvaluator roundEvaluator = new RoundEvaluator();
-            IPlayerPerspectiveEvaluator
-                gameBeginningPlayerPerspectiveEvaluator =
-                    new PlayerPerspectiveEvaluator(
-                        gameBeginningRegionMinEvaluator,
-                        armyCoefficient: 15);
             IPlayerPerspectiveEvaluator gamePlayerPerspectiveEvaluator
                 = new PlayerPerspectiveEvaluator(
                     gameRegionMinEvaluator, armyCoefficient: 10);
@@ -152,6 +147,7 @@ namespace GameAi.BotStructures.MCTS
             ClearEvaluationCache();
 
             // # tree handlers == how much parallely do we want it to evaluate
+            //treeHandlers = new MCTSTreeHandler[1];
             treeHandlers = new MCTSTreeHandler[Environment.ProcessorCount];
 
             for (int index = 0; index < treeHandlers.Length; index++)

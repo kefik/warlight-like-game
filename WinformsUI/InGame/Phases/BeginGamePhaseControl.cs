@@ -2,6 +2,7 @@
 {
     using System;
     using System.Windows.Forms;
+    using GameHandlersLib;
     using GameHandlersLib.GameHandlers;
     using GameObjectsLib;
 
@@ -33,7 +34,7 @@
                 OnCommitted?.Invoke();
                 ResetControl();
             }
-            catch (ArgumentException exception)
+            catch (NotifyUserException exception)
             {
                 MessageBox.Show(exception.Message);
             }

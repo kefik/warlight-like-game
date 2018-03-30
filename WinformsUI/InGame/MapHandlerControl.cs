@@ -2,6 +2,7 @@
 {
     using System;
     using System.Windows.Forms;
+    using GameHandlersLib;
     using GameHandlersLib.GameHandlers;
     using GameObjectsLib;
     using GameObjectsLib.Game;
@@ -55,7 +56,7 @@
                             break;
                     }
                 }
-                catch (ArgumentException exception)
+                catch (NotifyUserException exception)
                 {
 #if (DEBUG)
                     MessageBox.Show(exception.Message);
@@ -91,11 +92,7 @@
                 {
                     gameFlowHandler.Seize(e.X, e.Y);
                 }
-                catch (ArgumentNullException error)
-                {
-                    MessageBox.Show(error.Message);
-                }
-                catch (ArgumentException error)
+                catch (NotifyUserException error)
                 {
                     MessageBox.Show(error.Message);
                 }

@@ -22,9 +22,15 @@
         /// <summary>
         /// List of region, its army and its previous color.
         /// </summary>
-        private readonly IList<(Region Region, int? Army, Color Color)> highlightedRegions = new List<(Region Region, int? Army, Color Color)>();
+        private readonly
+            IList<(Region Region, int? Army, Color Color)>
+            highlightedRegions =
+                new List<(Region Region, int? Army, Color Color)>();
 
-        public HighlightHandler(Bitmap mapImage, MapImageTemplateProcessor templateProcessor, TextDrawingHandler textDrawingHandler, ColoringHandler coloringHandler)
+        public HighlightHandler(Bitmap mapImage,
+            MapImageTemplateProcessor templateProcessor,
+            TextDrawingHandler textDrawingHandler,
+            ColoringHandler coloringHandler)
         {
             this.mapImage = mapImage;
             this.templateProcessor = templateProcessor;
@@ -56,32 +62,48 @@
         /// <param name="region">Region to be highlighted.</param>
         /// <param name="originalRegionColor">Original color of region.</param>
         /// <param name="army">Army occupying the reigon. Null if the army is not visible.</param>
-        internal void HighlightRegion(Region region, Color originalRegionColor, int? army)
+        internal void HighlightRegion(Region region,
+            Color originalRegionColor, int? army)
+        {
+            HighlightRegionPrivate(region, army);
+
+            highlightedRegions.Add(
+                (region, army, originalRegionColor));
+        }
+
+        private void HighlightRegionPrivate(Region region, int? army)
         {
             // region template color
             Color color = templateProcessor.GetColor(region).Value;
 
-            Bitmap regionHighlightedImage = templateProcessor.RegionHighlightedImage;
+            Bitmap regionHighlightedImage =
+                templateProcessor.RegionHighlightedImage;
             Bitmap mapImage = this.mapImage;
 
             // lock the bits and change format to rgb 
             BitmapData regionHighlightedImageData =
                 regionHighlightedImage.LockBits(
-                    new Rectangle(0, 0, regionHighlightedImage.Width, regionHighlightedImage.Height),
+                    new Rectangle(0, 0, regionHighlightedImage.Width,
+                        regionHighlightedImage.Height),
                     ImageLockMode.ReadOnly,
                     PixelFormat.Format24bppRgb);
             try
             {
                 BitmapData imageData =
-                    mapImage.LockBits(new Rectangle(0, 0, mapImage.Width, mapImage.Height), ImageLockMode.ReadWrite,
+                    mapImage.LockBits(
+                        new Rectangle(0, 0, mapImage.Width,
+                            mapImage.Height), ImageLockMode.ReadWrite,
                         PixelFormat.Format24bppRgb);
 
                 unsafe
                 {
-                    var regionHighlightedMapPtr = (byte*)regionHighlightedImageData.Scan0;
+                    var regionHighlightedMapPtr =
+                        (byte*)regionHighlightedImageData.Scan0;
                     var mapPtr = (byte*)imageData.Scan0;
 
-                    int bytes = Math.Abs(regionHighlightedImageData.Stride) * regionHighlightedImage.Height;
+                    int bytes =
+                        Math.Abs(regionHighlightedImageData.Stride) *
+                        regionHighlightedImage.Height;
 
                     for (int i = 0; i < bytes; i += 6)
                     {
@@ -90,7 +112,8 @@
                         byte* green = regionHighlightedMapPtr + 1;
                         byte* red = regionHighlightedMapPtr + 2;
 
-                        Color regionColor = Color.FromArgb(*red, *green, *blue);
+                        Color regionColor =
+                            Color.FromArgb(*red, *green, *blue);
                         if (regionColor == color)
                         {
                             *(mapPtr + 2) = Global.HighlightColor.R;
@@ -108,7 +131,8 @@
             }
             finally
             {
-                regionHighlightedImage.UnlockBits(regionHighlightedImageData);
+                regionHighlightedImage.UnlockBits(
+                    regionHighlightedImageData);
             }
 
             if (army != null)
@@ -116,10 +140,8 @@
                 // draw army number
                 textDrawingHandler.DrawArmyNumber(region, army.Value);
             }
-            
-            highlightedRegions.Add((region, army, originalRegionColor));
         }
-        
+
         /// <summary>
         /// Unhighlights region recoloring it to previous color.
         /// If the region was not highlighted, throws <see cref="ArgumentException"/>
@@ -128,20 +150,25 @@
         internal void UnhighlightRegion(Region region)
         {
             var highlightedRegionTuple =
-                highlightedRegions.FirstOrDefault(x => x.Region == region);
+                highlightedRegions.FirstOrDefault(
+                    x => x.Region == region);
 
-            if (highlightedRegionTuple.Equals(default((Region, int?, Color))))
+            if (highlightedRegionTuple.Equals(
+                default((Region, int?, Color))))
             {
-                throw new ArgumentException($"Region {region.Name} was not highlighted previously, cannot be unhighlighted.");
+                throw new ArgumentException(
+                    $"Region {region.Name} was not highlighted previously, cannot be unhighlighted.");
             }
 
             // is neighbour to player on turn => recolor to visible color
-            coloringHandler.Recolor(region, highlightedRegionTuple.Color);
+            coloringHandler.Recolor(region,
+                highlightedRegionTuple.Color);
 
             // draw army if there was any
             if (highlightedRegionTuple.Army != null)
             {
-                textDrawingHandler.DrawArmyNumber(region, highlightedRegionTuple.Army.Value);
+                textDrawingHandler.DrawArmyNumber(region,
+                    highlightedRegionTuple.Army.Value);
             }
 
             highlightedRegions.Remove(highlightedRegionTuple);
@@ -165,6 +192,19 @@
             for (int i = HighlightedRegionsCount - 1; i >= 0; i--)
             {
                 UnhighlightRegion(highlightedRegions[i].Region);
+            }
+        }
+
+        /// <summary>
+        /// Refreshes highlighting on all previously highlighted regions.
+        /// </summary>
+        internal void RefreshHighlighting()
+        {
+            foreach (
+                (Region Region, int? Army, Color Color)
+                highlightedRegion in highlightedRegions)
+            {
+                HighlightRegionPrivate(highlightedRegion.Region, highlightedRegion.Army);
             }
         }
     }

@@ -64,6 +64,8 @@
             {
                 beginRoundPhaseControl.Hide();
                 turnPhaseControl.Show();
+                // bug - solution for bad redrawing itself
+
                 GameState = GameState.Deploying;
             };
 

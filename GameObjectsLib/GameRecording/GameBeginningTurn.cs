@@ -28,19 +28,6 @@
         /// <param name="region"></param>
         public void SeizeRegion(Player seizingPlayer, Region region)
         {
-            if (SelectedRegions.Any(x => x.Region == region && x.SeizingPlayer == seizingPlayer))
-            {
-                throw new ArgumentException($"The region {region.Name} has already been seized.");
-            }
-            if (region == null)
-            {
-                throw new ArgumentNullException(nameof(region));
-            }
-            if (SelectedRegions.Count(x => x.SeizingPlayer == seizingPlayer) >= 2)
-            {
-                throw new ArgumentException("Too many regions were selected.");
-            }
-
             SelectedRegions.Add(new Seize(seizingPlayer, region));
         }
 

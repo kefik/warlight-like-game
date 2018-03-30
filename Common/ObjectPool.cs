@@ -123,7 +123,6 @@
         {
             if (freeResourcesQueue.TryDequeue(out var result))
             {
-                constructorInvoker(result);
                 return result;
             }
 
@@ -137,6 +136,7 @@
         public void Free(TType obj)
         {
             resetInvoker.Invoke(obj);
+            constructorInvoker(obj);
             freeResourcesQueue.Enqueue(obj);
         }
     }

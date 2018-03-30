@@ -82,8 +82,14 @@
             mapComboBox.Refresh();
         }
 
-        private void ControlLoad(object sender, EventArgs e)
+        protected override void CreateHandle()
         {
+            base.CreateHandle();
+
+            if (this.IsDisposed)
+            {
+                return;
+            }
             Task.Run(() =>
             {
                 // clear combo box items
@@ -94,6 +100,10 @@
                 // refresh the combo box with new items
                 Invoke(new Action(RefreshComboBox));
             });
+        }
+
+        private void ControlLoad(object sender, EventArgs e)
+        {
         }
     }
 }
