@@ -1,7 +1,12 @@
-﻿namespace GameAi
+﻿#if DEBUG
+#define LOG_HANDLER
+#endif
+
+namespace GameAi
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -37,6 +42,10 @@
             onlineBot = new GameBotCreator().Create(gameBotType, mapMin, difficulty,
                 playerEncoded, playersIds,
                 isFogOfWar, newRestrictions);
+
+#if LOG_HANDLER
+            Debug.WriteLine("WARLIGHT AI BOT HANDLER INSTANCE CREATED");
+#endif
         }
 
         public BotTurn GetCurrentBestMove()
@@ -49,8 +58,14 @@
         public async Task<BotTurn> FindBestMoveAsync()
         {
             var turn = await onlineBot.FindBestMoveAsync();
+            
+            Debug.WriteLine($"RETURNING TURN (BOT {turn.PlayerId})");
 
-            return regionsIdsMappingHandler.TranslateToOriginal(turn);
+            var originalTurn = regionsIdsMappingHandler.TranslateToOriginal(turn);
+
+            Debug.WriteLine($"RETURNING CONVERTED REGIONS TURN (BOT {originalTurn.PlayerId})");
+
+            return originalTurn;
         }
 
         public void StopEvaluation()

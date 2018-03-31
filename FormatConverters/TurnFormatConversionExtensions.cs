@@ -1,7 +1,11 @@
-﻿namespace FormatConverters
+﻿#if DEBUG
+#define LOG_CONVERSION
+#endif
+namespace FormatConverters
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using GameAi.Data.GameRecording;
     using GameObjectsLib.GameMap;
@@ -139,6 +143,10 @@
             Map map, ICollection<Player> players,
             IIdsMapper playerIdsesMapper)
         {
+#if LOG_CONVERSION
+            Debug.WriteLine($"BEFORE CONVERSION TO GAMEBEGINNINGTURN (BOT {botGameBeginningTurn.PlayerId})");
+#endif
+
             var gameBeginningTurn = new GameBeginningTurn(players
                 .First(x => x.Id == playerIdsesMapper
                     .GetOriginalId(botGameBeginningTurn.PlayerId)));
@@ -150,6 +158,10 @@
                         .GetOriginalId(botGameBeginningTurn.PlayerId)),
                         map.Regions.First(x => x.Id == regionId)));
             }
+
+#if LOG_CONVERSION
+            Debug.WriteLine($"AFTER CONVERSION TO BOTGAMEBEGINNINGTURN (BOT {gameBeginningTurn.PlayerOnTurn.Id})");
+#endif
 
             return gameBeginningTurn;
         }

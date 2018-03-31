@@ -295,7 +295,7 @@ namespace GameAi.BotStructures.MCTS
             PlayerPerspective myPlayerPerspective = new PlayerPerspective(boardState, myPlayerId);
             PlayerPerspective enemyPlayerPerspective = new PlayerPerspective(boardState, enemyPlayerId);
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 15; i++)
             {
                 if (myPlayerPerspective.HasLost())
                 {
@@ -323,6 +323,18 @@ namespace GameAi.BotStructures.MCTS
                 (MapMin expected, MapMin worstCase) = probabilityAwareRoundEvaluator.EvaluateInExpectedAndWorstCase(boardState, round);
 
                 boardState = expected;
+
+                var expectedCaseSuperRegions = expected.SuperRegionsMin;
+                var worstCaseSuperRegions = worstCase.SuperRegionsMin;
+                for (int j = 0; j < expectedCaseSuperRegions.Length; j++)
+                {
+                    if (expectedCaseSuperRegions[j].OwnerId == myPlayerId &&
+                        worstCaseSuperRegions[j].OwnerId != myPlayerId)
+                    {
+                        boardState = worstCase;
+                        break;
+                    }
+                }
                 myPlayerPerspective = new PlayerPerspective(boardState, myPlayerId);
                 enemyPlayerPerspective = new PlayerPerspective(boardState, enemyPlayerId);
             }

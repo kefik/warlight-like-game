@@ -1,4 +1,8 @@
-﻿namespace GameAi
+﻿#if DEBUG
+#define LOG_MAPPING_HANDLER
+#endif
+
+namespace GameAi
 {
     using System;
     using System.Collections.Generic;
@@ -14,8 +18,8 @@
     /// </summary>
     internal class RegionsIdsMappingHandler
     {
-        private IdsMappingDictionary regionIdsMappingDictionary;
-        private IdsMappingDictionary superRegionsIdsMappingDictionary;
+        private readonly IdsMappingDictionary regionIdsMappingDictionary;
+        private readonly IdsMappingDictionary superRegionsIdsMappingDictionary;
 
         public RegionsIdsMappingHandler(IEnumerable<int> regionsIds,
             IEnumerable<int> supersRegionIds)

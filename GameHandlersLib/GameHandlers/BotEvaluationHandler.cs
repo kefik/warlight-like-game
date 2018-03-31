@@ -130,17 +130,28 @@
                     var waitTask = botHandlers[currentIndex].StopEvaluation(timeForBotMove);
                     var bestTurn = (await botTask).ToTurn(game.Map, game.Players, playerIdsMapper);
                     turns[currentlyEvaluatingIndex] = bestTurn;
+
+                    Debug.Assert(
+                        turns.Count(x => x != null &&
+                                         x.PlayerOnTurn.Id == bestTurn
+                                             .PlayerOnTurn.Id) == 1);
+                    currentlyEvaluatingIndex++;
                 }
 
                 // lock because currentlyEvaluatingIndex could overflow
                 // + pause => index out of range exception
                 lock (botEvaluationLock)
                 {
-                    currentlyEvaluatingIndex++;
                     // all bots have returned their turn => play it
                     // and quit the evaluation
                     if (currentlyEvaluatingIndex >= players.Count)
                     {
+                        Debug.Assert(
+                            turns.Count(
+                                x => x != null && x.PlayerOnTurn.Id ==
+                                     turns.First().PlayerOnTurn.Id) ==
+                            1);
+
                         PlayRound(turns);
                         currentlyEvaluatingIndex = 0;
                         break;
