@@ -105,25 +105,39 @@
             var botDeployment = new List<BotDeployment>();
             PlayerPerspective playerPerspective = currentGameState;
 
-            // neighbours of regions that are valuable and should be attacked
-            IEnumerable<RegionMin> regionsToDeploy =
-            from region in playerPerspective.GetMyRegions()
-            let neighbours =
-            region.NeighbourRegionsIds.Select(x => playerPerspective
-                .GetRegion(x))
-                // neighbours that are not mine
-                .Where(x => x.OwnerId != currentGameState.PlayerId)
-            // region has not owned neighbour
-            where neighbours.Any()
-            // order by regions neighbours max value
-            orderby neighbours.Max(
-                x => RegionMinEvaluator.GetValue(playerPerspective,
-                    x)) descending
-            select region;
-            
+            //// neighbours of regions that are valuable and should be attacked
+            //IEnumerable<RegionMin> regionsToDeploy =
+            //from region in playerPerspective.GetMyRegions()
+            //let neighbours =
+            //region.NeighbourRegionsIds.Select(x => playerPerspective
+            //    .GetRegion(x))
+            //    // neighbours that are not mine
+            //    .Where(x => x.OwnerId != currentGameState.PlayerId)
+            //// region has not owned neighbour
+            //where neighbours.Any()
+            //// order by regions neighbours max value
+            //orderby neighbours.Max(
+            //    x => RegionMinEvaluator.GetValue(playerPerspective,
+            //        x)) descending
+            //select region;
+
+            var regionsToDeploy =
+            (from region in playerPerspective.MapMin.RegionsMin
+             where !playerPerspective.IsRegionMine(region)
+             let neighbours = region.NeighbourRegionsIds
+                 .Select(x => playerPerspective.GetRegion(x))
+                 // neighbours that are mine
+                 .Where(x => playerPerspective.IsRegionMine(x))
+             where neighbours.Any()
+             let neighboursMaxArmy = neighbours.Max(x => x.Army)
+             orderby RegionMinEvaluator.GetValue(currentGameState,
+                 region) descending
+             // deploy to region with maximum army
+             select neighbours.First(x => neighboursMaxArmy == x.Army)).Distinct();
+
+
             int unitsToDeploy = currentGameState.GetMyIncome();
-            foreach (RegionMin regionMin in
-                regionsToDeploy.Take(1))
+            foreach (RegionMin regionMin in regionsToDeploy.Take(1))
             {
                 botDeployment.Add(new BotDeployment(regionMin.Id,
                     regionMin.Army + unitsToDeploy,
@@ -151,10 +165,12 @@
             IEnumerable<RegionMin> regionsBySecurityThreat =
                 from region in myRegions
                 let enemyNeighbours =
-                    region.NeighbourRegionsIds.Select(
-                      x => playerPerspective.GetRegion(x))
+                    region.NeighbourRegionsIds
+                    .Select(x => playerPerspective.GetRegion(x))
                     // neighbours that belong to enemy
-                    .Where(x => x.OwnerId != playerPerspective.PlayerId && x.OwnerId != 0)
+                    .Where(x => x.OwnerId !=
+                                playerPerspective.PlayerId &&
+                                x.OwnerId != 0)
                 // has enemy neighbours
                 where enemyNeighbours.Any()
                 // army that can attack on me
@@ -170,6 +186,42 @@
 
             // deploy
             foreach (RegionMin region in regionsBySecurityThreat.Take(
+                1))
+            {
+                botDeployments.Add(new BotDeployment(region.Id,
+                    region.Army + playerPerspective.GetMyIncome(),
+                    currentGameState.PlayerId));
+            }
+
+            return botDeployments;
+        }
+
+        protected IList<BotDeployment> DeployToExpand(
+            PlayerPerspective currentGameState)
+        {
+            var botDeployments = new List<BotDeployment>();
+            PlayerPerspective playerPerspective = currentGameState;
+
+            // neighbours of regions that are valuable and should be attacked
+            IEnumerable<RegionMin> regionsToDeploy =
+                from region in playerPerspective.GetMyRegions()
+                let neighbours =
+                region.NeighbourRegionsIds.Select(x => playerPerspective
+                        .GetRegion(x))
+                    // neighbours that are not mine
+                    .Where(x => x.OwnerId == 0)
+                    .ToList()
+                // region has not owned neighbour
+                where neighbours.Any()
+                // order by regions neighbours max value
+                orderby neighbours.Max(
+                    x => RegionMinEvaluator.GetValue(playerPerspective,
+                        x)) descending,
+                        neighbours.Count descending
+                select region;
+
+            // deploy
+            foreach (RegionMin region in regionsToDeploy.Take(
                 1))
             {
                 botDeployments.Add(new BotDeployment(region.Id,
@@ -215,9 +267,9 @@
                 List<RegionMin> neighboursToAttack =
                     refRegionMin.NeighbourRegionsIds
                         .Select(x => currentGameState.GetRegion(x))
+                        // isnt mine
                         .Where(
-                            x => x.OwnerId !=
-                                 currentGameState.PlayerId)
+                            x => !currentGameState.IsRegionMine(x))
                         .OrderByDescending(x => RegionMinEvaluator
                             .GetValue(currentGameState, x))
                             .ThenBy(x => x.Army)
@@ -225,8 +277,7 @@
 
                 // if theres any neighbour where is the enemy, don't attack (we want to attack safely only)
                 if (neighboursToAttack.Any(
-                    x => x.OwnerId != 0 &&
-                         x.OwnerId != currentGameState.PlayerId))
+                    currentGameState.IsRegionOfEnemy))
                 {
                     continue;
                 }

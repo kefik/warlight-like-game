@@ -428,7 +428,7 @@
                     players.Select(x => (byte)playerIdsMapper.GetNewId(x.Id)).ToArray(), true, restrictions);
 
                 var botTurnTask = Task.Run(() => botHandler.FindBestMoveAsync());
-                botHandler.StopEvaluation(new TimeSpan(0, 0, 0, 0, 2000));
+                botHandler.StopEvaluation(new TimeSpan(0, 0, 0, 0, 4000));
                 // TODO: POTENTIAL DEADLOCK
                 var turn = botTurnTask.Result.ToTurn(Game.Map, players, playerIdsMapper);
 

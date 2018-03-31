@@ -21,8 +21,6 @@
 
         public IReadOnlyList<BotGameTurn> Generate(PlayerPerspective currentGameState)
         {
-            // TODO: enemy region nearby => sort it out
-
             return GenerateAll(currentGameState);
         }
 
@@ -33,6 +31,8 @@
 
             IEnumerable<BotDeployment> deployments = DeployOffensively(currentGameState);
             deployments = deployments.Union(DeployToCounterSecurityThreat(currentGameState));
+            deployments =
+                deployments.Union(DeployToExpand(currentGameState));
 
             foreach (BotDeployment botDeployment in deployments)
             {

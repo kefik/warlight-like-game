@@ -59,6 +59,24 @@ namespace GameAi.Data.EvaluationStructures
             return IsRegionMine(regionMin);
         }
 
+        /// <summary>
+        /// Reports whether <see cref="RegionMin"/> belongs
+        /// to an enemy player.
+        /// </summary>
+        /// <param name="regionMin"></param>
+        /// <returns></returns>
+        public bool IsRegionOfEnemy(RegionMin regionMin)
+        {
+            return regionMin.OwnerId != 0 &&
+                   regionMin.OwnerId != PlayerId;
+        }
+
+        public bool IsRegionOfEnemy(int regionId)
+        {
+            RegionMin regionMin = MapMin.RegionsMin[regionId];
+            return IsRegionOfEnemy(regionMin);
+        }
+
         public bool IsSuperRegionMine(int superRegionId)
         {
             return MapMin.SuperRegionsMin[superRegionId].OwnerId == PlayerId;
@@ -143,6 +161,13 @@ namespace GameAi.Data.EvaluationStructures
             }
         }
         
+        /// <summary>
+        /// Obtains closest regions to specified <see cref="sourceRegion"/>
+        /// that meets <see cref="condition"/>
+        /// </summary>
+        /// <param name="sourceRegion"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
         public RegionMin GetClosestRegion(
             RegionMin sourceRegion,
             Func<RegionMin, bool> condition)

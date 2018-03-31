@@ -18,6 +18,7 @@
         private readonly MapImageTemplateProcessor templateProcessor;
         private readonly TextDrawingHandler textDrawingHandler;
         private readonly ColoringHandler coloringHandler;
+        private readonly Color highlightColor;
 
         /// <summary>
         /// List of region, its army and its previous color.
@@ -30,12 +31,14 @@
         public HighlightHandler(Bitmap mapImage,
             MapImageTemplateProcessor templateProcessor,
             TextDrawingHandler textDrawingHandler,
-            ColoringHandler coloringHandler)
+            ColoringHandler coloringHandler,
+            Color highlightColor)
         {
             this.mapImage = mapImage;
             this.templateProcessor = templateProcessor;
             this.textDrawingHandler = textDrawingHandler;
             this.coloringHandler = coloringHandler;
+            this.highlightColor = highlightColor;
         }
 
         /// <summary>
@@ -116,9 +119,9 @@
                             Color.FromArgb(*red, *green, *blue);
                         if (regionColor == color)
                         {
-                            *(mapPtr + 2) = Global.HighlightColor.R;
-                            *(mapPtr + 1) = Global.HighlightColor.G;
-                            *mapPtr = Global.HighlightColor.B;
+                            *(mapPtr + 2) = highlightColor.R;
+                            *(mapPtr + 1) = highlightColor.G;
+                            *mapPtr = highlightColor.B;
                         }
 
 

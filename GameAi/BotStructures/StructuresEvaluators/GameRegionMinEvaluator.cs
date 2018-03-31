@@ -27,12 +27,12 @@
 
             // hint: more regions of the super region the region owner has,
             // the higher value it has
-            int superRegionsRegionsOwningCount = superRegion.RegionsIds
+            var superRegionsRegionsOwned = superRegion.RegionsIds
                 .Select(x => currentGameState.GetRegion(x))
-                .Count(x => x.OwnerId == currentGameState.PlayerId);
+                .ToList();
             // hint: region of completed super region has higher value
             double superRegionValue = superRegionCoefficient
-                               * superRegionsRegionsOwningCount
+                               * superRegionsRegionsOwned.Count(x => x.OwnerId == currentGameState.PlayerId)
                                + superRegionMinEvaluator
                                    .GetValue(currentGameState, superRegion);
             
@@ -40,15 +40,12 @@
             if (gameStructure.OwnerId != 0
                 && gameStructure.OwnerId != currentGameState.PlayerId)
             {
-                int enemyOwnedCount = superRegion.RegionsIds
-                    .Select(x => currentGameState.GetRegion(x))
+                int enemyOwnedCount = superRegionsRegionsOwned
                     .Count(x => x.OwnerId == gameStructure.OwnerId);
                 // hint: super region value has influence on how good the given super region is
                 superRegionValue += superRegionCoefficient
                                    * enemyOwnedCount;
             }
-
-            // TODO: regions with better neighbours have higher value
 
             // hint: mine or enemy region has higher value than not-occupied
             switch (gameStructure.GetOwnerPerspective(currentGameState.PlayerId))

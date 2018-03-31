@@ -184,8 +184,17 @@ namespace GameHandlersLib.MapHandlers
             {
                 Region region = tuple.Region;
 
-                coloringHandler.Recolor(region,
-                    Global.RegionNotVisibleColor);
+                if (isFogOfWar)
+                {
+                    coloringHandler.Recolor(region,
+                        Global.RegionNotVisibleColor);
+                }
+                else
+                {
+                    coloringHandler.Recolor(region,
+                        Global.RegionVisibleUnoccupiedColor);
+                    textDrawingHandler.DrawArmyNumber(region, region.Army);
+                }
             }
         }
 
@@ -502,16 +511,22 @@ namespace GameHandlersLib.MapHandlers
                 new TextDrawingHandler(image,
                     mapImageTemplateProcessor, coloringHandler);
 
-            HighlightHandler highlightHandler =
+            HighlightHandler highlightAttackHandler =
                 new HighlightHandler(image, mapImageTemplateProcessor,
-                    textDrawingHandler, coloringHandler);
+                    textDrawingHandler, coloringHandler,
+                    Global.AttackHighlightColor);
+
+            HighlightHandler highlightSeizeHandler =
+                new HighlightHandler(image, mapImageTemplateProcessor,
+                    textDrawingHandler, coloringHandler,
+                    Global.RegionSeizeHighlightColor);
 
             SelectRegionHandler selectRegionHandler =
                 new SelectRegionHandler(mapImageTemplateProcessor,
-                    highlightHandler, isFogOfWar);
+                    highlightAttackHandler, isFogOfWar);
 
             SeizeRegionHandler seizeRegionHandler =
-                new SeizeRegionHandler(highlightHandler, isFogOfWar);
+                new SeizeRegionHandler(highlightSeizeHandler, isFogOfWar);
 
             return new MapImageProcessor(mapImageTemplateProcessor,
                 image, textDrawingHandler, coloringHandler,

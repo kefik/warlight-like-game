@@ -1,5 +1,6 @@
 namespace GameAi.Data.EvaluationStructures
 {
+    using System;
     using System.Runtime.CompilerServices;
 
     /// <summary>
@@ -10,7 +11,7 @@ namespace GameAi.Data.EvaluationStructures
     /// <remarks>
     /// Must be class and not struct, because of neighbours.
     /// </remarks>
-    public struct RegionMin
+    public struct RegionMin : IEquatable<RegionMin>
     {
         private class RegionMinStatic
         {
@@ -195,6 +196,32 @@ namespace GameAi.Data.EvaluationStructures
         public override string ToString()
         {
             return $"{Id}, {Name}, Army: {Army}";
+        }
+
+        public bool Equals(RegionMin other)
+        {
+            return Equals(Static, other.Static);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is RegionMin && Equals((RegionMin) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Static != null ? Static.GetHashCode() : 0);
+        }
+
+        public static bool operator ==(RegionMin left, RegionMin right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(RegionMin left, RegionMin right)
+        {
+            return !left.Equals(right);
         }
     }
 }

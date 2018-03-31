@@ -26,7 +26,8 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -48,6 +49,7 @@
     <Compile Include="BotStructures\ActionGenerators\AggressiveBotActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\GameActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\MCTSBotActionsGenerator.cs" />
+    <Compile Include="BotStructures\ActionGenerators\MCTSSmartBotActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\RandomSelectRegionActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\SelectRegionActionsGenerator.cs" />
     <Compile Include="BotStructures\AggressiveBot\AggressiveBot.cs" />
