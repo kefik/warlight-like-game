@@ -101,15 +101,19 @@ namespace GameAi.Data.EvaluationStructures
             return false;
         }
         
-        public IEnumerable<RegionMin> GetMyRegions()
+        public IList<RegionMin> GetMyRegions()
         {
+            var myRegions = new List<RegionMin>();
+
             foreach (RegionMin regionMin in MapMin.RegionsMin)
             {
                 if (regionMin.OwnerId == PlayerId)
                 {
-                    yield return regionMin;
+                    myRegions.Add(regionMin);
                 }
             }
+
+            return myRegions;
         }
         
         /// <summary>

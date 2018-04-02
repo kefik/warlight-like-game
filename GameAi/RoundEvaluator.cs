@@ -13,6 +13,9 @@
     {
         private Random random = new Random();
 
+        public const double ProbabilityAttackingUnitKills = 0.6;
+        public const double ProbabilityDefendingUnitKills = 0.7;
+
         public MapMin Evaluate(MapMin mapMin, BotRound round)
         {
             var turns = round.BotTurns;
@@ -168,10 +171,10 @@
                 else
                 {
                     // calculate defending army unis killed
-                    int defendingArmyUnitsKilled = GetUnitsKilled(realAttackingArmy, defender.Army, 0.6);
+                    int defendingArmyUnitsKilled = GetUnitsKilled(realAttackingArmy, defender.Army, ProbabilityAttackingUnitKills);
 
                     // calculate how many attacking army units were killed
-                    int attackingArmyUnitsKilled = GetUnitsKilled(defender.Army, realAttackingArmy, 0.7);
+                    int attackingArmyUnitsKilled = GetUnitsKilled(defender.Army, realAttackingArmy, ProbabilityDefendingUnitKills);
 
                     // attacker units were transfered
                     attacker.Army -= realAttackingArmy;

@@ -178,7 +178,7 @@
                 let threatArmy = enemyNeighbours
                     .Sum(x => x.Army - 1) + playerPerspective.GetMyIncome()
                 // region is under enemy threat
-                where threatArmy * 0.6 >= region.Army
+                where threatArmy * RoundEvaluator.ProbabilityAttackingUnitKills >= region.Army
                 // order by region to defend value
                 orderby RegionMinEvaluator.GetValue(playerPerspective, region) descending,
                     region.Army
@@ -255,7 +255,7 @@
         /// </summary>
         /// <param name="currentGameState"></param>
         /// <returns></returns>
-        protected void AttackNeutralSafely(
+        protected void AttackToExpandSafely(
             PlayerPerspective currentGameState,
             IList<BotAttack> botAttacks)
         {
@@ -291,8 +291,8 @@
 
                     // I have large enough army and
                     // theres no neighbour of neighbour that is not mine => attack
-                    if ((refRegionMin.Army - 1) * 0.6 -
-                        neighbourToAttack.Army * 0.7 > 0
+                    if ((refRegionMin.Army - 1) * RoundEvaluator.ProbabilityAttackingUnitKills -
+                        neighbourToAttack.Army * RoundEvaluator.ProbabilityDefendingUnitKills > 0
                     /* && !neighboursNeighbours.Any(x => x.OwnerId != 0 && x.OwnerId != currentGameState.PlayerId)*/
                     )
                     {
@@ -309,7 +309,7 @@
                             // calculate minimum army that will surely succeed in conquering
                             // the region
                             int minArmyThatSucceeds = (int) (neighbourToAttack.Army /
-                                                             0.6);
+                                                             RoundEvaluator.ProbabilityAttackingUnitKills);
                             attackingArmy =
                                 Math.Min(minArmyThatSucceeds + 4,
                                     refRegionMin.Army - 1);
@@ -350,8 +350,8 @@
                 for (int index = 0; index < neighbours.Count; index++)
                 {
                     RegionMin neighbour = neighbours[index];
-                    if ((myRegion.Army - 1) * 0.6 -
-                        neighbour.Army * 0.7 >= 0)
+                    if ((myRegion.Army - 1) * RoundEvaluator.ProbabilityAttackingUnitKills -
+                        neighbour.Army * RoundEvaluator.ProbabilityDefendingUnitKills >= 0)
                     {
                         // calculate minimum army that will surely succeed in conquering
                         // the region
@@ -363,14 +363,19 @@
                                     currentGameState.MapMin,
                                     neighbour.OwnerId);
                             minArmyThatSucceeds =
-                                (int)((neighbour.Army + enemyPlayerPerspective.GetMyIncome()) /
-                                      0.6);
+                                (int) ((neighbour.Army +
+                                        enemyPlayerPerspective
+                                            .GetMyIncome()) /
+                                       RoundEvaluator
+                                           .ProbabilityAttackingUnitKills
+                                );
                         }
                         else
                         {
                             minArmyThatSucceeds =
-                                (int)(neighbour.Army /
-                                      0.6);
+                                (int) (neighbour.Army / RoundEvaluator
+                                           .ProbabilityAttackingUnitKills
+                                );
                         }
 
                         int attackingArmy = Math.Min(minArmyThatSucceeds + 4,

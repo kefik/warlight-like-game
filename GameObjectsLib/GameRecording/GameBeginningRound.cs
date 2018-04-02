@@ -1,5 +1,6 @@
 namespace GameObjectsLib.GameRecording
 {
+    using System.Diagnostics;
     using System.Linq;
     using ProtoBuf;
 
@@ -27,8 +28,7 @@ namespace GameObjectsLib.GameRecording
                 }
             }
 
-            var linearizedRegions = from round in Turns
-                                    let turn = (GameBeginningTurn)round
+            var linearizedRegions = from GameBeginningTurn turn in Turns
                                     select turn.SelectedRegions
                                     into regions
                                     from region in regions

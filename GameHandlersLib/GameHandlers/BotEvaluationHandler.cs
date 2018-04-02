@@ -98,45 +98,67 @@
                 int currentIndex = currentlyEvaluatingIndex;
 
                 // player isnt defeated => play him
-                if (!players[currentIndex].IsDefeated(game.AllRounds.Count))
+                if (!players[currentIndex]
+                    .IsDefeated(game.AllRounds.Count))
                 {
-                    if (!playerIdsMapper.TryGetNewId(players[currentIndex].Id, out int evaluationPlayerId))
+                    if (!playerIdsMapper.TryGetNewId(
+                        players[currentIndex].Id,
+                        out int evaluationPlayerId))
                     {
-                        throw new ArgumentException("Player ID must be correclty mapped in the dictionary");
+                        throw new ArgumentException(
+                            "Player ID must be correclty mapped in the dictionary");
                     }
 
-                    if (players[currentIndex].GetType() == typeof(HumanPlayer))
+                    if (players[currentIndex].GetType() ==
+                        typeof(HumanPlayer))
                     {
-                        botHandlers[currentIndex] = new WarlightAiBotHandler(
-                            GameBotType.AggressiveBot,
-                            mapMin, Difficulty.Hard,
-                            (byte)evaluationPlayerId,
-                            game.Players.Where(x => !x.IsDefeated(game.RoundNumber))
-                                .Select(x => (byte)playerIdsMapper.GetNewId(x.Id)).ToArray(),
-                            game.IsFogOfWar, restrictions);
+                        botHandlers[currentIndex] =
+                            new WarlightAiBotHandler(
+                                GameBotType.AggressiveBot, mapMin,
+                                Difficulty.Hard,
+                                (byte) evaluationPlayerId,
+                                game.Players
+                                    .Where(x => !x.IsDefeated(game
+                                        .RoundNumber))
+                                    .Select(
+                                        x => (byte) playerIdsMapper
+                                            .GetNewId(x.Id))
+                                    .ToArray(), game.IsFogOfWar,
+                                restrictions);
                     }
                     else
                     {
-                        var aiPlayer = (AiPlayer)players[currentIndex];
-                        botHandlers[currentIndex] = new WarlightAiBotHandler(
-                            aiPlayer.BotType,
-                            mapMin, aiPlayer.Difficulty, (byte)evaluationPlayerId,
-                            game.Players.Where(x => !x.IsDefeated(game.RoundNumber))
-                                .Select(x => (byte)playerIdsMapper.GetNewId(x.Id)).ToArray(),
-                            game.IsFogOfWar, restrictions);
+                        var aiPlayer =
+                            (AiPlayer) players[currentIndex];
+                        botHandlers[currentIndex] =
+                            new WarlightAiBotHandler(aiPlayer.BotType,
+                                mapMin, aiPlayer.Difficulty,
+                                (byte) evaluationPlayerId,
+                                game.Players
+                                    .Where(x => !x.IsDefeated(game
+                                        .RoundNumber))
+                                    .Select(
+                                        x => (byte) playerIdsMapper
+                                            .GetNewId(x.Id))
+                                    .ToArray(), game.IsFogOfWar,
+                                restrictions);
                     }
-                    var botTask = Task.Run(botHandlers[currentIndex].FindBestMoveAsync);
+                    var botTask = Task.Run(botHandlers[currentIndex]
+                        .FindBestMoveAsync);
                     // break after specified amount of time
-                    var waitTask = botHandlers[currentIndex].StopEvaluation(timeForBotMove);
-                    var bestTurn = (await botTask).ToTurn(game.Map, game.Players, playerIdsMapper);
+                    var waitTask =
+                        botHandlers[currentIndex]
+                            .StopEvaluation(timeForBotMove);
+                    var bestTurn = (await botTask).ToTurn(game.Map,
+                        game.Players, playerIdsMapper);
                     turns[currentlyEvaluatingIndex] = bestTurn;
 
                     Debug.Assert(
                         turns.Count(x => x != null &&
                                          x.PlayerOnTurn.Id == bestTurn
                                              .PlayerOnTurn.Id) == 1);
-                    currentlyEvaluatingIndex++;
                 }
+                currentlyEvaluatingIndex++;
 
                 // lock because currentlyEvaluatingIndex could overflow
                 // + pause => index out of range exception
@@ -146,12 +168,6 @@
                     // and quit the evaluation
                     if (currentlyEvaluatingIndex >= players.Count)
                     {
-                        Debug.Assert(
-                            turns.Count(
-                                x => x != null && x.PlayerOnTurn.Id ==
-                                     turns.First().PlayerOnTurn.Id) ==
-                            1);
-
                         PlayRound(turns);
                         currentlyEvaluatingIndex = 0;
                         break;
@@ -167,15 +183,15 @@
         private void PlayRound(Turn[] turns)
         {
             Round round;
-            switch (turns?.FirstOrDefault(x => x != null))
+            switch (turns.FirstOrDefault(x => x != null))
             {
-                case GameBeginningTurn turn:
+                case GameBeginningTurn _:
                     round = new GameBeginningRound()
                     {
                         Turns = turns.Where(x => x != null).ToList()
                     };
                     break;
-                case GameTurn turn:
+                case GameTurn _:
                     round = new GameRound()
                     {
                         Turns = turns.Where(x => x != null).ToList()

@@ -1,7 +1,8 @@
-﻿namespace GameAi.BotStructures.ActionGenerators
+﻿namespace GameAi.BotStructures.SmartBot
 {
     using System.Collections.Generic;
     using System.Linq;
+    using ActionGenerators;
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Interfaces.ActionsGenerators;
@@ -20,21 +21,7 @@
         public IReadOnlyList<BotGameTurn> Generate(
             PlayerPerspective currentGameState)
         {
-            IEnumerable<BotDeployment> deployments =
-                DeployOffensively(currentGameState);
-            deployments =
-                deployments.Union(
-                    DeployToCounterSecurityThreat(currentGameState));
-            deployments =
-                deployments.Union(DeployToExpand(currentGameState));
-
-            foreach (var deployment in deployments)
-            {
-                var deploymentCopy = currentGameState.ShallowCopy();
-                UpdateGameStateAfterDeploying(ref deploymentCopy,
-                    new List<BotDeployment>() {deployment});
-            }
-            throw new System.NotImplementedException();
+            return null;
         }
 
         private IList<BotAttack> SmartAggressive(
@@ -60,6 +47,23 @@
             
 
             return attacks;
+        }
+
+        private IList<RegionMin> GetRegionsIMustDefend(
+            PlayerPerspective playerPerspective,
+            IEnumerable<ThreatStructure> threats)
+        {
+            foreach (var threatStructure in threats)
+            {
+                ref var region =
+                    ref playerPerspective.GetRegion(threatStructure
+                        .MyRegionId);
+                ref var superRegion =
+                    ref playerPerspective.GetSuperRegion(region
+                        .SuperRegionId);
+            }
+
+            return null;
         }
     }
 }

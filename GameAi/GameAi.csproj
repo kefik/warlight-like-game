@@ -48,7 +48,8 @@
     <Compile Include="BotStructures\ActionGenerators\AggressiveBotActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\GameActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\MCTSBotActionsGenerator.cs" />
-    <Compile Include="BotStructures\ActionGenerators\MCTSSmartBotActionsGenerator.cs" />
+    <Compile Include="BotStructures\SmartBot\AttackCalculator.cs" />
+    <Compile Include="BotStructures\SmartBot\MCTSSmartBotActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\RandomSelectRegionActionsGenerator.cs" />
     <Compile Include="BotStructures\ActionGenerators\SelectRegionActionsGenerator.cs" />
     <Compile Include="BotStructures\AggressiveBot\AggressiveBot.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="BotStructures\BestMoveEvaluator\MinimaxNodeStateEvaluator.cs" />
     <Compile Include="BotStructures\MCTS\NodeState.cs" />
     <Compile Include="BotStructures\MCTS\UctEvaluator.cs" />
+    <Compile Include="BotStructures\SmartBot\ThreatCalculator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\CacheableEvaluator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\PlayerPerspectiveEvaluator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\GameBeginningRegionMinEvaluator.cs" />

@@ -57,7 +57,7 @@
                 // generate wait aggressive
                 // generate no wait aggressive attacks
                 AppendRedistributeInlandArmy(waitAggressiveCopy, waitAggressiveAttacks);
-                AttackNeutralSafely(waitAggressiveCopy, waitAggressiveAttacks);
+                AttackToExpandSafely(waitAggressiveCopy, waitAggressiveAttacks);
                 AttackAggressively(waitAggressiveCopy, waitAggressiveAttacks);
                 // is not same as previous attacks
                 if (!noWaitAggressiveAttacks.SequenceEqual(waitAggressiveAttacks))
@@ -73,7 +73,7 @@
                 var defensiveCopy = deploymentCopy.ShallowCopy();
                 var defensiveAttacks = new List<BotAttack>();
                 AppendRedistributeInlandArmy(defensiveCopy, defensiveAttacks);
-                AttackNeutralSafely(defensiveCopy, defensiveAttacks);
+                AttackToExpandSafely(defensiveCopy, defensiveAttacks);
                 // is not same as previous attacks
                 if (!defensiveAttacks.SequenceEqual(noWaitAggressiveAttacks)
                     && !defensiveAttacks.SequenceEqual(waitAggressiveAttacks))

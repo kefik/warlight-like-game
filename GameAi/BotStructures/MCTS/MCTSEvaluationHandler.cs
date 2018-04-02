@@ -117,6 +117,18 @@ namespace GameAi.BotStructures.MCTS
                                     $"{gameBeginningRegionMinEvaluator.GetValue(initialGameState, region):F1}");
                 }
                 Debug.WriteLine("");
+
+                // restrictions
+                Debug.WriteLine("RESTRICTED REGIONS:");
+                var myRestrictions =
+                    restrictions.GameBeginningRestrictions.First(
+                        x => x.PlayerId == initialGameState.PlayerId);
+                foreach (int regionRestriction in myRestrictions.RestrictedRegions)
+                {
+                    ref var region =
+                        ref initialGameState.GetRegion(regionRestriction);
+                    Debug.WriteLine($"{region.Name}");
+                }
             }
             else
             {
