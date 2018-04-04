@@ -3,9 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Data;
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Interfaces.Evaluators.StructureEvaluators;
+    using SmartBot;
 
     /// <summary>
     /// Class that serves as list of functions any
@@ -19,11 +21,19 @@
         protected internal readonly IRegionMinEvaluator
             RegionMinEvaluator;
 
+        protected ISuperRegionMinEvaluator SuperRegionMinEvaluator;
+
+        protected ThreatCalculator ThreatCalculator;
+
         protected GameActionsGenerator(DistanceMatrix distanceMatrix,
-            IRegionMinEvaluator regionMinEvaluator)
+            IRegionMinEvaluator regionMinEvaluator,
+            ISuperRegionMinEvaluator superRegionMinEvaluator,
+            byte[] playersIds)
         {
             DistanceMatrix = distanceMatrix;
             RegionMinEvaluator = regionMinEvaluator;
+            SuperRegionMinEvaluator = superRegionMinEvaluator;
+            ThreatCalculator = new ThreatCalculator(playersIds);
         }
 
         protected void UpdateGameStateAfterDeploying(
@@ -155,45 +165,82 @@
         protected IList<BotDeployment> DeployToCounterSecurityThreat(
             PlayerPerspective currentGameState)
         {
-            var botDeployments = new List<BotDeployment>();
-
+            var botDeployment = new List<BotDeployment>();
             PlayerPerspective playerPerspective = currentGameState;
-            IEnumerable<RegionMin> myRegions =
-                currentGameState.GetMyRegions();
+            int myIncome = playerPerspective.GetMyIncome();
 
-            // get my regions that have enemy army near them
-            IEnumerable<RegionMin> regionsBySecurityThreat =
-                from region in myRegions
-                let enemyNeighbours =
-                    region.NeighbourRegionsIds
-                    .Select(x => playerPerspective.GetRegion(x))
-                    // neighbours that belong to enemy
-                    .Where(x => x.OwnerId !=
-                                playerPerspective.PlayerId &&
-                                x.OwnerId != 0)
-                // has enemy neighbours
-                where enemyNeighbours.Any()
-                // army that can attack on me
-                // TODO: need enemy perspective
-                let threatArmy = enemyNeighbours
-                    .Sum(x => x.Army - 1) + playerPerspective.GetMyIncome()
-                // region is under enemy threat
-                where threatArmy * RoundEvaluator.ProbabilityAttackingUnitKills >= region.Army
-                // order by region to defend value
-                orderby RegionMinEvaluator.GetValue(playerPerspective, region) descending,
-                    region.Army
-                select region;
+            var threatsToMe = ThreatCalculator.EvaluateThreats(playerPerspective);
 
-            // deploy
-            foreach (RegionMin region in regionsBySecurityThreat.Take(
-                1))
+            threatsToMe = threatsToMe.OrderByDescending(x => x.SpoilsBonus)
+                .ThenByDescending(
+                    x => SuperRegionMinEvaluator.GetValue(
+                        playerPerspective,
+                        playerPerspective.GetSuperRegion(x
+                            .SuperRegionId))).ToList();
+
+            if (threatsToMe.Count == 0)
             {
-                botDeployments.Add(new BotDeployment(region.Id,
-                    region.Army + playerPerspective.GetMyIncome(),
-                    currentGameState.PlayerId));
+                return botDeployment;
             }
 
-            return botDeployments;
+            if (threatsToMe.Count == 1)
+            {
+                // full deploy
+                var threat = threatsToMe[0];
+                ref var regionToDeploy =
+                    ref playerPerspective.GetRegion(threat
+                        .RegionId);
+                botDeployment.Add(new BotDeployment(regionToDeploy.Id,
+                    regionToDeploy.Army + myIncome, playerPerspective.PlayerId));
+
+                return botDeployment;
+            }
+
+            while (true)
+            {
+                foreach (var threat in threatsToMe)
+                {
+                    ref var region =
+                        ref playerPerspective.GetRegion(threat
+                            .RegionId);
+
+                    int armyToDeploy =
+                        Math.Min(myIncome,
+                            threat
+                                .GetMinimumNeededArmyToDefendFullDeployment(
+                                    playerPerspective.MapMin) + 2);
+
+                    if (armyToDeploy <= 0)
+                    {
+                        return MergeSameRegionsDeployments(botDeployment);
+                    }
+
+                    if (armyToDeploy == myIncome)
+                    {
+                        botDeployment.Add(new BotDeployment(region.Id,
+                            region.Army + armyToDeploy,
+                            playerPerspective.PlayerId));
+                        return MergeSameRegionsDeployments(botDeployment);
+                    }
+
+                    botDeployment.Add(new BotDeployment(region.Id,
+                        region.Army + armyToDeploy,
+                        playerPerspective.PlayerId));
+                    myIncome -= armyToDeploy;
+                }
+            }
+        }
+
+        private IList<BotDeployment> MergeSameRegionsDeployments(
+            IEnumerable<BotDeployment> deployments)
+        {
+            var deploymentGroups = from deployment in deployments
+                                   group deployment by deployment.RegionId;
+
+            var result = deploymentGroups.Select(x => new BotDeployment(x.Key,
+                x.Max(y => y.Army), x.First().DeployingPlayerId));
+
+            return result.ToList();
         }
 
         protected IList<BotDeployment> DeployToExpand(
@@ -308,7 +355,7 @@
                         {
                             // calculate minimum army that will surely succeed in conquering
                             // the region
-                            int minArmyThatSucceeds = (int) (neighbourToAttack.Army /
+                            int minArmyThatSucceeds = (int)(neighbourToAttack.Army /
                                                              RoundEvaluator.ProbabilityAttackingUnitKills);
                             attackingArmy =
                                 Math.Min(minArmyThatSucceeds + 4,
@@ -331,7 +378,8 @@
             IList<BotAttack> botAttacks)
         {
             IEnumerable<int> myRegions =
-                currentGameState.GetMyRegions().Select(x => x.Id);
+                currentGameState.GetMyRegions()
+                .Select(x => x.Id);
 
             foreach (int myRegionId in myRegions)
             {
@@ -356,14 +404,18 @@
                         // calculate minimum army that will surely succeed in conquering
                         // the region
                         int minArmyThatSucceeds;
-                        if (neighbour.OwnerId != 0)
+                        if (index == neighbours.Count - 1)
+                        {
+                            minArmyThatSucceeds = myRegion.Army - 1;
+                        }
+                        else if (neighbour.OwnerId != 0)
                         {
                             var enemyPlayerPerspective =
                                 new PlayerPerspective(
                                     currentGameState.MapMin,
                                     neighbour.OwnerId);
                             minArmyThatSucceeds =
-                                (int) ((neighbour.Army +
+                                (int)((neighbour.Army +
                                         enemyPlayerPerspective
                                             .GetMyIncome()) /
                                        RoundEvaluator
@@ -373,7 +425,7 @@
                         else
                         {
                             minArmyThatSucceeds =
-                                (int) (neighbour.Army / RoundEvaluator
+                                (int)(neighbour.Army / RoundEvaluator
                                            .ProbabilityAttackingUnitKills
                                 );
                         }

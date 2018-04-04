@@ -260,10 +260,16 @@ namespace GameAi.BotStructures.MCTS
                     if (!isGameBeginning)
                     {
                         var (expected, worstCase) = probabilityAwareRoundEvaluator.EvaluateInExpectedAndWorstCase(boardState, round);
+
+                        MapMin newBoardState =
+                            DidMySuperRegionChangeOwner(expected.SuperRegionsMin,
+                                worstCase.SuperRegionsMin)
+                                ? worstCase
+                                : expected;
                         child.AddChild(new NodeState()
                         {
                             BotTurn = enemyAction,
-                            BoardState = expected
+                            BoardState = newBoardState
                         });
                     }
                     else
@@ -326,14 +332,10 @@ namespace GameAi.BotStructures.MCTS
 
                 var expectedCaseSuperRegions = expected.SuperRegionsMin;
                 var worstCaseSuperRegions = worstCase.SuperRegionsMin;
-                for (int j = 0; j < expectedCaseSuperRegions.Length; j++)
+                if (DidMySuperRegionChangeOwner(expectedCaseSuperRegions,
+                    worstCaseSuperRegions))
                 {
-                    if (expectedCaseSuperRegions[j].OwnerId == myPlayerId &&
-                        worstCaseSuperRegions[j].OwnerId != myPlayerId)
-                    {
-                        boardState = worstCase;
-                        break;
-                    }
+                    boardState = worstCase;
                 }
                 myPlayerPerspective = new PlayerPerspective(boardState, myPlayerId);
                 enemyPlayerPerspective = new PlayerPerspective(boardState, enemyPlayerId);
@@ -377,6 +379,21 @@ namespace GameAi.BotStructures.MCTS
                 currentNode = currentNode.Parent;
                 parent = currentNode.Parent;
             }
+        }
+
+        private bool DidMySuperRegionChangeOwner(
+            SuperRegionMin[] expected, SuperRegionMin[] worstCase)
+        {
+            for (int j = 0; j < expected.Length; j++)
+            {
+                if (expected[j].OwnerId == myPlayerId &&
+                    worstCase[j].OwnerId != myPlayerId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         void IRandomInjectable.Inject(Random random)

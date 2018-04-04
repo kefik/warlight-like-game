@@ -7,6 +7,7 @@
 namespace GameAi.BotStructures.AggressiveBot
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
@@ -66,6 +67,8 @@ namespace GameAi.BotStructures.AggressiveBot
                     restrictions.GameBeginningRestrictions);
             gameActionsGenerator =
                 new AggressiveBotActionsGenerator(regionMinEvaluator,
+                superRegionMinEvaluator,
+                 enemyPlayerId.Concat(new List<byte>() {playerPerspective.PlayerId}).ToArray(),
                     playerPerspective.MapMin);
 
 

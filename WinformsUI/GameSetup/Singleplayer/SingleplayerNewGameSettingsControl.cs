@@ -10,6 +10,7 @@
     using GameObjectsLib;
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
+    using GameObjectsLib.GameRestrictions;
     using GameObjectsLib.Players;
     using HelperControls;
 
@@ -97,10 +98,7 @@
                     }
 
                     // get restrictions
-                    var gameRestrictions = new RestrictionsGenerator(
-                            map.Regions.Select(x => x.Id),
-                            players.Select(x => x.Id)).Generate()
-                        .ToGameRestrictions(map, players);
+                    var gameRestrictions = new GameObjectsRestrictionsGenerator(map, players, 2).Generate();
 
                     var factory = new GameFactory();
                     game = factory.CreateGame(gameId, GameType.SinglePlayer, map,

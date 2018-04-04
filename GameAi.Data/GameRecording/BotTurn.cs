@@ -27,9 +27,11 @@
             {
                 return false;
             }
-            if (obj.GetType() == typeof(BotTurn))
+
+            BotTurn botTurn = obj as BotTurn;
+            if (botTurn != null)
             {
-                return Equals((BotTurn) obj);
+                return Equals(botTurn);
             }
             return false;
         }

@@ -173,20 +173,3 @@ These approaches are combined in the resulting moves.
 In some positions there can be (for example) good to defend
 territory on one side of the map against the enemy, but
 expand with units left on the other side of the map.
-
-**Definition (local region area):** *Local region area* is set of
-regions with distance lesser or equal to 3 from the specified *region*.
-
-The bot obeys following rules / heuristics:
-
-1. If there's no danger, expand.
-2. If there's danger, don't expand, focus armies rather on
-fighting near the enemy.
-3. Do not attack on stronger armies.
-4. If you have much stronger army, try to attack first. If you have
-much weaker army, wait with attack or don't attack.
-5. Deploy only in regions neighbouring enemy or not owned regions.
-6. Deploy full income to one region always (for simplicity).
-7. Always move units from regions neighbouring only your regions
-to regions that don't.
-8. Consistently expand/attack/defend in local region area.

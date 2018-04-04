@@ -15,8 +15,13 @@
     /// </summary>
     internal class AggressiveBotActionsGenerator : GameActionsGenerator, IGameActionsGenerator
     {
-        public AggressiveBotActionsGenerator(IRegionMinEvaluator regionMinEvaluator,
-            MapMin mapMin) : base(new DistanceMatrix(mapMin.RegionsMin), regionMinEvaluator)
+        public AggressiveBotActionsGenerator(
+            IRegionMinEvaluator regionMinEvaluator,
+            ISuperRegionMinEvaluator superRegionMinEvaluator,
+            byte[] playersIds,
+            MapMin mapMin) :
+            base(new DistanceMatrix(mapMin.RegionsMin),
+                regionMinEvaluator, superRegionMinEvaluator, playersIds)
         {
         }
 

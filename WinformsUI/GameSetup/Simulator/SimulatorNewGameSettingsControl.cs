@@ -74,9 +74,7 @@ namespace WinformsUI.GameSetup.Simulator
                 GameObjectsRestrictions restrictions = null;
                 if (generateRestrictionsCheckBox.Checked)
                 {
-                    restrictions = new RestrictionsGenerator(map.Regions.Select(x => x.Id),
-                            aiPlayers.Select(x => x.Id)).Generate()
-                            .ToGameRestrictions(map, players);
+                    restrictions = new GameObjectsRestrictionsGenerator(map, players, 2).Generate();
                 }
                 else
                 {

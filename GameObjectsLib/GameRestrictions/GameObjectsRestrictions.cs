@@ -6,6 +6,8 @@
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class GameObjectsRestrictions
     {
-        public ICollection<GameObjectsBeginningRestriction> GameBeginningRestrictions { get; set; }
+        public ICollection<GameObjectsBeginningRestriction>
+            GameBeginningRestrictions { get; set; } =
+            new List<GameObjectsBeginningRestriction>();
     }
 }

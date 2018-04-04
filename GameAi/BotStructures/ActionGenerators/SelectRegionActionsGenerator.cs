@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using Common.Collections;
     using Data.EvaluationStructures;
@@ -75,15 +76,25 @@
         }
     }
 
+    /// <summary>
+    /// Component that generates select region actions. This component is
+    /// not thread-safe.
+    /// </summary>
     public class SelectRegionActionsGenerator : IGameBeginningActionsGenerator
     {
         private readonly IRegionMinEvaluator regionMinEvaluator;
-        private IDictionary<byte, GameBeginningRestriction> restrictions;
 
-        public SelectRegionActionsGenerator(IRegionMinEvaluator regionMinEvaluator,
-            ICollection<GameBeginningRestriction> gameBeginningRestrictions)
+        private readonly IDictionary<byte,
+            GameBeginningRestriction> restrictions;
+
+        public SelectRegionActionsGenerator(
+            IRegionMinEvaluator regionMinEvaluator,
+            ICollection<GameBeginningRestriction>
+                gameBeginningRestrictions)
         {
-            restrictions = gameBeginningRestrictions.ToDictionary(x => (byte)x.PlayerId, x => x);
+            restrictions =
+                gameBeginningRestrictions.ToDictionary(
+                    x => (byte)x.PlayerId, x => x);
 
             this.regionMinEvaluator = regionMinEvaluator;
         }
@@ -116,10 +127,15 @@
         {
             // obtain best regions based on restrictions
             // choose regionsToChooseCount regions recursively, take n best combinations
-            var dictionaryEntry = restrictions[playerPerspective.PlayerId];
+            var dictionaryEntry =
+                   restrictions[playerPerspective.PlayerId];
             playerId = (byte)dictionaryEntry.PlayerId;
-            regionsToChooseCount = dictionaryEntry.RegionsPlayerCanChooseCount;
-            regionsRestrictions = dictionaryEntry.RestrictedRegions;
+            Debug.Assert(playerId == playerPerspective.PlayerId,
+                "Bad concurrent access to restrictions dictionary.");
+            regionsToChooseCount = dictionaryEntry
+                .RegionsPlayerCanChooseCount;
+            regionsRestrictions =
+                dictionaryEntry.RestrictedRegions;
 
             SelectRegionEvaluationTree tree = new SelectRegionEvaluationTree()
             {
@@ -130,9 +146,11 @@
 
             ChooseBestRegions(3, ref combinationsPicked, 0, playerPerspective, tree.Root, new HashSet<double>(), 0);
 
+            Debug.Assert(playerId == playerPerspective.PlayerId, "Bad concurrent access to restrictions dictionary.");
             var botTurns = tree.ToBotGameBeginningTurns(playerId);
 
             var correctBotTurns = botTurns.Where(x => x.SeizedRegionsIds.Count == regionsToChooseCount).ToList();
+            Debug.Assert(botTurns.All(x => x.PlayerId == playerPerspective.PlayerId));
 
             return correctBotTurns;
         }

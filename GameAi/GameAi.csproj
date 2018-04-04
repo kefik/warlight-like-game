@@ -60,6 +60,7 @@
     <Compile Include="BotStructures\BestMoveEvaluator\MinimaxNodeStateEvaluator.cs" />
     <Compile Include="BotStructures\MCTS\NodeState.cs" />
     <Compile Include="BotStructures\MCTS\UctEvaluator.cs" />
+    <Compile Include="BotStructures\SmartBot\Threat.cs" />
     <Compile Include="BotStructures\SmartBot\ThreatCalculator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\CacheableEvaluator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\PlayerPerspectiveEvaluator.cs" />

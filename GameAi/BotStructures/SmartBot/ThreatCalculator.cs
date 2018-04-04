@@ -4,16 +4,29 @@
     using System.Linq;
     using Data.EvaluationStructures;
 
+    /// <summary>
+    /// Component handling evaluating threats
+    /// to specified player.
+    /// </summary>
     internal class ThreatCalculator
     {
         private byte[] playersIds;
 
+        /// <summary>
+        /// Constructs <see cref="ThreatCalculator"/>.
+        /// </summary>
+        /// <param name="playersIds">IDs of all players.</param>
         public ThreatCalculator(byte[] playersIds)
         {
             this.playersIds = playersIds;
         }
 
-        public IList<ThreatStructure> EvaluateThreats(
+        /// <summary>
+        /// Evaluates threat.
+        /// </summary>
+        /// <param name="playerPerspective"></param>
+        /// <returns>Returns threats to all regions of the player.</returns>
+        public IList<Threat> EvaluateThreats(
             PlayerPerspective playerPerspective)
         {
             var enemyPerspective =
@@ -23,7 +36,7 @@
 
             int enemyIncome = enemyPerspective.GetMyIncome();
 
-            var list = new List<ThreatStructure>();
+            var list = new List<Threat>();
 
             foreach (var regionMin in playerPerspective.GetMyRegions()
             )
@@ -50,38 +63,30 @@
                     continue;
                 }
 
-                list.Add(new ThreatStructure()
+                var threat =
+                    new Threat()
+                    {
+                        RegionId = regionMin.Id,
+                        SuperRegionId = regionMin.SuperRegionId,
+                        ThreatArmy = threatArmy,
+                        ThreatArmyWithFullDeployment =
+                            fullDeploymentThreatArmy
+                    };
+
+                ref var superRegion =
+                    ref playerPerspective.GetSuperRegion(regionMin
+                        .SuperRegionId);
+
+                // if I own the super region => it spoils the bonus
+                if (superRegion.OwnerId == playerPerspective.PlayerId)
                 {
-                    MyRegionId = regionMin.Id,
-                    ThreatArmy = threatArmy,
-                    ThreatArmyWithFullDeployment =
-                        fullDeploymentThreatArmy
-                });
+                    threat.SpoilsBonus = true;
+                }
+
+                list.Add(threat);
             }
 
             return list;
         }
-    }
-
-    /// <summary>
-    /// Represents information about threat that can come from the enemy.
-    /// </summary>
-    internal class ThreatStructure
-    {
-        /// <summary>
-        /// ID of my region that is under threat.
-        /// </summary>
-        public int MyRegionId { get; set; }
-
-        /// <summary>
-        /// Army that is threatening my region
-        /// including full deployment of units of enemy.
-        /// </summary>
-        public int ThreatArmyWithFullDeployment { get; set; }
-
-        /// <summary>
-        /// Army threatening to conquer my region.
-        /// </summary>
-        public int ThreatArmy { get; set; }
     }
 }

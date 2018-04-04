@@ -72,7 +72,7 @@
             {
                 sum += botAttack.GetHashCode();
             }
-            return 0;
+            return sum;
         }
     }
 }

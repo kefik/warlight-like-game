@@ -84,13 +84,11 @@ namespace GameAi.BotStructures.MCTS
             IPlayerPerspectiveEvaluator gamePlayerPerspectiveEvaluator
                 = new PlayerPerspectiveEvaluator(
                     gameRegionMinEvaluator, armyCoefficient: 10);
-
-            SelectRegionActionsGenerator selectRegionActionsGenerator
-                = new SelectRegionActionsGenerator(
-                    gameBeginningRegionMinEvaluator,
-                    restrictions.GameBeginningRestrictions);
+            
             MCTSBotActionsGenerator gameActionsGenerator =
                 new MCTSBotActionsGenerator(gameRegionMinEvaluator,
+                    gameSuperRegionMinEvaluator,
+                    new byte[] {enemyPlayerId, initialGameState.PlayerId},
                     initialGameState.MapMin);
 
 #if LOG_EVALUATOR
@@ -164,6 +162,11 @@ namespace GameAi.BotStructures.MCTS
 
             for (int index = 0; index < treeHandlers.Length; index++)
             {
+                SelectRegionActionsGenerator selectRegionActionsGenerator
+                    = new SelectRegionActionsGenerator(
+                        gameBeginningRegionMinEvaluator,
+                        restrictions.GameBeginningRestrictions);
+
                 treeHandlers[index] =
                     new MCTSTreeHandler(initialGameState,
                         enemyPlayerId, gameActionsGenerator,

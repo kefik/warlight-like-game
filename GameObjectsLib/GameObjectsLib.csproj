@@ -60,6 +60,7 @@
     <Compile Include="GameRecording\PostAttackMapChange.cs" />
     <Compile Include="GameRestrictions\GameObjectsBeginningRestriction.cs" />
     <Compile Include="GameRestrictions\GameObjectsRestrictions.cs" />
+    <Compile Include="GameRestrictions\GameObjectsRestrictionsGenerator.cs" />
     <Compile Include="Game\SimulatorGame.cs" />
     <Compile Include="Players\AiPlayer.cs" />
     <Compile Include="GameRecording\Attack.cs" />
