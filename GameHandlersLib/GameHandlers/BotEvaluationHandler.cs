@@ -120,6 +120,7 @@
                                 game.Players
                                     .Where(x => !x.IsDefeated(game
                                         .RoundNumber))
+                                    .Where(x => playerIdsMapper.GetNewId(x.Id) != evaluationPlayerId)
                                     .Select(
                                         x => (byte) playerIdsMapper
                                             .GetNewId(x.Id))
@@ -137,6 +138,7 @@
                                 game.Players
                                     .Where(x => !x.IsDefeated(game
                                         .RoundNumber))
+                                     .Where(x => x != aiPlayer)
                                     .Select(
                                         x => (byte) playerIdsMapper
                                             .GetNewId(x.Id))

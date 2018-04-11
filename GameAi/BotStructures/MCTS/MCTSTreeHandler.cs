@@ -98,23 +98,40 @@ namespace GameAi.BotStructures.MCTS
                 {
                     var bestNode = SelectBestNode();
 
-                    var nodesToSimulate = Expand(bestNode);
+                    MCTSTreeNode nodeToSimulate;
 
-                    foreach (var nodeToSimulate in nodesToSimulate)
+                    if (bestNode.VisitCount == 0 && bestNode != Tree.Root)
                     {
-                        // cancellation requested => finish the evaluation
-#if !IGNORE_CANCELLATION
-                        if (token.IsCancellationRequested)
-                        {
-                            return;
-                        }
-#endif
-
-                        Simulate(nodeToSimulate);
-
-                        Backpropagate(nodeToSimulate);
+                        nodeToSimulate = bestNode;
                     }
-                }
+                    else
+                    {
+                        var nodesToSimulate = Expand(bestNode);
+
+                        // i lost
+                        if (nodesToSimulate == null)
+                        {
+                            Backpropagate(bestNode, 1);
+
+                            continue;
+                        }
+                        // enemy lost
+                        if (nodesToSimulate.Count == 0)
+                        {
+                            Backpropagate(bestNode, 0);
+
+                            continue;
+                        }
+
+                        nodeToSimulate =
+                            nodesToSimulate[
+                                random.Next(nodesToSimulate.Count)];
+                    }
+
+                    double resultValue = Simulate(nodeToSimulate);
+
+                    Backpropagate(nodeToSimulate, resultValue);
+            }
 
 #if LOG_TREEHANDLER
             }
@@ -190,7 +207,7 @@ namespace GameAi.BotStructures.MCTS
             MCTSTreeNode bestChild = children[0];
             double bestChildValue = nodeEvaluator.GetValue(bestChild);
 
-            // get the node with best rating
+            // get the child node with best rating
             for (int index = 1; index < children.Count; index++)
             {
                 var child = children[index];
@@ -231,6 +248,18 @@ namespace GameAi.BotStructures.MCTS
             {
                 myActions = gameActionsGenerator.Generate(myPlayerPerspective);
                 enemyActions = gameActionsGenerator.Generate(enemyPlayerPerspective);
+            }
+
+            // report that this position is lost
+            if (myActions.Count == 0)
+            {
+                return null;
+            }
+
+            // report that this position is won
+            if (enemyActions.Count == 0)
+            {
+                return new List<MCTSTreeNode>();
             }
 
             // create my nodes
@@ -286,6 +315,7 @@ namespace GameAi.BotStructures.MCTS
                 }
             }
 
+            // return enemy all enemy nodes
             return node.Children.SelectMany(x => x.Children).ToList();
         }
 
@@ -293,7 +323,7 @@ namespace GameAi.BotStructures.MCTS
         /// Play a simulation from specified node.
         /// </summary>
         /// <param name="newlyExpandedNode"></param>
-        private void Simulate(MCTSTreeNode newlyExpandedNode)
+        private double Simulate(MCTSTreeNode newlyExpandedNode)
         {
             // TODO: playout based on option moves
             MapMin boardState = newlyExpandedNode.GameState;
@@ -305,15 +335,11 @@ namespace GameAi.BotStructures.MCTS
             {
                 if (myPlayerPerspective.HasLost())
                 {
-                    newlyExpandedNode.Value.WinCount = 1;
-                    newlyExpandedNode.Value.VisitCount = 1;
-                    return;
+                    return 1;
                 }
                 if (enemyPlayerPerspective.HasLost())
                 {
-                    newlyExpandedNode.Value.WinCount = 0;
-                    newlyExpandedNode.Value.VisitCount = 1;
-                    return;
+                    return 0;
                 }
 
                 var myActions = gameActionsGenerator.Generate(myPlayerPerspective);
@@ -346,38 +372,35 @@ namespace GameAi.BotStructures.MCTS
 
             double normalizedEnemyValue = enemyValue / (myValue + enemyValue);
 
-            newlyExpandedNode.Value.WinCount = normalizedEnemyValue;
-            newlyExpandedNode.Value.VisitCount = 1;
+            return normalizedEnemyValue;
         }
 
         /// <summary>
-        /// Backpropagates the information about results
-        /// from newly expanded node back to root.
+        /// Backpropagate the <see cref="enemyPerspectiveValue"/> from <see cref="sourceNode"/>
+        /// back to root.
         /// </summary>
-        /// <param name="newlyExpandedNode"></param>
-        private void Backpropagate(MCTSTreeNode newlyExpandedNode)
+        /// <param name="sourceNode"></param>
+        /// <param name="enemyPerspectiveValue"></param>
+        private void Backpropagate(MCTSTreeNode sourceNode,
+            double enemyPerspectiveValue)
         {
-            double valueToBackPropagate = newlyExpandedNode.WinCount;
-
-            MCTSTreeNode currentNode = newlyExpandedNode;
-            MCTSTreeNode parent = currentNode.Parent;
+            MCTSTreeNode currentNode = sourceNode;
             // repeat until the parent node is root node
-            while (!currentNode.IsRoot)
+            while (currentNode != null)
             {
                 // update the node
-                if (parent.Action.PlayerId != myPlayerId)
+                if (currentNode.Action.PlayerId != myPlayerId)
                 {
-                    parent.Value.WinCount += valueToBackPropagate;
+                    currentNode.Value.WinCount += enemyPerspectiveValue;
                 }
                 else
                 {
-                    parent.Value.WinCount += 1 - valueToBackPropagate;
+                    currentNode.Value.WinCount += 1 - enemyPerspectiveValue;
                 }
 
-                parent.Value.VisitCount++;
+                currentNode.Value.VisitCount++;
 
                 currentNode = currentNode.Parent;
-                parent = currentNode.Parent;
             }
         }
 

@@ -91,7 +91,7 @@
             botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot,
                 mapMin, Difficulty.Hard,
                 (byte)myPlayerId,
-                playerDictionary.Where(x => x.Value != OwnerPerspective.Unoccupied).Select(x => (byte)x.Key).ToArray(),
+                playerDictionary.Where(x => x.Value == OwnerPerspective.Enemy).Select(x => (byte)x.Key).ToArray(),
                 IsFogOfWar, restrictions);
 
             // find the best move
@@ -139,7 +139,7 @@
             botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot,
                 mapMin, Difficulty.Hard,
                 (byte)myPlayerId,
-                playerDictionary.Where(x => x.Value != OwnerPerspective.Unoccupied).Select(x => (byte)x.Key).ToArray(),
+                playerDictionary.Where(x => x.Value == OwnerPerspective.Enemy).Select(x => (byte)x.Key).ToArray(),
                 IsFogOfWar, restrictions);
 
             // find the best move

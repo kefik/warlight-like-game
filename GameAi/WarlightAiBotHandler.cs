@@ -28,8 +28,8 @@ namespace GameAi
         
         public WarlightAiBotHandler(GameBotType gameBotType,
             MapMin mapMin, Difficulty difficulty,
-            byte playerEncoded,
-            byte[] playersIds,
+            byte myPlayerId,
+            byte[] enemyPlayersIds,
             bool isFogOfWar,
             Restrictions restrictions)
         {
@@ -45,7 +45,7 @@ namespace GameAi
             var newRestrictions = regionsIdsMappingHandler.TranslateToNew(restrictions);
             
             onlineBot = new GameBotCreator().Create(gameBotType, mapMin, difficulty,
-                playerEncoded, playersIds,
+                myPlayerId, enemyPlayersIds,
                 isFogOfWar, newRestrictions);
         }
 
