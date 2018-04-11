@@ -16,6 +16,11 @@ namespace GameAi
     using Data.Restrictions;
     using Interfaces;
 
+    /// <summary>
+    /// Handles mapping between formats.
+    /// E.g. <see cref="MapMin.GetRegion"/> is using specific format.
+    /// This component ensures its mapping.
+    /// </summary>
     public class WarlightAiBotHandler : IOnlineBotHandler<BotTurn>
     {
         private readonly IOnlineBot<BotTurn> onlineBot;
@@ -44,20 +49,45 @@ namespace GameAi
                 isFogOfWar, newRestrictions);
         }
 
+        public WarlightAiBotHandler(IOnlineBot<BotTurn> bot, RegionsIdsMappingHandler mappingHandler) : this(bot)
+        {
+            this.regionsIdsMappingHandler = mappingHandler;
+        }
+
+        public WarlightAiBotHandler(IOnlineBot<BotTurn> bot)
+        {
+            this.onlineBot = bot;
+        }
+
         public BotTurn GetCurrentBestMove()
         {
-            // TODO: translate format
-            // TODO: return current best move
-            throw new System.NotImplementedException();
+            var turn = onlineBot.GetCurrentBestMove();
+
+            if (regionsIdsMappingHandler != null)
+            {
+                var originalTurn =
+                    regionsIdsMappingHandler
+                        .TranslateToOriginal(turn);
+                return originalTurn;
+            }
+
+            return turn;
         }
 
         public async Task<BotTurn> FindBestMoveAsync()
         {
             var turn = await onlineBot.FindBestMoveAsync();
 
-            var originalTurn = regionsIdsMappingHandler.TranslateToOriginal(turn);
+            // remap if there's any mapping
+            if (regionsIdsMappingHandler != null)
+            {
+                var originalTurn =
+                    regionsIdsMappingHandler
+                        .TranslateToOriginal(turn);
+                return originalTurn;
+            }
 
-            return originalTurn;
+            return turn;
         }
 
         public void StopEvaluation()

@@ -16,7 +16,7 @@ namespace GameAi
     /// <summary>
     /// Component handling issues related with mapping regions ids.
     /// </summary>
-    internal class RegionsIdsMappingHandler
+    public class RegionsIdsMappingHandler
     {
         private readonly IdsMappingDictionary regionIdsMappingDictionary;
         private readonly IdsMappingDictionary superRegionsIdsMappingDictionary;

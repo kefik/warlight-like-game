@@ -1,4 +1,4 @@
-﻿namespace GameAi.BotStructures.SmartBot
+﻿namespace GameAi.BotStructures.ActionGenerators
 {
     using System.Collections.Generic;
     using System.Linq;

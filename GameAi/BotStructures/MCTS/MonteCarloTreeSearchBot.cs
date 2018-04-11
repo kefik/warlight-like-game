@@ -21,7 +21,8 @@
         private readonly MCTSEvaluationHandler evaluationHandler;
         private object botLock = new object();
 
-        public MonteCarloTreeSearchBot(PlayerPerspective playerPerspective,
+        public MonteCarloTreeSearchBot(
+            PlayerPerspective playerPerspective,
             byte enemyPlayerId,
             Difficulty difficulty, bool isFogOfWar,
             Restrictions restrictions)

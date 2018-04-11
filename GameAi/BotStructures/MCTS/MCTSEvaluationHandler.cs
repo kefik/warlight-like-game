@@ -22,6 +22,10 @@ namespace GameAi.BotStructures.MCTS
     ///     action generators creation based on information
     ///     coming from bot instance.
     /// </summary>
+    /// <remarks>
+    /// Implements so called Root parallelisation = building independent
+    /// trees and when asked, merging upper levels.
+    /// </remarks>
     internal class MCTSEvaluationHandler : IDisposable
     {
         private CancellationTokenSource CancellationTokenSource
@@ -177,6 +181,10 @@ namespace GameAi.BotStructures.MCTS
         }
 
 
+        /// <summary>
+        /// Returns best move acquired from <see cref="treeHandlers"/>.
+        /// </summary>
+        /// <returns></returns>
         public BotTurn GetBestMove()
         {
             // merge the trees and get the most visited node

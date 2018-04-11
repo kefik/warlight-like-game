@@ -7,7 +7,6 @@
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Interfaces.Evaluators.StructureEvaluators;
-    using SmartBot;
 
     /// <summary>
     /// Class that serves as list of functions any

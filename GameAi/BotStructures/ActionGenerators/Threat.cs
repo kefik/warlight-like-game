@@ -1,4 +1,4 @@
-﻿namespace GameAi.BotStructures.SmartBot
+﻿namespace GameAi.BotStructures.ActionGenerators
 {
     using Data.EvaluationStructures;
 
