@@ -109,9 +109,9 @@
             // separatorLabel
             // 
             this.separatorLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.separatorLabel.Location = new System.Drawing.Point(1, 72);
+            this.separatorLabel.Location = new System.Drawing.Point(1, 64);
             this.separatorLabel.Name = "separatorLabel";
-            this.separatorLabel.Size = new System.Drawing.Size(277, 2);
+            this.separatorLabel.Size = new System.Drawing.Size(262, 2);
             this.separatorLabel.TabIndex = 9;
             // 
             // aiPlayerSettingsControl

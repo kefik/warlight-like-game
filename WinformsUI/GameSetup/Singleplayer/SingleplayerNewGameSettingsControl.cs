@@ -59,7 +59,7 @@
                 for (int i = 0; i < difference; i++)
                 {
                     aiPlayerSettingsControl.AddPlayer();
-                    // TODO: move start button
+                    // move start button
                     startButton.Location = new Point(startButton.Location.X, startButton.Location.Y + 34);
                 }
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
@@ -70,7 +70,7 @@
                 for (int i = 0; i < difference; i++)
                 {
                     aiPlayerSettingsControl.RemovePlayer();
-                    // TODO: move start button
+                    // move start button
                     startButton.Location = new Point(startButton.Location.X, startButton.Location.Y - 34);
                 }
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;

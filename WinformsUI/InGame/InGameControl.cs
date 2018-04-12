@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Linq;
     using System.Windows.Forms;
     using Client.Entities;
@@ -142,6 +143,7 @@
 
             // initialize map processor
             mapHandlerControl.Initialize(gameFlowHandler);
+
             gameFlowHandler.OnRoundPlayed += () =>
             {
                 using (UtilsDbContext db = new UtilsDbContext())

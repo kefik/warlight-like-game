@@ -32,6 +32,7 @@ namespace WinformsUI.InGame
 
             SetStyle(ControlStyles.OptimizedDoubleBuffer,
                 value: true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
         }
 
         private void InitializePlayersPerspectiveComboBox(
@@ -87,6 +88,13 @@ namespace WinformsUI.InGame
             gameMapPictureBox.Width = gameMapPictureBox.Image.Width;
             gameMapPictureBox.BackgroundImage = simulationFlowHandler
                 .ImageProcessor.TemplateImage;
+
+            // resize window
+            //ParentForm.Size =
+            //    new Size(gameMapPictureBox.Location.X + gameMapPictureBox.Width, Math.Max(gameStateMenuPanel.Height, gameMapPictureBox.Height));
+            // TODO: dynamically
+            ParentForm.Width = 1107;
+            ParentForm.Height = 541;
 
             if (game.IsFogOfWar)
             {
@@ -264,6 +272,12 @@ namespace WinformsUI.InGame
             int displayedRoundNumber = simulationFlowHandler
                 .GetDisplayedRoundNumber();
             roundNumber.Text = displayedRoundNumber.ToString();
+        }
+
+        private void displayedRoundLabel_Click(object sender, EventArgs e)
+        {
+            // TODO: remove
+            MessageBox.Show($"Width: {ParentForm.Width}, Height: {ParentForm.Height}");
         }
     }
 }

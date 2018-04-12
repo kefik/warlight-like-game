@@ -49,7 +49,7 @@
             this.multiplayerTabPage.Location = new System.Drawing.Point(4, 22);
             this.multiplayerTabPage.Name = "multiplayerTabPage";
             this.multiplayerTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.multiplayerTabPage.Size = new System.Drawing.Size(303, 447);
+            this.multiplayerTabPage.Size = new System.Drawing.Size(283, 458);
             this.multiplayerTabPage.TabIndex = 1;
             this.multiplayerTabPage.Text = "Multiplayer";
             this.multiplayerTabPage.UseVisualStyleBackColor = true;
@@ -60,7 +60,7 @@
             this.singleplayerTabPage.Location = new System.Drawing.Point(4, 22);
             this.singleplayerTabPage.Name = "singleplayerTabPage";
             this.singleplayerTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.singleplayerTabPage.Size = new System.Drawing.Size(303, 458);
+            this.singleplayerTabPage.Size = new System.Drawing.Size(314, 458);
             this.singleplayerTabPage.TabIndex = 0;
             this.singleplayerTabPage.Text = "Singleplayer";
             this.singleplayerTabPage.UseVisualStyleBackColor = true;
@@ -77,7 +77,7 @@
             this.typeGameChoiceTabControl.Location = new System.Drawing.Point(0, 0);
             this.typeGameChoiceTabControl.Name = "typeGameChoiceTabControl";
             this.typeGameChoiceTabControl.SelectedIndex = 0;
-            this.typeGameChoiceTabControl.Size = new System.Drawing.Size(311, 484);
+            this.typeGameChoiceTabControl.Size = new System.Drawing.Size(322, 484);
             this.typeGameChoiceTabControl.TabIndex = 1;
             this.typeGameChoiceTabControl.SelectedIndexChanged += new System.EventHandler(this.TabChanged);
             // 
@@ -92,7 +92,7 @@
             this.settingsTabPage.Location = new System.Drawing.Point(4, 22);
             this.settingsTabPage.Name = "settingsTabPage";
             this.settingsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.settingsTabPage.Size = new System.Drawing.Size(303, 447);
+            this.settingsTabPage.Size = new System.Drawing.Size(283, 458);
             this.settingsTabPage.TabIndex = 2;
             this.settingsTabPage.Text = "Settings";
             this.settingsTabPage.UseVisualStyleBackColor = true;
@@ -150,7 +150,7 @@
             this.simulatorTabPage.Location = new System.Drawing.Point(4, 22);
             this.simulatorTabPage.Name = "simulatorTabPage";
             this.simulatorTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.simulatorTabPage.Size = new System.Drawing.Size(303, 447);
+            this.simulatorTabPage.Size = new System.Drawing.Size(283, 458);
             this.simulatorTabPage.TabIndex = 3;
             this.simulatorTabPage.Text = "Simulator";
             this.simulatorTabPage.UseVisualStyleBackColor = true;
@@ -159,7 +159,7 @@
             // 
             this.loggedInLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.loggedInLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.loggedInLabel.Location = new System.Drawing.Point(-25, 487);
+            this.loggedInLabel.Location = new System.Drawing.Point(-19, 487);
             this.loggedInLabel.Name = "loggedInLabel";
             this.loggedInLabel.Size = new System.Drawing.Size(309, 18);
             this.loggedInLabel.TabIndex = 2;
@@ -171,7 +171,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(311, 509);
+            this.ClientSize = new System.Drawing.Size(322, 509);
             this.Controls.Add(this.loggedInLabel);
             this.Controls.Add(this.typeGameChoiceTabControl);
             this.Name = "MainGameForm";

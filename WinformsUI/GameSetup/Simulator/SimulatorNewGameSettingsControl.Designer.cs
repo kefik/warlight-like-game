@@ -33,18 +33,19 @@
             this.aiPlayersNumberLabel = new System.Windows.Forms.Label();
             this.aiPlayersNumberNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.generateRestrictionsCheckBox = new System.Windows.Forms.CheckBox();
-            this.mapSettingsControl = new WinformsUI.HelperControls.MapSettingsControl();
+            this.separatorLabel = new System.Windows.Forms.Label();
             this.simulatorBotSettingsControl = new WinformsUI.HelperControls.SimulatorBotSettingsControl();
+            this.mapSettingsControl = new WinformsUI.HelperControls.MapSettingsControl();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.aiPlayersNumberNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // fogOfWarCheckBox
             // 
-            this.fogOfWarCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.fogOfWarCheckBox.AutoSize = true;
             this.fogOfWarCheckBox.Checked = true;
             this.fogOfWarCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.fogOfWarCheckBox.Location = new System.Drawing.Point(249, 84);
+            this.fogOfWarCheckBox.Location = new System.Drawing.Point(185, 5);
             this.fogOfWarCheckBox.Name = "fogOfWarCheckBox";
             this.fogOfWarCheckBox.Size = new System.Drawing.Size(76, 17);
             this.fogOfWarCheckBox.TabIndex = 13;
@@ -53,8 +54,7 @@
             // 
             // startButton
             // 
-            this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.startButton.Location = new System.Drawing.Point(301, 399);
+            this.startButton.Location = new System.Drawing.Point(227, 106);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(75, 23);
             this.startButton.TabIndex = 11;
@@ -65,16 +65,15 @@
             // aiPlayersNumberLabel
             // 
             this.aiPlayersNumberLabel.AutoSize = true;
-            this.aiPlayersNumberLabel.Location = new System.Drawing.Point(26, 43);
+            this.aiPlayersNumberLabel.Location = new System.Drawing.Point(3, 41);
             this.aiPlayersNumberLabel.Name = "aiPlayersNumberLabel";
-            this.aiPlayersNumberLabel.Size = new System.Drawing.Size(104, 13);
+            this.aiPlayersNumberLabel.Size = new System.Drawing.Size(105, 13);
             this.aiPlayersNumberLabel.TabIndex = 10;
-            this.aiPlayersNumberLabel.Text = "Number of Ai players";
+            this.aiPlayersNumberLabel.Text = "Number of AI players";
             // 
             // aiPlayersNumberNumericUpDown
             // 
-            this.aiPlayersNumberNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.aiPlayersNumberNumericUpDown.Location = new System.Drawing.Point(314, 41);
+            this.aiPlayersNumberNumericUpDown.Location = new System.Drawing.Point(122, 35);
             this.aiPlayersNumberNumericUpDown.Name = "aiPlayersNumberNumericUpDown";
             this.aiPlayersNumberNumericUpDown.Size = new System.Drawing.Size(45, 20);
             this.aiPlayersNumberNumericUpDown.TabIndex = 9;
@@ -83,39 +82,56 @@
             // 
             // generateRestrictionsCheckBox
             // 
-            this.generateRestrictionsCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.generateRestrictionsCheckBox.AutoSize = true;
             this.generateRestrictionsCheckBox.Checked = true;
             this.generateRestrictionsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.generateRestrictionsCheckBox.Location = new System.Drawing.Point(249, 67);
+            this.generateRestrictionsCheckBox.Location = new System.Drawing.Point(184, 20);
             this.generateRestrictionsCheckBox.Name = "generateRestrictionsCheckBox";
             this.generateRestrictionsCheckBox.Size = new System.Drawing.Size(123, 17);
             this.generateRestrictionsCheckBox.TabIndex = 14;
             this.generateRestrictionsCheckBox.Text = "Generate restrictions";
             this.generateRestrictionsCheckBox.UseVisualStyleBackColor = true;
             // 
-            // mapSettingsControl
+            // separatorLabel
             // 
-            this.mapSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.mapSettingsControl.Location = new System.Drawing.Point(26, 6);
-            this.mapSettingsControl.Name = "mapSettingsControl";
-            this.mapSettingsControl.Size = new System.Drawing.Size(333, 31);
-            this.mapSettingsControl.TabIndex = 7;
+            this.separatorLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.separatorLabel.Location = new System.Drawing.Point(6, 71);
+            this.separatorLabel.Name = "separatorLabel";
+            this.separatorLabel.Size = new System.Drawing.Size(296, 2);
+            this.separatorLabel.TabIndex = 16;
             // 
             // simulatorBotSettingsControl
             // 
-            this.simulatorBotSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.simulatorBotSettingsControl.Location = new System.Drawing.Point(3, 102);
+            this.simulatorBotSettingsControl.AutoSize = true;
+            this.simulatorBotSettingsControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.simulatorBotSettingsControl.Location = new System.Drawing.Point(4, 100);
             this.simulatorBotSettingsControl.Name = "simulatorBotSettingsControl";
             this.simulatorBotSettingsControl.PlayersLimit = 0;
-            this.simulatorBotSettingsControl.Size = new System.Drawing.Size(377, 291);
+            this.simulatorBotSettingsControl.Size = new System.Drawing.Size(0, 0);
             this.simulatorBotSettingsControl.TabIndex = 15;
+            // 
+            // mapSettingsControl
+            // 
+            this.mapSettingsControl.Location = new System.Drawing.Point(3, 3);
+            this.mapSettingsControl.Name = "mapSettingsControl";
+            this.mapSettingsControl.Size = new System.Drawing.Size(178, 31);
+            this.mapSettingsControl.TabIndex = 7;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 84);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 13);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "AI players";
             // 
             // SimulatorNewGameSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.separatorLabel);
             this.Controls.Add(this.simulatorBotSettingsControl);
             this.Controls.Add(this.generateRestrictionsCheckBox);
             this.Controls.Add(this.fogOfWarCheckBox);
@@ -124,7 +140,7 @@
             this.Controls.Add(this.aiPlayersNumberNumericUpDown);
             this.Controls.Add(this.mapSettingsControl);
             this.Name = "SimulatorNewGameSettingsControl";
-            this.Size = new System.Drawing.Size(381, 429);
+            this.Size = new System.Drawing.Size(309, 429);
             ((System.ComponentModel.ISupportInitialize)(this.aiPlayersNumberNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -140,5 +156,7 @@
         private HelperControls.MapSettingsControl mapSettingsControl;
         private System.Windows.Forms.CheckBox generateRestrictionsCheckBox;
         private HelperControls.SimulatorBotSettingsControl simulatorBotSettingsControl;
+        private System.Windows.Forms.Label separatorLabel;
+        private System.Windows.Forms.Label label1;
     }
 }

@@ -36,6 +36,9 @@
             gameMapPictureBox.Width = gameMapPictureBox.Image.Width;
             gameMapPictureBox.BackgroundImage = gameFlowHandler.ImageProcessor.TemplateImage;
 
+            ParentForm.Width = 1107;
+            ParentForm.Height = 541;
+
             this.gameFlowHandler.OnImageChanged += gameMapPictureBox.Refresh;
         }
 

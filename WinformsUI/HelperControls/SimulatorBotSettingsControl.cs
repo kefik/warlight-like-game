@@ -18,8 +18,6 @@ namespace WinformsUI.HelperControls
         ///     Limit for players number.
         /// </summary>
         public int PlayersLimit { get; set; }
-
-        private int pcNameIndex = 1;
         
         public SimulatorBotSettingsControl()
         {
@@ -44,12 +42,14 @@ namespace WinformsUI.HelperControls
                 throw new ArgumentException();
             }
 
-            SimulatorBotPlayerControl control = new SimulatorBotPlayerControl($"PC{pcNameIndex}")
+            var colorToPick = Global.PlayerColorPicker.PickAny() ?? throw new ArgumentException("All colors depleted.");
+            SimulatorBotPlayerControl control = new SimulatorBotPlayerControl()
             {
-                Anchor = AnchorStyles.Left | AnchorStyles.Right
-            }; // TODO: generate unique name
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                PlayerName = $"PC{playersTableLayoutPanel.Controls.Count + 1}",
+                PlayerColor = colorToPick
+            };
             playersTableLayoutPanel.Controls.Add(control);
-            pcNameIndex++;
         }
 
         /// <summary>
@@ -62,8 +62,10 @@ namespace WinformsUI.HelperControls
                 throw new ArgumentException();
             }
 
+            SimulatorBotPlayerControl botPlayerControl =
+                (SimulatorBotPlayerControl)playersTableLayoutPanel.Controls[PlayersCount - 1];
+            Global.PlayerColorPicker.ReturnColor(botPlayerControl.PlayerColor);
             playersTableLayoutPanel.Controls.RemoveAt(PlayersCount - 1);
-            pcNameIndex--;
         }
 
         /// <summary>

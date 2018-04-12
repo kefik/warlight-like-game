@@ -19,26 +19,17 @@ namespace WinformsUI.HelperControls
     {
         private AiPlayer player; // dont want to give access to players regions, so I keep it private
 
-        public SimulatorBotPlayerControl(string uniqueName)
+        public SimulatorBotPlayerControl()
         {
             InitializeComponent();
 
             player = new AiPlayer(Difficulty.Hard,
-                uniqueName, KnownColor.Blue,
+                "PC1", KnownColor.Blue,
                 GameBotType.MonteCarloTreeSearchBot);
 
             PlayerColor = player.Color;
             BotType = GameBotType.AggressiveBot;
             PlayerName = player.Name;
-
-            InitializeBotTypeDropdownList();
-        }
-
-        public SimulatorBotPlayerControl(AiPlayer player)
-        {
-            InitializeComponent();
-
-            this.player = player;
 
             InitializeBotTypeDropdownList();
         }
@@ -70,7 +61,7 @@ namespace WinformsUI.HelperControls
         public KnownColor PlayerColor
         {
             get { return player.Color; }
-            private set
+            set
             {
                 player = new AiPlayer(player.Difficulty, player.Name, value, player.BotType);
                 colorButton.BackColor = Color.FromKnownColor(value);
@@ -83,7 +74,7 @@ namespace WinformsUI.HelperControls
         public GameBotType BotType
         {
             get { return player.BotType; }
-            private set
+            set
             {
                 player = new AiPlayer(player.Difficulty, player.Name, player.Color, value);
                 botTypeComboBox.SelectedValue = (int)player.BotType;
@@ -96,7 +87,7 @@ namespace WinformsUI.HelperControls
         public string PlayerName
         {
             get { return player.Name; }
-            private set
+            set
             {
                 player = new AiPlayer(player.Difficulty, value, player.Color, player.BotType);
                 aiNameLabel.Text = value;

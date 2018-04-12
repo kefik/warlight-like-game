@@ -9,6 +9,7 @@ namespace WinformsUI
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Drawing;
     using System.Runtime.InteropServices;
     using System.Threading.Tasks;
     using System.Windows.Forms;
@@ -107,6 +108,9 @@ namespace WinformsUI
                 Dock = DockStyle.Fill
             };
             simulatorInGame.Initialize(game);
+
+            // load size
+
             simulatorInGame.Show();
         }
 
@@ -431,6 +435,8 @@ namespace WinformsUI
             }
             previousTabSelectedIndex =
                 typeGameChoiceTabControl.SelectedIndex;
+
+            Size = new Size(338, 548);
         }
 
         private void FormLoad(object sender, EventArgs e)
