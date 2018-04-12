@@ -30,14 +30,13 @@
         {
             this.mapLabel = new System.Windows.Forms.Label();
             this.mapComboBox = new System.Windows.Forms.ComboBox();
-            this.mapPlayersLimitLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // mapLabel
             // 
             this.mapLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.mapLabel.AutoSize = true;
-            this.mapLabel.Location = new System.Drawing.Point(22, 25);
+            this.mapLabel.Location = new System.Drawing.Point(3, 11);
             this.mapLabel.Name = "mapLabel";
             this.mapLabel.Size = new System.Drawing.Size(28, 13);
             this.mapLabel.TabIndex = 0;
@@ -48,31 +47,20 @@
             this.mapComboBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.mapComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.mapComboBox.FormattingEnabled = true;
-            this.mapComboBox.Location = new System.Drawing.Point(152, 25);
+            this.mapComboBox.Location = new System.Drawing.Point(45, 8);
             this.mapComboBox.Name = "mapComboBox";
             this.mapComboBox.Size = new System.Drawing.Size(121, 21);
             this.mapComboBox.TabIndex = 1;
             this.mapComboBox.SelectedIndexChanged += new System.EventHandler(this.MapChosen);
             // 
-            // mapPlayersLimitLabel
-            // 
-            this.mapPlayersLimitLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.mapPlayersLimitLabel.AutoSize = true;
-            this.mapPlayersLimitLabel.Location = new System.Drawing.Point(288, 28);
-            this.mapPlayersLimitLabel.Name = "mapPlayersLimitLabel";
-            this.mapPlayersLimitLabel.Size = new System.Drawing.Size(13, 13);
-            this.mapPlayersLimitLabel.TabIndex = 2;
-            this.mapPlayersLimitLabel.Text = "0";
-            // 
             // MapSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.mapPlayersLimitLabel);
             this.Controls.Add(this.mapComboBox);
             this.Controls.Add(this.mapLabel);
             this.Name = "MapSettingsControl";
-            this.Size = new System.Drawing.Size(317, 71);
+            this.Size = new System.Drawing.Size(179, 37);
             this.Load += new System.EventHandler(this.ControlLoad);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -83,6 +71,5 @@
 
         private System.Windows.Forms.Label mapLabel;
         private System.Windows.Forms.ComboBox mapComboBox;
-        private System.Windows.Forms.Label mapPlayersLimitLabel;
     }
 }

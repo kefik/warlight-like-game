@@ -1,16 +1,18 @@
 ﻿namespace WinformsUI.HelperControls
 {
+    using System;
     using System.Drawing;
     using System.Windows.Forms;
     using GameAi.Data;
     using GameObjectsLib;
     using GameObjectsLib.Players;
+    using HelperObjects;
 
     public partial class AiPlayerControl : UserControl
     {
         private AiPlayer player; // dont want to give access to players regions, so I keep it private
-
-        public AiPlayerControl(string uniqueName)
+        
+        public AiPlayerControl()
         {
             InitializeComponent();
 
@@ -19,21 +21,13 @@
             difficultyComboBox.SelectedIndex = (int) player.Difficulty;
             colorButton.BackColor = Color.FromKnownColor(player.Color);
         }
-
-        public AiPlayerControl(AiPlayer player)
-        {
-            InitializeComponent();
-
-            this.player = player;
-        }
-
         /// <summary>
         ///     Accesses Ai player color.
         /// </summary>
         public KnownColor PlayerColor
         {
             get { return player.Color; }
-            private set
+            set
             {
                 player = new AiPlayer(player.Difficulty, player.Name, value, GameBotType.MonteCarloTreeSearchBot);
                 colorButton.BackColor = Color.FromKnownColor(value);
@@ -59,7 +53,7 @@
         public string PlayerName
         {
             get { return player.Name; }
-            private set
+            set
             {
                 player = new AiPlayer(player.Difficulty, value, player.Color, GameBotType.MonteCarloTreeSearchBot);
                 aiNameLabel.Text = value;
@@ -71,25 +65,29 @@
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if ((int) PlayerColor >= 173)
+                {
+                    var newColor =
+                        Global.PlayerColorPicker.PickNext(PlayerColor);
+
+                    if (newColor != null)
                     {
-                        PlayerColor = 0;
-                    }
-                    else
-                    {
-                        PlayerColor++;
+                        Global.PlayerColorPicker.ReturnColor(PlayerColor);
+                        PlayerColor = newColor.Value;
                     }
                     break;
+                }
                 case MouseButtons.Right:
-                    if ((int) PlayerColor <= 0)
+                {
+                    var newColor =
+                        Global.PlayerColorPicker.PickPrevious(PlayerColor);
+
+                    if (newColor != null)
                     {
-                        PlayerColor = (KnownColor) 173;
-                    }
-                    else
-                    {
-                        PlayerColor--;
+                        Global.PlayerColorPicker.ReturnColor(PlayerColor);
+                        PlayerColor = newColor.Value;
                     }
                     break;
+                }
             }
         }
 

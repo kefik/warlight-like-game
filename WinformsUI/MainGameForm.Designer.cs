@@ -38,8 +38,8 @@
             this.emailLabel = new System.Windows.Forms.Label();
             this.passwordLabel = new System.Windows.Forms.Label();
             this.playerNameLabel = new System.Windows.Forms.Label();
-            this.loggedInLabel = new System.Windows.Forms.Label();
             this.simulatorTabPage = new System.Windows.Forms.TabPage();
+            this.loggedInLabel = new System.Windows.Forms.Label();
             this.typeGameChoiceTabControl.SuspendLayout();
             this.settingsTabPage.SuspendLayout();
             this.SuspendLayout();
@@ -49,7 +49,7 @@
             this.multiplayerTabPage.Location = new System.Drawing.Point(4, 22);
             this.multiplayerTabPage.Name = "multiplayerTabPage";
             this.multiplayerTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.multiplayerTabPage.Size = new System.Drawing.Size(752, 426);
+            this.multiplayerTabPage.Size = new System.Drawing.Size(303, 447);
             this.multiplayerTabPage.TabIndex = 1;
             this.multiplayerTabPage.Text = "Multiplayer";
             this.multiplayerTabPage.UseVisualStyleBackColor = true;
@@ -60,7 +60,7 @@
             this.singleplayerTabPage.Location = new System.Drawing.Point(4, 22);
             this.singleplayerTabPage.Name = "singleplayerTabPage";
             this.singleplayerTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.singleplayerTabPage.Size = new System.Drawing.Size(752, 426);
+            this.singleplayerTabPage.Size = new System.Drawing.Size(303, 458);
             this.singleplayerTabPage.TabIndex = 0;
             this.singleplayerTabPage.Text = "Singleplayer";
             this.singleplayerTabPage.UseVisualStyleBackColor = true;
@@ -77,7 +77,7 @@
             this.typeGameChoiceTabControl.Location = new System.Drawing.Point(0, 0);
             this.typeGameChoiceTabControl.Name = "typeGameChoiceTabControl";
             this.typeGameChoiceTabControl.SelectedIndex = 0;
-            this.typeGameChoiceTabControl.Size = new System.Drawing.Size(760, 452);
+            this.typeGameChoiceTabControl.Size = new System.Drawing.Size(311, 484);
             this.typeGameChoiceTabControl.TabIndex = 1;
             this.typeGameChoiceTabControl.SelectedIndexChanged += new System.EventHandler(this.TabChanged);
             // 
@@ -92,7 +92,7 @@
             this.settingsTabPage.Location = new System.Drawing.Point(4, 22);
             this.settingsTabPage.Name = "settingsTabPage";
             this.settingsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.settingsTabPage.Size = new System.Drawing.Size(752, 426);
+            this.settingsTabPage.Size = new System.Drawing.Size(303, 447);
             this.settingsTabPage.TabIndex = 2;
             this.settingsTabPage.Text = "Settings";
             this.settingsTabPage.UseVisualStyleBackColor = true;
@@ -145,33 +145,33 @@
             this.playerNameLabel.TabIndex = 0;
             this.playerNameLabel.Text = "Player Name";
             // 
+            // simulatorTabPage
+            // 
+            this.simulatorTabPage.Location = new System.Drawing.Point(4, 22);
+            this.simulatorTabPage.Name = "simulatorTabPage";
+            this.simulatorTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.simulatorTabPage.Size = new System.Drawing.Size(303, 447);
+            this.simulatorTabPage.TabIndex = 3;
+            this.simulatorTabPage.Text = "Simulator";
+            this.simulatorTabPage.UseVisualStyleBackColor = true;
+            // 
             // loggedInLabel
             // 
             this.loggedInLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.loggedInLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.loggedInLabel.Location = new System.Drawing.Point(400, 455);
+            this.loggedInLabel.Location = new System.Drawing.Point(-25, 487);
             this.loggedInLabel.Name = "loggedInLabel";
             this.loggedInLabel.Size = new System.Drawing.Size(309, 18);
             this.loggedInLabel.TabIndex = 2;
             this.loggedInLabel.Text = "You are currently logged in as a local user.";
             this.loggedInLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // simulatorTabPage
-            // 
-            this.simulatorTabPage.Location = new System.Drawing.Point(4, 22);
-            this.simulatorTabPage.Name = "simulatorTabPage";
-            this.simulatorTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.simulatorTabPage.Size = new System.Drawing.Size(752, 426);
-            this.simulatorTabPage.TabIndex = 3;
-            this.simulatorTabPage.Text = "Simulator";
-            this.simulatorTabPage.UseVisualStyleBackColor = true;
-            // 
             // MainGameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(760, 477);
+            this.ClientSize = new System.Drawing.Size(311, 509);
             this.Controls.Add(this.loggedInLabel);
             this.Controls.Add(this.typeGameChoiceTabControl);
             this.Name = "MainGameForm";

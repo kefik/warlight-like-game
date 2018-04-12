@@ -24,10 +24,10 @@
         public KnownColor PlayerColor
         {
             get { return playerColor; }
-            private set
+            set
             {
                 playerColor = value;
-                colorButton.BackColor = Color.FromKnownColor(PlayerColor);
+                colorButton.BackColor = Color.FromKnownColor(value);
             }
         }
 
@@ -59,25 +59,29 @@
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if ((int) PlayerColor >= 173)
+                {
+                    var newColor =
+                        Global.PlayerColorPicker.PickNext(PlayerColor);
+
+                    if (newColor != null)
                     {
-                        PlayerColor = 0;
-                    }
-                    else
-                    {
-                        PlayerColor++;
+                        Global.PlayerColorPicker.ReturnColor(PlayerColor);
+                        PlayerColor = newColor.Value;
                     }
                     break;
+                }
                 case MouseButtons.Right:
-                    if ((int) PlayerColor <= 0)
+                {
+                    var newColor =
+                        Global.PlayerColorPicker.PickPrevious(PlayerColor);
+
+                    if (newColor != null)
                     {
-                        PlayerColor = (KnownColor) 173;
-                    }
-                    else
-                    {
-                        PlayerColor--;
+                        Global.PlayerColorPicker.ReturnColor(PlayerColor);
+                        PlayerColor = newColor.Value;
                     }
                     break;
+                }
             }
         }
 
@@ -96,8 +100,6 @@
             playerNameTextBox.Text = Global.MyUser.Name;
 
             UserChanged(Global.MyUser);
-
-            PlayerColor = KnownColor.Green;
         }
 
         protected override void DestroyHandle()

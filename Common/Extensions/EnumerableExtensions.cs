@@ -36,5 +36,23 @@
         {
             return ToHashSet(enumerable, x => x);
         }
+
+        /// <summary>
+        /// Repeats in round specified <see cref="enumerable"/>.
+        /// </summary>
+        /// <typeparam name="TType"></typeparam>
+        /// <param name="enumerable"></param>
+        /// <returns></returns>
+        public static IEnumerable<TType> RepeatInRound<TType>(
+            this IEnumerable<TType> enumerable)
+        {
+            while (true)
+            {
+                foreach (TType item in enumerable)
+                {
+                    yield return item;
+                }
+            }
+        }
     }
 }

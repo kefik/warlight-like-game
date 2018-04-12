@@ -411,6 +411,8 @@ namespace WinformsUI
             simulatorInGame?.Dispose();
             simulatorInGame = null;
 
+            Global.PlayerColorPicker.Reset();
+
             switch (typeGameChoiceTabControl.SelectedIndex)
             {
                 case 0: // singleplayer

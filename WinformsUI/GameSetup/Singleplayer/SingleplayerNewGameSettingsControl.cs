@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Linq;
     using System.Windows.Forms;
     using Client.Entities;
@@ -13,6 +14,7 @@
     using GameObjectsLib.GameRestrictions;
     using GameObjectsLib.Players;
     using HelperControls;
+    using HelperObjects;
 
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
@@ -24,22 +26,26 @@
         {
             InitializeComponent();
 
+            var colorToPick = Global.PlayerColorPicker.PickAny() ?? throw new ArgumentException("All colors depleted.");
             myHumanPlayerControl = new MyHumanPlayerControl
             {
                 Parent = myPlayerPanel,
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                PlayerColor = colorToPick
             };
             myHumanPlayerControl.Show();
 
             previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
-            aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit;
-            aiPlayerSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit;
+            aiPlayersNumberNumericUpDown.Maximum = 1;
+            aiPlayerSettingsControl.PlayersLimit = 2;
             // when the map is chosen, update maximum values
             mapSettingsControl.OnMapChosen += (o, e) =>
             {
                 aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit - 1;
                 aiPlayerSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit - 1;
             };
+            
+            aiPlayersNumberNumericUpDown.Minimum = 1;
         }
 
 
@@ -53,6 +59,8 @@
                 for (int i = 0; i < difference; i++)
                 {
                     aiPlayerSettingsControl.AddPlayer();
+                    // TODO: move start button
+                    startButton.Location = new Point(startButton.Location.X, startButton.Location.Y + 34);
                 }
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             }
@@ -62,6 +70,8 @@
                 for (int i = 0; i < difference; i++)
                 {
                     aiPlayerSettingsControl.RemovePlayer();
+                    // TODO: move start button
+                    startButton.Location = new Point(startButton.Location.X, startButton.Location.Y - 34);
                 }
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             }
@@ -104,7 +114,6 @@
                     game = factory.CreateGame(gameId, GameType.SinglePlayer, map,
                         players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: gameRestrictions);
                 }
-
 
                 OnGameStarted?.Invoke(game);
             }

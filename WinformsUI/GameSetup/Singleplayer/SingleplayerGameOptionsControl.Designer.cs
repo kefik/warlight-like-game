@@ -30,8 +30,8 @@
         {
             this.gameOptionsTabControl = new System.Windows.Forms.TabControl();
             this.newGameTabPage = new System.Windows.Forms.TabPage();
-            this.singleplayerNewGameSettingsControl = new WinformsUI.GameSetup.Singleplayer.SingleplayerNewGameSettingsControl();
             this.loadGameTabPage = new System.Windows.Forms.TabPage();
+            this.singleplayerNewGameSettingsControl = new WinformsUI.GameSetup.Singleplayer.SingleplayerNewGameSettingsControl();
             this.singleplayerLoadGamesControl = new WinformsUI.GameSetup.Singleplayer.SingleplayerLoadGamesControl();
             this.gameOptionsTabControl.SuspendLayout();
             this.newGameTabPage.SuspendLayout();
@@ -61,16 +61,6 @@
             this.newGameTabPage.Text = "New game";
             this.newGameTabPage.UseVisualStyleBackColor = true;
             // 
-            // singleplayerNewGameSettingsControl
-            // 
-            this.singleplayerNewGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.singleplayerNewGameSettingsControl.AutoScroll = true;
-            this.singleplayerNewGameSettingsControl.Location = new System.Drawing.Point(6, 3);
-            this.singleplayerNewGameSettingsControl.Name = "singleplayerNewGameSettingsControl";
-            this.singleplayerNewGameSettingsControl.Size = new System.Drawing.Size(422, 377);
-            this.singleplayerNewGameSettingsControl.TabIndex = 0;
-            // 
             // loadGameTabPage
             // 
             this.loadGameTabPage.Controls.Add(this.singleplayerLoadGamesControl);
@@ -81,6 +71,17 @@
             this.loadGameTabPage.TabIndex = 2;
             this.loadGameTabPage.Text = "Load game";
             this.loadGameTabPage.UseVisualStyleBackColor = true;
+            // 
+            // singleplayerNewGameSettingsControl
+            // 
+            this.singleplayerNewGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.singleplayerNewGameSettingsControl.AutoScroll = true;
+            this.singleplayerNewGameSettingsControl.Location = new System.Drawing.Point(3, 3);
+            this.singleplayerNewGameSettingsControl.Name = "singleplayerNewGameSettingsControl";
+            this.singleplayerNewGameSettingsControl.Size = new System.Drawing.Size(479, 250);
+            this.singleplayerNewGameSettingsControl.TabIndex = 0;
             // 
             // singleplayerLoadGamesControl
             // 

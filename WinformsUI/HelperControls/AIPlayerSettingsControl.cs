@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Windows.Forms;
     using GameObjectsLib;
     using GameObjectsLib.Players;
+    using HelperObjects;
 
     public partial class AiPlayerSettingsControl : UserControl
     {
@@ -36,10 +38,13 @@
                 throw new ArgumentException();
             }
 
-            AiPlayerControl control = new AiPlayerControl("PC")
+            var colorToPick = Global.PlayerColorPicker.PickAny() ?? throw new ArgumentException("All colors depleted.");
+            AiPlayerControl control = new AiPlayerControl()
             {
-                Anchor = AnchorStyles.Left | AnchorStyles.Right
-            }; // TODO: generate unique name
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                PlayerName = $"PC{playersTableLayoutPanel.Controls.Count + 1}",
+                PlayerColor = colorToPick
+            };
             playersTableLayoutPanel.Controls.Add(control);
         }
 
@@ -53,6 +58,9 @@
                 throw new ArgumentException();
             }
 
+            AiPlayerControl aiPlayerControl =
+                (AiPlayerControl)playersTableLayoutPanel.Controls[PlayersCount - 1];
+            Global.PlayerColorPicker.ReturnColor(aiPlayerControl.PlayerColor);
             playersTableLayoutPanel.Controls.RemoveAt(PlayersCount - 1);
         }
 

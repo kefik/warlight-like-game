@@ -41,7 +41,7 @@
                     return new MapInfo
                     {
                         Id = -1,
-                        PlayersLimit = 0,
+                        PlayersLimit = 2,
                         Name = ""
                     };
                 }
@@ -70,7 +70,7 @@
 
         private void MapChosen(object sender, EventArgs e)
         {
-            mapPlayersLimitLabel.Text = ChosenMapInfo.PlayersLimit.ToString();
+            //mapPlayersLimitLabel.Text = ChosenMapInfo.PlayersLimit.ToString();
         }
 
         private void RefreshComboBox()

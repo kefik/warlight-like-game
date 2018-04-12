@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameHandlersLib;
     using GameObjectsLib.GameUser;
+    using HelperObjects;
 
     /// <summary>
     ///     Represents global utils for the given client.
@@ -49,6 +51,9 @@
                 }
             }
         }
+
+        public static PlayerColorPicker PlayerColorPicker { get; internal set; }
+            = new PlayerColorPicker(10);
 
         /// <summary>
         ///     Methods invoked when value in MyUser is changed.
