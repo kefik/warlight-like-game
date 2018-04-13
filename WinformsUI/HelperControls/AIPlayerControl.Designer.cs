@@ -37,14 +37,11 @@
             // 
             this.difficultyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.difficultyComboBox.FormattingEnabled = true;
-            this.difficultyComboBox.Items.AddRange(new object[] {
-            "Easy",
-            "Medium",
-            "Hard"});
             this.difficultyComboBox.Location = new System.Drawing.Point(100, 4);
             this.difficultyComboBox.Name = "difficultyComboBox";
             this.difficultyComboBox.Size = new System.Drawing.Size(78, 21);
             this.difficultyComboBox.TabIndex = 0;
+            this.difficultyComboBox.SelectedIndexChanged += new System.EventHandler(this.DifficultyChanged);
             // 
             // colorButton
             // 

@@ -111,6 +111,9 @@
         /// </summary>
         public event Action<Player> OnEnd;
 
+        public event Action<AiPlayer, TimeSpan> OnBotEvaluationStarted
+            ;
+
         public virtual void GameStateChange(GameState newGameState)
         {
             GameState = newGameState;
@@ -424,11 +427,34 @@
                     .ToRemappedRestrictions(playerIdsMapper);
 
                 var mapMin = Game.Map.ToMapMin(playerIdsMapper);
-                var botHandler = new WarlightAiBotHandler(aiPlayer.BotType, mapMin, Difficulty.Hard, (byte)playerIdsMapper.GetNewId(aiPlayer.Id),
+                var botHandler = new WarlightAiBotHandler(aiPlayer.BotType, mapMin, aiPlayer.Difficulty, (byte)playerIdsMapper.GetNewId(aiPlayer.Id),
                     players.Where(x => x != aiPlayer).Select(x => (byte)playerIdsMapper.GetNewId(x.Id)).ToArray(), true, restrictions);
 
                 var botTurnTask = Task.Run(() => botHandler.FindBestMoveAsync());
-                botHandler.StopEvaluation(new TimeSpan(0, 0, 0, 0, 10000));
+
+                int timeForEvaluationInMs;
+                switch (aiPlayer.Difficulty)
+                {
+                    case Difficulty.Easy:
+                        timeForEvaluationInMs = 2000;
+                        break;
+                    case Difficulty.Medium:
+                        timeForEvaluationInMs = 4000;
+                        break;
+                    case Difficulty.Hard:
+                        timeForEvaluationInMs = 10000;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                var ts = new TimeSpan(0, 0, 0, 0,
+                    timeForEvaluationInMs);
+
+                botHandler.StopEvaluation(ts);
+
+                OnBotEvaluationStarted?.Invoke(aiPlayer, ts);
+
                 // TODO: POTENTIAL DEADLOCK
                 var turn = botTurnTask.Result.ToTurn(Game.Map, players, playerIdsMapper);
 

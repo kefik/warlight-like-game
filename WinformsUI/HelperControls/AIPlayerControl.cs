@@ -1,8 +1,10 @@
 ﻿namespace WinformsUI.HelperControls
 {
     using System;
+    using System.Collections.Generic;
     using System.Drawing;
     using System.Windows.Forms;
+    using Common.Extensions;
     using GameAi.Data;
     using GameObjectsLib;
     using GameObjectsLib.Players;
@@ -17,10 +19,33 @@
             InitializeComponent();
             
             player = new AiPlayer(Difficulty.Medium, "PC1", KnownColor.Blue, GameBotType.MonteCarloTreeSearchBot);
-
-            difficultyComboBox.SelectedIndex = (int) player.Difficulty;
+            
             colorButton.BackColor = Color.FromKnownColor(player.Color);
+
+            InitializeBotTypeDropdownList();
         }
+
+        private void InitializeBotTypeDropdownList()
+        {
+            var enumValues = (IEnumerable<Difficulty>)Enum.GetValues(typeof(Difficulty));
+
+            var list = new List<object>();
+            foreach (Difficulty gameBotType in enumValues)
+            {
+                list.Add(new
+                {
+                    Text = gameBotType.GetDisplayName(),
+                    Value = (int)gameBotType
+                });
+            }
+
+            difficultyComboBox.ValueMember = "Value";
+            difficultyComboBox.DisplayMember = "Text";
+            difficultyComboBox.DataSource = list;
+
+            difficultyComboBox.SelectedValue = 1;
+        }
+
         /// <summary>
         ///     Accesses Ai player color.
         /// </summary>
@@ -98,6 +123,12 @@
         public Player GetPlayer()
         {
             return new AiPlayer(player.Difficulty, player.Name, player.Color, GameBotType.MonteCarloTreeSearchBot);
+        }
+
+        private void DifficultyChanged(object sender, EventArgs e)
+        {
+            var selectedDifficulty = (Difficulty)difficultyComboBox.SelectedValue;
+            PlayerDifficulty = selectedDifficulty;
         }
     }
 }

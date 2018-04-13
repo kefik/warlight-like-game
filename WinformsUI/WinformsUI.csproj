@@ -150,6 +150,12 @@
     <Compile Include="GameSetup\Singleplayer\SingleplayerNewGameSettingsControl.Designer.cs">
       <DependentUpon>SingleplayerNewGameSettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="HelperControls\ProgressBarForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HelperControls\ProgressBarForm.Designer.cs">
+      <DependentUpon>ProgressBarForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="HelperControls\SimulatorBotPlayerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -253,12 +259,6 @@
     <Compile Include="MainGameForm.Designer.cs">
       <DependentUpon>MainGameForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LoadingForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LoadingForm.Designer.cs">
-      <DependentUpon>LoadingForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="GameSetup\Multiplayer\GameTypeChoiceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -319,6 +319,9 @@
     <EmbeddedResource Include="GameSetup\Singleplayer\SingleplayerNewGameSettingsControl.resx">
       <DependentUpon>SingleplayerNewGameSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="HelperControls\ProgressBarForm.resx">
+      <DependentUpon>ProgressBarForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="HelperControls\SimulatorBotPlayerControl.resx">
       <DependentUpon>SimulatorBotPlayerControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -366,9 +369,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainGameForm.resx">
       <DependentUpon>MainGameForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LoadingForm.resx">
-      <DependentUpon>LoadingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GameSetup\Multiplayer\GameTypeChoiceForm.resx">
       <DependentUpon>GameTypeChoiceForm.cs</DependentUpon>

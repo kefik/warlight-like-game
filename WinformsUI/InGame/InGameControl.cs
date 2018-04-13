@@ -11,6 +11,7 @@
     using GameObjectsLib.Game;
     using GameObjectsLib.GameMap;
     using GameObjectsLib.GameUser;
+    using HelperControls;
     using Phases;
     using GameState = GameHandlersLib.GameHandlers.GameState;
     using MapImageProcessor = GameHandlersLib.MapHandlers.MapImageProcessor;
@@ -166,6 +167,21 @@
                 beginRoundPhaseControl.Hide();
                 GameState = GameState.GameEnd;
             };
+            gameFlowHandler.OnBotEvaluationStarted +=
+                (player, timeSpan) =>
+                {
+                    var progressBarForm =
+                        new ProgressBarForm
+                        {
+                            TimeSpan = timeSpan,
+                            AiPlayer = player,
+                            StartPosition =
+                                FormStartPosition.CenterParent
+                        };
+
+                    progressBarForm.Start();
+                    progressBarForm.ShowDialog();
+                };
 
             beginGamePhaseControl.Initialize(gameFlowHandler);
             turnPhaseControl.Initialize(gameFlowHandler);
