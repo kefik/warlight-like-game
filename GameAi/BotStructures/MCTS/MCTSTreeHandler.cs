@@ -100,7 +100,9 @@ namespace GameAi.BotStructures.MCTS
 
                     MCTSTreeNode nodeToSimulate;
 
-                    if (bestNode.VisitCount == 0 && bestNode != Tree.Root)
+                    // node selected hasn't been visit yet and it is not root => 
+                    // it must be node that hasn't been simulated yet
+                    if (bestNode.VisitCount == 0 && !bestNode.IsRoot)
                     {
                         nodeToSimulate = bestNode;
                     }
@@ -244,22 +246,18 @@ namespace GameAi.BotStructures.MCTS
                 myActions = beginningActionsGenerator.Generate(myPlayerPerspective);
                 enemyActions = beginningActionsGenerator.Generate(enemyPlayerPerspective);
             }
+            else if (myPlayerPerspective.HasLost())
+            {
+                return null;
+            }
+            else if (enemyPlayerPerspective.HasLost())
+            {
+                return new List<MCTSTreeNode>();
+            }
             else
             {
                 myActions = gameActionsGenerator.Generate(myPlayerPerspective);
                 enemyActions = gameActionsGenerator.Generate(enemyPlayerPerspective);
-            }
-
-            // report that this position is lost
-            if (myActions.Count == 0)
-            {
-                return null;
-            }
-
-            // report that this position is won
-            if (enemyActions.Count == 0)
-            {
-                return new List<MCTSTreeNode>();
             }
 
             // create my nodes

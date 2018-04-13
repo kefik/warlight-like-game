@@ -300,6 +300,7 @@
         ///     Attacks only when there's no enemy around and the bot is sure it will win.
         /// </summary>
         /// <param name="currentGameState"></param>
+        /// <param name="botAttacks"></param>
         /// <returns></returns>
         protected void AttackToExpandSafely(
             PlayerPerspective currentGameState,
@@ -434,6 +435,82 @@
                         botAttacks.Add(new BotAttack(myRegion.OwnerId,
                             myRegionId, attackingArmy, neighbour.Id));
                         myRegion.Army -= attackingArmy;
+                    }
+                }
+            }
+        }
+
+        protected void AttackOnEnemySafely(
+            PlayerPerspective currentGameState,
+            IList<BotAttack> botAttacks)
+        {
+            IEnumerable<int> myRegions =
+                currentGameState.GetMyRegions()
+                    .Select(x => x.Id);
+
+            foreach (int myRegionId in myRegions)
+            {
+                ref RegionMin myRegion =
+                    ref currentGameState.GetRegion(myRegionId);
+                List<RegionMin> enemyNeighbours =
+                    currentGameState.GetNeighbourRegions(myRegionId)
+                        .Where(
+                            x => x.GetOwnerPerspective(currentGameState.PlayerId) == OwnerPerspective.Enemy)
+                        .ToList();
+
+                if (enemyNeighbours.Count == 0)
+                {
+                    continue;
+                }
+
+                PlayerPerspective enemyPerspective =
+                    new PlayerPerspective(currentGameState.MapMin,
+                        enemyNeighbours[0].OwnerId);
+
+                int enemyArmyWithFullDeployment =
+                    enemyNeighbours.Sum(x => x.Army) +
+                    enemyPerspective.GetMyIncome();
+
+                // if my army is stronger than enemy's in sum
+                if ((myRegion.Army - 1) * RoundEvaluator
+                        .ProbabilityAttackingUnitKills -
+                    enemyArmyWithFullDeployment * RoundEvaluator
+                        .ProbabilityDefendingUnitKills >= 0)
+                {
+                    for (int index = 0; index < enemyNeighbours.Count; index++)
+                    {
+                        RegionMin neighbour = enemyNeighbours[index];
+                        if ((myRegion.Army - 1) * RoundEvaluator.ProbabilityAttackingUnitKills -
+                            neighbour.Army * RoundEvaluator.ProbabilityDefendingUnitKills >= 0)
+                        {
+                            // calculate minimum army that will surely succeed in conquering
+                            // the region
+                            int minArmyThatSucceeds;
+                            if (index == enemyNeighbours.Count - 1)
+                            {
+                                minArmyThatSucceeds = myRegion.Army - 1;
+                            }
+                            else
+                            {
+                                var enemyPlayerPerspective =
+                                    new PlayerPerspective(
+                                        currentGameState.MapMin,
+                                        neighbour.OwnerId);
+                                minArmyThatSucceeds =
+                                    (int)((neighbour.Army +
+                                           enemyPlayerPerspective
+                                               .GetMyIncome()) /
+                                          RoundEvaluator
+                                              .ProbabilityAttackingUnitKills
+                                    );
+                            }
+
+                            int attackingArmy = Math.Min(minArmyThatSucceeds + 4,
+                                myRegion.Army - 1);
+                            botAttacks.Add(new BotAttack(myRegion.OwnerId,
+                                myRegionId, attackingArmy, neighbour.Id));
+                            myRegion.Army -= attackingArmy;
+                        }
                     }
                 }
             }

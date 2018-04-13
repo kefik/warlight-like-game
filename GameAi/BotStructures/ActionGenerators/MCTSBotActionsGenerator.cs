@@ -40,8 +40,8 @@
             var gameTurns = new List<BotGameTurn>();
 
             var deployments = new List<IList<BotDeployment>>();
-            deployments.Add(DeployOffensively(currentGameState));
             deployments.Add(DeployToCounterSecurityThreat(currentGameState));
+            deployments.Add(DeployOffensively(currentGameState));
             deployments.Add(DeployToExpand(currentGameState));
 
             foreach (var botDeployments in deployments
@@ -49,6 +49,21 @@
             {
                 var deploymentCopy = currentGameState.ShallowCopy();
                 UpdateGameStateAfterDeploying(ref deploymentCopy, botDeployments);
+
+                // play defensive
+                var defensiveCopy = deploymentCopy.ShallowCopy();
+                var defensiveAttacks = new List<BotAttack>();
+                AppendRedistributeInlandArmy(defensiveCopy,
+                    defensiveAttacks);
+                AttackToExpandSafely(defensiveCopy, defensiveAttacks);
+                // attack enemy safely (only when your army is clearly stronger)
+                AttackOnEnemySafely(defensiveCopy, defensiveAttacks);
+                // is not same as previous attacks
+                gameTurns.Add(new BotGameTurn(playerId)
+                {
+                    Deployments = botDeployments,
+                    Attacks = defensiveAttacks
+                });
 
                 var noWaitAggressiveCopy = deploymentCopy.ShallowCopy();
                 var noWaitAggressiveAttacks = new List<BotAttack>();
@@ -76,19 +91,6 @@
                 {
                     Deployments = botDeployments,
                     Attacks = waitAggressiveAttacks
-                });
-
-                // play defensive
-                var defensiveCopy = deploymentCopy.ShallowCopy();
-                var defensiveAttacks = new List<BotAttack>();
-                AppendRedistributeInlandArmy(defensiveCopy,
-                    defensiveAttacks);
-                AttackToExpandSafely(defensiveCopy, defensiveAttacks);
-                // is not same as previous attacks
-                gameTurns.Add(new BotGameTurn(playerId)
-                {
-                    Deployments = botDeployments,
-                    Attacks = defensiveAttacks
                 });
             }
 
