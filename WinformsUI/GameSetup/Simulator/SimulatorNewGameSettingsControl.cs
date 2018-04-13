@@ -27,6 +27,8 @@ namespace WinformsUI.GameSetup.Simulator
         {
             InitializeComponent();
 
+            startButton.Enabled = false;
+
             previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             aiPlayersNumberNumericUpDown.Maximum = 2;
             simulatorBotSettingsControl.PlayersLimit = 2;
@@ -35,12 +37,15 @@ namespace WinformsUI.GameSetup.Simulator
             {
                 aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit;
                 simulatorBotSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit;
+
+                startButton.Enabled = true;
             };
 
             // TODO: solve generate restrictions
             generateRestrictionsCheckBox.Enabled = false;
             aiPlayersNumberNumericUpDown.Minimum = 2;
         }
+
         private void PlayersNumberChanged(object sender, EventArgs e)
         {
             if (previousPlayersNumber < aiPlayersNumberNumericUpDown.Value)

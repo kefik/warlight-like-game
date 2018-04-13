@@ -55,8 +55,14 @@
         /// <returns>New instance of the map.</returns>
         public Map GetMap()
         {
-            return new Map(ChosenMapInfo.Id, ChosenMapInfo.Name, ChosenMapInfo.PlayersLimit,
-                ChosenMapInfo.TemplatePath);
+            var chosenMapInfo = ChosenMapInfo;
+            if (chosenMapInfo.Id < 0)
+            {
+                return null;
+            }
+
+            return new Map(chosenMapInfo.Id, chosenMapInfo.Name, chosenMapInfo.PlayersLimit,
+                chosenMapInfo.TemplatePath);
         }
 
         /// <summary>
@@ -82,7 +88,7 @@
             mapComboBox.Refresh();
         }
 
-        protected override void CreateHandle()
+        protected override async void CreateHandle()
         {
             base.CreateHandle();
 
@@ -90,7 +96,7 @@
             {
                 return;
             }
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 // clear combo box items
                 Invoke(new Action(mapComboBox.Items.Clear));
@@ -99,6 +105,10 @@
                 maps = mapInfos.ToList();
                 // refresh the combo box with new items
                 Invoke(new Action(RefreshComboBox));
+
+                // select first item
+                Invoke(
+                    new Action(() => mapComboBox.SelectedIndex = 0));
             });
         }
 

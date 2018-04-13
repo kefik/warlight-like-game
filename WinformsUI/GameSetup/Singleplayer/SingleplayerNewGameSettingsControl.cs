@@ -26,6 +26,8 @@
         {
             InitializeComponent();
 
+            startButton.Enabled = false;
+
             var colorToPick = Global.PlayerColorPicker.PickAny() ?? throw new ArgumentException("All colors depleted.");
             myHumanPlayerControl = new MyHumanPlayerControl
             {
@@ -47,6 +49,8 @@
             {
                 aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit - 1;
                 aiPlayerSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit - 1;
+
+                startButton.Enabled = true;
             };
         }
         

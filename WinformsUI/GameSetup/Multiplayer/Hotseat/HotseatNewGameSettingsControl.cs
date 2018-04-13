@@ -29,6 +29,8 @@
         {
             InitializeComponent();
 
+            startButton.Enabled = false;
+
             var colorToPick = Global.PlayerColorPicker.PickAny() ?? throw new ArgumentException("All colors depleted.");
             myHumanPlayerControl = new MyHumanPlayerControl
             {
@@ -48,6 +50,8 @@
 
                 aiPlayerSettingsControl.PlayersLimit = maxOtherPlayers;
                 humanPlayerSettingsControl.PlayersLimit = maxOtherPlayers;
+
+                startButton.Enabled = true;
             };
             // initialize
             int maxPlayers = Math.Max(0, TotalPlayersLimit - 1);
@@ -157,6 +161,13 @@
         private void Start(object sender, EventArgs e)
         {
             Map map = mapSettingsControl.GetMap();
+
+            if (map == null)
+            {
+                MessageBox.Show(
+                    "Choose a map before starting the game.");
+                return;
+            }
 
             IList<AiPlayer> aiPlayers = aiPlayerSettingsControl.GetPlayers();
 
