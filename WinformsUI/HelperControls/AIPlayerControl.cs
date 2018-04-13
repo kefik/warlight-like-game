@@ -15,7 +15,7 @@
         public AiPlayerControl()
         {
             InitializeComponent();
-
+            
             player = new AiPlayer(Difficulty.Medium, "PC1", KnownColor.Blue, GameBotType.MonteCarloTreeSearchBot);
 
             difficultyComboBox.SelectedIndex = (int) player.Difficulty;

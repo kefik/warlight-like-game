@@ -436,6 +436,7 @@ namespace WinformsUI
             previousTabSelectedIndex =
                 typeGameChoiceTabControl.SelectedIndex;
 
+            // TODO: resize dynamically
             Size = new Size(338, 548);
         }
 

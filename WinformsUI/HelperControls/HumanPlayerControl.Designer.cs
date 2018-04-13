@@ -34,10 +34,10 @@
             // 
             // colorButton
             // 
-            this.colorButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.colorButton.BackColor = System.Drawing.Color.Aqua;
+            this.colorButton.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.colorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.colorButton.Location = new System.Drawing.Point(110, 5);
+            this.colorButton.Location = new System.Drawing.Point(190, 5);
             this.colorButton.Name = "colorButton";
             this.colorButton.Size = new System.Drawing.Size(62, 21);
             this.colorButton.TabIndex = 2;
@@ -46,7 +46,7 @@
             // 
             // playerNameTextBox
             // 
-            this.playerNameTextBox.Location = new System.Drawing.Point(3, 6);
+            this.playerNameTextBox.Location = new System.Drawing.Point(2, 6);
             this.playerNameTextBox.Name = "playerNameTextBox";
             this.playerNameTextBox.Size = new System.Drawing.Size(75, 20);
             this.playerNameTextBox.TabIndex = 3;
@@ -56,12 +56,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.LightGray;
+            this.BackColor = System.Drawing.Color.Gainsboro;
             this.Controls.Add(this.playerNameTextBox);
             this.Controls.Add(this.colorButton);
             this.MinimumSize = new System.Drawing.Size(0, 21);
             this.Name = "HumanPlayerControl";
-            this.Size = new System.Drawing.Size(175, 31);
+            this.Size = new System.Drawing.Size(255, 31);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -88,13 +88,9 @@ namespace WinformsUI.InGame
             gameMapPictureBox.Width = gameMapPictureBox.Image.Width;
             gameMapPictureBox.BackgroundImage = simulationFlowHandler
                 .ImageProcessor.TemplateImage;
-
-            // resize window
-            //ParentForm.Size =
-            //    new Size(gameMapPictureBox.Location.X + gameMapPictureBox.Width, Math.Max(gameStateMenuPanel.Height, gameMapPictureBox.Height));
-            // TODO: dynamically
-            ParentForm.Width = 1107;
-            ParentForm.Height = 541;
+            
+            ParentForm.ClientSize =
+                new Size(gameMapPictureBox.Location.X + gameMapPictureBox.Width, ParentForm.ClientSize.Height);
 
             if (game.IsFogOfWar)
             {
@@ -277,7 +273,7 @@ namespace WinformsUI.InGame
         private void displayedRoundLabel_Click(object sender, EventArgs e)
         {
             // TODO: remove
-            MessageBox.Show($"Width: {ParentForm.Width}, Height: {ParentForm.Height}");
+            //MessageBox.Show($"Width: {ParentForm.Width}, Height: {ParentForm.Height}");
         }
     }
 }

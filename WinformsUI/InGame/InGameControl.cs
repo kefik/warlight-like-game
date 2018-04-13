@@ -144,6 +144,9 @@
             // initialize map processor
             mapHandlerControl.Initialize(gameFlowHandler);
 
+            ParentForm.ClientSize =
+                new Size(mapHandlerControl.Location.X + gameFlowHandler.ImageProcessor.MapImage.Width, ParentForm.ClientSize.Height);
+
             gameFlowHandler.OnRoundPlayed += () =>
             {
                 using (UtilsDbContext db = new UtilsDbContext())

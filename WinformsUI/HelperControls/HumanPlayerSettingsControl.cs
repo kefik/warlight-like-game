@@ -37,10 +37,13 @@
                 throw new ArgumentException();
             }
 
+            var colorToPick = Global.PlayerColorPicker.PickAny() ?? throw new ArgumentException("All colors depleted.");
             HumanPlayerControl control = new HumanPlayerControl
             {
-                Anchor = AnchorStyles.Left | AnchorStyles.Right
-            }; // TODO: generate unique name
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                PlayerName = $"Human{playersTableLayoutPanel.Controls.Count + 1}",
+                PlayerColor = colorToPick
+            };
             playersTableLayoutPanel.Controls.Add(control);
         }
 
@@ -54,6 +57,9 @@
                 throw new Exception();
             }
 
+            HumanPlayerControl humanPlayerControl =
+                (HumanPlayerControl)playersTableLayoutPanel.Controls[PlayersCount - 1];
+            Global.PlayerColorPicker.ReturnColor(humanPlayerControl.PlayerColor);
             playersTableLayoutPanel.Controls.RemoveAt(PlayersCount - 1);
         }
 

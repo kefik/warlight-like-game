@@ -1,6 +1,7 @@
 ﻿namespace WinformsUI.InGame
 {
     using System;
+    using System.Drawing;
     using System.Windows.Forms;
     using GameHandlersLib;
     using GameHandlersLib.GameHandlers;
@@ -35,9 +36,6 @@
             gameMapPictureBox.Height = gameMapPictureBox.Image.Height;
             gameMapPictureBox.Width = gameMapPictureBox.Image.Width;
             gameMapPictureBox.BackgroundImage = gameFlowHandler.ImageProcessor.TemplateImage;
-
-            ParentForm.Width = 1107;
-            ParentForm.Height = 541;
 
             this.gameFlowHandler.OnImageChanged += gameMapPictureBox.Refresh;
         }
@@ -105,8 +103,14 @@
         private void ImageHover(object sender, MouseEventArgs e)
         {
             // TODO: fix flickering
-            //if (processor.GetRegion(e.X, e.Y) != null) Cursor.Current = Cursors.Hand;
-            //else Cursor.Current = Cursors.Default;
+            //if (gameFlowHandler.ImageProcessor.GetRegion(e.X, e.Y) != null)
+            //{
+            //    Cursor.Current = Cursors.Hand;
+            //}
+            //else
+            //{
+            //    Cursor.Current = Cursors.Default;
+            //}
         }
     }
 }

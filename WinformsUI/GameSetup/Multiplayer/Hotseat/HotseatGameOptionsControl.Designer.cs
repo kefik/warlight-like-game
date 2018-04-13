@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.loadGameTabPage = new System.Windows.Forms.TabPage();
-            this.hotseatLoadGamesControl = new WinformsUI.GameSetup.Multiplayer.Hotseat.HotseatLoadGamesControl();
             this.newGameTabPage = new System.Windows.Forms.TabPage();
-            this.hotseatNewGameSettingsControl = new WinformsUI.GameSetup.Multiplayer.Hotseat.HotseatNewGameSettingsControl();
             this.gameOptionsTabControl = new System.Windows.Forms.TabControl();
+            this.hotseatNewGameSettingsControl = new WinformsUI.GameSetup.Multiplayer.Hotseat.HotseatNewGameSettingsControl();
+            this.hotseatLoadGamesControl = new WinformsUI.GameSetup.Multiplayer.Hotseat.HotseatLoadGamesControl();
             this.loadGameTabPage.SuspendLayout();
             this.newGameTabPage.SuspendLayout();
             this.gameOptionsTabControl.SuspendLayout();
@@ -49,16 +49,6 @@
             this.loadGameTabPage.Text = "Load game";
             this.loadGameTabPage.UseVisualStyleBackColor = true;
             // 
-            // hotseatLoadGamesControl
-            // 
-            this.hotseatLoadGamesControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.hotseatLoadGamesControl.Location = new System.Drawing.Point(3, 3);
-            this.hotseatLoadGamesControl.Name = "hotseatLoadGamesControl";
-            this.hotseatLoadGamesControl.Size = new System.Drawing.Size(479, 244);
-            this.hotseatLoadGamesControl.TabIndex = 0;
-            // 
             // newGameTabPage
             // 
             this.newGameTabPage.AutoScroll = true;
@@ -71,15 +61,6 @@
             this.newGameTabPage.Text = "New game";
             this.newGameTabPage.UseVisualStyleBackColor = true;
             // 
-            // hotseatNewGameSettingsControl
-            // 
-            this.hotseatNewGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.hotseatNewGameSettingsControl.Location = new System.Drawing.Point(3, 6);
-            this.hotseatNewGameSettingsControl.Name = "hotseatNewGameSettingsControl";
-            this.hotseatNewGameSettingsControl.Size = new System.Drawing.Size(439, 644);
-            this.hotseatNewGameSettingsControl.TabIndex = 0;
-            // 
             // gameOptionsTabControl
             // 
             this.gameOptionsTabControl.Controls.Add(this.newGameTabPage);
@@ -91,6 +72,26 @@
             this.gameOptionsTabControl.Size = new System.Drawing.Size(493, 279);
             this.gameOptionsTabControl.TabIndex = 2;
             // 
+            // hotseatNewGameSettingsControl
+            // 
+            this.hotseatNewGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.hotseatNewGameSettingsControl.AutoSize = true;
+            this.hotseatNewGameSettingsControl.Location = new System.Drawing.Point(6, 3);
+            this.hotseatNewGameSettingsControl.Name = "hotseatNewGameSettingsControl";
+            this.hotseatNewGameSettingsControl.Size = new System.Drawing.Size(456, 252);
+            this.hotseatNewGameSettingsControl.TabIndex = 0;
+            // 
+            // hotseatLoadGamesControl
+            // 
+            this.hotseatLoadGamesControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.hotseatLoadGamesControl.Location = new System.Drawing.Point(3, 3);
+            this.hotseatLoadGamesControl.Name = "hotseatLoadGamesControl";
+            this.hotseatLoadGamesControl.Size = new System.Drawing.Size(479, 244);
+            this.hotseatLoadGamesControl.TabIndex = 0;
+            // 
             // HotseatGameOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -100,6 +101,7 @@
             this.Size = new System.Drawing.Size(493, 279);
             this.loadGameTabPage.ResumeLayout(false);
             this.newGameTabPage.ResumeLayout(false);
+            this.newGameTabPage.PerformLayout();
             this.gameOptionsTabControl.ResumeLayout(false);
             this.ResumeLayout(false);
 

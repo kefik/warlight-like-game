@@ -24,7 +24,8 @@
                 KnownColor.Pink,
                 KnownColor.Cyan,
                 KnownColor.Gray,
-                KnownColor.Olive
+                KnownColor.Olive,
+                KnownColor.DarkOrange
             }.Take(maximumPlayersCount).ToList();
 
             pickedColors = new HashSet<KnownColor>();

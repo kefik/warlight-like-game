@@ -43,7 +43,7 @@
         public KnownColor PlayerColor
         {
             get { return player.Color; }
-            private set
+            set
             {
                 player = new HumanPlayer(player.User, value);
                 colorButton.BackColor = Color.FromKnownColor(value);
@@ -56,7 +56,7 @@
         public string PlayerName
         {
             get { return player.Name; }
-            private set
+            set
             {
                 player = new HumanPlayer(new LocalUser(value), PlayerColor);
                 playerNameTextBox.Text = value;

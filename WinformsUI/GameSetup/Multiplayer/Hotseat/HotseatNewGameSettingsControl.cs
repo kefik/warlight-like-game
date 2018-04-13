@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Linq;
     using System.Windows.Forms;
     using Client.Entities;
@@ -28,10 +29,12 @@
         {
             InitializeComponent();
 
+            var colorToPick = Global.PlayerColorPicker.PickAny() ?? throw new ArgumentException("All colors depleted.");
             myHumanPlayerControl = new MyHumanPlayerControl
             {
                 Parent = myUserPanel,
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                PlayerColor = colorToPick
             };
             myHumanPlayerControl.Show();
 
@@ -50,14 +53,15 @@
             int maxPlayers = Math.Max(0, TotalPlayersLimit - 1);
             aiPlayersNumberNumericUpDown.Maximum = maxPlayers;
             humanPlayersNumberNumericUpDown.Maximum = maxPlayers;
-
-
+            
             aiPlayerSettingsControl.PlayersLimit = maxPlayers;
             humanPlayerSettingsControl.PlayersLimit = maxPlayers;
-
-
+            
             previousAiPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
+
+            // in hotseat there has to be at least one non AI opponent
+            humanPlayersNumberNumericUpDown.Minimum = 1;
         }
 
         public event Action<Game> OnGameStarted;
@@ -79,6 +83,9 @@
                 for (int i = 0; i < difference; i++)
                 {
                     aiPlayerSettingsControl.AddPlayer();
+
+                    // move start button
+                    startButton.Location = new Point(startButton.Location.X, startButton.Location.Y + 34);
                 }
             }
             else
@@ -87,6 +94,9 @@
                 for (int i = 0; i < difference; i++)
                 {
                     aiPlayerSettingsControl.RemovePlayer();
+
+                    // move start button
+                    startButton.Location = new Point(startButton.Location.X, startButton.Location.Y - 34);
                 }
             }
 
@@ -110,6 +120,9 @@
                 for (int i = 0; i < difference; i++)
                 {
                     humanPlayerSettingsControl.AddPlayer(new LocalUser("")); // TODO: problem with users
+
+                    // move start button
+                    aiPlayersPanel.Location = new Point(aiPlayersPanel.Location.X, aiPlayersPanel.Location.Y + 38);
                 }
             }
             else
@@ -118,6 +131,8 @@
                 for (int i = 0; i < difference; i++)
                 {
                     humanPlayerSettingsControl.RemovePlayer(); // TODO: problem with users
+
+                    aiPlayersPanel.Location = new Point(aiPlayersPanel.Location.X, aiPlayersPanel.Location.Y - 38);
                 }
             }
 

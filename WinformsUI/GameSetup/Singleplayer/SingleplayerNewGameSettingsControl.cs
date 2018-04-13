@@ -36,19 +36,20 @@
             myHumanPlayerControl.Show();
 
             previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
+            
             aiPlayersNumberNumericUpDown.Maximum = 1;
-            aiPlayerSettingsControl.PlayersLimit = 2;
+            aiPlayerSettingsControl.PlayersLimit = 1;
+            // initially there has to be selected 1 player
+            aiPlayersNumberNumericUpDown.Minimum = 1;
+
             // when the map is chosen, update maximum values
             mapSettingsControl.OnMapChosen += (o, e) =>
             {
                 aiPlayersNumberNumericUpDown.Maximum = mapSettingsControl.PlayersLimit - 1;
                 aiPlayerSettingsControl.PlayersLimit = mapSettingsControl.PlayersLimit - 1;
             };
-            
-            aiPlayersNumberNumericUpDown.Minimum = 1;
         }
-
-
+        
         private decimal previousPlayersNumber;
 
         private void PlayersNumberChanged(object sender, EventArgs e)
@@ -76,8 +77,7 @@
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             }
         }
-
-
+        
         private void Start(object sender, EventArgs e)
         {
             try
