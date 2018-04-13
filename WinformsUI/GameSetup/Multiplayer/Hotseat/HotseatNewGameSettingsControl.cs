@@ -62,6 +62,7 @@
 
             // in hotseat there has to be at least one non AI opponent
             humanPlayersNumberNumericUpDown.Minimum = 1;
+            aiPlayersLabel.Visible = false;
         }
 
         public event Action<Game> OnGameStarted;
@@ -98,6 +99,15 @@
                     // move start button
                     startButton.Location = new Point(startButton.Location.X, startButton.Location.Y - 34);
                 }
+            }
+
+            if (aiPlayersNumberNumericUpDown.Value == 0)
+            {
+                aiPlayersLabel.Visible = false;
+            }
+            else
+            {
+                aiPlayersLabel.Visible = true;
             }
 
             previousAiPlayersNumber = aiPlayersNumberNumericUpDown.Value;
