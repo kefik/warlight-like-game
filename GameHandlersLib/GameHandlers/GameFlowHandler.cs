@@ -455,9 +455,29 @@
 
                 OnBotEvaluationStarted?.Invoke(aiPlayer, ts);
 
-                
+                // add bot time if he is not ready to cancel yet
+                var onFaultedTask = stopEvaluationTask.ContinueWith(x => botHandler.StopEvaluation(TimeSpan.FromSeconds(1)), TaskContinuationOptions.OnlyOnFaulted);
 
-                // TODO: POTENTIAL DEADLOCK
+                try
+                {
+                    onFaultedTask.Wait();
+                }
+                catch (AggregateException exc)
+                {
+                    var innerExceptions = exc.InnerExceptions;
+                    var innerException = innerExceptions[0];
+
+                    // on faulted task was never started => original task ran to completion
+                    if (innerException is TaskCanceledException)
+                    {
+                        // do nothing
+                    }
+                    else if (innerException is ArgumentException)
+                    {
+                        throw new NotifyUserException("Bot does not respect time given to him.");
+                    }
+                }
+                
                 var turn = botTurnTask.Result.ToTurn(Game.Map, players, playerIdsMapper);
 
                 LastTurn = turn;

@@ -21,8 +21,7 @@
             get { return $"{mapsStoragePath}/{ImageName}"; }
         }
         public string ImageName { get; set; }
-
-
+        
         public string ImageColoredRegionsPath
         {
             get { return $"{mapsStoragePath}/{ColoredRegionsImageName}"; }

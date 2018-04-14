@@ -287,33 +287,15 @@ namespace GameAi.BotStructures.MCTS
         }
 
         /// <summary>
-        ///     Asynchronously clears cache after evaluation.
-        /// </summary>
-        /// <returns></returns>
-        public async Task ClearEvaluationCacheAsync()
-        {
-            var tasks = new Task[treeHandlers.Length];
-
-            for (int i = 0; i < tasks.Length; i++)
-            {
-                int i1 = i;
-                tasks[i] = Task.Run(() => treeHandlers[i1].Tree
-                    .FreeEntireTree());
-            }
-
-            await Task.WhenAll(tasks);
-        }
-
-        /// <summary>
         ///     Clears evaluation cache.
         /// </summary>
-        public void ClearEvaluationCache()
+        private void ClearEvaluationCache()
         {
             if (treeHandlers != null)
             {
                 foreach (MCTSTreeHandler treeHandler in treeHandlers)
                 {
-                    treeHandler.Tree.FreeEntireTree();
+                    treeHandler?.Tree.FreeEntireTree();
                 }
             }
         }
@@ -328,7 +310,7 @@ namespace GameAi.BotStructures.MCTS
 
         ~MCTSEvaluationHandler()
         {
-            ClearEvaluationCache();
+            Dispose();
         }
     }
 }

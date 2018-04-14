@@ -150,7 +150,22 @@
                     // break after specified amount of time
                     var waitTask =
                         botHandlers[currentIndex]
-                            .StopEvaluation(timeForBotMove);
+                            .StopEvaluation(timeForBotMove)
+                            .ContinueWith(x => botHandlers[currentIndex].StopEvaluation(TimeSpan.FromSeconds(1)), TaskContinuationOptions.OnlyOnFaulted);
+
+                    try
+                    {
+                        await waitTask;
+                    }
+                    catch (TaskCanceledException)
+                    {
+
+                    }
+                    catch (ArgumentException)
+                    {
+                        throw new NotifyUserException("Bot did not cancel in specified time limit.");
+                    }
+
                     var bestTurn = (await botTask).ToTurn(game.Map,
                         game.Players, playerIdsMapper);
                     turns[currentlyEvaluatingIndex] = bestTurn;
