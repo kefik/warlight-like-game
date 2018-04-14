@@ -6,14 +6,14 @@
     using System.Data.Entity.ModelConfiguration;
     using System.IO;
 
-    public abstract class GameEntity : NamedEntity, IInserted, IDeleted
+    public abstract class GameEntity : Entity, IInserted, IDeleted
     {
         public class GameEntityMapper : EntityTypeConfiguration<GameEntity>
         {
             public GameEntityMapper()
             {
                 Property(x => x.SavedGameDateString).HasColumnName(nameof(SavedGameDate));
-                Property(x => x.Name).HasColumnName("Path");
+                Property(x => x.FileName).HasColumnName("Path");
             }
         }
         protected abstract string SavedGamesStoragePath { get; }
@@ -38,12 +38,12 @@
         protected string SavedGameDateString { get; set; }
 
         [StringLength(40)]
-        public override string Name { get; set; }
+        public string FileName { get; set; }
         
         [NotMapped]
         internal virtual string Path
         {
-            get { return $"{SavedGamesStoragePath}/{Name}"; }
+            get { return $"{SavedGamesStoragePath}/{FileName}"; }
         }
 
         /// <summary>

@@ -404,7 +404,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6">
@@ -449,6 +451,7 @@
     <MakeDir Condition="!Exists('$(OutDir)/SavedGames')" Directories="$(OutDir)/SavedGames" />
     <MakeDir Condition="!Exists('$(OutDir)/SavedGames/Hotseat')" Directories="$(OutDir)/SavedGames/Hotseat" />
     <MakeDir Condition="!Exists('$(OutDir)/SavedGames/Singleplayer')" Directories="$(OutDir)/SavedGames/Singleplayer" />
+    <MakeDir Condition="!Exists('$(OutDir)/Simulator')" Directories="$(OutDir)/Simulator" />
     <Copy Condition="!Exists('$(OutDir)/Maps/Map.xsd')" SourceFiles="$(SolutionDir)/Assets/Maps/Map.xsd" DestinationFolder="$(OutDir)/Maps" />
     <Copy Condition="!Exists('$(OutDir)/Maps/RegionColorMapping.xsd')" SourceFiles="$(SolutionDir)/Assets/Maps/RegionColorMapping.xsd" DestinationFolder="$(OutDir)/Maps" />
     <Copy Condition="!Exists('$(OutDir)/Maps/World.png')" SourceFiles="$(SolutionDir)/Assets/Maps/World.png" DestinationFolder="$(OutDir)/Maps" ContinueOnError="true" />

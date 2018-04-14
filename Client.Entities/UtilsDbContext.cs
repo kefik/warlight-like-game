@@ -13,26 +13,43 @@
     using GameObjectsLib.Game;
     using GameObjectsLib.Players;
 
-    public class UtilsDbContext : DbContext,
-        IGameSaver<Game>,
-        IGameLoader<SingleplayerSavedGameInfo>,
-        IGameLoader<HotseatSavedGameInfo>
+    public class UtilsDbContext
+        : DbContext, IGameSaver<Game>,
+            IGameLoader<SingleplayerSavedGameInfo>,
+            IGameLoader<HotseatSavedGameInfo>
     {
-        public UtilsDbContext() :
-            base(new SQLiteConnection()
+        public virtual DbSet<MapInfo> Maps { get; set; }
+
+        public virtual DbSet<SingleplayerSavedGameInfo>
+            SingleplayerSavedGameInfos { get; set; }
+
+        public virtual DbSet<HotseatSavedGameInfo>
+            HotseatSavedGameInfos { get; set; }
+
+        //public virtual DbSet<SimulationRecord> SimulationRecords
+        //{
+        //    get;
+        //    set;
+        //}
+
+        public UtilsDbContext() : base(
+            new SQLiteConnection()
             {
-                ConnectionString = new SQLiteConnectionStringBuilder()
-                {
-                    DataSource = @"Utils.db",
-                    ForeignKeys = true
-                }.ConnectionString
+                ConnectionString =
+                    new SQLiteConnectionStringBuilder()
+                    {
+                        DataSource = @"Utils.db",
+                        ForeignKeys = true
+                    }.ConnectionString
             }, true)
         {
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(
+            DbModelBuilder modelBuilder)
         {
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+            modelBuilder.Conventions
+                .Remove<PluralizingTableNameConvention>();
 
             modelBuilder.Entity<SingleplayerSavedGameInfo>().Map(m =>
             {
@@ -44,28 +61,37 @@
                 m.MapInheritedProperties();
                 m.ToTable(nameof(HotseatSavedGameInfo) + "s");
             });
+            modelBuilder.Entity<SimulationRecord>().Map(m =>
+            {
+                m.ToTable(nameof(SimulationRecord) + "s");
+                m.MapInheritedProperties();
+            });
             modelBuilder.Entity<MapInfo>().Map(m =>
             {
                 m.MapInheritedProperties();
                 m.ToTable(nameof(MapInfo) + "s");
             });
-            modelBuilder.Configurations.Add(new GameEntity.GameEntityMapper());
+            modelBuilder.Configurations.Add(
+                new GameEntity.GameEntityMapper());
 
             base.OnModelCreating(modelBuilder);
         }
-        
+
         public override int SaveChanges()
         {
             // calls deleted method on each entry deleted of type GameEntity
-            var deletedEntries = ChangeTracker.Entries().Where(x => x.State == EntityState.Deleted).Select(x => x.Entity)
-                .OfType<IDeleted>();
+            var deletedEntries = ChangeTracker.Entries()
+                .Where(x => x.State == EntityState.Deleted)
+                .Select(x => x.Entity).OfType<IDeleted>();
             foreach (var entry in deletedEntries)
             {
                 entry.Deleted();
             }
 
             // calls inserted method on each entry added of type GameEntity
-            var addedEntries = ChangeTracker.Entries().Where(x => x.State == EntityState.Added).Select(x => x.Entity).OfType<IInserted>();
+            var addedEntries = ChangeTracker.Entries()
+                .Where(x => x.State == EntityState.Added)
+                .Select(x => x.Entity).OfType<IInserted>();
             foreach (var entry in addedEntries)
             {
                 entry.Inserted();
@@ -79,93 +105,108 @@
             switch (game.GameType)
             {
                 case GameType.SinglePlayer:
-                    {
-                        var savedGames = SingleplayerSavedGameInfos;
-                        string name = $"{game.Id}.sav";
-                        
-                        var save = savedGames.FirstOrDefault(x => x.Id == game.Id);
-                        var saveInfo = new SingleplayerSavedGameInfo(game.GetBytes())
+                {
+                    var savedGames = SingleplayerSavedGameInfos;
+                    string name = $"{game.Id}.sav";
+
+                    var save =
+                        savedGames.FirstOrDefault(
+                            x => x.Id == game.Id);
+                    var saveInfo =
+                        new SingleplayerSavedGameInfo(game
+                            .GetBytes())
                         {
                             AiNumber = game.Players.Count - 1,
                             MapName = game.Map.Name,
                             SavedGameDate = DateTime.Now,
-                            Name = name
+                            FileName = name
                         };
-                        // game hasn't been saved yet
-                        
-                        if (save != null)
-                        {
-                            savedGames.Remove(save);
-                        }
-                        savedGames.Add(saveInfo);
-                        
-                        SaveChanges();
-                        break;
-                    }
-                case GameType.MultiplayerHotseat:
-                    {
-                        var savedGames = HotseatSavedGameInfos;
-                        string name = $"{game.Id}.sav";
-                        
-                        var save = savedGames.FirstOrDefault(x => x.Id == game.Id);
+                    // game hasn't been saved yet
 
-                        var saveInfo = new HotseatSavedGameInfo(game.GetBytes())
+                    if (save != null)
+                    {
+                        savedGames.Remove(save);
+                    }
+                    savedGames.Add(saveInfo);
+
+                    SaveChanges();
+                    break;
+                }
+                case GameType.MultiplayerHotseat:
+                {
+                    var savedGames = HotseatSavedGameInfos;
+                    string name = $"{game.Id}.sav";
+
+                    var save =
+                        savedGames.FirstOrDefault(
+                            x => x.Id == game.Id);
+
+                    var saveInfo =
+                        new HotseatSavedGameInfo(game.GetBytes())
                         {
                             Id = game.Id,
                             MapName = game.Map.Name,
                             SavedGameDate = DateTime.Now,
-                            Name = name
+                            FileName = name
                         };
-                        if (save != null)
-                        {
-                            savedGames.Remove(save);
-                        }
-                        int aiPlayerNumber = (from player in game.Players
-                                              where player.GetType() == typeof(AiPlayer)
-                                              select player).Count();
-                        int humanPlayersNumber = game.Players.Count - aiPlayerNumber;
-
-                        saveInfo.AiNumber = aiPlayerNumber;
-                        saveInfo.HumanNumber = humanPlayersNumber;
-                        savedGames.Add(saveInfo);
-
-                        SaveChanges();
-
-                        break;
+                    if (save != null)
+                    {
+                        savedGames.Remove(save);
                     }
+                    int aiPlayerNumber =
+                    (from player in game.Players
+                     where player.GetType() == typeof(AiPlayer)
+                     select player).Count();
+                    int humanPlayersNumber =
+                        game.Players.Count - aiPlayerNumber;
+
+                    saveInfo.AiNumber = aiPlayerNumber;
+                    saveInfo.HumanNumber = humanPlayersNumber;
+                    savedGames.Add(saveInfo);
+
+                    SaveChanges();
+
+                    break;
+                }
                 case GameType.MultiplayerNetwork:
                     throw new NotImplementedException();
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                default: throw new ArgumentOutOfRangeException();
             }
         }
-        
+
         public byte[] LoadGame(SingleplayerSavedGameInfo info)
         {
-            var savedGameInfo = SingleplayerSavedGameInfos.First(x => x.Id == info.Id);
+            var savedGameInfo =
+                SingleplayerSavedGameInfos
+                    .First(x => x.Id == info.Id);
 
             return savedGameInfo.GetFileBytes();
         }
 
         public byte[] LoadGame(HotseatSavedGameInfo info)
         {
-            var savedGameInfo = HotseatSavedGameInfos.First(x => x.Id == info.Id);
+            var savedGameInfo =
+                HotseatSavedGameInfos.First(x => x.Id == info.Id);
 
             return savedGameInfo.GetFileBytes();
         }
 
         public void Remove(SingleplayerSavedGameInfo savedGameInfo)
         {
-            using (DbContextTransaction transaction = Database.BeginTransaction())
+            using (DbContextTransaction transaction =
+                Database.BeginTransaction())
             {
                 try
                 {
-                    var objectToBeRemoved = SingleplayerSavedGameInfos.First(x => x.Id == savedGameInfo.Id);
+                    var objectToBeRemoved =
+                        SingleplayerSavedGameInfos.First(
+                            x => x.Id == savedGameInfo.Id);
 
                     string path = objectToBeRemoved.Path;
 
-                    SingleplayerSavedGameInfos.Remove(objectToBeRemoved);
+                    SingleplayerSavedGameInfos.Remove(
+                        objectToBeRemoved);
                     File.Delete(path);
 
                     SaveChanges();
@@ -179,13 +220,17 @@
                 }
             }
         }
+
         public void Remove(HotseatSavedGameInfo savedGameInfo)
         {
-            using (DbContextTransaction transaction = Database.BeginTransaction())
+            using (DbContextTransaction transaction =
+                Database.BeginTransaction())
             {
                 try
                 {
-                    var objectToBeRemoved = HotseatSavedGameInfos.First(x => x.Id == savedGameInfo.Id);
+                    var objectToBeRemoved =
+                        HotseatSavedGameInfos.First(
+                            x => x.Id == savedGameInfo.Id);
 
                     string path = objectToBeRemoved.Path;
 
@@ -204,19 +249,20 @@
                 }
             }
         }
-        
-        public virtual DbSet<MapInfo> Maps { get; set; }
-        public virtual DbSet<SingleplayerSavedGameInfo> SingleplayerSavedGameInfos { get; set; }
-        public virtual DbSet<HotseatSavedGameInfo> HotseatSavedGameInfos { get; set; }
     }
 
     public class SQLiteConfiguration : DbConfiguration
     {
         public SQLiteConfiguration()
         {
-            SetProviderFactory("System.Data.SQLite", SQLiteFactory.Instance);
-            SetProviderFactory("System.Data.SQLite.EF6", System.Data.SQLite.EF6.SQLiteProviderFactory.Instance);
-            SetProviderServices("System.Data.SQLite", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
+            SetProviderFactory("System.Data.SQLite",
+                SQLiteFactory.Instance);
+            SetProviderFactory("System.Data.SQLite.EF6",
+                System.Data.SQLite.EF6.SQLiteProviderFactory
+                    .Instance);
+            SetProviderServices("System.Data.SQLite",
+                (DbProviderServices) SQLiteProviderFactory.Instance
+                    .GetService(typeof(DbProviderServices)));
         }
     }
 }
