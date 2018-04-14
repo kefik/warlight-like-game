@@ -16,8 +16,14 @@ namespace WinformsUI.GameSetup.Simulator
     {
         public event Action<Game> OnSimulationStarted
         {
-            add { simulatorNewGameSettingsControl1.OnSimulationStarted += value; }
-            remove { simulatorNewGameSettingsControl1.OnSimulationStarted -= value; }
+            add { simulatorNewGameSettingsControl.OnSimulationStarted += value; }
+            remove { simulatorNewGameSettingsControl.OnSimulationStarted -= value; }
+        }
+
+        public event Action<Game> OnSimulationLoaded
+        {
+            add { simulatorLoadGamesControl.OnSimulationLoaded += value; }
+            remove { simulatorLoadGamesControl.OnSimulationLoaded -= value; }
         }
 
         public SimulatorGameOptionsControl()

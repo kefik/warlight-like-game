@@ -15,7 +15,7 @@
         {
             colorsToPick = new List<KnownColor>()
             {
-                KnownColor.Blue,
+                KnownColor.LightBlue,
                 KnownColor.Red,
                 KnownColor.Green,
                 KnownColor.Orange,

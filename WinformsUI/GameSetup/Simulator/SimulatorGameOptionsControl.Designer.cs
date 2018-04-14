@@ -28,33 +28,91 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.simulatorNewGameSettingsControl1 = new WinformsUI.GameSetup.Simulator.SimulatorNewGameSettingsControl();
+            this.gameOptionsTabControl = new System.Windows.Forms.TabControl();
+            this.newGameTabPage = new System.Windows.Forms.TabPage();
+            this.loadGameTabPage = new System.Windows.Forms.TabPage();
+            this.simulatorNewGameSettingsControl = new WinformsUI.GameSetup.Simulator.SimulatorNewGameSettingsControl();
+            this.simulatorLoadGamesControl = new WinformsUI.GameSetup.Simulator.SimulatorLoadGamesControl();
+            this.gameOptionsTabControl.SuspendLayout();
+            this.newGameTabPage.SuspendLayout();
+            this.loadGameTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
-            // simulatorNewGameSettingsControl1
+            // gameOptionsTabControl
             // 
-            this.simulatorNewGameSettingsControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.gameOptionsTabControl.Controls.Add(this.newGameTabPage);
+            this.gameOptionsTabControl.Controls.Add(this.loadGameTabPage);
+            this.gameOptionsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gameOptionsTabControl.Location = new System.Drawing.Point(0, 0);
+            this.gameOptionsTabControl.Name = "gameOptionsTabControl";
+            this.gameOptionsTabControl.SelectedIndex = 0;
+            this.gameOptionsTabControl.Size = new System.Drawing.Size(592, 380);
+            this.gameOptionsTabControl.TabIndex = 3;
+            // 
+            // newGameTabPage
+            // 
+            this.newGameTabPage.AutoScroll = true;
+            this.newGameTabPage.Controls.Add(this.simulatorNewGameSettingsControl);
+            this.newGameTabPage.Location = new System.Drawing.Point(4, 22);
+            this.newGameTabPage.Name = "newGameTabPage";
+            this.newGameTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.newGameTabPage.Size = new System.Drawing.Size(584, 354);
+            this.newGameTabPage.TabIndex = 1;
+            this.newGameTabPage.Text = "New game";
+            this.newGameTabPage.UseVisualStyleBackColor = true;
+            // 
+            // loadGameTabPage
+            // 
+            this.loadGameTabPage.Controls.Add(this.simulatorLoadGamesControl);
+            this.loadGameTabPage.Location = new System.Drawing.Point(4, 22);
+            this.loadGameTabPage.Name = "loadGameTabPage";
+            this.loadGameTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.loadGameTabPage.Size = new System.Drawing.Size(584, 354);
+            this.loadGameTabPage.TabIndex = 2;
+            this.loadGameTabPage.Text = "Load game";
+            this.loadGameTabPage.UseVisualStyleBackColor = true;
+            // 
+            // simulatorNewGameSettingsControl
+            // 
+            this.simulatorNewGameSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.simulatorNewGameSettingsControl1.AutoScroll = true;
-            this.simulatorNewGameSettingsControl1.Location = new System.Drawing.Point(3, 3);
-            this.simulatorNewGameSettingsControl1.Name = "simulatorNewGameSettingsControl1";
-            this.simulatorNewGameSettingsControl1.Size = new System.Drawing.Size(370, 429);
-            this.simulatorNewGameSettingsControl1.TabIndex = 0;
+            this.simulatorNewGameSettingsControl.AutoScroll = true;
+            this.simulatorNewGameSettingsControl.Location = new System.Drawing.Point(3, 3);
+            this.simulatorNewGameSettingsControl.Name = "simulatorNewGameSettingsControl";
+            this.simulatorNewGameSettingsControl.Size = new System.Drawing.Size(578, 348);
+            this.simulatorNewGameSettingsControl.TabIndex = 0;
+            // 
+            // simulatorLoadGamesControl
+            // 
+            this.simulatorLoadGamesControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.simulatorLoadGamesControl.Location = new System.Drawing.Point(3, 3);
+            this.simulatorLoadGamesControl.Name = "simulatorLoadGamesControl";
+            this.simulatorLoadGamesControl.Size = new System.Drawing.Size(578, 345);
+            this.simulatorLoadGamesControl.TabIndex = 0;
             // 
             // SimulatorGameOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.Controls.Add(this.simulatorNewGameSettingsControl1);
+            this.Controls.Add(this.gameOptionsTabControl);
             this.Name = "SimulatorGameOptionsControl";
-            this.Size = new System.Drawing.Size(370, 410);
+            this.Size = new System.Drawing.Size(592, 380);
+            this.gameOptionsTabControl.ResumeLayout(false);
+            this.newGameTabPage.ResumeLayout(false);
+            this.loadGameTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private SimulatorNewGameSettingsControl simulatorNewGameSettingsControl1;
+        private System.Windows.Forms.TabControl gameOptionsTabControl;
+        private System.Windows.Forms.TabPage newGameTabPage;
+        private System.Windows.Forms.TabPage loadGameTabPage;
+        private SimulatorLoadGamesControl simulatorLoadGamesControl;
+        private SimulatorNewGameSettingsControl simulatorNewGameSettingsControl;
     }
 }

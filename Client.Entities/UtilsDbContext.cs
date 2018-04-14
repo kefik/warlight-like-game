@@ -16,7 +16,8 @@
     public class UtilsDbContext
         : DbContext, IGameSaver<Game>,
             IGameLoader<SingleplayerSavedGameInfo>,
-            IGameLoader<HotseatSavedGameInfo>
+            IGameLoader<HotseatSavedGameInfo>,
+            IGameLoader<SimulationRecord>
     {
         public virtual DbSet<MapInfo> Maps { get; set; }
 
@@ -26,11 +27,11 @@
         public virtual DbSet<HotseatSavedGameInfo>
             HotseatSavedGameInfos { get; set; }
 
-        //public virtual DbSet<SimulationRecord> SimulationRecords
-        //{
-        //    get;
-        //    set;
-        //}
+        public virtual DbSet<SimulationRecord> SimulationRecords
+        {
+            get;
+            set;
+        }
 
         public UtilsDbContext() : base(
             new SQLiteConnection()
@@ -171,6 +172,35 @@
                 case GameType.MultiplayerNetwork:
                     throw new NotImplementedException();
                     break;
+                case GameType.Simulator:
+                {
+                    var savedGames = SimulationRecords;
+                    string name = $"{game.Id}.sav";
+
+                    var save =
+                        savedGames.FirstOrDefault(
+                            x => x.Id == game.Id);
+                    var saveInfo =
+                        new SimulationRecord(game
+                            .GetBytes())
+                        {
+                            Id = game.Id,
+                            AiNumber = game.Players.Count,
+                            MapName = game.Map.Name,
+                            SavedGameDate = DateTime.Now,
+                            FileName = name
+                        };
+                    // game hasn't been saved yet
+
+                    if (save != null)
+                    {
+                        savedGames.Remove(save);
+                    }
+                    savedGames.Add(saveInfo);
+
+                    SaveChanges();
+                    break;
+                }
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -188,6 +218,14 @@
         {
             var savedGameInfo =
                 HotseatSavedGameInfos.First(x => x.Id == info.Id);
+
+            return savedGameInfo.GetFileBytes();
+        }
+
+        public byte[] LoadGame(SimulationRecord simulationRecord)
+        {
+            var savedGameInfo =
+                SimulationRecords.First(x => x.Id == simulationRecord.Id);
 
             return savedGameInfo.GetFileBytes();
         }
@@ -235,6 +273,35 @@
                     string path = objectToBeRemoved.Path;
 
                     HotseatSavedGameInfos.Remove(objectToBeRemoved);
+
+                    File.Delete(path);
+
+                    SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public void Remove(SimulationRecord simulationRecord)
+        {
+            using (DbContextTransaction transaction =
+                Database.BeginTransaction())
+            {
+                try
+                {
+                    var objectToBeRemoved =
+                        SimulationRecords.First(
+                            x => x.Id == simulationRecord.Id);
+
+                    string path = objectToBeRemoved.Path;
+
+                    SimulationRecords.Remove(objectToBeRemoved);
 
                     File.Delete(path);
 

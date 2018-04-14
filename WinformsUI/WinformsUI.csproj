@@ -120,6 +120,12 @@
     <Compile Include="GameSetup\Multiplayer\Network\OpenedGamesControl.Designer.cs">
       <DependentUpon>OpenedGamesControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameSetup\Simulator\SimulatorLoadGamesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameSetup\Simulator\SimulatorLoadGamesControl.Designer.cs">
+      <DependentUpon>SimulatorLoadGamesControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameSetup\Simulator\SimulatorGameOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -303,6 +309,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GameSetup\Multiplayer\Network\OpenedGamesControl.resx">
       <DependentUpon>OpenedGamesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSetup\Simulator\SimulatorLoadGamesControl.resx">
+      <DependentUpon>SimulatorLoadGamesControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GameSetup\Simulator\SimulatorGameOptionsControl.resx">
       <DependentUpon>SimulatorGameOptionsControl.cs</DependentUpon>

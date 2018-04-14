@@ -55,15 +55,19 @@
             remove { ImageProcessor.OnImageChanged -= value; }
         }
 
+        /// <summary>
+        /// Invoked when evaluation is stopped.
+        /// </summary>
+        public event Action OnRoundPlayed
+        {
+            add { botEvaluationHandler.OnRoundPlayed += value; }
+            remove { botEvaluationHandler.OnRoundPlayed -= value; }
+        }
+
         public SimulationFlowHandler(Game game,
             IMapImageProcessor processor,
             Player playerPerspective)
         {
-            if (game.RoundNumber != 0)
-            {
-                throw new ArgumentException("Cannot simulate game that has already begun.");
-            }
-
             if (game.Players.Any(x => x.GetType() != typeof(AiPlayer)))
             {
                 throw new ArgumentException("Only AI players can be used in the simulation.");

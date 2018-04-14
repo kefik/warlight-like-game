@@ -110,6 +110,10 @@ namespace WinformsUI
             simulatorInGame.Initialize(game);
 
             // load size
+            using (UtilsDbContext dbContext = new UtilsDbContext())
+            {
+                game.Save(dbContext);
+            }
 
             simulatorInGame.Show();
         }
@@ -281,6 +285,10 @@ namespace WinformsUI
 
             simulatorGameOptionsControl.OnSimulationStarted +=
                 LoadSimulatorInGameScreen;
+
+            simulatorGameOptionsControl.OnSimulationLoaded +=
+                LoadSimulatorInGameScreen;
+
             simulatorGameOptionsControl.Show();
         }
 

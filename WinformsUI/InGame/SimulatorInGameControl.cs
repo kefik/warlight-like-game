@@ -7,6 +7,7 @@ namespace WinformsUI.InGame
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Diagnostics;
     using System.Drawing;
     using System.IO;
@@ -109,8 +110,23 @@ namespace WinformsUI.InGame
             simulationFlowHandler.OnImageChanged +=
                 RefreshRoundNumber;
 
+            // save after evaluation is stopped
+            simulationFlowHandler.OnRoundPlayed += () =>
+            {
+                using (UtilsDbContext db = new UtilsDbContext())
+                {
+                    simulationFlowHandler.Game.Save(db);
+                }
+            };
+
+            RefreshRoundNumber();
+            if (game.IsFinished())
+            {
+                playPauseButton.Enabled = false;
+            }
+
 #if DEBUG
-            logFileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
+            logFileName = $"{ConfigurationManager.AppSettings["SimulationRecordStoragePath"]}/{game.Id}.log";
 #endif
         }
 

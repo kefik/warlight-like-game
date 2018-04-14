@@ -100,10 +100,27 @@ namespace WinformsUI.GameSetup.Simulator
                     };
                 }
 
-                var factory = new GameFactory();
-                var game = factory.CreateGame(0, GameType.Simulator, map, players, fogOfWar: fogOfWarCheckBox.Checked,
-                    objectsRestrictions: restrictions);
-                
+                Game game = null;
+                // generate id for the game
+                using (UtilsDbContext db = new UtilsDbContext())
+                {
+                    IEnumerable<SimulationRecord> savedGamesEnum =
+                        db.SimulationRecords.AsEnumerable();
+                    SimulationRecord lastGame = savedGamesEnum.LastOrDefault();
+                    int gameId = 1;
+                    if (lastGame != null)
+                    {
+                        gameId = lastGame.Id + 1;
+                    }
+
+                    // get restrictions
+                    var gameRestrictions = new GameObjectsRestrictionsGenerator(map, players, 2).Generate();
+
+                    var factory = new GameFactory();
+                    game = factory.CreateGame(gameId, GameType.Simulator, map,
+                        players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: gameRestrictions);
+                }
+
                 OnSimulationStarted?.Invoke(game);
             }
             catch (UnauthorizedAccessException)

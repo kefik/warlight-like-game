@@ -35,6 +35,8 @@
 
         private CancellationTokenSource cancellationTokenSource;
 
+        public event Action OnRoundPlayed;
+
         public BotEvaluationHandler(Game game)
         {
             this.game = game;
@@ -116,13 +118,13 @@
                             new WarlightAiBotHandler(
                                 GameBotType.AggressiveBot, mapMin,
                                 Difficulty.Hard,
-                                (byte) evaluationPlayerId,
+                                (byte)evaluationPlayerId,
                                 game.Players
                                     .Where(x => !x.IsDefeated(game
                                         .RoundNumber))
                                     .Where(x => playerIdsMapper.GetNewId(x.Id) != evaluationPlayerId)
                                     .Select(
-                                        x => (byte) playerIdsMapper
+                                        x => (byte)playerIdsMapper
                                             .GetNewId(x.Id))
                                     .ToArray(), game.IsFogOfWar,
                                 restrictions);
@@ -130,17 +132,17 @@
                     else
                     {
                         var aiPlayer =
-                            (AiPlayer) players[currentIndex];
+                            (AiPlayer)players[currentIndex];
                         botHandlers[currentIndex] =
                             new WarlightAiBotHandler(aiPlayer.BotType,
                                 mapMin, aiPlayer.Difficulty,
-                                (byte) evaluationPlayerId,
+                                (byte)evaluationPlayerId,
                                 game.Players
                                     .Where(x => !x.IsDefeated(game
                                         .RoundNumber))
                                      .Where(x => x != aiPlayer)
                                     .Select(
-                                        x => (byte) playerIdsMapper
+                                        x => (byte)playerIdsMapper
                                             .GetNewId(x.Id))
                                     .ToArray(), game.IsFogOfWar,
                                 restrictions);
@@ -187,6 +189,8 @@
                     {
                         PlayRound(turns);
                         currentlyEvaluatingIndex = 0;
+
+                        OnRoundPlayed?.Invoke();
                         break;
                     }
                 }

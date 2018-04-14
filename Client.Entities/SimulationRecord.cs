@@ -14,5 +14,10 @@
         {
             Data = data;
         }
+
+        public override string ToString()
+        {
+            return string.Format($"Id: {Id}, Ai: {AiNumber}; Map: {MapName}, Saved: {SavedGameDate}");
+        }
     }
 }

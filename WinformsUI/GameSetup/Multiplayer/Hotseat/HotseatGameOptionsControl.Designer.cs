@@ -79,7 +79,7 @@
             this.hotseatNewGameSettingsControl.AutoSize = true;
             this.hotseatNewGameSettingsControl.Location = new System.Drawing.Point(6, 3);
             this.hotseatNewGameSettingsControl.Name = "hotseatNewGameSettingsControl";
-            this.hotseatNewGameSettingsControl.Size = new System.Drawing.Size(456, 252);
+            this.hotseatNewGameSettingsControl.Size = new System.Drawing.Size(439, 287);
             this.hotseatNewGameSettingsControl.TabIndex = 0;
             // 
             // hotseatLoadGamesControl
@@ -87,9 +87,9 @@
             this.hotseatLoadGamesControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.hotseatLoadGamesControl.Location = new System.Drawing.Point(3, 3);
+            this.hotseatLoadGamesControl.Location = new System.Drawing.Point(0, 3);
             this.hotseatLoadGamesControl.Name = "hotseatLoadGamesControl";
-            this.hotseatLoadGamesControl.Size = new System.Drawing.Size(479, 244);
+            this.hotseatLoadGamesControl.Size = new System.Drawing.Size(482, 247);
             this.hotseatLoadGamesControl.TabIndex = 0;
             // 
             // HotseatGameOptionsControl
@@ -112,7 +112,7 @@
         private System.Windows.Forms.TabPage loadGameTabPage;
         private System.Windows.Forms.TabPage newGameTabPage;
         private System.Windows.Forms.TabControl gameOptionsTabControl;
-        private HotseatLoadGamesControl hotseatLoadGamesControl;
         private HotseatNewGameSettingsControl hotseatNewGameSettingsControl;
+        private HotseatLoadGamesControl hotseatLoadGamesControl;
     }
 }
