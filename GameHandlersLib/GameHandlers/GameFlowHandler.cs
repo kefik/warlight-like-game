@@ -451,9 +451,11 @@
                 var ts = new TimeSpan(0, 0, 0, 0,
                     timeForEvaluationInMs);
 
-                botHandler.StopEvaluation(ts);
+                var stopEvaluationTask = botHandler.StopEvaluation(ts);
 
                 OnBotEvaluationStarted?.Invoke(aiPlayer, ts);
+
+                
 
                 // TODO: POTENTIAL DEADLOCK
                 var turn = botTurnTask.Result.ToTurn(Game.Map, players, playerIdsMapper);

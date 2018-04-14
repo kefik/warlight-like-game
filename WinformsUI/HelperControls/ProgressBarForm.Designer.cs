@@ -63,7 +63,11 @@
             this.ControlBox = false;
             this.Controls.Add(this.aiPlayerEvaluatingMessageLabel);
             this.Controls.Add(this.progressBar);
+            this.MaximumSize = new System.Drawing.Size(284, 126);
+            this.MinimumSize = new System.Drawing.Size(284, 126);
             this.Name = "ProgressBarForm";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.Text = "Progress";
             this.Load += new System.EventHandler(this.FormLoad);
             this.ResumeLayout(false);

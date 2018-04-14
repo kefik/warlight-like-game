@@ -49,7 +49,7 @@
             this.multiplayerTabPage.Location = new System.Drawing.Point(4, 22);
             this.multiplayerTabPage.Name = "multiplayerTabPage";
             this.multiplayerTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.multiplayerTabPage.Size = new System.Drawing.Size(283, 458);
+            this.multiplayerTabPage.Size = new System.Drawing.Size(314, 458);
             this.multiplayerTabPage.TabIndex = 1;
             this.multiplayerTabPage.Text = "Multiplayer";
             this.multiplayerTabPage.UseVisualStyleBackColor = true;
@@ -92,7 +92,7 @@
             this.settingsTabPage.Location = new System.Drawing.Point(4, 22);
             this.settingsTabPage.Name = "settingsTabPage";
             this.settingsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.settingsTabPage.Size = new System.Drawing.Size(283, 458);
+            this.settingsTabPage.Size = new System.Drawing.Size(314, 458);
             this.settingsTabPage.TabIndex = 2;
             this.settingsTabPage.Text = "Settings";
             this.settingsTabPage.UseVisualStyleBackColor = true;
@@ -150,7 +150,7 @@
             this.simulatorTabPage.Location = new System.Drawing.Point(4, 22);
             this.simulatorTabPage.Name = "simulatorTabPage";
             this.simulatorTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.simulatorTabPage.Size = new System.Drawing.Size(283, 458);
+            this.simulatorTabPage.Size = new System.Drawing.Size(314, 458);
             this.simulatorTabPage.TabIndex = 3;
             this.simulatorTabPage.Text = "Simulator";
             this.simulatorTabPage.UseVisualStyleBackColor = true;
@@ -174,6 +174,7 @@
             this.ClientSize = new System.Drawing.Size(322, 509);
             this.Controls.Add(this.loggedInLabel);
             this.Controls.Add(this.typeGameChoiceTabControl);
+            this.MinimumSize = new System.Drawing.Size(338, 548);
             this.Name = "MainGameForm";
             this.Text = "Warlight";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormClose);

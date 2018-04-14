@@ -82,6 +82,10 @@
                 EvaluationState = BotEvaluationState.ShouldStop;
                 evaluationHandler.Stop();
             }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
     }
 }
