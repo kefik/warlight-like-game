@@ -19,7 +19,7 @@ namespace WinformsUI.InGame
     using GameHandlersLib.MapHandlers;
     using GameObjectsLib.Game;
     using GameObjectsLib.Players;
-    using HelperObjects;
+    using Helpers;
 
     public partial class SimulatorInGameControl : UserControl
     {
@@ -153,8 +153,9 @@ namespace WinformsUI.InGame
                 }
                 catch (GameFinishedException)
                 {
+                    // TODO: invoke if required
                     // ignore for now
-                    playPauseButton.Enabled = false;
+                    playPauseButton.InvokeIfRequired(() => playPauseButton.Enabled = false);
                 }
 #if DEBUG
                 finally
@@ -281,9 +282,10 @@ namespace WinformsUI.InGame
 
         private void RefreshRoundNumber()
         {
+            // TODO: invoke if required
             int displayedRoundNumber = simulationFlowHandler
                 .GetDisplayedRoundNumber();
-            roundNumber.Text = displayedRoundNumber.ToString();
+            roundNumber.InvokeIfRequired(() => roundNumber.Text = displayedRoundNumber.ToString());
         }
 
         private void displayedRoundLabel_Click(object sender, EventArgs e)

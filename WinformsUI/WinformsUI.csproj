@@ -178,7 +178,8 @@
     <Compile Include="HelperControls\SimulatorBotSettingsControl.Designer.cs">
       <DependentUpon>SimulatorBotSettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperObjects\ComboBoxItem.cs" />
+    <Compile Include="Helpers\ComboBoxItem.cs" />
+    <Compile Include="Helpers\ControlExtensions.cs" />
     <Compile Include="InGame\InGameControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

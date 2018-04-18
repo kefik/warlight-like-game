@@ -155,11 +155,8 @@ namespace GameAi.BotStructures.AggressiveBot
                     gameActionsGenerator.Generate(PlayerPerspective)[
                         index: 0];
             }
-
-            lock (botLock)
-            {
-                EvaluationState = BotEvaluationState.NotRunning;
-            }
+            
+            EvaluationState = BotEvaluationState.NotRunning;
 
             return generatedBestTurn;
         }

@@ -1,4 +1,4 @@
-﻿namespace WinformsUI.HelperObjects
+﻿namespace WinformsUI.Helpers
 {
     public class ComboBoxItem
     {

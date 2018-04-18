@@ -96,6 +96,8 @@
 
             gameTurns = gameTurns.Distinct().ToList();
 
+            gameTurns.Shuffle();
+
             return gameTurns;
         }
     }

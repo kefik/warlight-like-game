@@ -8,7 +8,6 @@
     using GameAi.Data;
     using GameObjectsLib;
     using GameObjectsLib.Players;
-    using HelperObjects;
 
     public partial class AiPlayerControl : UserControl
     {

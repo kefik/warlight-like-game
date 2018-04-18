@@ -8,6 +8,7 @@
     using System.Windows.Forms;
     using Client.Entities;
     using GameObjectsLib.GameMap;
+    using Helpers;
 
     public partial class MapSettingsControl : UserControl
     {
@@ -99,16 +100,16 @@
             await Task.Run(() =>
             {
                 // clear combo box items
-                Invoke(new Action(mapComboBox.Items.Clear));
+                mapComboBox.InvokeIfRequired(mapComboBox.Items.Clear);
                 // get map infos from database
                 DbSet<MapInfo> mapInfos = new UtilsDbContext().Maps;
                 maps = mapInfos.ToList();
                 // refresh the combo box with new items
-                Invoke(new Action(RefreshComboBox));
+                this.InvokeIfRequired(RefreshComboBox);
 
                 // select first item
-                Invoke(
-                    new Action(() => mapComboBox.SelectedIndex = 0));
+                this.InvokeIfRequired(
+                    () => mapComboBox.SelectedIndex = 0);
             });
         }
 

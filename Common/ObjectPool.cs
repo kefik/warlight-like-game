@@ -135,7 +135,7 @@
         /// <param name="obj"></param>
         public void Free(TType obj)
         {
-            resetInvoker.Invoke(obj);
+            resetInvoker(obj);
             constructorInvoker(obj);
             freeResourcesQueue.Enqueue(obj);
         }

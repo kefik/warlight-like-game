@@ -22,6 +22,7 @@ namespace WinformsUI
     using GameSetup.Multiplayer.Network;
     using GameSetup.Simulator;
     using GameSetup.Singleplayer;
+    using Helpers;
     using InGame;
 
     public partial class MainGameForm : Form
@@ -161,14 +162,14 @@ namespace WinformsUI
                         aiPlayers, mapName, freeSlotsCount);
                 if (successful == false)
                 {
-                    Invoke(new Action(() => MessageBox.Show(
-                        $"The game could not be created.")));
+                    this.InvokeIfRequired(() => MessageBox.Show(
+                        $"The game could not be created."));
                     return;
                 }
 
                 // TODO: load appropriate screen
-                Invoke(new Action(() => typeGameChoiceTabControl
-                    .SelectedIndex = 0));
+                this.InvokeIfRequired(() => typeGameChoiceTabControl
+                    .SelectedIndex = 0);
             }
         }
 
@@ -331,19 +332,7 @@ namespace WinformsUI
                         Global.MyUser = serverLoggingForm.User;
                         break;
                     default:
-                        if (InvokeRequired)
-                        {
-                            Invoke(
-                                new Action(
-                                    () => typeGameChoiceTabControl
-                                            .SelectedIndex =
-                                        previousTabSelectedIndex));
-                        }
-                        else
-                        {
-                            typeGameChoiceTabControl.SelectedIndex =
-                                previousTabSelectedIndex;
-                        }
+                        typeGameChoiceTabControl.InvokeIfRequired(() => typeGameChoiceTabControl.SelectedIndex = previousTabSelectedIndex);
                         return false;
                 }
             }

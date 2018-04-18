@@ -7,6 +7,7 @@
     using System.Windows.Forms;
     using Client.Entities;
     using GameObjectsLib.Game;
+    using Helpers;
 
     public partial class HotseatLoadGamesControl : UserControl
     {
@@ -30,7 +31,7 @@
                     // TODO: might be too slow
                     foreach (HotseatSavedGameInfo savedGame in savedGames)
                     {
-                        Invoke(new Action(() => loadedGamesListBox.Items.Add(savedGame)));
+                        loadedGamesListBox.InvokeIfRequired(() => loadedGamesListBox.Items.Add(savedGame));
                     }
                     // TODO: data binding
                 }

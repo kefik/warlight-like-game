@@ -6,7 +6,6 @@
     using System.Windows.Forms;
     using GameObjectsLib;
     using GameObjectsLib.Players;
-    using HelperObjects;
 
     public partial class AiPlayerSettingsControl : UserControl
     {

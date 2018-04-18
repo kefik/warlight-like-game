@@ -6,6 +6,7 @@
     using System.Windows.Forms;
     using Client.Entities;
     using GameObjectsLib.Game;
+    using Helpers;
 
     public partial class SimulatorLoadGamesControl : UserControl
     {
@@ -29,7 +30,7 @@
                     // TODO: might be too slow
                     foreach (var savedGame in savedGames)
                     {
-                        Invoke(new Action(() => loadedGamesListBox.Items.Add(savedGame)));
+                        loadedGamesListBox.InvokeIfRequired(() => loadedGamesListBox.Items.Add(savedGame));
                     }
                     // TODO: data binding
                 }

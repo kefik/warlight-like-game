@@ -8,6 +8,7 @@
     using GameObjectsLib.GameUser;
     using GameObjectsLib.NetworkCommObjects.Message;
     using GameObjectsLib.Players;
+    using Helpers;
 
     public partial class OpenedGamesControl : UserControl
     {
@@ -36,7 +37,7 @@
 
             foreach (OpenedGameHeaderMessageObject gameHeader in gameHeaders)
             {
-                Invoke(new Action(() => multiDayListBox.Items.Add(gameHeader)));
+                multiDayListBox.InvokeIfRequired(() => multiDayListBox.Items.Add(gameHeader));
             }
         }
 

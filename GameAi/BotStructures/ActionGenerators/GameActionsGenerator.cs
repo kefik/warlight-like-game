@@ -471,7 +471,7 @@
                     enemyNeighbours.Sum(x => x.Army) +
                     enemyPerspective.GetMyIncome();
 
-                // if my army is stronger than enemy's in sum
+                // if my army is stronger than enemy's even with full deployed units
                 if ((myRegion.Army - 1) * RoundEvaluator
                         .ProbabilityAttackingUnitKills -
                     enemyArmyWithFullDeployment * RoundEvaluator
@@ -480,8 +480,11 @@
                     for (int index = 0; index < enemyNeighbours.Count; index++)
                     {
                         RegionMin neighbour = enemyNeighbours[index];
+
+                        // if its good to attack enemy with full deployment
                         if ((myRegion.Army - 1) * RoundEvaluator.ProbabilityAttackingUnitKills -
-                            neighbour.Army * RoundEvaluator.ProbabilityDefendingUnitKills >= 0)
+                            (neighbour.Army + enemyPerspective.GetMyIncome())
+                                * RoundEvaluator.ProbabilityDefendingUnitKills >= 0)
                         {
                             // calculate minimum army that will surely succeed in conquering
                             // the region
@@ -505,7 +508,7 @@
                                     );
                             }
 
-                            int attackingArmy = Math.Min(minArmyThatSucceeds + 4,
+                            int attackingArmy = Math.Min(minArmyThatSucceeds,
                                 myRegion.Army - 1);
                             botAttacks.Add(new BotAttack(myRegion.OwnerId,
                                 myRegionId, attackingArmy, neighbour.Id));

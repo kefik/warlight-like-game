@@ -12,6 +12,7 @@ namespace WinformsUI.HelperControls
 {
     using System.Threading;
     using GameObjectsLib.Players;
+    using Helpers;
 
     public partial class ProgressBarForm : Form
     {
@@ -45,7 +46,7 @@ namespace WinformsUI.HelperControls
                 Thread.Sleep(totalDividedMilliseconds);
             }
 
-            Invoke(new Action(Close));
+            this.InvokeIfRequired(Close);
         }
 
         private void FormLoad(object sender, EventArgs e)

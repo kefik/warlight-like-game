@@ -7,6 +7,7 @@
     using System.Windows.Forms;
     using Client.Entities;
     using GameObjectsLib.Game;
+    using Helpers;
 
     public partial class SingleplayerLoadGamesControl : UserControl
     {
@@ -34,7 +35,7 @@
 
                     foreach (SingleplayerSavedGameInfo savedGame in savedGames)
                     {
-                        Invoke(new Action(() => loadedGamesListBox.Items.Add(savedGame)));
+                        loadedGamesListBox.InvokeIfRequired(() => loadedGamesListBox.Items.Add(savedGame));
                     }
                 }
             });

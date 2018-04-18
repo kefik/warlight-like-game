@@ -5,6 +5,7 @@
     using System.Windows.Forms;
     using GameObjectsLib.GameUser;
     using GameObjectsLib.NetworkCommObjects.Message;
+    using Helpers;
 
     public partial class MyGamesControl : UserControl
     {
@@ -35,11 +36,11 @@
             {
                 if (gameHeader.GetType() == typeof(OpenedGameHeaderMessageObject))
                 {
-                    Invoke(new Action(() => multiDayListBox.Items.Add(gameHeader)));
+                    multiDayListBox.InvokeIfRequired(() => multiDayListBox.Items.Add(gameHeader));
                 }
                 else if (gameHeader.GetType() == typeof(StartedGameHeaderMessageObject))
                 {
-                    Invoke(new Action(() => multiDayListBox.Items.Add(gameHeader)));
+                    multiDayListBox.InvokeIfRequired(() => multiDayListBox.Items.Add(gameHeader));
                 }
             }
         }

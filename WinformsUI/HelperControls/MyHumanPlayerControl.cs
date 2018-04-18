@@ -6,6 +6,7 @@
     using GameObjectsLib;
     using GameObjectsLib.GameUser;
     using GameObjectsLib.Players;
+    using Helpers;
 
     public partial class MyHumanPlayerControl : UserControl, IDisposable
     {
@@ -114,9 +115,9 @@
             {
                 return;
             }
-            Invoke(user.UserType == UserType.MyNetworkUser
+            this.InvokeIfRequired(user.UserType == UserType.MyNetworkUser
                 ? new Action(() => playerNameTextBox.Enabled = false)
-                : new Action(() => playerNameTextBox.Enabled = true));
+                : (() => playerNameTextBox.Enabled = true));
         }
     }
 }

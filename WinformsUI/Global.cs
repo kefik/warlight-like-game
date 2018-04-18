@@ -5,7 +5,6 @@
     using System.Linq;
     using GameHandlersLib;
     using GameObjectsLib.GameUser;
-    using HelperObjects;
 
     /// <summary>
     ///     Represents global utils for the given client.

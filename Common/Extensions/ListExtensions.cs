@@ -5,10 +5,28 @@
 
     public static class ListExtensions
     {
-        private static readonly Random random = new Random();
+        [ThreadStatic]
+        private static Random random;
 
+        private static Random Random
+        {
+            get
+            {
+                return random ??
+                       (random = new Random());
+            }
+        }
+
+        /// <summary>
+        /// Randomly reorders specified collection of type <see cref="IList{T}"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <remarks>Is thread safe.</remarks>
         public static void Shuffle<T>(this IList<T> list)
         {
+            var random = ListExtensions.Random;
+
             int n = list.Count;
             while (n > 1)
             {

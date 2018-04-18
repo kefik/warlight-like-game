@@ -14,7 +14,6 @@
     using GameObjectsLib.GameRestrictions;
     using GameObjectsLib.Players;
     using HelperControls;
-    using HelperObjects;
 
     public partial class SingleplayerNewGameSettingsControl : UserControl
     {
