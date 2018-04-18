@@ -64,6 +64,7 @@
     <Compile Include="BotStructures\MCTS\UctEvaluator.cs" />
     <Compile Include="BotStructures\ActionGenerators\Threat.cs" />
     <Compile Include="BotStructures\ActionGenerators\ThreatCalculator.cs" />
+    <Compile Include="BotStructures\SmartRandomBot.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\CacheableEvaluator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\PlayerPerspectiveEvaluator.cs" />
     <Compile Include="BotStructures\StructuresEvaluators\GameBeginningRegionMinEvaluator.cs" />

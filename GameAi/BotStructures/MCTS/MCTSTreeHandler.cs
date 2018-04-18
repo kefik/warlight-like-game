@@ -51,12 +51,13 @@ namespace GameAi.BotStructures.MCTS
             IGameActionsGenerator gameActionsGenerator,
             IGameBeginningActionsGenerator beginningActionsGenerator,
             IPlayerPerspectiveEvaluator gamePlayerPerspectiveEvaluator,
-            IRoundEvaluator roundEvaluator)
+            IRoundEvaluator roundEvaluator,
+            Random random)
         {
             myPlayerId = initialBoardState.PlayerId;
             this.enemyPlayerId = enemyPlayerId;
 
-            this.random = new Random();
+            this.random = random;
 
             this.probabilityAwareRoundEvaluator = new ProbabilityAwareRoundEvaluator(roundEvaluator,
                 gamePlayerPerspectiveEvaluator, myPlayerId, enemyPlayerId);
@@ -332,7 +333,7 @@ gameState.GetRegion(botAttack.DefendingRegionId);
             PlayerPerspective myPlayerPerspective = new PlayerPerspective(boardState, myPlayerId);
             PlayerPerspective enemyPlayerPerspective = new PlayerPerspective(boardState, enemyPlayerId);
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 10; i++)
             {
                 if (myPlayerPerspective.HasLost())
                 {

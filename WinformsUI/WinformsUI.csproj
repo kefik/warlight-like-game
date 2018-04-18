@@ -92,7 +92,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BotsPerformanceTesting\DuelBotPerformanceTest.cs" />
-    <Compile Include="BotsPerformanceTesting\MonteCarloTreeSearchVsAggressiveTest.cs" />
     <Compile Include="GameSetup\Multiplayer\Hotseat\HotseatGameOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

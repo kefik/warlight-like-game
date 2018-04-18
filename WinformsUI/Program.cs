@@ -9,10 +9,13 @@ namespace WinformsUI
 {
     using System;
     using System.Diagnostics;
+    using System.Drawing;
     using System.IO;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
     using BotsPerformanceTesting;
+    using GameAi.Data;
+    using GameObjectsLib.Players;
 
     internal static class Program
     {
@@ -39,16 +42,30 @@ namespace WinformsUI
 #if PERFORMANCE_TESTING
             using (var writer = new StreamWriter("TEST_RESULT.log"))
             {
-                writer.WriteLine($"Aggressive bot vs MCTS bot, time 5 seconds for move");
-                MonteCarloTreeSearchVsAggressiveTest test =
-                    new MonteCarloTreeSearchVsAggressiveTest(TimeSpan
-                        .FromMilliseconds(5000), writer);
-                var (mctsWinsCount, gamesCount) =
-                    test.Run(TimeSpan.FromMinutes(5));
+                writer.WriteLine($"MCTS bot vs aggressive bot, time 5 seconds for move");
+                DuelBotPerformanceTest test =
+                    new DuelBotPerformanceTest(TimeSpan
+                        .FromMilliseconds(5000), writer,
+                        new AiPlayer(Difficulty.Hard, "MCTSBot", KnownColor.GreenYellow, GameBotType.MonteCarloTreeSearchBot),
+                        new AiPlayer(Difficulty.Hard, "Aggressive", KnownColor.Red, GameBotType.AggressiveBot));
+                var (mctsWinCount, gamesCount) =
+                    test.Run(TimeSpan.FromMinutes(6));
+                writer.WriteLine();
+                writer.WriteLine($"MCTS win ratio: {mctsWinCount} / {gamesCount}");
+                writer.WriteLine();
+                writer.WriteLine();
 
+                writer.WriteLine($"MCTS bot vs Smart random bot, time 5 seconds for move");
+                var test2 = new DuelBotPerformanceTest(TimeSpan
+                            .FromMilliseconds(5000), writer,
+                        new AiPlayer(Difficulty.Hard, "MCTSBot", KnownColor.GreenYellow, GameBotType.MonteCarloTreeSearchBot),
+                        new AiPlayer(Difficulty.Hard, "Smart random bot", KnownColor.Red, GameBotType.SmartRandomBot));
+                var (mctsWinCount2, gamesCount2) =
+                    test2.Run(TimeSpan.FromMinutes(8));
+                writer.WriteLine();
+                writer.WriteLine($"MCTS win ratio: {mctsWinCount2} / {gamesCount2}");
                 writer.WriteLine();
                 writer.WriteLine();
-                writer.WriteLine($"MCTS win ratio: {mctsWinsCount} / {gamesCount}");
             }
 
 

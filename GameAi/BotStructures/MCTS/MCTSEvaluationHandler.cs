@@ -174,13 +174,14 @@ namespace GameAi.BotStructures.MCTS
                     = new SelectRegionActionsGenerator(
                         gameBeginningRegionMinEvaluator,
                         restrictions.GameBeginningRestrictions);
-
+                
                 treeHandlers[index] =
                     new MCTSTreeHandler(initialGameState,
                         enemyPlayerId, gameActionsGenerator,
                         selectRegionActionsGenerator,
                         gamePlayerPerspectiveEvaluator,
-                        roundEvaluator);
+                        roundEvaluator,
+                        new Random(Guid.NewGuid().GetHashCode()));
             }
         }
 

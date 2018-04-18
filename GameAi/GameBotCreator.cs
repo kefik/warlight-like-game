@@ -45,6 +45,12 @@
                     return new AggressiveBot(playerPerspective, playersIds,
                         difficulty,
                         isFogOfWar, restrictions);
+
+                    case GameBotType.SmartRandomBot:
+                        return new SmartRandomBot(playerPerspective,
+                            playersIds
+                                .First(x => x != playerPerspectiveId),
+                            difficulty, isFogOfWar, restrictions);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameBotType), gameBotType, null);
             }

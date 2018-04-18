@@ -9,10 +9,17 @@
     public enum GameBotType
     {
         /// <summary>
-        /// Bot will be randomly chosen.
+        /// Bot that will attack neighbours if its reasonable.
         /// </summary>
         [Display(Name = "Aggressive bot")]
         AggressiveBot,
+
+        /// <summary>
+        /// Bot that will randomly choose from good actions provided to him.
+        /// </summary>
+        [Display(Name = "Smart random bot")]
+        SmartRandomBot,
+
         /// <summary>
         /// Bot using MCTS for finding the best move.
         /// </summary>
