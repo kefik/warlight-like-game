@@ -93,47 +93,47 @@ namespace GameAi.BotStructures.MCTS
 #if IGNORE_CANCELLATION
             while (true)
 #else
-                while (!token.IsCancellationRequested)
+            do
 #endif
+            {
+                var bestNode = SelectBestNode();
+
+                MCTSTreeNode nodeToSimulate;
+
+                // node selected hasn't been visit yet and it is not root => 
+                // it must be node that hasn't been simulated yet
+                if (bestNode.VisitCount == 0 && !bestNode.IsRoot)
                 {
-                    var bestNode = SelectBestNode();
+                    nodeToSimulate = bestNode;
+                }
+                else
+                {
+                    var nodesToSimulate = Expand(bestNode);
 
-                    MCTSTreeNode nodeToSimulate;
-
-                    // node selected hasn't been visit yet and it is not root => 
-                    // it must be node that hasn't been simulated yet
-                    if (bestNode.VisitCount == 0 && !bestNode.IsRoot)
+                    // i lost
+                    if (nodesToSimulate == null)
                     {
-                        nodeToSimulate = bestNode;
+                        Backpropagate(bestNode, 1);
+
+                        continue;
                     }
-                    else
+                    // enemy lost
+                    if (nodesToSimulate.Count == 0)
                     {
-                        var nodesToSimulate = Expand(bestNode);
+                        Backpropagate(bestNode, 0);
 
-                        // i lost
-                        if (nodesToSimulate == null)
-                        {
-                            Backpropagate(bestNode, 1);
-
-                            continue;
-                        }
-                        // enemy lost
-                        if (nodesToSimulate.Count == 0)
-                        {
-                            Backpropagate(bestNode, 0);
-
-                            continue;
-                        }
-
-                        nodeToSimulate =
-                            nodesToSimulate[
-                                random.Next(nodesToSimulate.Count)];
+                        continue;
                     }
 
-                    double resultValue = Simulate(nodeToSimulate);
+                    nodeToSimulate =
+                        nodesToSimulate[
+                            random.Next(nodesToSimulate.Count)];
+                }
 
-                    Backpropagate(nodeToSimulate, resultValue);
-            }
+                double resultValue = Simulate(nodeToSimulate);
+
+                Backpropagate(nodeToSimulate, resultValue);
+            } while (!token.IsCancellationRequested);
 
 #if LOG_TREEHANDLER
             }
@@ -163,7 +163,8 @@ namespace GameAi.BotStructures.MCTS
                             Debug.WriteLine("Deployments:");
                             foreach (BotDeployment botDeployment in deployments)
                             {
-                                var region = gameState.GetRegion(botDeployment.RegionId);
+                                var region =
+gameState.GetRegion(botDeployment.RegionId);
                                 Debug.WriteLine($"Region: {region.Name}, New army: {botDeployment.Army}");
                             }
 
@@ -171,8 +172,10 @@ namespace GameAi.BotStructures.MCTS
                             Debug.WriteLine("Attacks:");
                             foreach (BotAttack botAttack in attacks)
                             {
-                                var attackingRegion = gameState.GetRegion(botAttack.AttackingRegionId);
-                                var defendingRegion = gameState.GetRegion(botAttack.DefendingRegionId);
+                                var attackingRegion =
+gameState.GetRegion(botAttack.AttackingRegionId);
+                                var defendingRegion =
+gameState.GetRegion(botAttack.DefendingRegionId);
                                 Debug.WriteLine(
                                     $"{attackingRegion.Name} -> {defendingRegion.Name}, Army: {botAttack.AttackingArmy}");
                             }

@@ -5,7 +5,7 @@ namespace GameHandlersLib.GameHandlers
     using GameObjectsLib.GameRecording;
     using GameObjectsLib.Players;
 
-    internal static class PlayerExtensions
+    public static class PlayerExtensions
     {
         /// <summary>
         /// Reports whether player is defeated.

@@ -59,17 +59,22 @@
         /// <param name="newOwner"></param>
         public void ChangeOwner(Player newOwner)
         {
+            // same owner => no change owner
             if (newOwner == Owner)
             {
                 return;
             }
 
+            // has owner => remove from his ownership
             Owner?.ControlledRegionsInternal.Remove(this);
+
+            // new owner is player => add to his ownership
             if (newOwner != null)
             {
                 newOwner.ControlledRegionsInternal.Add(this);
             }
 
+            // change owner
             Owner = newOwner;
         }
 

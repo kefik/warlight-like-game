@@ -9,6 +9,7 @@ namespace GameAi.BotStructures.MCTS
     using System.Threading;
     using System.Threading.Tasks;
     using ActionGenerators;
+    using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
     using Data.EvaluationStructures;
     using Data.GameRecording;
     using Data.Restrictions;
@@ -35,6 +36,8 @@ namespace GameAi.BotStructures.MCTS
         }
 
         private MCTSTreeHandler[] treeHandlers;
+
+        private readonly byte myPlayerId;
         private readonly byte enemyPlayerId;
 
         public MCTSEvaluationHandler(
@@ -42,6 +45,7 @@ namespace GameAi.BotStructures.MCTS
             Restrictions restrictions)
         {
             this.enemyPlayerId = enemyPlayerId;
+            this.myPlayerId = playerPerspective.PlayerId;
             Initialize(playerPerspective, restrictions);
         }
 
@@ -249,7 +253,9 @@ namespace GameAi.BotStructures.MCTS
             Debug.WriteLine("");
 #endif
 
-            return turnsByVisitCount.Select(x => x.Turn).First();
+            var bestMove = turnsByVisitCount.Select(x => x.Turn).First();
+
+            return bestMove;
         }
 
         /// <summary>
@@ -259,8 +265,6 @@ namespace GameAi.BotStructures.MCTS
         public async Task StartEvaluationAsync()
         {
             var tasks = new Task[treeHandlers.Length];
-
-            CancellationTokenSource = new CancellationTokenSource();
 
             for (int i = 0; i < tasks.Length; i++)
             {
@@ -275,7 +279,14 @@ namespace GameAi.BotStructures.MCTS
                         TaskScheduler.Default);
             }
 
-            await Task.WhenAll(tasks);
+            try
+            {
+                await Task.WhenAll(tasks);
+            }
+            finally
+            {
+                CancellationTokenSource = new CancellationTokenSource();
+            }
         }
 
         /// <summary>

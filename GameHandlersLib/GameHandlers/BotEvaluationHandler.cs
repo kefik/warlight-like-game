@@ -151,9 +151,15 @@
                         .FindBestMoveAsync);
                     // break after specified amount of time
                     var waitTask =
-                        botHandlers[currentIndex]
-                            .StopEvaluation(timeForBotMove)
-                            .ContinueWith(x => botHandlers[currentIndex].StopEvaluation(TimeSpan.FromSeconds(1)), TaskContinuationOptions.OnlyOnFaulted);
+                        Task.WhenAny(botTask,
+                                botHandlers[currentIndex]
+                                    .StopEvaluation(timeForBotMove))
+                            .ContinueWith(
+                                x => botHandlers[currentIndex]
+                                    .StopEvaluation(
+                                        TimeSpan.FromSeconds(1)),
+                                TaskContinuationOptions
+                                    .OnlyOnFaulted);
 
                     try
                     {
@@ -171,18 +177,13 @@
                     var bestTurn = (await botTask).ToTurn(game.Map,
                         game.Players, playerIdsMapper);
                     turns[currentlyEvaluatingIndex] = bestTurn;
-
-                    Debug.Assert(
-                        turns.Count(x => x != null &&
-                                         x.PlayerOnTurn.Id == bestTurn
-                                             .PlayerOnTurn.Id) == 1);
                 }
-                currentlyEvaluatingIndex++;
 
                 // lock because currentlyEvaluatingIndex could overflow
                 // + pause => index out of range exception
                 lock (botEvaluationLock)
                 {
+                    currentlyEvaluatingIndex++;
                     // all bots have returned their turn => play it
                     // and quit the evaluation
                     if (currentlyEvaluatingIndex >= players.Count)

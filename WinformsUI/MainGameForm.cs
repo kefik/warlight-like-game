@@ -109,13 +109,7 @@ namespace WinformsUI
                 Dock = DockStyle.Fill
             };
             simulatorInGame.Initialize(game);
-
-            // load size
-            using (UtilsDbContext dbContext = new UtilsDbContext())
-            {
-                game.Save(dbContext);
-            }
-
+            
             simulatorInGame.Show();
         }
 
@@ -284,8 +278,15 @@ namespace WinformsUI
                     Dock = DockStyle.Fill
                 };
 
-            simulatorGameOptionsControl.OnSimulationStarted +=
-                LoadSimulatorInGameScreen;
+            simulatorGameOptionsControl.OnSimulationStarted += game =>
+            {
+                LoadSimulatorInGameScreen(game);
+                // load size
+                using (UtilsDbContext dbContext = new UtilsDbContext())
+                {
+                    game.Save(dbContext);
+                }
+            };
 
             simulatorGameOptionsControl.OnSimulationLoaded +=
                 LoadSimulatorInGameScreen;
@@ -440,26 +441,11 @@ namespace WinformsUI
         private void FormLoad(object sender, EventArgs e)
         {
             Global.OnUserChanged += UserChanged;
-
-#if DEBUG_CONSOLE
-            if (!Debugger.IsAttached)
-            {
-                AllocConsole();
-                Debug.Listeners.Add(new ConsoleTraceListener());
-            }
-#endif
         }
 
         private void FormClose(object sender, FormClosedEventArgs e)
         {
             Global.OnUserChanged -= UserChanged;
         }
-
-#if DEBUG_CONSOLE
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool AllocConsole();
-#endif
     }
 }
