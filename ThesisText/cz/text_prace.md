@@ -4,10 +4,10 @@ Warlight, inspirovanı deskovou hrou Risk, pøedstavuje
 vızvu pro tvorbu umìlé inteligence z dùvodu obrovského branching
 faktoru.
 
-Práce implementuje bota do této hry, kterı je schopnı hrát vyrovnanou hru
+Práce implementuje umìlou inteligenci do této hry schopnou hrát vyrovnanou hru
 s alespoò ménì zkušenım hráèem. Souèástí je také simulátor, monost
-hry proti umìlému hráèi i proti jinému lidskému hráèi ve formì hotseat (multiplayer hry na jednom poèítaèi).
-Práce je vedena tak, aby umonila pouití tohoto frameworku pro další vıvoj a testování botù.
+hry proti UI i proti jinému lidskému hráèi ve formì hotseat (multiplayer hry na jednom poèítaèi).
+Práce je vedena tak, aby umonila pouití tohoto frameworku pro další vıvoj a testování umìlé inteligence.
 
 ## Úvod
 <!---popis kontextu, kterého se práce tıká - popis hry, souvislost s riskem--->
@@ -15,116 +15,170 @@ Práce je vedena tak, aby umonila pouití tohoto frameworku pro další vıvoj a te
 ### Základní informace o høe
 Warlight, inspirovanı deskovou hrou Risk, je hra pro více hráèù odehrávající se na
 mapì rozdìlené na regiony. Ty se shlukují do super regionù (kontinentù).
-Cílem kadého hráèe je dobıt všechny regiony vlastnìné ostatními hráèi.
-Na zaèátku hry si hráè volí regiony, ze kterıch bude dobıvat další.
-Kadé kolo si hráè na svá území staví jednotky.
-Pokud ovládá nìjakı super region, mùe si jich postavit více.
-Poté útoèí na své sousedy, popøípadì pøesouvá jednotky. Vıpoèet ztrát jednotek pøi útoku na obou stranách
-je pravdìpodobnostní, kde malou vıhodu mají bránící jednotky.
+Cílem je dobıt všechny regiony vlastnìné ostatními hráèi.
+Na zaèátku hry si hráè volí poèáteèní regiony.
+Kadé kolo si na svá území nejprve staví jednotky, poté útoèí na své sousedy.
+Vıpoèet ztrát jednotek pøi útoku je urèen pravdìpodobnostmi.
+Pøi stejném poètu útoèících a bránících jednotek by mìl útoèník utrpìt vyšší ztráty.
 
-### Motivace a obsah práce
+### Motivace
 <!--- motivace k vytvoøení práce --->
-I pøes existenci soutìe vypsané Riddles.io na tvorbu AI je tato oblast nepøíliš zmapovaná.
-Dùvodem je nezveøejòování implementovanıch prací a jejich malá, èi vùbec ádná dokumentace.
-Neprobádanost, spolu s velkım branching faktorem hry, mì motivuje k pokusu o vytvoøení AI,
-která bude schopná hrát vyrovnanou hru s lidskım hráèem.
+I pøes existenci soutìe vypsané Riddles.io na tvorbu umìlé inteligence do hry Warlight
+je tato oblast nepøíliš zmapovaná.
+Dùvodem je nezveøejòování existujících implementací, nebo jejich malá, èi vùbec ádná dokumentace.
+Neprobádanost, spolu s velkım branching faktorem hry, nás motivuje k pokusu o vytvoøení umìlé inteligence,
+která bude schopná hrát vyrovnanou hru alespoò s ménì zkušenım hráèem.
 
+### Cíl
 <!--- co specifiètìji je v mé práci, trošku jak --->
-Práce implementuje AI do této hry pouitím modifikovaného paralelního algoritmu Monte Carlo tree search.
-Pro snadnìjší vıvoj je pøidán simulátor pro pozorování her botù proti sobì.
-Uivatel si mùe sám vyzkoušet hru ve formì singleplayer nebo hotseat multiplayer hry (více hráèù na jednom poèítaèi).
+Cílem práce je naimplementovat umìlou inteligenci do hry Warlight pouitím
+modifikovaného paralelního algoritmu Monte Carlo tree search.
+Pro snadnìjší vıvoj umìlé inteligence je dílèím cílem práce pøidat simulátor
+pro pozorování her botù proti sobì a hru ve formì singleplayer nebo hotseat
+multiplayer hry (více hráèù na jednom poèítaèi).
+
+### Related works
+Práce [GG Warlight Strategy Guide.pdf] a [LearningWarlightStrategy.pdf] popisují,
+jakımi pravidly by se mìl lidskı hráè øídit pøi hraní Warlightu.
+
+Práce [MHuntersWarLightStrategyGuide.pdf] obsahuje sadu rad, jak by se umìlá inteligence mìla
+chovat v rùznıch herních situacích.
+
+Práce [Parallelmcts.pdf] rozebírá pøístupy k implementaci algoritmu Monte Carlo tree search
+paralelnì. Jejich efektivita je mìøena na høe Go.
 
 ### Struktura práce
-- **Popis hry** - cílem první kapitoly popsat ètenáøi hru Warlight
-- **Related works** - ???
-- **Implementace** - tøetí kapitola popisuje softwarové komponenty pouité
-pøi vytvoøení této práce, jejich vıznam a interakci.
-- **Umìlá inteligence** - ve ètvrté kapitole je rozebrána volba umìlá inteligence a detailnì
-zvolenı pøístup k její tvorbì.
-V této sekci také rozebereme její poèínaní v urèitıch herních situacích a pøípadnou neoptimalitu.
-Na konci této kapitoly jsou demonstrovány vısledky hry této AI proti lidskım hráèùm i jinım AI.
-- **Závìr** - závìreèná kapitola obsahuje zhodnocení celého projektu. Dále je uvedeno
-moné navázání na tuto práci.
+- **Pravidla hry** - cílem první kapitoly je detailnì popsat ètenáøi pravidla hry
+Warlight.
+- **Umìlá inteligence** - ve druhé kapitole prozkoumáme umìlou inteligenci implementovanou
+v této práci. Zamìøíme se na obecnì pouitı algoritmus a jeho modifikace pøizpùsobené znalostem této hry.
+Nakonec rozebereme vısledky hry naší umìlé inteligence proti lidskım hráèùm i jinım AI. Zamìøíme
+se na prùzkum jejich nedostatkù a problémová místa (moná má bıt ve future work??).
+- **Implementace** - tøetí kapitola popisuje soubory související s prací a strukturu a vıznam hlavních
+implementovanıch tøíd.
+- **Závìr** - závìreèná kapitola zhodnocuje celé dílo. Nakonec uvádí moné navázání na tuto práci.
 
 ## Obsah práce
-1. [Úvod]
-2. [Popis hry]
-3. Related works
-4. [Implementace]
-5. [Umìlá inteligence]
-6. Závìr práce
-7. [Seznam pouité literatury]
+1. [Pravidla hry]
+2. [Umìlá inteligence]
+3. [Implementace]
+4. Závìr práce
+5. [Seznam pouité literatury]
 
-## Popis hry
+## Pravidla hry
 Pravidla hry Warlight jsou relativnì volná, hra se dá hrát na spoustu rùznıch nastavení.
-V této kapitole si vezmeme nastavení, která jsou pouívána v této práci,
+V této kapitole si vezmeme nastavení, která jsou pouita v této práci,
 a popíšeme pravidla hry.
 
 ### Mapa
 Hra se odehrává na mapì. Ta se dìlí na *regiony*, nejmenší územní celky této hry.
-Kadı region má armádu, buï hráèe, kterı ho vlastní, nebo je neobsazenı a seznam sousedních regionù.
+Kadı region má armádu, seznam sousedních regionù, a buï hráèe, kterı ho vlastní, nebo je neobsazenı.
 Regiony se dále shlukují do vìtších územních celkù, *super regionù*.
-Narozdíl od hry Risk, mapou mùe bıt libovolnı neorientovanı graf regionù.
+Mapou mùe bıt libovolnı neorientovanı graf regionù.
 
 ### Zaèátek hry
 Na zaèátku hry si hráè zvolí poèáteèní regiony tak, e od kadého super regionu vezme právì jeden.
-Tato zvolená území pøedstavují vıchozí body, ze kterıch bude obsazovat další. Jakmile hráè volbu regionù potvrdí,
-nelze ji ji zmìnit.
+Tato zvolená území pøedstavují vıchozí body, ze kterıch bude obsazovat další.
 
 ### Prùbìh hry
 - hráèi se støídají po tazích
-- odehrají-li všichni hráèi své tahy, dojde k vıpoètu a následnému zmìnìní aktuálního stavu hry
-- hra konèí ve chvíli, kdy jeden hráè dobyl území všech ostatních hráèù
+- odehrají-li všichni hráèi své tahy, dojde k vıpoètu a následné zmìnì stavu hry
+- hra konèí ve chvíli, kdy jeden hráè dobude území všech ostatních hráèù
 
 ### Tah
-Tah se dìlí na 3 fáze: deploy, attack, commit. V deploy fázi hráè staví armádu,
-v attack fázi posílá útoky a v commit fázi potvrzuje pøedešlé akce.
+Tah se dìlí na 3 fáze: deploy, attack a commit. V deploy fázi hráè staví armádu,
+v attack fázi posílá útoky a v commit fázi potvrzuje své pøedchozí akce.
 
 <img src="turn_graph.png" alt="Turn phases graph" />
 
 #### Deploy
-V této fázi hráè staví armádu na jím vlastnìnıch regionech.
+V této fázi hráè staví armádu na ním vlastnìnıch regionech.
 Hráè má urèenı maximální poèet jednotek, které mùe v daném tahu postavit.
-Od zaèátku hry si hráè mùe stavìt 5 jednotek. Dobude-li nìjakı super region,
+Od zaèátku hry si mùe stavìt 5 jednotek. Dobude-li nìjakı super region,
 zvıší se mu pøísun jednotek o bonus definovanı super regionem.
 
 #### Attack
-V této fázi hráè útoèí jednotkami vdy ze svého regionu na region sousední.
-Po útoku vdy musí na regionu zùstat alespoò jedna jednotka,
-tedy hráè mùe zaútoèit maximálnì s poètem jednotek - 1 na kadém regionu.
-Pokud hráè zaútoèí na svùj region, budeme tuto akci nazıvat pøesunem jednotek.
+V této fázi hráè útoèí jednotkami vdy ze svého regionu na region sousední,
+popøípadì jednotky pøesouvá mezi svımi sousedními regiony.
+Pøi útoku nelze útoèit s celou armádou. Musí na regionu zùstat alespoò jedna jednotka.
 
 #### Commit
-Závìreèná fáze, ve které hráè potvrzuje veškeré své pøedchozí akce.
-Po tomto potvrzení není moné ji tahy vrátit a tah je povaován za uzavøenı.
+V této fázi hráè potvrzuje své veškeré pøedchozí akce.
+Po tomto potvrzení ji není moné je vrátit a tah je povaován za uzavøenı.
 
 ### Kolo
-Kolo je mnoina tahù všech hráèù. Jakmile všichni hráèi dokonèí své tahy,
-spustí se vıpoèet kola.
+Kadı hráè pøispívá do kola právì jedním tahem. Vıpoèet kola se spouští, jakmile všichni hráèi potvrdí
+své akce commitem.
 
-Nejprve se akce zlinearizují. To vezme kadou fázi zvláš, a tyto akce vdy
-projde v poøadí ABCABC... (písmena oznaèují hráèe, náhodnì pøiøazené).
+Ty se nejprve zlinearizují, poté následuje vıpoèet zmìn.
+
+#### Linearizace
 
 <img src="linearizing.png" alt="Linearizing algorithm" />
 
-Po linearizaci následuje vıpoèet kola. Nejprve jsou spuštìny všechny deploy akce, dojde k
-pøidání jednotek na zvolené regiony. Poté jsou spuštìny všechny attack akce.
-Vıpoèet attack akcí se øídí následujícími pravidly:
+Algoritmus:
+```
+Linearizuj() : kolo
+    tahy = { všechny t | t je odehranı tah }
+    zpøeházejNáhodnì(tahy);
 
-- Pokud hráè z regionu X poslal jednotky na region Y, kterı v dané situaci vlastní jinı hráè,
-dojde k vıpoètu ztrát jednotek. Kadá útoèící jednotka ma 60% šanci na zabití bránící jednotky,
-kadá bránící jednotka má 70% šanci na zabití útoèící jednotky.
-    - Pokud dojde zabití všech bránících jednotek a nìjaké útoèící pøeijí, zbytek tìchto jednotek je pøesunuto
-    na dobyté území a útoèící hráè je novım vlastníkem regionu Y.
-    - Pokud nejsou zabity všechny bránící jednotky, pak pøeivší útoèící se vrátí zpátky na X
-    - Pokud jsou zabity všechny jednotky Y i X, na území Y, protoe minimální poèet jednotek je 1,
-    se pøidá jedna jednotka. Vlastníci X i Y zùstávají stejní.
-- Pokud hráè z regionu X poslal jednotky na region Y, kterı v dané situaci vlastní také on,
-dojde k pøesunu tìchto jednotek, èili nedojde ke ztrátám.
-- Pokud hráè z regionu X poslal jednotky na region Y, ale region X mezitím
-dobyl jinı hráè, akce útoku X->Y je zrušena.
-- Pokud hráè z X na Y poslal *n* jednotek do útoku, ale jinım útokem byla tato útoèící armáda oslabena o k jednotek,
-dojde k poslání *n - k* jednotek
+    deploy = {}
+    pro kadı index i = 1, ..., maximum(poèet deploy akcí libovolného tahu)
+        iDeploy := { i-té deploy akce všech tahù }
+        deploy.pøidej(iDeploy)
+
+    attack = {}
+    pro kadı index i = 1, ..., maximum(poèet attack akcí libovolného tahu)
+        iAttack := { i-té attack akce všech tahù }
+        zpøeházejNáhodnì(iAttack)
+        deploy.pøidej(iAttack)
+
+    linearizovanéKolo = (deploy, attack)
+    vra linearizovanéKolo
+
+```
+
+#### Vıpoèet zmìn
+Nejprve jsou spuštìny všechny deploy akce - dojde k pøidání jednotek na zvolené regiony.
+
+Poté jsou spuštìny všechny attack akce. Vıpoèet ztrát jednotek v boji se øídí následujícími pravidly:
+- Kadá útoèící jednotka má 60% šanci na zabití bránící jednotky.
+- Kadá bránící jednotka má 70% šanci na zabití útoèící jednotky.
+
+Algoritmus pro spoèítání zmìn zpùsobenıch útoky:
+```
+spoèítejAttacky(linearizovanéAttacky)
+    pro kadı attack v linearizovanéAttacky
+        X := attack.útoèícíRegion
+        Y := attack.bránícíRegion
+        útoèícíHráè := attack.útoèícíHráè;
+
+        // útoèící region zmìnil vlastníka
+        pokud X.vlastník != útoèícíHráè
+            pøeskoè tento útok
+
+        reálnáÚtoèícíArmáda := minimum(attack.útoèícíArmáda, X.armáda - 1)
+        bránícíArmáda := Y.armáda
+
+        // hráè útoèí na svùj region
+        pokud útoèícíHráè == Y.vlastník
+            pøesuò jednotky
+        jinak
+            zabitéÚtoèícíJednotky :=
+                spoèítejZabitéÚtoèícíJednotky(reálnáÚtoèícíArmáda, bránícíArmáda)
+            zabitéBránícíJednotky :=
+                spoèítejzabitéBránícíJednotky(bránícíArmáda, reálnáÚtoèícíArmáda)
+            
+            pokud byly zabity všechny útoèící i bránící jednotky
+                bránícíArmáda := 1
+            jinak pokud byly zabity všechny bránící, ale útoèící ne
+                Y.vlastník := útoèícíHráè
+            jinak pokud pøeily i bránící i útoèící
+                vra se s pøeivšími útoèícími jednotkami zpìt na X
+            jinak pokud pøeily bránící
+                // nic nedìlej
+        
+```
 
 ## Umìlá inteligence
 V této kapitole nejprve zanalyzujeme problematiku hry,
@@ -197,18 +251,63 @@ Od následujících úrovní hloubky stromu se bude vlastnictví
 vdy støídat.
 
 <!--- stav mapy v kadém sudém vrcholu --->
-Stav mapy staèí mít uloenı v koøeni a ve vrcholech vlastnìnıch nepøítelem,
-protoe jeho tah je posledním tahem kola.
+Stav mapy staèí mít uloenı v koøeni a ve vrcholech vlastnìnıch nepøítelem, protoe
+jeho tah je posledním tahem kola.
 
 ##### Ohodnocovací funkce
+Vysokı branching faktor a cyklení moností znemoòuje pouití náhodné simulace,
+která by skonèila a ve chvíli vıhry jednoho z hráèù. Místo toho odsimulujeme
+pøedem urèenı poèet tahù, ohodnotíme pozici a zpìtnou propagací vrátíme èíslo
+v intervalu [0, 1], kde 0 je nejhorší hodnota pozice pro daného hráèe a 1 znamená nejlepší.
+
+Abychom mohli získat pøehled o celkové pozici, potøebujeme ohodnotit dílèí èásti.
+
+###### Ohodnocení super regionu
+Ohodnocení super regionu se liší pøi zaèátku hry, a pozdìji.
+
+Pøi zaèátku hry, ze znalosti Warlightu, víme, e:
+
+- je vıhodné brát super region, kterı má málo sousedících regionù,
+protoe po dobytí se bude lépe bránit
+- lepší je super region s více sousedními super regiony, protoe mùeme
+narušovat bonusy nepøátelùm nebo rychle dobıvat další super regiony
+- je lepší, kdy super region má bonus
+- je nevıhodné brát super region, kterı se skládá z hodnì regionù,
+protoe ho je tìké dobıt a trvá to dlouho
+
+Tyto znalosti jsou poskládány do vzorce ohodnocovací funkce pro super region:
+
+hodnota := a * bonus + b * sousední_super_regiony - c * sousední_regiony - d * regiony_super_regionu
+
+, kde a, b, c, d jsou reálné konstanty.
+
+V pozdìjších fázích hry se ohodnocovací funkce liší pouze v hodnotách konstant.
+
+###### Ohodnocení regionu
+Pøi ohodnocování regionu záleí také, zdali je zaèátek hry èi ne.
+
+Pøi zaèátku hry:
+
+- není dobré brát více regionù blízko u sebe
+<!--- TODO --->
+
+###### Ohodnocení pozice hráèe
+Naše ohodnocovací funkce prochází všechny námi vlastnìné regiony, spoèítá hodnotu
+tìchto regionù a armády na nich a ty seète. Touto operací získáme ohodnocení zvláš 
+pro kadého hráèe. Ohodnocení pozice hráèe získáme vzorcem níe:
+
+playerValue := playerValue / (playerValue + enemyPlayerValue)
+
+Tuto hodnotu pak posíláme zpìtnou propagací do koøene.
 
 ##### Generátory akcí
+Úlohou generátoru akcí je
 
 #### Paralelní MCTS
 
 ### Agresivní bot
 
-### Testování
+### Vısledky
 
 ## Implementace
 Náplní této kapitoly je seznámit ètenáøe se soubory potøebnımi pro hru a
@@ -218,6 +317,10 @@ Projekt je implementován v jazyce C\# verze 7.2 pro .NET verze 4.5.
 
 ### Soubory
 V této sekci jsou popsány soubory vytváøené nebo pøiloené k projektu a jejich vıznam.
+
+#### Databáze
+Jako databáze je v projektu pouita *SQLite*. Do ní se ukládají informace o uloenıch
+hrách, simulacích a mapách. Pøedstavuje ji soubor *Utils.db*.
 
 #### Mapy
 Soubory map se nachází ve sloce *Maps*. Pro reprezentaci mapy jsou potøeba 4 soubory.
@@ -248,29 +351,38 @@ kvalitu monıch tahù.
 ### Architektura
 Cílem této sekce je projít a popsat hlavní komponenty práce a jejich fungování.
 
-Solution má sloky *Client* a *Tests*. *Client* obsahuje projekty, které jsou potøeba na stranì UI,
-*Tests* obsahuje unit testy. Další projekty nejsou zahrnuty do ádné sloky.
+#### Pøehled
+<img src="assembly_map.png" alt="Map of assemblys" />
 
-Projekty, vyjma testovacích, této práce jsou:
-*Common, GameObjectsLib, GameHandlersLib, GameAi.Data, GameAi,
-FormatConverters, TheAiGames.EngineCommHandler, Communication.CommandHandler,
-Client.Entities, WinformsUI*.
+Obrázek vıše pøedstavuje základní vztahy mezi projekty.
 
-V následujících sekcích popíšeme tyto projekty, jejich fungování a vztahy.
+- *WinformsUI* - grafické komponenty zobrazované uèivateli
+- *Client.Entities* - databázové entity
+- *GameHandlers* - pomocné jednotky pro UI, starají se o backendovou logiku
+uivatelskıch pøíkazù a o herní vıpoèty (napø. kola)
+- *GameObjects* - reprezentují herní objekty (pø. region, super region, mapu, tah, ...)
+- *GameAi* - tøídy slouící k vıpoètu umìlé inteligence
 
-#### Projekt Common
-Zde nalezneme pomocné tøídy, které nachází vyuití napøíè projektem.
+#### Projekt WinformsUI
+Tento projekt obsahuje grafické komponenty zobrazované uivateli: formuláøe
+a související user controly.
+Ty jsou psány pouitím Windows Forms technologie. Dìlí se na dvì logické celky:
+nastavovací a ingame komponenty.
 
-**Tøídy**
+1. *Nastavovací* - nachází se v adresáøi *GameSetup*. Umoòují uivateli nastavit
+hru. Jako pomocné user controly pouívají komponenty z adresáøe *HelperControls*.
+Nastavovací komponenty se starají o zaloení nové hry nebo simulace a naètení uloené hry
+nebo simulace.
+2. *InGame* - jsou zobrazovány uivateli po zaloení nebo naètení hry nebo simulace.
 
-- *Tree* - generickı n-ární strom
-- *BidirectionalDictionary* - dictionary umoòující rychlé vyhledávání jak podle klíèe, tak podle hodnoty.
-Jedná se o wrapper nad dvìma slovníky.
-- *IRandomInjectable* - tøídám, které implementují tento interface,
-je mono injectnout svùj vlastní náhodnı generátor. To slouí k testování nedeterministickıch tøíd.
-- *ObjectPool* - slouí k poolování libovolnıch objektù za úèelem uvolnìní tlaku na GC.
-Pøed uloením do poolu dojde k vyèištìní tohoto objektu od referencí na cizí objekty,
-aby se objekt choval podobnì jako novì naalokovaná tøída a nedocházelo tak k memory leakùm.
+    O simulaci se stará tøída *SimulatorInGameControl*. Tato tøída je zobrazena 
+    uivateli po naètení nebo vytvoøení nové simulace. Pøijímá uivatelovy akce
+    a pøeposílá je dál komponentì *SimulationFlowHandler* na zpracování.
+
+    O prùbìh hry se starají zbıvající tøídy. Tøída *InGameControl* je zobrazena
+    uivateli. Ta obsahuje mapu - reprezentována tøídou *MapHandlerControl* starající
+    se o uivatelskou interakci s mapou, a herní panel. Herní panel je reprezentován
+    ve sloce *Phases*. Ty se starají o zvládání jednotlivıch fází tahu.
 
 #### Projekt GameObjectLib
 V této knihovnì jsou datové struktury reprezentující mapu, hráèe, hru a její záznam.
@@ -292,7 +404,7 @@ obsahuje také informaci o novém stavu hry po útoku (*PostAttackMapChange*).
 
 #### Projekt GameHandlersLib
 V tomto projektu se nachází pomocné tøídy UI. Protoe tato logika je pøenosná i na jiné platformy
-ne desktopové, je tato logika oddìlena od Winforms UI tøíd.
+ne desktopové, jsou komponenty oddìleny od Winforms UI tøíd.
 Tøídy tohoto projektu se dìlí na dvì skupiny: map handlery a game handlery.
 
 ##### Map handlery
@@ -347,8 +459,7 @@ Adresáø *GameRecording* obsahuje tøídy, které jsou zmenšenımi ekvivalenty tøíd z
 slouící pro záznam. Tyto tøídy pak pouívá AI mimo jiné na návrat nejlepšího nalezeného tahu.
 
 #### Projekt GameAi
-V tomto projektu jsou komponenty související s implementací
-AI.
+V tomto projektu jsou komponenty související s implementací AI.
 
 Dìlí se na nìkolik skupin:
 - *ActionGenerators* - generátory akcí, neboli sekvencí deploy jednotek a útokù,
