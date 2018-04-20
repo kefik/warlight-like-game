@@ -89,7 +89,7 @@ Tato zvolená území pøedstavují vıchozí body, ze kterıch bude obsazovat další.
 Tah se dìlí na 3 fáze: deploy, attack a commit. V deploy fázi hráè staví armádu,
 v attack fázi posílá útoky a v commit fázi potvrzuje své pøedchozí akce.
 
-<img src="turn_graph.png" alt="Turn phases graph" />
+<img src="turn_graph.svg" alt="Turn phases graph" />
 
 #### Deploy
 V této fázi hráè staví armádu na ním vlastnìnıch regionech.
@@ -114,7 +114,7 @@ Ty se nejprve zlinearizují, poté následuje vıpoèet zmìn.
 
 #### Linearizace
 
-<img src="linearizing.png" alt="Linearizing algorithm" />
+<img src="linearizing.svg" alt="Linearizing algorithm" />
 
 Algoritmus:
 ```
@@ -122,11 +122,13 @@ Linearizuj() : kolo
     tahy = { všechny t | t je odehranı tah }
     zpøeházejNáhodnì(tahy);
 
+    // zlinearizuj deploy akce
     deploy = {}
     pro kadı index i = 1, ..., maximum(poèet deploy akcí libovolného tahu)
         iDeploy := { i-té deploy akce všech tahù }
         deploy.pøidej(iDeploy)
 
+    // zlinearizuj attack akce
     attack = {}
     pro kadı index i = 1, ..., maximum(poèet attack akcí libovolného tahu)
         iAttack := { i-té attack akce všech tahù }
@@ -157,6 +159,7 @@ spoèítejAttacky(linearizovanéAttacky)
         pokud X.vlastník != útoèícíHráè
             pøeskoè tento útok
 
+        // vdy musí zbıt alespoò jedna jednotka na regionu
         reálnáÚtoèícíArmáda := minimum(attack.útoèícíArmáda, X.armáda - 1)
         bránícíArmáda := Y.armáda
 
@@ -164,6 +167,7 @@ spoèítejAttacky(linearizovanéAttacky)
         pokud útoèícíHráè == Y.vlastník
             pøesuò jednotky
         jinak
+            // spoèítej zabité jednotky
             zabitéÚtoèícíJednotky :=
                 spoèítejZabitéÚtoèícíJednotky(reálnáÚtoèícíArmáda, bránícíArmáda)
             zabitéBránícíJednotky :=
@@ -181,11 +185,15 @@ spoèítejAttacky(linearizovanéAttacky)
 ```
 
 ## Umìlá inteligence
-V této kapitole nejprve zanalyzujeme problematiku hry,
+<!--- popis kapitoly --->
+V této kapitole nejprve zanalyzujeme problematiku hry a
 urèíme vhodnou metodu pøístupu k implementaci AI. Následnì
 ukáeme naši implementaci pouitím zvoleného algoritmu,
-popíšeme naimplementovanou referenèní AI.
+popíšeme naimplementovanou referenèní umìlé inteligence.
 Na závìr otestujeme schopnosti AI a zanalyzujeme vısledky testování.
+
+<!--- vymezení (moná na jiné místo?) --->
+Vytvoøená umìlá inteligence je schopná hrát pouze hry 1v1.
 
 ### Analıza
 <!--- na poøadí záleí --->
@@ -211,10 +219,14 @@ kterou dosud našel. Z tìchto dùvodù byl pro implementaci
 AI zvolen algoritmus Monte Carlo tree search.
 
 ### Monte Carlo tree search AI
-V této sekci nejprve základnì popíšeme algoritmus MCTS,
+V této sekci nejprve základnì popíšeme obecnì algoritmus MCTS,
 následnì ukáeme jeho úpravy pro hru Warlight. Pro
 zvıšení vıkonu je prozkoumán a zvolen jeden z pøístupù
 k paralelizaci tohoto algoritmu.
+
+**Terminologie**
+- *náš hráè* - hráè z jeho pohledu se snaíme najít nejlepší tah
+- *nepøátelskı hráè* - hráè, co není náš hráè
 
 #### Úvod do MCTS
 Monte Carlo tree search je algoritmus, jeho cílem je
@@ -225,13 +237,32 @@ Na vrcholu je navíc uloen poèet vıher a poèet celkovıch her,
 které se dotkly stavu hry v nìm uloené.
 V koøeni je uloen stav hry, ze kterého se pokoušíme nalézt
 nejlepší tah.
+Nejlepší odpovìï reprezentuje ta hrana, která vede do vrcholu s nejvyšším poètem celkovıch her.
 
 Algoritmus popisují 4 fáze: selekce, expanze, simulace a zpìtná propagace.
 1. *Selekce* - zaèni v koøeni, v kadém potomkovi vdy zvol potomka 
-podle urèité funkce, dokud nedospìješ do listu
-2. *Expanze* - zvolenému listu *selekcí* pøidej *n* potomkù a zvol jednoho z nich
+podle pøedem definované funkce, dokud nedospìješ do listu
+2. *Expanze* - zvolenému listu *selekcí* pøidej *n* dìtí a zvol jedno z nich
 3. *Simulace* - ze zvoleného potomka zaèni náhodnì hrát, dokud jeden z hráèù neprohraje
-4. *Zpìtná propagace* - propaguj informaci o vıhøe/prohøe zpìt a do koøene
+4. *Zpìtná propagace* - propaguj informaci o vıhøe/prohøe (0/1) zpìt a do koøene.
+
+<img src="wiki_mcts.png" alt="Mcts phases" />
+
+##### Volba potomka v selekci
+Funkce na volbu potomka v selekci potøebuje prozkoumávat nejen nejlepší varianty,
+ale i zkoušet nové (problém *exploitation a exploration*).
+
+[Kocsis a Csaba] navrhli funkci:
+
+*wi / ni + c * sqrt(ln(Ni) / ni)*, kde
+
+- wi - poèet vıher v daném vrcholu
+- ni - poèet her v daném vrcholu
+- Ni - celkovı poèet her (= poèet her v koøeni)
+- c - konstanta, teoreticky rovná *sqrt(2)*
+
+Pokud *ni* je rovno 0, pak hodnota tohoto vrcholu je *infinity*.
+Tato situace se stane expandovaného vrcholu, ze kterého ještì nebyla vedena simulace.
 
 #### Modifikace MCTS
 Základní forma MCTS je pro Warlight stále nepouitelná.
@@ -243,22 +274,35 @@ Ve høe Warlight nejprve všichni hráèi odehrají své tahy,
 a poté dojde k vıpoètu kola. Jak by mìl tedy vypadat vıpoèetní strom?
 
 <!--- vlastník vrcholu --->
-U kadého vrcholu proto navíc urèíme jeho vlastníka. To bude
-hráè, kterı odehrál tah vedoucí do tohoto vrcholu. U 
-koøene definujeme jako vlastníka hráèe,
-z jeho perspektivy se snaíme najít nejlepší tah.
+Hrana bude reprezentovat tah hráèe.
+U kadého vrcholu urèíme navíc jeho vlastníka. To bude
+hráè, kterı odehrál tah vedoucí do tohoto vrcholu.
+Vlastníkem koøene a jeho dìtí bude náš hráè.
 Od následujících úrovní hloubky stromu se bude vlastnictví
-vdy støídat.
+vdy støídat zaèínaje od nepøítele.
 
 <!--- stav mapy v kadém sudém vrcholu --->
 Stav mapy staèí mít uloenı v koøeni a ve vrcholech vlastnìnıch nepøítelem, protoe
 jeho tah je posledním tahem kola.
 
+<img src="changed_tree.svg" alt="Modified evaluation tree" />
+
+Na obrázku:
+- lutá - hráè za kterého se pokoušíme najít nejlepší tah
+- modrá - nepøátelskı hráè
+- stav hry mají v sobì uloené pouze modré vrcholy a koøen
+
+<!--- expanze vdy po dvou --->
+Ve høe Warlight vdy dochází k odehrání kola a po odehrání tahù všech hráèù.
+Expanze proto nejprve listu zvolenému selekcí pøidá vrcholy urèené tahy
+našeho hráèe, a tìm rovnou pøidá jako potomky vrcholy urèené tahy hráèe nepøátelského.
+
 ##### Ohodnocovací funkce
-Vysokı branching faktor a cyklení moností znemoòuje pouití náhodné simulace,
-která by skonèila a ve chvíli vıhry jednoho z hráèù. Místo toho odsimulujeme
-pøedem urèenı poèet tahù, ohodnotíme pozici a zpìtnou propagací vrátíme èíslo
-v intervalu [0, 1], kde 0 je nejhorší hodnota pozice pro daného hráèe a 1 znamená nejlepší.
+Vysokı branching faktor a cyklení znemoòuje pouití náhodné simulace,
+která by skonèila a ve chvíli vıhry jednoho z hráèù.
+Místo toho odsimulujeme pøedem urèenı poèet tahù, ohodnotíme pozici a zpìtnou propagací vrátíme èíslo v intervalu [0, 1]
+urèující kvalitu pozice.
+Tuto hodnotu pak propagujeme do koøene.
 
 Abychom mohli získat pøehled o celkové pozici, potøebujeme ohodnotit dílèí èásti.
 
@@ -277,9 +321,11 @@ protoe ho je tìké dobıt a trvá to dlouho
 
 Tyto znalosti jsou poskládány do vzorce ohodnocovací funkce pro super region:
 
+```
 hodnota := a * bonus + b * sousední_super_regiony - c * sousední_regiony - d * regiony_super_regionu
+```
 
-, kde a, b, c, d jsou reálné konstanty.
+kde a, b, c, d jsou reálné konstanty.
 
 V pozdìjších fázích hry se ohodnocovací funkce liší pouze v hodnotách konstant.
 
@@ -288,24 +334,135 @@ Pøi ohodnocování regionu záleí také, zdali je zaèátek hry èi ne.
 
 Pøi zaèátku hry:
 
-- není dobré brát více regionù blízko u sebe
+- není dobré brát více regionù blízko vedle sebe
+- hodnota super regionu má vliv na hodnotu regionu
 <!--- TODO --->
 
 ###### Ohodnocení pozice hráèe
-Naše ohodnocovací funkce prochází všechny námi vlastnìné regiony, spoèítá hodnotu
-tìchto regionù a armády na nich a ty seète. Touto operací získáme ohodnocení zvláš 
-pro kadého hráèe. Ohodnocení pozice hráèe získáme vzorcem níe:
+Budeme ohodnocovat kadého hráèe zvláš. Pro ohodnocení hráèovy pozice
+porovnáme jeho hodnotu s hodnotou druhého hráèe.
 
-playerValue := playerValue / (playerValue + enemyPlayerValue)
+```
+hodnotaHráèe(hráè)
+    hodnota := 0
 
-Tuto hodnotu pak posíláme zpìtnou propagací do koøene.
+    pro kadı region vlastnìnı tímto hráèem
+        hodnota += ohodnoceníRegionu(region)
+        hodnota += ohodnoceníArmády(region.armáda)
+    
+    vra hodnota
+```
+
+```
+ohodnoceníPoziceHráèe1(hráè1, hráè2)
+    hodnotaHráèe1 := hodnotaHráèe(hráè1)
+    hodnotaHráèe2 := hodnotaHráèe(hráè2)
+    
+    ohodnoceníPozice1 := hodnotaHráèe1 / (hodnotaHráèe1 + hodnotaHráèe2)
+
+    vra ohodnoceníPozice1
+```
 
 ##### Generátory akcí
-Úlohou generátoru akcí je
+<!--- motivace --->
+Poèet monıch pokraèování v pozici je pøíliš velkı.
+Algoritmus nemá dostatek èasu na procházení všech moností.
+Potøebujeme nìjakım zpùsobem zmenšit stavovı prostor.
+
+<!--- popsat, co je generátor akcí a co dìlá --->
+Klíèem k tomu je generátor akcí. To je softwarová komponenta,
+jejím úèelem je nalézt mnoinu smysluplnıch tahù, které
+hráè mùe pouít.
+
+<!-- popsat, jak funguje pøesnì --->
+Náš akèní generátor nejprve vygeneruje monosti, jak udìlat deploy,
+potom pro kadou z tìchto moností vygeneruje monosti, jak zaútoèit.
+
+Algoritmus:
+```
+vygenerujTahy(stavHry) : tahy
+    tahy := {}
+    
+    // vygeneruje monosti, jak udìlat deploy
+    deploy := vygenerujDeploy(stavHry)
+
+    pro kadou sekvenci deployAkcí z deploy
+        // pøehrej deploy sekvenci akcí
+        aktualizovanıStav := pøehrejDeploySekvenci(stavHry, deployAkce)
+    
+        // vygeneruj monosti jak zaútoèit pro danı deploy
+        útoky := vygenerujMonostiÚtoku(aktualizovnıStav)
+
+        pro kadı útok z útoky
+            tahy.pøidej(deployAkce, útok)
+
+    odstraòDuplikáty(tahy)
+    vra tahy
+```
+
+###### Generování deploy akcí
+Pouívá 3 pøístupy v generování deploy akcí: útoènı, obrannı a expanzivní.
+
+1. *Útoènı* - postaví jednotky na region sousedící
+s neobsazenım nebo nepøátelskım regionem,
+kterı je nejcennìjší (má nejvyšší hodnotu podle ohodnocovací funkce).
+
+2. *Obrannı* - postaví jednotky na mé nejcennìjší regiony takové,
+kterım hrozí dobytí nepøítelem.
+
+3. *Expanzivní* - postaví jednotky na region sousedící
+s nejcennìjším neobsazenım regionem.
+
+###### Generování attack akcí
+<!--- záleí na poøadí --->
+Pøi útoèení, narozdíl od stavìní jednotek, záleí na poøadí.
+Napøíklad máme-li pozici, kde X je mùj region s armádou 8
+a Y je s armádou také 8, je rozdíl, zdali X záleí první na
+Y nebo naopak, protoe obránce má vıhodu.
+
+<!--- pøesouvání jednotek z vnitrozemí k okraji --->
+Jednotky, které jsou na našem regionu, kterı má
+za sousedy také pouze mé regionu, jsou nevyuité.
+Vyplatí se je pøesouvat k místùm, kde se budou moci
+zapojit do útoku nebo obrany.
+
+```
+pøesuòArmádyZVnitrozemí(stavHry)
+    pøesuny := {}
+    pro kadı mùj region
+        pokud všichni sousedi regionu jsou moje regiony
+            // najdi nejbliší region, co není mùj
+            cizíRegion := najdiCizíRegion(region)
+
+            // najdi cestu k nìmu
+            cesta := najdiNejkratšíCestuMezi(region, cizíRegion)
+
+            // najdi první region na této cestì
+            prvníRegionNaCestì := cesta[1]
+
+            pøesun := pošliJednotky(region, prvníRegionNaCestì)
+
+            pøesuny.pøidej(pøesun)
+```
+
+Pøi generování attack akcí pouíváme 3 moné varianty:
+útoènou, útoènou s vyèkáním, obrannou.
+
+1. *Útoèná* - z kadého regionu se vdy podíváme na
+nepøátelské sousední regiony, a potom na nì zaèneme posílat
+útoky, dokud naše útoèící armáda je silnìjší ne armáda bránící.
+
+2. *Útoèná s vyèkáním* - nejprve provedeme pøesun jednotek
+z vnitrozemí, poté útoèíme stejnì, jako v pøípadì útoèné varianty.
+
+3. *Obranná* - nejprve pøesuneme jednotky, poté zaèneme posílat útoky.
+Ty provádíme ale tak, e na region zaútoèíme jen s armádou, která
+porazí tu nepøátelskou i v pøípadì, e by na region postavil všechny jednotky,
+které mùe.
 
 #### Paralelní MCTS
 
-### Agresivní bot
+### Agresivní bot a Smart random bot
 
 ### Vısledky
 
@@ -352,7 +509,7 @@ kvalitu monıch tahù.
 Cílem této sekce je projít a popsat hlavní komponenty práce a jejich fungování.
 
 #### Pøehled
-<img src="assembly_map.png" alt="Map of assemblys" />
+<img src="assembly_map.svg" alt="Map of assemblys" />
 
 Obrázek vıše pøedstavuje základní vztahy mezi projekty.
 
@@ -387,7 +544,7 @@ nebo simulace.
 #### Projekt GameObjectLib
 V této knihovnì jsou datové struktury reprezentující mapu, hráèe, hru a její záznam.
 
-<img src="game_objects_lib.png" alt="Game objects lib schema" />
+<img src="game_objects_lib.svg" alt="Game objects lib schema" />
 
 Na obrázku vıše je znázornìné zjednodušené schéma popisující objekty a jejich vztahy.
 
