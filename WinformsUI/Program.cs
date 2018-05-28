@@ -40,7 +40,7 @@ namespace WinformsUI
 #endif
 
 #if PERFORMANCE_TESTING
-            using (var writer = new StreamWriter("TEST_RESULT.log"))
+            using (var writer = new StreamWriter("TEST_RESULT.log", append: true))
             {
                 writer.WriteLine($"MCTS bot vs aggressive bot, time 5 seconds for move");
                 DuelBotPerformanceTest test =
@@ -49,7 +49,7 @@ namespace WinformsUI
                         new AiPlayer(Difficulty.Hard, "MCTSBot", KnownColor.GreenYellow, GameBotType.MonteCarloTreeSearchBot),
                         new AiPlayer(Difficulty.Hard, "Aggressive", KnownColor.Red, GameBotType.AggressiveBot));
                 var (mctsWinCount, gamesCount) =
-                    test.Run(TimeSpan.FromMinutes(6));
+                    test.Run(TimeSpan.FromMinutes(200));
                 writer.WriteLine();
                 writer.WriteLine($"MCTS win ratio: {mctsWinCount} / {gamesCount}");
                 writer.WriteLine();
@@ -61,7 +61,7 @@ namespace WinformsUI
                         new AiPlayer(Difficulty.Hard, "MCTSBot", KnownColor.GreenYellow, GameBotType.MonteCarloTreeSearchBot),
                         new AiPlayer(Difficulty.Hard, "Smart random bot", KnownColor.Red, GameBotType.SmartRandomBot));
                 var (mctsWinCount2, gamesCount2) =
-                    test2.Run(TimeSpan.FromMinutes(8));
+                    test2.Run(TimeSpan.FromMinutes(200));
                 writer.WriteLine();
                 writer.WriteLine($"MCTS win ratio: {mctsWinCount2} / {gamesCount2}");
                 writer.WriteLine();

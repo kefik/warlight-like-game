@@ -56,7 +56,7 @@
                 pc1,
                 testUser
             };
-            var game = new GameFactory().CreateGame(0, GameType.SinglePlayer, map, players, true, new GameObjectsRestrictions());
+            var game = new GameFactory().CreateGame(GameType.SinglePlayer, map, players, true, new GameObjectsRestrictions());
 
             #region Initialize game state
 

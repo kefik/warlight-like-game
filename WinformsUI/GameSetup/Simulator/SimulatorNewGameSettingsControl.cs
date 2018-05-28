@@ -22,7 +22,7 @@ namespace WinformsUI.GameSetup.Simulator
     {
         private decimal previousPlayersNumber;
         public Action<Game> OnSimulationStarted;
-        
+
         public SimulatorNewGameSettingsControl()
         {
             InitializeComponent();
@@ -100,26 +100,12 @@ namespace WinformsUI.GameSetup.Simulator
                     };
                 }
 
-                Game game = null;
-                // generate id for the game
-                using (UtilsDbContext db = new UtilsDbContext())
-                {
-                    IEnumerable<SimulationRecord> savedGamesEnum =
-                        db.SimulationRecords.AsEnumerable();
-                    SimulationRecord lastGame = savedGamesEnum.LastOrDefault();
-                    int gameId = 1;
-                    if (lastGame != null)
-                    {
-                        gameId = lastGame.Id + 1;
-                    }
+                // get restrictions
+                var gameRestrictions = new GameObjectsRestrictionsGenerator(map, players, 2).Generate();
 
-                    // get restrictions
-                    var gameRestrictions = new GameObjectsRestrictionsGenerator(map, players, 2).Generate();
-
-                    var factory = new GameFactory();
-                    game = factory.CreateGame(gameId, GameType.Simulator, map,
-                        players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: gameRestrictions);
-                }
+                var factory = new GameFactory();
+                Game game = factory.CreateGame(GameType.Simulator, map,
+                    players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: gameRestrictions);
 
                 OnSimulationStarted?.Invoke(game);
             }

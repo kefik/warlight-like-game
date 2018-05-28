@@ -365,18 +365,17 @@ ohodnoceníPoziceHráèe1(hráè1, hráè2)
 
 ##### Generátory akcí
 <!--- motivace --->
-Poèet monıch pokraèování v pozici je pøíliš velkı.
+Poèet monıch pokraèování v témìø libovolném stavu hry je pøíliš velkı.
 Algoritmus nemá dostatek èasu na procházení všech moností.
-Potøebujeme nìjakım zpùsobem zmenšit stavovı prostor.
+Potøebujeme zmenšit stavovı prostor.
 
 <!--- popsat, co je generátor akcí a co dìlá --->
-Klíèem k tomu je generátor akcí. To je softwarová komponenta,
-jejím úèelem je nalézt mnoinu smysluplnıch tahù, které
-hráè mùe pouít.
+Klíèem k tomu je *generátor akcí*. To je softwarová komponenta,
+jejím úèelem je nalézt mnoinu smysluplnıch tahù pro daného hráèe.
 
 <!-- popsat, jak funguje pøesnì --->
 Náš akèní generátor nejprve vygeneruje monosti, jak udìlat deploy,
-potom pro kadou z tìchto moností vygeneruje monosti, jak zaútoèit.
+potom pro kadou z tìchto moností vygeneruje zpùsoby, jka zaútoèit.
 
 Algoritmus:
 ```
@@ -384,17 +383,18 @@ vygenerujTahy(stavHry) : tahy
     tahy := {}
     
     // vygeneruje monosti, jak udìlat deploy
-    deploy := vygenerujDeploy(stavHry)
+    deploySekvence := vygenerujDeploy(stavHry)
 
-    pro kadou sekvenci deployAkcí z deploy
+    pro kadou deploy z deploySekvence
         // pøehrej deploy sekvenci akcí
-        aktualizovanıStav := pøehrejDeploySekvenci(stavHry, deployAkce)
+        aktualizovanıStav := pøehrejDeploy(stavHry, deploy)
     
         // vygeneruj monosti jak zaútoèit pro danı deploy
         útoky := vygenerujMonostiÚtoku(aktualizovnıStav)
 
+        // pøidej všechny kombinace deploy a útokù do tahù
         pro kadı útok z útoky
-            tahy.pøidej(deployAkce, útok)
+            tahy.pøidej(deploy, útok)
 
     odstraòDuplikáty(tahy)
     vra tahy

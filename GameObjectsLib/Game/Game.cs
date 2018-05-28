@@ -30,7 +30,7 @@
     public abstract class Game : ISaveable<Game>, IRefreshable
     {
         [ProtoMember(1)]
-        public int Id { get; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Represents number of the current round.
@@ -76,9 +76,8 @@
         {
         }
 
-        protected Game(int id, Map map, IList<Player> players, bool isFogOfWar, GameObjectsRestrictions objectsRestrictions)
+        protected Game(Map map, IList<Player> players, bool isFogOfWar, GameObjectsRestrictions objectsRestrictions)
         {
-            Id = id;
             Map = map;
             Players = players;
             IsFogOfWar = isFogOfWar;

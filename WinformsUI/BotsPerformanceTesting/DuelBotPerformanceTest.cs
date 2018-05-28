@@ -58,9 +58,7 @@
                         mapInfo.PlayersLimit, mapInfo.TemplatePath);
 
                     game = new GameFactory().CreateGame(
-                        db.SimulationRecords.Select(x => x.Id)
-                            .AsEnumerable()
-                            .LastOrDefault() + 1, GameType.Simulator,
+                        GameType.Simulator,
                         map, players, false,
                         new GameObjectsRestrictionsGenerator(map,
                             players, 2).Generate());

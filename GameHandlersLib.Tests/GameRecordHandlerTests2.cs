@@ -62,7 +62,7 @@
                 pc2
             };
 
-            game = new GameFactory().CreateGame(1,
+            game = new GameFactory().CreateGame(
                 GameType.Simulator, map, players, true, new GameObjectsRestrictions());
 
 

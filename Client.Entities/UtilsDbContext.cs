@@ -131,6 +131,8 @@
                     savedGames.Add(saveInfo);
 
                     SaveChanges();
+
+                    game.Id = saveInfo.Id;
                     break;
                 }
                 case GameType.MultiplayerHotseat:
@@ -167,6 +169,8 @@
 
                     SaveChanges();
 
+                    game.Id = saveInfo.Id;
+
                     break;
                 }
                 case GameType.MultiplayerNetwork:
@@ -199,6 +203,8 @@
                     savedGames.Add(saveInfo);
 
                     SaveChanges();
+
+                    game.Id = saveInfo.Id;
                     break;
                 }
                 default: throw new ArgumentOutOfRangeException();

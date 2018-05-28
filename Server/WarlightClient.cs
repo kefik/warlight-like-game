@@ -156,7 +156,7 @@
                                 players.AddRange(aiPlayers);
 
                                 GameFactory factory = new GameFactory();
-                                Game game = factory.CreateGame(newGameId, GameType.MultiplayerNetwork,
+                                Game game = factory.CreateGame(GameType.MultiplayerNetwork,
                                     map, players, fogOfWar: true, objectsRestrictions: null);
 
                                 OpenedGame openedGame = new OpenedGame

@@ -57,10 +57,10 @@
             int maxPlayers = Math.Max(0, TotalPlayersLimit - 1);
             aiPlayersNumberNumericUpDown.Maximum = maxPlayers;
             humanPlayersNumberNumericUpDown.Maximum = maxPlayers;
-            
+
             aiPlayerSettingsControl.PlayersLimit = maxPlayers;
             humanPlayerSettingsControl.PlayersLimit = maxPlayers;
-            
+
             previousAiPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             previousHumanPlayersNumber = humanPlayersNumberNumericUpDown.Value;
 
@@ -184,35 +184,23 @@
                 players.Add(player);
             }
 
-            Game game = null;
+            var factory = new GameFactory();
+            Game game = factory.CreateGame(GameType.MultiplayerHotseat,
+                map, players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: null);
 
-            using (UtilsDbContext db = new UtilsDbContext())
+
+            // TEST
+            /*NetworkObjectWrapper wrapper = new NetworkObjectWrapper<Game>() {TypedValue = game};
+            using (var ms = new MemoryStream())
             {
-                IEnumerable<HotseatSavedGameInfo> savedGamesEnum = db.HotseatSavedGameInfos.ToList();
-                HotseatSavedGameInfo lastGame = savedGamesEnum.LastOrDefault();
-                int gameId = 1;
-                if (lastGame != null)
-                {
-                    gameId = lastGame.Id + 1;
-                }
+                wrapper.Serialize(ms);
 
-                var factory = new GameFactory();
-                game = factory.CreateGame(gameId, GameType.MultiplayerHotseat,
-                    map, players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: null);
+                ms.Position = 0;
 
+                var obj = NetworkObjectWrapper.Deserialize(ms).Value;
+            }*/
+            // END TEST
 
-                // TEST
-                /*NetworkObjectWrapper wrapper = new NetworkObjectWrapper<Game>() {TypedValue = game};
-                using (var ms = new MemoryStream())
-                {
-                    wrapper.Serialize(ms);
-
-                    ms.Position = 0;
-
-                    var obj = NetworkObjectWrapper.Deserialize(ms).Value;
-                }*/
-                // END TEST
-            }
 
             OnGameStarted?.Invoke(game);
         }

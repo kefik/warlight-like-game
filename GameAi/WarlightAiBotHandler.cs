@@ -49,16 +49,6 @@ namespace GameAi
                 isFogOfWar, newRestrictions);
         }
 
-        public WarlightAiBotHandler(IOnlineBot<BotTurn> bot, RegionsIdsMappingHandler mappingHandler) : this(bot)
-        {
-            this.regionsIdsMappingHandler = mappingHandler;
-        }
-
-        public WarlightAiBotHandler(IOnlineBot<BotTurn> bot)
-        {
-            this.onlineBot = bot;
-        }
-
         public BotTurn GetCurrentBestMove()
         {
             var turn = onlineBot.GetCurrentBestMove();

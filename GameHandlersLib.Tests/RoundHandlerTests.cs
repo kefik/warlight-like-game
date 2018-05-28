@@ -58,7 +58,7 @@
                 pc2
             };
 
-            game = new GameFactory().CreateGame(1, GameType.Simulator, map, players, true,
+            game = new GameFactory().CreateGame(GameType.Simulator, map, players, true,
                 new GameObjectsRestrictions());
 
             austria = map.Regions.First(x => x.Name == "Austria");

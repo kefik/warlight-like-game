@@ -15,26 +15,25 @@
         /// <summary>
         ///     Creates an instance of new <see cref="Game" />, validates it and returns it.
         /// </summary>
-        /// <param name="id">Id of the game corresponding to Id that will be stored in the database.</param>
         /// <param name="gameType">Type of the game.</param>
         /// <param name="map">Map of the game.</param>
         /// <param name="players">Players that will be playing the game.</param>
         /// <param name="fogOfWar">True, if the game will be fog of war.</param>
         /// <param name="objectsRestrictions">Restrictions of the game.</param>
         /// <returns>Created instance of the game.</returns>
-        public Game CreateGame(int id, GameType gameType, Map map,
+        public Game CreateGame(GameType gameType, Map map,
             IList<Player> players, bool fogOfWar, GameObjectsRestrictions objectsRestrictions)
         {
             switch (gameType)
             {
                 case GameType.SinglePlayer:
-                    return new SingleplayerGame(id, map, players, fogOfWar, objectsRestrictions);
+                    return new SingleplayerGame(map, players, fogOfWar, objectsRestrictions);
                 case GameType.MultiplayerHotseat:
-                    return new HotseatGame(id, map, players, fogOfWar, objectsRestrictions);
+                    return new HotseatGame(map, players, fogOfWar, objectsRestrictions);
                 case GameType.MultiplayerNetwork:
-                    return new NetworkGame(id, map, players, fogOfWar, objectsRestrictions);
+                    return new NetworkGame(map, players, fogOfWar, objectsRestrictions);
                 case GameType.Simulator:
-                    return new SimulatorGame(id, map, players, fogOfWar, objectsRestrictions);
+                    return new SimulatorGame(map, players, fogOfWar, objectsRestrictions);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gameType), gameType, null);
             }

@@ -37,7 +37,7 @@
             myHumanPlayerControl.Show();
 
             previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
-            
+
             aiPlayersNumberNumericUpDown.Maximum = 1;
             aiPlayerSettingsControl.PlayersLimit = 1;
             // initially there has to be selected 1 player
@@ -52,7 +52,7 @@
                 startButton.Enabled = true;
             };
         }
-        
+
         private decimal previousPlayersNumber;
 
         private void PlayersNumberChanged(object sender, EventArgs e)
@@ -80,7 +80,7 @@
                 previousPlayersNumber = aiPlayersNumberNumericUpDown.Value;
             }
         }
-        
+
         private void Start(object sender, EventArgs e)
         {
             try
@@ -97,26 +97,12 @@
 
                 players.Add(myHumanPlayerControl.GetPlayer());
 
-                Game game = null;
-                // generate id for the game
-                using (UtilsDbContext db = new UtilsDbContext())
-                {
-                    IEnumerable<SingleplayerSavedGameInfo> savedGamesEnum =
-                        db.SingleplayerSavedGameInfos.AsEnumerable();
-                    SingleplayerSavedGameInfo lastGame = savedGamesEnum.LastOrDefault();
-                    int gameId = 1;
-                    if (lastGame != null)
-                    {
-                        gameId = lastGame.Id + 1;
-                    }
+                // get restrictions
+                var gameRestrictions = new GameObjectsRestrictionsGenerator(map, players, 2).Generate();
 
-                    // get restrictions
-                    var gameRestrictions = new GameObjectsRestrictionsGenerator(map, players, 2).Generate();
-
-                    var factory = new GameFactory();
-                    game = factory.CreateGame(gameId, GameType.SinglePlayer, map,
-                        players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: gameRestrictions);
-                }
+                var factory = new GameFactory();
+                Game game = factory.CreateGame(GameType.SinglePlayer, map,
+                    players, fogOfWar: fogOfWarCheckBox.Checked, objectsRestrictions: gameRestrictions);
 
                 OnGameStarted?.Invoke(game);
             }

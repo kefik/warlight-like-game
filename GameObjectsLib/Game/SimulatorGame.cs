@@ -26,8 +26,8 @@
             
         }
 
-        public SimulatorGame(int id, Map map, IList<Player> players, bool isFogOfWar, GameObjectsRestrictions objectsRestrictions)
-            : base(id, map, players, isFogOfWar, objectsRestrictions)
+        public SimulatorGame(Map map, IList<Player> players, bool isFogOfWar, GameObjectsRestrictions objectsRestrictions)
+            : base(map, players, isFogOfWar, objectsRestrictions)
         {
             if (objectsRestrictions == null)
             {
