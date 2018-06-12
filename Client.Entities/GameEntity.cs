@@ -52,6 +52,11 @@
         /// <returns></returns>
         public virtual byte[] GetFileBytes()
         {
+            if (Data != null)
+            {
+                return Data;
+            }
+
             return File.Exists(Path) ? File.ReadAllBytes(Path) : null;
         }
 
@@ -59,7 +64,7 @@
         /// Writes data into <see cref="Path"/> location from <seealso cref="Data"/>, if there
         /// is any.
         /// </summary>
-        public virtual void Inserted()
+        void IInserted.Inserted()
         {
             if (Data != null)
             {
@@ -70,7 +75,7 @@
         /// <summary>
         /// Deletes file described by <see cref="Path"/>.
         /// </summary>
-        public virtual void Deleted()
+        void IDeleted.Deleted()
         {
             File.Delete(Path);
         }

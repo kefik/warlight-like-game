@@ -44,6 +44,8 @@
 
         public abstract BotTurn GetCurrentBestMove();
 
+        public abstract void UseFixedDeploy(IEnumerable<BotDeployment> deploymentsToUse);
+
         /// <summary>
         /// Asynchronously finds best move for the bot at given state.
         /// </summary>

@@ -125,9 +125,9 @@
             switch (tokens.First())
             {
                 case PlaceArmies:
-                    return new PlaceArmiesRequestToken(new TimeSpan(0, 0, 0, 0, milliseconds: int.Parse(tokens.First())));
+                    return new PlaceArmiesRequestToken(new TimeSpan(0, 0, 0, 0, milliseconds: int.Parse(tokens.Skip(1).First())));
                 case AttackOrTransfer:
-                    return new AttackRequestToken(new TimeSpan(0, 0, 0, 0, milliseconds: int.Parse(tokens.First())));
+                    return new AttackRequestToken(new TimeSpan(0, 0, 0, 0, milliseconds: int.Parse(tokens.Skip(1).First())));
                 default:
                     throw new ArgumentOutOfRangeException(nameof(tokens));
             }
@@ -152,7 +152,7 @@
         private OpponentMovesToken TranslateOpponentMoves(IEnumerable<string> tokens)
         {
             // no need to implement for now, bot probably doesn't need to know
-            throw new NotImplementedException();
+            return null;
         }
 
         private string TranslateFromToken(PlaceArmiesResponseToken token)

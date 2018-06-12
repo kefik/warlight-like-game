@@ -1,6 +1,7 @@
 ﻿namespace GameAi.BotStructures
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using ActionGenerators;
     using Data;
@@ -84,7 +85,12 @@
 
         public override BotTurn GetCurrentBestMove()
         {
-            throw new System.NotImplementedException();
+            throw new NotSupportedException();
+        }
+
+        public override void UseFixedDeploy(IEnumerable<BotDeployment> deploymentsToUse)
+        {
+            throw new NotSupportedException();
         }
 
         public override async Task<BotTurn> FindBestMoveAsync()

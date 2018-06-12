@@ -42,6 +42,11 @@
             return evaluationHandler.GetBestMove();
         }
 
+        public override void UseFixedDeploy(IEnumerable<BotDeployment> deploymentsToUse)
+        {
+            evaluationHandler.UseFixedDeploy(deploymentsToUse);
+        }
+
         public override async Task<BotTurn> FindBestMoveAsync()
         {
             if (EvaluationState != BotEvaluationState.NotRunning)

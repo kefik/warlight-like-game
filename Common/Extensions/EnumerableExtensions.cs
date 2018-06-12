@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Collections;
 
     public static class EnumerableExtensions
@@ -53,6 +54,21 @@
                     yield return item;
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns true, if two enumerables are equal ignoring order.
+        /// </summary>
+        /// <typeparam name="TType"></typeparam>
+        /// <param name="enumerable"></param>
+        /// <param name="otherEnumerable"></param>
+        /// <returns></returns>
+        public static bool UnorderedEquals<TType>(
+            this IEnumerable<TType> enumerable, IEnumerable<TType> otherEnumerable)
+        {
+            var set = otherEnumerable.ToHashSet();
+
+            return enumerable.All(item => set.Contains(item));
         }
     }
 }

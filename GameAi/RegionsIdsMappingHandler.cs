@@ -198,5 +198,15 @@ namespace GameAi
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public IEnumerable<BotDeployment> TranslateToNew(
+            IEnumerable<BotDeployment> deployments)
+        {
+            var deploys = deployments.Select(x =>
+                new BotDeployment(regionIdsMappingDictionary.GetNewId(x.RegionId),
+                    x.Army, x.DeployingPlayerId));
+
+            return deploys;
+        }
     }
 }

@@ -89,5 +89,10 @@ namespace GameAi
         {
             return Task.Delay(timeSpan).ContinueWith(x => onlineBot.StopEvaluation());
         }
+
+        public void UseFixedDeploy(IEnumerable<BotDeployment> deploymentsToUse)
+        {
+            onlineBot.UseFixedDeploy(regionsIdsMappingHandler.TranslateToNew(deploymentsToUse));
+        }
     }
 }

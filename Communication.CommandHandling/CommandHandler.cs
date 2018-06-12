@@ -36,6 +36,8 @@
 
         #endregion
 
+        private Restrictions restrictions;
+
         public CommandHandler()
         {
             mapController = new MapController();
@@ -71,18 +73,6 @@
 
         private ICommandToken ExecuteCommand(PlaceArmiesRequestToken token)
         {
-            // specify restrictions
-            var restrictions = new Restrictions()
-            {
-                GameBeginningRestrictions = new List<GameBeginningRestriction>()
-                {
-                    new GameBeginningRestriction()
-                    {
-                        RegionsPlayerCanChooseCount = StartingPickRegionsCount.Value,
-                        RestrictedRegions = StartingPickRegionsIds
-                    }
-                }
-            };
             // create bot
 
             int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
@@ -99,42 +89,66 @@
             // TODO: solve request
             // stop evaluation in specified timespan
             botHandler.StopEvaluation(token.Timeout.Value - new TimeSpan(0, 0, 0, 0, milliseconds: 30)).Wait();
+            
+            if (!(botHandler.GetCurrentBestMove() is BotGameTurn bestMove))
+            {
+                throw new ArgumentException($"Invalid type of {nameof(bestMove)}");
+            }
 
-            var bestMove = botHandler.GetCurrentBestMove();
+            botHandler.UseFixedDeploy(bestMove.Deployments);
 
-            // TODO: get place armies
-            return new PlaceArmiesResponseToken(bestMove.PlayerId, null);
+            // return converted token
+            return new PlaceArmiesResponseToken(bestMove.PlayerId, bestMove.Deployments.Select(x => (x.RegionId, x.Army)).ToList());
         }
 
         private ICommandToken ExecuteCommand(AttackRequestToken token)
         {
+            botHandler.FindBestMoveAsync();
+
             // stop evaluation in specified timespan
             botHandler.StopEvaluation(token.Timeout.Value - new TimeSpan(0, 0, 0, 0, milliseconds: 30)).Wait();
 
-            var bestMove = botHandler.GetCurrentBestMove();
+            if (!(botHandler.GetCurrentBestMove() is BotGameTurn bestMove))
+            {
+                throw new ArgumentException($"Invalid type of {nameof(bestMove)}");
+            }
 
-            // TODO: get attacks
-            return new AttackResponseToken(bestMove.PlayerId);
+            // return obtained attacks
+            return new AttackResponseToken(bestMove.PlayerId, bestMove.Attacks.Select(x => (x.AttackingRegionId, x.DefendingRegionId, x.AttackingArmy)).ToList());
         }
 
         private ICommandToken ExecuteCommand(PickStartingRegionsRequestToken token)
         {
-            // specify restrictions
-            var restrictions = new Restrictions()
-            {
-                GameBeginningRestrictions = new List<GameBeginningRestriction>()
-                {
-                    new GameBeginningRestriction()
-                    {
-                        RegionsPlayerCanChooseCount = StartingPickRegionsCount.Value,
-                        RestrictedRegions = StartingPickRegionsIds
-                    }
-                }
-            };
-            // create bot
-
             int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
+            int enemyPlayerId = playerDictionary
+                .First(x => x.Value == OwnerPerspective.Enemy).Key;
 
+            // specify restrictions
+            if (restrictions == null)
+            {
+                restrictions = new Restrictions()
+                {
+                    GameBeginningRestrictions = new List<GameBeginningRestriction>()
+                    {
+                        // initialize restrictions for me
+                        new GameBeginningRestriction()
+                        {
+                            RegionsPlayerCanChooseCount = StartingPickRegionsCount.Value,
+                            RestrictedRegions = StartingPickRegionsIds,
+                            PlayerId = myPlayerId
+                        },
+                        // initialize for enemy (he can pick any regions except those that were chosen for me)
+                        new GameBeginningRestriction()
+                        {
+                            RegionsPlayerCanChooseCount = StartingPickRegionsCount.Value,
+                            RestrictedRegions = mapController.GetMap().RegionsMin.Select(x =>x.Id).Except(StartingPickRegionsIds).ToList(),
+                            PlayerId = enemyPlayerId
+                        }
+                    }
+                };
+            }
+            // create bot
+            
             var mapMin = mapController.GetMap();
             botHandler = new WarlightAiBotHandler(GameBotType.MonteCarloTreeSearchBot,
                 mapMin, Difficulty.Hard,
@@ -144,14 +158,16 @@
 
             // find the best move
             botHandler.FindBestMoveAsync();
-            // TODO: solve request
             // stop evaluation in specified timespan
             botHandler.StopEvaluation(token.Timeout.Value - new TimeSpan(0, 0, 0, 0, milliseconds: 30)).Wait();
-
-            var bestMove = botHandler.GetCurrentBestMove();
+            
+            if (!(botHandler.GetCurrentBestMove() is BotGameBeginningTurn turn))
+            {
+                throw new ArgumentException();
+            }
 
             // get picked starting regions
-            return new PickStartingRegionsResponseToken(null);
+            return new PickStartingRegionsResponseToken(turn.SeizedRegionsIds.Select(x => x).ToList());
         }
 
         private ICommandToken ExecuteCommand(TimePerMoveToken token)
@@ -195,6 +211,15 @@
             int myPlayerId = playerDictionary.First(x => x.Value == OwnerPerspective.Mine).Key;
 
             var mapMin = mapController.GetMap();
+
+            botHandler = new WarlightAiBotHandler(
+                GameBotType.MonteCarloTreeSearchBot, mapMin,
+                Difficulty.Hard, (byte) myPlayerId,
+                new byte[]
+                {
+                    (byte) playerDictionary.First(x =>
+                        x.Value == OwnerPerspective.Enemy).Key
+                }, IsFogOfWar, restrictions);
             
             return null;
         }

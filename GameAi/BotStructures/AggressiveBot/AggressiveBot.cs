@@ -127,7 +127,12 @@ namespace GameAi.BotStructures.AggressiveBot
 
         public override BotTurn GetCurrentBestMove()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
+        }
+
+        public override void UseFixedDeploy(IEnumerable<BotDeployment> deploymentsToUse)
+        {
+            throw new NotSupportedException();
         }
 
         public override async Task<BotTurn> FindBestMoveAsync()

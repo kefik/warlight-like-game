@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Data.GameRecording;
 
     public interface IOnlineBotHandler<TBestMove>
     {
@@ -17,5 +18,7 @@
         void StopEvaluation();
 
         Task StopEvaluation(TimeSpan timeSpan);
+
+        void UseFixedDeploy(IEnumerable<BotDeployment> deploymentsToUse);
     }
 }

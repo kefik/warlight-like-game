@@ -12,6 +12,8 @@ namespace GameAi.BotStructures.MCTS
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Common;
+    using Common.Extensions;
     using Common.Interfaces;
     using Data.EvaluationStructures;
     using Data.GameRecording;
@@ -190,6 +192,35 @@ gameState.GetRegion(botAttack.DefendingRegionId);
 #endif
         }
 
+        public void UseFixedDeploy(IEnumerable<BotDeployment> deploymentsToUse)
+        {
+            var root = Tree.Root;
+
+            if (root.GameState.IsGameBeginning())
+            {
+                throw new ArgumentException();
+            }
+
+            var childNodes = root.Children;
+            var nodesToDelete = childNodes.Where(x =>
+                x.Action is BotGameTurn turn &&
+                // dont have same deployment phase
+                !turn.Deployments.UnorderedEquals(deploymentsToUse))
+                .ToHashSet();
+
+            foreach (var mctsTreeNode in nodesToDelete)
+            {
+                root.Value.WinCount -= mctsTreeNode.WinCount;
+                root.Value.VisitCount -= mctsTreeNode.VisitCount;
+                
+                new MCTSTree(mctsTreeNode.Value).FreeEntireTree();
+            }
+
+            // remove the children
+            root.Children.RemoveAll(node =>
+                nodesToDelete.Contains(node));
+        }
+
         /// <summary>
         /// Selects the best node.
         /// </summary>
@@ -273,8 +304,7 @@ gameState.GetRegion(botAttack.DefendingRegionId);
                     BoardState = boardState
                 });
             }
-
-            // create enemy nodes with result
+            
             foreach (var child in node.Children)
             {
                 var myAction = child.Action;

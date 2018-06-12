@@ -4,6 +4,7 @@
 namespace GameAi.BotStructures.MCTS
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading;
@@ -110,7 +111,7 @@ namespace GameAi.BotStructures.MCTS
                         x => x.Name))
                 {
                     Debug.WriteLine(
-                        $"Name: {superRegion.Name}, Value: " +
+                        $"Name: {superRegion.Name} ({superRegion.Id}), Value: " +
                         $"{gameBeginningSuperRegionMinEvaluator.GetValue(initialGameState, superRegion):F1}");
                 }
                 Debug.WriteLine("");
@@ -119,7 +120,7 @@ namespace GameAi.BotStructures.MCTS
                 foreach (RegionMin region in initialGameState.MapMin
                     .RegionsMin.OrderBy(x => x.Name))
                 {
-                    Debug.WriteLine($"Name: {region.Name}, Value: " +
+                    Debug.WriteLine($"Name: {region.Name} ({region.Id}), Value: " +
                                     $"{gameBeginningRegionMinEvaluator.GetValue(initialGameState, region):F1}");
                 }
                 Debug.WriteLine("");
@@ -133,7 +134,7 @@ namespace GameAi.BotStructures.MCTS
                 {
                     ref var region =
                         ref initialGameState.GetRegion(regionRestriction);
-                    Debug.WriteLine($"{region.Name}");
+                    Debug.WriteLine($"{region.Name} ({region.Id})");
                 }
             }
             else
@@ -144,7 +145,7 @@ namespace GameAi.BotStructures.MCTS
                         x => x.Name))
                 {
                     Debug.WriteLine(
-                        $"Name: {superRegion.Name}, Value: " +
+                        $"Name: {superRegion.Name} ({superRegion.Id}), Value: " +
                         $"{gameSuperRegionMinEvaluator.GetValue(initialGameState, superRegion):F1}");
                 }
                 Debug.WriteLine("");
@@ -153,7 +154,7 @@ namespace GameAi.BotStructures.MCTS
                 foreach (RegionMin region in initialGameState.MapMin
                     .RegionsMin.OrderBy(x => x.Name))
                 {
-                    Debug.WriteLine($"Name: {region.Name}, Value: " +
+                    Debug.WriteLine($"Name: {region.Name} ({region.Id}), Value: " +
                                     $"{gameRegionMinEvaluator.GetValue(initialGameState, region):F1}");
                 }
                 Debug.WriteLine("");
@@ -234,7 +235,7 @@ namespace GameAi.BotStructures.MCTS
                         foreach (BotDeployment botDeployment in deployments)
                         {
                             var region = gameState.GetRegion(botDeployment.RegionId);
-                            Debug.WriteLine($"Region: {region.Name}, New army: {botDeployment.Army}");
+                            Debug.WriteLine($"Region: {region.Name} ({region.Id}), New army: {botDeployment.Army}");
                         }
 
                         var attacks = gameTurn.Attacks;
@@ -244,7 +245,8 @@ namespace GameAi.BotStructures.MCTS
                             var attackingRegion = gameState.GetRegion(botAttack.AttackingRegionId);
                             var defendingRegion = gameState.GetRegion(botAttack.DefendingRegionId);
                             Debug.WriteLine(
-                                $"{attackingRegion.Name} -> {defendingRegion.Name}, Army: {botAttack.AttackingArmy}");
+                                $"{attackingRegion.Name} ({attackingRegion.Id}) -> {defendingRegion.Name} ({defendingRegion.Id}), " +
+                                $"Army: {botAttack.AttackingArmy}");
                         }
                         break;
                 }
@@ -257,6 +259,20 @@ namespace GameAi.BotStructures.MCTS
             var bestMove = turnsByVisitCount.Select(x => x.Turn).First();
 
             return bestMove;
+        }
+
+        /// <summary>
+        /// Fixes deployment that will be used when the evaluation will be continued.
+        /// It means that deployments other than <see cref="deploymentsToUse"/> will
+        /// be thrown away.
+        /// </summary>
+        /// <param name="deploymentsToUse"></param>
+        public void UseFixedDeploy(IEnumerable<BotDeployment> deploymentsToUse)
+        {
+            foreach (var mctsTreeHandler in treeHandlers)
+            {
+                mctsTreeHandler.UseFixedDeploy(deploymentsToUse);
+            }
         }
 
         /// <summary>
