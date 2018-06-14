@@ -7,53 +7,51 @@ faktoru.
 Práce implementuje umìlou inteligenci do této hry schopnou hrát vyrovnanou hru
 s alespoò ménì zkušeným hráèem. Souèástí je také simulátor, možnost
 hry proti UI i proti jinému lidskému hráèi ve formì hotseat (multiplayer hry na jednom poèítaèi).
-Práce je vedena tak, aby umožnila použití tohoto frameworku pro další vývoj a testování umìlé inteligence.
+Práce je navržena tak, aby umožnila použití tohoto frameworku pro další vývoj a testování umìlé inteligence.
 
 ## Úvod
 <!---popis kontextu, kterého se práce týká - popis hry, souvislost s riskem--->
 
 ### Základní informace o høe
-Warlight, inspirovaný deskovou hrou Risk, je hra pro více hráèù odehrávající se na
-mapì rozdìlené na regiony. Ty se shlukují do super regionù (kontinentù).
-Cílem je dobýt všechny regiony vlastnìné ostatními hráèi.
-Na zaèátku hry si hráè volí poèáteèní regiony.
-Každé kolo si na svá území nejprve staví jednotky, poté útoèí na své sousedy.
-Výpoèet ztrát jednotek pøi útoku je urèen pravdìpodobnostmi.
-Pøi stejném poètu útoèících a bránících jednotek by mìl útoèník utrpìt vyšší ztráty.
+Warlight, inspirovaný deskovou hrou Risk, je hra pro více hráèù zjednodušenì
+simulující skuteèný váleèný konflikt. Každý hráè zaèíná na 2 území. Cílem
+hry je dobýt všechna území vlastnìné ostatními hráèi. Nedílnou souèástí této hry 
+je také náhoda, která rozhoduje o množství ztrát pøi každém boji.
 
 ### Motivace
 <!--- motivace k vytvoøení práce --->
-I pøes existenci soutìže vypsané Riddles.io na tvorbu umìlé inteligence do hry Warlight
-je tato oblast nepøíliš zmapovaná.
-Dùvodem je nezveøejòování existujících implementací, nebo jejich malá, èi vùbec žádná dokumentace.
+I pøes existenci soutìže vypsané Riddles.io je oblast tvorby umìlé inteligence pro hru Warlight nepøíliš zmapovaná.
+Dùvodem je nezveøejòování existujících implementací, nebo jejich malá èi vùbec žádná dokumentace.
 Neprobádanost, spolu s velkým branching faktorem hry, nás motivuje k pokusu o vytvoøení umìlé inteligence,
 která bude schopná hrát vyrovnanou hru alespoò s ménì zkušeným hráèem.
 
-### Cíl
+### Cíl práce
 <!--- co specifiètìji je v mé práci, trošku jak --->
-Cílem práce je naimplementovat umìlou inteligenci do hry Warlight použitím
-modifikovaného paralelního algoritmu Monte Carlo tree search.
+Cílem práce je naimplementovat umìlou inteligenci do hry Warlight.
 Pro snadnìjší vývoj umìlé inteligence je dílèím cílem práce pøidat simulátor
 pro pozorování her botù proti sobì a hru ve formì singleplayer nebo hotseat
 multiplayer hry (více hráèù na jednom poèítaèi).
 
 ### Related works
 Práce [GG Warlight Strategy Guide.pdf] a [LearningWarlightStrategy.pdf] popisují,
-jakými pravidly by se mìl lidský hráè øídit pøi hraní Warlightu.
+jakými pravidly by se mìl lidský hráè øídit pøi hraní Warlightu. Poznatky z tìchto prací
+jsou využity pøi tvorbì generátoru akcí v umìlé inteligenci.
 
 Práce [MHuntersWarLightStrategyGuide.pdf] obsahuje sadu rad, jak by se umìlá inteligence mìla
-chovat v rùzných herních situacích.
+chovat v rùzných herních situacích. Ty jsou využity pøi implementaci generátoru akcí a funkcí ohodnocujících stav
+v AI.
 
 Práce [Parallelmcts.pdf] rozebírá pøístupy k implementaci algoritmu Monte Carlo tree search
-paralelnì. Jejich efektivita je mìøena na høe Go.
+paralelnì. Jejich efektivita je mìøena na høe Go. Prací zmínìná Koøenová paralelizace je použita
+pro paralelizování výpoètu v naší implementaci umìlé inteligence.
 
 ### Struktura práce
+Práce se skládá ze 4 kapitol vyjma úvodu:
 - **Pravidla hry** - cílem první kapitoly je detailnì popsat ètenáøi pravidla hry
 Warlight.
-- **Umìlá inteligence** - ve druhé kapitole prozkoumáme umìlou inteligenci implementovanou
-v této práci. Zamìøíme se na obecnì použitý algoritmus a jeho modifikace pøizpùsobené znalostem této hry.
+- **Umìlá inteligence** - ve druhé kapitole zanalyzujeme problém tvorby umìlé inteligence do této hry a vybereme vhodný algoritmus. Zamìøíme se na obecnì použitý algoritmus a jeho modifikace pøizpùsobené znalostem této hry.
 Nakonec rozebereme výsledky hry naší umìlé inteligence proti lidským hráèùm i jiným AI. Zamìøíme
-se na prùzkum jejich nedostatkù a problémová místa (možná má být ve future work??).
+se na prùzkum jejich nedostatkù a problémová místa.
 - **Implementace** - tøetí kapitola popisuje soubory související s prací a strukturu a význam hlavních
 implementovaných tøíd.
 - **Závìr** - závìreèná kapitola zhodnocuje celé dílo. Nakonec uvádí možné navázání na tuto práci.
@@ -67,8 +65,8 @@ implementovaných tøíd.
 
 ## Pravidla hry
 Pravidla hry Warlight jsou relativnì volná, hra se dá hrát na spoustu rùzných nastavení.
-V této kapitole si vezmeme nastavení, která jsou použita v této práci,
-a popíšeme pravidla hry.
+Liší se pøedevším v míøe náhody pøi útoèení a zpùsobu volení regionù na zaèátku hry.
+Cílem této kapitoly je popsat pravidla hry Warlight s použitým nastavením.
 
 ### Mapa
 Hra se odehrává na mapì. Ta se dìlí na *regiony*, nejmenší územní celky této hry.
@@ -76,47 +74,88 @@ Každý region má armádu, seznam sousedních regionù, a buï hráèe, který ho vlastní
 Regiony se dále shlukují do vìtších územních celkù, *super regionù*.
 Mapou mùže být libovolný neorientovaný graf regionù.
 
+V práci je naimplementována jediná mapa sloužící pro úèely testování a hraní - mapa svìta.
+<img src="World.png" alt="Mapa hry" />
+
+Regiony této mapy jsou ohranièená území na obrázku, Super regiony jsou kontinenty - Afrika, Asie, Austrálie, Evropa, Severní a Jižní Amerika.
+
 ### Zaèátek hry
-Na zaèátku hry si hráè zvolí poèáteèní regiony tak, že od každého super regionu vezme právì jeden.
-Tato zvolená území pøedstavují výchozí body, ze kterých bude obsazovat další.
+Na zaèátku hry je pro každého hráèe vygenerována množina regionù tak, že od každého super regionu jsou zvoleny právì 2 regiony.
+Hráè z této množiny zvolí 2 regiony. Tato území pøedstavují výchozí body, ze kterých bude obsazovat další.
 
 ### Prùbìh hry
-- hráèi se støídají po tazích
-- odehrají-li všichni hráèi své tahy, dojde k výpoètu a následné zmìnì stavu hry
-- hra konèí ve chvíli, kdy jeden hráè dobude území všech ostatních hráèù
+Hra se dìlí na herní kola, ty se dále dìlí na herní tahy. Každé herní kolo
+se skládá z tahù hráèù, kde každý hráè pøispívá do kola právì jedním tahem.
+
+Bìhem hry se hráèi se støídají po tazích. Odehrají-li všichni hráèi své tahy,
+dojde k ukonèení kola. Poté dojde k výpoètu nového stavu hry, tedy výpoètu ztrát jednotek a 
+pøípadných zmìn vlastníkù regionù a k zapoèetí nového kola. Tyto kroky se opakují,
+dokud jeden hráè neobsadí regiony všech ostatních hráèù, a nevyhraje tak hru.
 
 ### Tah
-Tah se dìlí na 3 fáze: deploy, attack a commit. V deploy fázi hráè staví armádu,
-v attack fázi posílá útoky a v commit fázi potvrzuje své pøedchozí akce.
+Tah se dìlí na 3 fáze: deploy, attack a commit.
+V deploy fázi hráè staví armádu, v attack fázi posílá útoky a v commit fázi potvrzuje své pøedchozí akce.
+
+Pøechody mezi tìmito fázemi se øídí následujícím schématem:
 
 <img src="turn_graph.svg" alt="Turn phases graph" />
 
-#### Deploy
-V této fázi hráè staví armádu na ním vlastnìných regionech.
+#### Deploy fáze
+V této fázi hráè staví armádu na jím vlastnìné regiony.
+
+*Deploy akcí* nazveme jev, kdy hráè postaví nenulový poèet jednotek na daný region.
+Deploy fáze se skládá z deploy akcí. Pokud v jedné deploy fázi je více deploy akcí stavìjící jednotky na stejný region,
+tyto akce jsou slouèeny - více deploy akcí se nahradí
+jednou, která postaví souèet všech jednotek postavených deploy akcemi na daný region.
+
 Hráè má urèený maximální poèet jednotek, které mùže v daném tahu postavit.
-Od zaèátku hry si mùže stavìt 5 jednotek. Dobude-li nìjaký super region,
-zvýší se mu pøísun jednotek o bonus definovaný super regionem.
+Na zaèátku hry mùže stavìt 5 jednotek. Dobude-li nìjaký super region,
+zvýší se mu pøísun jednotek o bonus definovaný super regionem. Pokud o super region pøijde,
+pøijde také o bonus jím poskytovaný.
 
-#### Attack
-V této fázi hráè útoèí jednotkami vždy ze svého regionu na region sousední,
+Super regiony mapy svìta mají následující bonusy:
+- Asie - 7
+- Evropa - 5
+- Severní Amerika - 5
+- Jižní Amerika - 2
+- Afrika - 3
+- Austrálie - 3
+
+#### Attack fáze
+V této fázi hráè útoèí armádou vždy ze svého regionu na region sousední,
 popøípadì jednotky pøesouvá mezi svými sousedními regiony.
-Pøi útoku nelze útoèit s celou armádou. Musí na regionu zùstat alespoò jedna jednotka.
 
-#### Commit
-V této fázi hráè potvrzuje své veškeré pøedchozí akce.
-Po tomto potvrzení již není možné je vrátit a tah je považován za uzavøený.
+*Attack akcí* nazveme jev, kdy hráè pošle nenulový poèet jednotek z jím vlastnìného regionu
+na region sousední. Attack fáze se skládá z attack akcí. Pokud v jedné attack fázi je více attack akcí takových,
+že útok vychází ze stejných regionù a míøí do stejných regionù, pak jsou tyto akce slouèeny - z více se vytvoøí jedna
+attack akce, která bude ze stejných regionù a míøit do stejných regionù a armáda bude souèet všech vyslaných jednotek pro dyné dva regiony.
+
+Pøi útoku nelze útoèit s celou armádou. Na regionu zùstat alespoò jedna jednotka.
+
+#### Commit fáze
+V této fázi hráè potvrzuje akce, které provedl v deploy a attack fázi.
+Po tomto potvrzení již není možné je vrátit a jeho tah je považován za uzavøený.
 
 ### Kolo
-Každý hráè pøispívá do kola právì jedním tahem. Výpoèet kola se spouští, jakmile všichni hráèi potvrdí
-své akce commitem.
+Každý hráè pøispívá do kola právì jedním tahem. Jakmile všichni hráèi ukonèí své tahy commitem, spustí se výpoèet kola, který aktualizuje herní
+stav.
 
-Ty se nejprve zlinearizují, poté následuje výpoèet zmìn.
+Tahy posledního kola se nejprve zlinearizují, poté následuje výpoèet zmìn.
 
 #### Linearizace
+Linearizace je algoritmus, který zjednoduší vnoøenou strukturu tahù. Z kola
+vytvoøí linearizované kolo, které má stejnou strukturu jako tah. To
+obsahuje všechny akce tahù hráèù, ale ve zmìneném poøadí.
 
 <img src="linearizing.svg" alt="Linearizing algorithm" />
 
-Algoritmus:
+Algoritmus nejprve zlinearizuje deploy akce tak, že pro každé i vezme i-té deploy
+akce všech tahù daného kola (v poøadí, ve kterém jsou tahy zapsány) a pøidá je do výstupního seznamu.
+Poté zlinearizuje attack akce tak, že pro každé i vezme i-té attack akce
+každého tahu, a v náhodném poøadí je pøidá do výstupního seznamu.
+Linearizované kolo je tvoøeno dvìma výše popsanými výstupními seznamy.
+
+**Pseudokód**
 ```
 Linearizuj() : kolo
     tahy = { všechny t | t je odehraný tah }
@@ -140,14 +179,28 @@ Linearizuj() : kolo
 
 ```
 
-#### Výpoèet zmìn
-Nejprve jsou spuštìny všechny deploy akce - dojde k pøidání jednotek na zvolené regiony.
+#### Výpoèet zmìn kola
+Pøi výpoètu zmìn kola dojde k aktualizaci herního stavu provedením všech zlinearizovaných akcí.
 
-Poté jsou spuštìny všechny attack akce. Výpoèet ztrát jednotek v boji se øídí následujícími pravidly:
+Nejprve jsou spuštìny všechny deploy akce - jednotky jsou pøidány na hráèi regiony.
+
+Poté jsou spuštìny všechny attack akce - dojde k výpoètu ztrát jednotek v boji a pøípadné zmìnì vlastníkù regionù.
+Výpoèet ztrát se øídí následujícími pravidly:
 - Každá útoèící jednotka má 60% šanci na zabití bránící jednotky.
 - Každá bránící jednotka má 70% šanci na zabití útoèící jednotky.
 
-Algoritmus pro spoèítání zmìn zpùsobených útoky:
+Následující algoritmus spoèítá všechny zmìny zpùsobené útoky a zaktualizuje tak
+souèasný herní stav.
+Algoritmus implementuje následující pravidla:
+- pokud útoèící region zmìnil vlastníka, tento útok se neprovede (byl by proveden jednotkami hráèe, který útok neposlal)
+- nelze zaútoèit tak, že na regionu nezùstane žádná jednotka - vždy musí zùstat alespoò 1
+- útoèí-li hráè na svùj region, nedochází ke ztrátám na jednotkách
+- pokud pøi útoku dojde k zabití útoèících i bránících jednotek, na bránící je pøiøazena 1 jednotka (a nemìní se jeho majitel)
+- pokud pøi útoku jsou zabity všechny bránící, ale nìjaká útoèící jednotka pøežila, novým vlastníkem regionu je útoèící hráè a zbytek
+útoèících jednotek se pøesune na dobytý region
+- pokud pøi útoku pøežily bránící i útoèící jednotky, zbytek útoèících jednotek se po útoku vrátí na region, ze kterého pøišly
+
+**Pseudokód**
 ```
 spoèítejAttacky(linearizovanéAttacky)
     pro každý attack v linearizovanéAttacky
@@ -171,7 +224,7 @@ spoèítejAttacky(linearizovanéAttacky)
             zabitéÚtoèícíJednotky :=
                 spoèítejZabitéÚtoèícíJednotky(reálnáÚtoèícíArmáda, bránícíArmáda)
             zabitéBránícíJednotky :=
-                spoèítejzabitéBránícíJednotky(bránícíArmáda, reálnáÚtoèícíArmáda)
+                spoèítejZabitéBránícíJednotky(bránícíArmáda, reálnáÚtoèícíArmáda)
             
             pokud byly zabity všechny útoèící i bránící jednotky
                 bránícíArmáda := 1
@@ -186,14 +239,10 @@ spoèítejAttacky(linearizovanéAttacky)
 
 ## Umìlá inteligence
 <!--- popis kapitoly --->
-V této kapitole nejprve zanalyzujeme problematiku hry a
+V této kapitole nejprve zanalyzujeme problematiku tvorby umìlé inteligence do hry Warlight a
 urèíme vhodnou metodu pøístupu k implementaci AI. Následnì
-ukážeme naši implementaci použitím zvoleného algoritmu,
-popíšeme naimplementovanou referenèní umìlé inteligence.
-Na závìr otestujeme schopnosti AI a zanalyzujeme výsledky testování.
-
-<!--- vymezení (možná na jiné místo?) --->
-Vytvoøená umìlá inteligence je schopná hrát pouze hry 1v1.
+ukážeme naši implementaci a popíšeme vytvoøenou referenèní AI.
+Na závìr otestujeme schopnosti naší AI a zanalyzujeme výsledky testování.
 
 ### Analýza
 <!--- na poøadí záleží --->
@@ -210,13 +259,12 @@ a ještì více zpùsoby je lze posílat na regiony sousední.
 Dalším výzvou je nedeterminismus útoku. Náhoda pøi výpoètu
 útoku mùže znatelnì ovlivnit nový stav po skonèení kola.
 
+<!--- požadavky na algoritmus --->
+Doba výpoètu je omezená. Algoritmus by mìl být schopen po krátkém
+èase vydat dosud nejlepší nalezenou odpovìï.
+
 <!--- volba algoritmu --->
-Aby algoritmus dobøe poèítal ve velkém stavovém prostoru,
-mìl by být best-first-search. Aby uživatel neèekal pøíliš
-dlouho na odpovìï AI, mìl by být stanovena maximální doba výpoètu.
-Algoritmus by tedy mìl být schopen v tento èas vydat nejlepší odpovìï,
-kterou dosud našel. Z tìchto dùvodù byl pro implementaci
-AI zvolen algoritmus Monte Carlo tree search.
+Pro naši práci byl zvolen best-first search algoritmus Monte Carlo tree search.
 
 ### Monte Carlo tree search AI
 V této sekci nejprve základnì popíšeme obecnì algoritmus MCTS,
@@ -226,7 +274,7 @@ k paralelizaci tohoto algoritmu.
 
 **Terminologie**
 - *náš hráè* - hráè z jehož pohledu se snažíme najít nejlepší tah
-- *nepøátelský hráè* - hráè, co není náš hráè
+- *nepøátelský hráè* - hráè, který není náš hráè
 
 #### Úvod do MCTS
 Monte Carlo tree search je algoritmus, jehož cílem je
