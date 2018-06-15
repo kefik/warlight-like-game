@@ -35,7 +35,7 @@ multiplayer hry (více hráèù na jednom poèítaèi).
 ### Related works
 Práce [GG Warlight Strategy Guide.pdf] a [LearningWarlightStrategy.pdf] popisují,
 jakými pravidly by se mìl lidský hráè øídit pøi hraní Warlightu. Poznatky z tìchto prací
-jsou využity pøi tvorbì generátoru akcí v umìlé inteligenci.
+jsou využity pøi tvorbì generátoru akcí pro AI.
 
 Práce [MHuntersWarLightStrategyGuide.pdf] obsahuje sadu rad, jak by se umìlá inteligence mìla
 chovat v rùzných herních situacích. Ty jsou využity pøi implementaci generátoru akcí a funkcí ohodnocujících stav
@@ -49,7 +49,7 @@ pro paralelizování výpoètu v naší implementaci umìlé inteligence.
 Práce se skládá ze 4 kapitol vyjma úvodu:
 - **Pravidla hry** - cílem první kapitoly je detailnì popsat ètenáøi pravidla hry
 Warlight.
-- **Umìlá inteligence** - ve druhé kapitole zanalyzujeme problém tvorby umìlé inteligence do této hry a vybereme vhodný algoritmus. Zamìøíme se na obecnì použitý algoritmus a jeho modifikace pøizpùsobené znalostem této hry.
+- **Umìlá inteligence** - ve druhé kapitole zanalyzujeme problém tvorby umìlé inteligence do hry Warlight a vybereme vhodný algoritmus. Zamìøíme se na obecnì použitý algoritmus a jeho modifikace pøizpùsobené znalostem této hry.
 Nakonec rozebereme výsledky hry naší umìlé inteligence proti lidským hráèùm i jiným AI. Zamìøíme
 se na prùzkum jejich nedostatkù a problémová místa.
 - **Implementace** - tøetí kapitola popisuje soubory související s prací a strukturu a význam hlavních
@@ -64,9 +64,9 @@ implementovaných tøíd.
 5. [Seznam použité literatury]
 
 ## Pravidla hry
-Pravidla hry Warlight jsou relativnì volná, hra se dá hrát na spoustu rùzných nastavení.
-Liší se pøedevším v míøe náhody pøi útoèení a zpùsobu volení regionù na zaèátku hry.
-Cílem této kapitoly je popsat pravidla hry Warlight s použitým nastavením.
+Pravidla hry Warlight jsou relativnì volná, hra se dá hrát na spoustu rùzných nastavení, která 
+se liší pøedevším v míøe náhody pøi útoèení a zpùsobu volení regionù na zaèátku hry.
+Cílem této kapitoly je popsat pravidla hry Warlight s nastavením implementovaným v této práci.
 
 ### Mapa
 Hra se odehrává na mapì. Ta se dìlí na *regiony*, nejmenší územní celky této hry.
@@ -81,11 +81,12 @@ Regiony této mapy jsou ohranièená území na obrázku, Super regiony jsou kontinent
 
 ### Zaèátek hry
 Na zaèátku hry je pro každého hráèe vygenerována množina regionù tak, že od každého super regionu jsou zvoleny právì 2 regiony.
-Hráè z této množiny zvolí 2 regiony. Tato území pøedstavují výchozí body, ze kterých bude obsazovat další.
+Hráè si z této množiny vybírá 2 regiony. Tato území pøedstavují výchozí body, ze kterých bude obsazovat další.
+Commitem potvrzuje své pøedchozí akce
 
 ### Prùbìh hry
-Hra se dìlí na herní kola, ty se dále dìlí na herní tahy. Každé herní kolo
-se skládá z tahù hráèù, kde každý hráè pøispívá do kola právì jedním tahem.
+Hra se dìlí na herní kola. Každé herní kolo
+se skládá z tahù, kde každý hráè pøispívá do kola právì jedním tahem.
 
 Bìhem hry se hráèi se støídají po tazích. Odehrají-li všichni hráèi své tahy,
 dojde k ukonèení kola. Poté dojde k výpoètu nového stavu hry, tedy výpoètu ztrát jednotek a 
@@ -101,10 +102,10 @@ Pøechody mezi tìmito fázemi se øídí následujícím schématem:
 <img src="turn_graph.svg" alt="Turn phases graph" />
 
 #### Deploy fáze
-V této fázi hráè staví armádu na jím vlastnìné regiony.
+V této fázi hráè staví armádu na ním vlastnìné regiony.
 
 *Deploy akcí* nazveme jev, kdy hráè postaví nenulový poèet jednotek na daný region.
-Deploy fáze se skládá z deploy akcí. Pokud v jedné deploy fázi je více deploy akcí stavìjící jednotky na stejný region,
+Deploy fáze se skládá z 0 nebo více deploy akcí. Pokud v jedné deploy fázi je více deploy akcí stavìjící jednotky na stejný region,
 tyto akce jsou slouèeny - více deploy akcí se nahradí
 jednou, která postaví souèet všech jednotek postavených deploy akcemi na daný region.
 
@@ -126,7 +127,7 @@ V této fázi hráè útoèí armádou vždy ze svého regionu na region sousední,
 popøípadì jednotky pøesouvá mezi svými sousedními regiony.
 
 *Attack akcí* nazveme jev, kdy hráè pošle nenulový poèet jednotek z jím vlastnìného regionu
-na region sousední. Attack fáze se skládá z attack akcí. Pokud v jedné attack fázi je více attack akcí takových,
+na region sousední. Attack fáze se skládá z 0 nebo více attack akcí. Pokud v jedné attack fázi je více attack akcí takových,
 že útok vychází ze stejných regionù a míøí do stejných regionù, pak jsou tyto akce slouèeny - z více se vytvoøí jedna
 attack akce, která bude ze stejných regionù a míøit do stejných regionù a armáda bude souèet všech vyslaných jednotek pro dyné dva regiony.
 
@@ -134,18 +135,18 @@ Pøi útoku nelze útoèit s celou armádou. Na regionu zùstat alespoò jedna jednotka
 
 #### Commit fáze
 V této fázi hráè potvrzuje akce, které provedl v deploy a attack fázi.
-Po tomto potvrzení již není možné je vrátit a jeho tah je považován za uzavøený.
+Po tomto potvrzení již není možné je vrátit a hráèùv tah je považován za uzavøený.
 
 ### Kolo
-Každý hráè pøispívá do kola právì jedním tahem. Jakmile všichni hráèi ukonèí své tahy commitem, spustí se výpoèet kola, který aktualizuje herní
+Každý hráè pøispívá do kola právì jedním tahem. Jakmile všichni ukonèí své tahy commitem, spustí se výpoèet kola, který aktualizuje herní
 stav.
 
 Tahy posledního kola se nejprve zlinearizují, poté následuje výpoèet zmìn.
 
 #### Linearizace
 Linearizace je algoritmus, který zjednoduší vnoøenou strukturu tahù. Z kola
-vytvoøí linearizované kolo, které má stejnou strukturu jako tah. To
-obsahuje všechny akce tahù hráèù, ale ve zmìneném poøadí.
+vytvoøí linearizované kolo. To má stejnou strukturu jako tah a
+obsahuje všechny deploy a attack akce tahù daného kola, ale ve zmìneném poøadí.
 
 <img src="linearizing.svg" alt="Linearizing algorithm" />
 
@@ -198,7 +199,7 @@ Algoritmus implementuje následující pravidla:
 - pokud pøi útoku dojde k zabití útoèících i bránících jednotek, na bránící je pøiøazena 1 jednotka (a nemìní se jeho majitel)
 - pokud pøi útoku jsou zabity všechny bránící, ale nìjaká útoèící jednotka pøežila, novým vlastníkem regionu je útoèící hráè a zbytek
 útoèících jednotek se pøesune na dobytý region
-- pokud pøi útoku pøežily bránící i útoèící jednotky, zbytek útoèících jednotek se po útoku vrátí na region, ze kterého pøišly
+- pokud pøi útoku pøežily bránící i útoèící jednotky, zbytek pøeživších útoèících jednotek se po útoku vrátí na region, ze kterého pøišly
 
 **Pseudokód**
 ```
