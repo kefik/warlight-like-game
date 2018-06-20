@@ -246,79 +246,149 @@ ukáeme naši implementaci a popíšeme vytvoøenou referenèní AI.
 Na závìr otestujeme schopnosti naší AI a zanalyzujeme vısledky testování.
 
 ### Analıza
-<!--- na poøadí záleí --->
-Hra Warlight je vıpoèetnì velmi nároèná. Tah je unikátnì
-urèen mnoinou deploy a sekvencí attack akcí. Liší-li
-se poøadí attack akcí, mùe to mít velkı vliv na vısledek kola.
+Cílem této sekce je prozkoumat problémy implementace umìlé inteligence pro hru Warlight.
 
-<!--- velkı branching faktor --->
-Zpùsobù, jak odehrát jeden tah, je velmi mnoho. Jednotky
-lze nepøebernì zpùsoby distribuovat na vlastnìné regiony,
+#### Vıpoèetní nároènost
+Hra Warlight je vıpoèetnì velmi nároèná. Tah se skládá z deploy a attack akcí.
+Na poøadí deploy akcí jednotlivıch tahù nezáleí, poøadí attack akcí však dokáe znatelnì
+ovlivnit prùbìh kola. Jednotky lze nepøebernì zpùsoby distribuovat na vlastnìné regiony,
 a ještì více zpùsoby je lze posílat na regiony sousední.
 
-<!--- nedeterminismus útoku --->
-Dalším vızvou je nedeterminismus útoku. Náhoda pøi vıpoètu
-útoku mùe znatelnì ovlivnit novı stav po skonèení kola.
+Vezmeme-li si napøíklad zjednodušenou herní situaci:
+Hráè vlastní 2 nesousedící regiony a kadı z nich má 3 sousedy.
+Je-li *n* je poèet jednotek na jednom z jeho regionù, pak mùe zaútoèit následujícím poètem zpùsobù:
 
-<!--- poadavky na algoritmus --->
-Doba vıpoètu je omezená. Algoritmus by mìl bıt schopen po krátkém
-èase vydat dosud nejlepší nalezenou odpovìï.
+*(i + 3)! / (i! * 3!)*
+
+Vıše uvedenı vzorec urèí, kolika zpùsoby lze rozdìlit *i* jednotek do 2 skupin.
+Pro *n = 6*, co odpovídá situaci, kdy jeden region má 7 jednotek (z toho 6 lze poslat),
+bude vısledná hodnota 56.
+
+Vezmeme-li v úvahu, e hra má dva hráèe a protivník má stejnı poèet moností,
+jak zaútoèit, budeme mít branching faktor *56 * 56 = 3136*. Je zøejmé, e všechny
+tyto monosti nemùeme prozkoumat a bude potøeba stavovı prostor zmenšit.
+
+#### Náhoda pøi boji
+<!--- nedeterminismus útoku --->
+Další vızvou je nedeterminismus útoku. Náhoda pøi vıpoètu
+útoku mùe znatelnì ovlivnit novı stav po skonèení kola. Jak ji
+bylo øeèeno v sekci pravidla, kadá útoèící jednotka má v boji 60% šanci
+na zabití bránící jednotky a kadá bránící jednotka má 70% šanci na zabití jednotky útoèící.
+
+Aèkoliv je bránìní zdánlivì vıhodnìjší, podle [najdu tu práci a pøidám referenci] je strategicky vıhodnìjší pøistupovat
+ke høe agresivnìji.
+
+#### Volba algoritmu umìlé inteligence
+V této sekci nejprve shrneme poadavky, které by mìl algoritmus splòovat. Poté zvolíme vhodnı algoritmus.
+
+Èasová doba vıpoètu je znaènì omezená. Algoritmus by mìl bıt schopen bìhem nìkolika sekund
+najít nejlepší odpovìï. Kvùli velkému poètu stavù je potøeba po urèitém èase vrátit dosud
+nejlepší nalezenou odpovìï.
 
 <!--- volba algoritmu --->
-Pro naši práci byl zvolen best-first search algoritmus Monte Carlo tree search.
+Pro naši práci byl zvolen *Monte Carlo tree search*. Tento algoritmus je best-first search, tedy prozkoumává nejprve
+odpovìdi, které se zdají bıt nejlepší. Vıhodou tohoto pøístupu je, e 
+po urèitém èase je schopen vrátit nejlepší dosud nalezenı tah. Díky této vlastnosti
+také dokáe dobøe pracovat v obrovském stavovém prostoru, právì proto, e se soustøedí
+nejprve na nejkvalitnìjší pokraèování.
 
 ### Monte Carlo tree search AI
 V této sekci nejprve základnì popíšeme obecnì algoritmus MCTS,
 následnì ukáeme jeho úpravy pro hru Warlight. Pro
 zvıšení vıkonu je prozkoumán a zvolen jeden z pøístupù
-k paralelizaci tohoto algoritmu.
+k paralelizaci tohoto algoritmu. V úvahu jsou brány pouze hry 1v1,
+rozbory hry více ne 2 hráèù tato AI nepodporuje.
 
 **Terminologie**
 - *náš hráè* - hráè z jeho pohledu se snaíme najít nejlepší tah
 - *nepøátelskı hráè* - hráè, kterı není náš hráè
 
-#### Úvod do MCTS
-Monte Carlo tree search je algoritmus, jeho cílem je
-najít nejlepší tah v daném stavu hry. Pro tento úèel
+#### Úvod do Monte Carlo tree search
+Monte Carlo tree search (neboli MCTS) je algoritmus, jeho cílem je
+najít nejlepší tah pro danı stav hry. Pro tento úèel
 je stavìn vıpoèetní strom. Jeho vrcholy pøedstavují
 stavy hry, hrany pøedstavují akce, které do nich vedou.
-Na vrcholu je navíc uloen poèet vıher a poèet celkovıch her,
+Ve vrcholu je navíc uloen poèet vıher a poèet celkovıch her,
 které se dotkly stavu hry v nìm uloené.
 V koøeni je uloen stav hry, ze kterého se pokoušíme nalézt
 nejlepší tah.
 Nejlepší odpovìï reprezentuje ta hrana, která vede do vrcholu s nejvyšším poètem celkovıch her.
 
-Algoritmus popisují 4 fáze: selekce, expanze, simulace a zpìtná propagace.
-1. *Selekce* - zaèni v koøeni, v kadém potomkovi vdy zvol potomka 
-podle pøedem definované funkce, dokud nedospìješ do listu
-2. *Expanze* - zvolenému listu *selekcí* pøidej *n* dìtí a zvol jedno z nich
-3. *Simulace* - ze zvoleného potomka zaèni náhodnì hrát, dokud jeden z hráèù neprohraje
-4. *Zpìtná propagace* - propaguj informaci o vıhøe/prohøe (0/1) zpìt a do koøene.
+Algoritmus popisují 4 fáze, které jsou opakovány a do pøerušení vıpoètu:
+selekce, expanze, simulace a zpìtná propagace.
 
 <img src="wiki_mcts.png" alt="Mcts phases" />
 
-##### Volba potomka v selekci
-Funkce na volbu potomka v selekci potøebuje prozkoumávat nejen nejlepší varianty,
-ale i zkoušet nové (problém *exploitation a exploration*).
+##### Selekce
+Úlohou selekce je najít list stromu, kterı bude algoritmus dále rozvíjet.
 
-[Kocsis a Csaba] navrhli funkci:
+**Pseudokód**
+```
+selekcePotomka() : vrchol
+    vrchol := koøen;
+    dokud vrchol != list opakuj
+        vrchol := zvolVhodnéhoPotomka(vrchol.potomci);
+    vra vrchol;
+```
+
+Aèkoliv hlavní myšlenkou algoritmu je rozvíjet tahy, které se jeví bıt nejlepšími,
+je potøeba také rozvíjet málo prozkoumané tahy. Kdyby tak algoritmus neèinil,
+mohl by mu utéct tah, kterı se zprvu jevil jako špatnı,
+ve vısledku by ale byl nejlepším tahem v dané pozici.
+
+[Kocsis a Csaba] navrhli *UCT* (Upper Confidence Bound 1 applied to trees) funkci:
 
 *wi / ni + c * sqrt(ln(Ni) / ni)*, kde
 
 - wi - poèet vıher v daném vrcholu
 - ni - poèet her v daném vrcholu
 - Ni - celkovı poèet her (= poèet her v koøeni)
-- c - konstanta, teoreticky rovná *sqrt(2)*
+- c - konstanta, teoreticky rovná *sqrt(2)*, standardnì volená empiricky
 
 Pokud *ni* je rovno 0, pak hodnota tohoto vrcholu je *infinity*.
-Tato situace se stane expandovaného vrcholu, ze kterého ještì nebyla vedena simulace.
+Tato situace nastává u expandovaného vrcholu, ze kterého ještì nebyla vedena simulace.
+Hodnota *infinity* tak v pøíští selekci upøednostní tento vrchol pøed jinımi.
 
-#### Modifikace MCTS
+##### Expanze
+Úèelem expanze je pøidat stavy (nebo stav), které se budou dále prozkoumávat a vybrat jeden z nich,
+kterı se bude rozvíjet ve fázi Simulace.
+
+**Pseudokód**
+```
+expanduj(list)
+    pøidejPotomky(list);
+
+    // vra prvního potomka
+    vra list[1];
+```
+
+##### Simulace
+Cílem simulace je ohodnotit expanzí vybranı vrchol. Simulace odehrává
+tahy a do stavu, kdy jedna ze stran vyhrála.
+
+Existují 2 typy simulace: lehká a tìká.
+
+Hlavní myšlenkou *lehké simulace* (light playout) je, e odehraji-li náhodnì dostateènı poèet her, ze kterıch vdy získám vısledek vıhra / prohra,
+dokáu takovımto zpùsobem ohodnotit kvalitu tahu, ze kterého jsem náhodná odehrání vedl.
+Vıhodou je, e pro aplikaci lehké simulace není potøeba znát ádné detaily hry - staèí pouze vìdìt ve vhodnı okamik, 
+která strana vyhrála.
+Tento pøístup se však nehodí pro hry s velkım branching faktorem, protoe na odehrání
+dostateèného mnoství simulací, které by mìly vypovídající hodnotu, není dostatek èasu.
+
+*Tìká simulace* (heavy playout) volí opaènı pøístup. Namísto náhodného odehrávání se snaí volit smysluplné tahy,
+které se vyplatí prozkoumávat. Díky tomu má vısledek takové simulace mnohem vìtší váhu. Definovat však "smysluplnı tah" 
+je obtíné, nalézt ho je vıpoèetnì nároèné a vyaduje znalost hry. Tento typ simulace má [podle nìkoho] lepší
+vısledky u hrách s vysokım branching faktorem.
+
+##### Zpìtná propagace
+Zpìtná propagace propaguje vısledek simulace a do koøene a aktualizuje tak vıpoèetní strom.
+
+#### Úpravy MCTS
 Základní forma MCTS je pro Warlight stále nepouitelná.
-V této sekci jsou popsány modifikace algoritmu tak,
+V této sekci jsou popsány úpravy algoritmu tak,
 aby efektivnì nacházel nejlepší tah v prostøedí této hry.
 
-##### Úpravy vıpoèetního stromu
+##### Vıpoèetní strom
 Ve høe Warlight nejprve všichni hráèi odehrají své tahy,
 a poté dojde k vıpoètu kola. Jak by mìl tedy vypadat vıpoèetní strom?
 
@@ -336,85 +406,133 @@ jeho tah je posledním tahem kola.
 
 <img src="changed_tree.svg" alt="Modified evaluation tree" />
 
-Na obrázku:
-- lutá - hráè za kterého se pokoušíme najít nejlepší tah
-- modrá - nepøátelskı hráè
-- stav hry mají v sobì uloené pouze modré vrcholy a koøen
+Na obrázku jsou vrcholy našeho hráèe reprezentovány lutou barvou, vrcholy
+nepøátelského hráèe modrou. Stav hry mají v sobì uloené pouze modré vrcholy a koøen.
 
 <!--- expanze vdy po dvou --->
 Ve høe Warlight vdy dochází k odehrání kola a po odehrání tahù všech hráèù.
 Expanze proto nejprve listu zvolenému selekcí pøidá vrcholy urèené tahy
 našeho hráèe, a tìm rovnou pøidá jako potomky vrcholy urèené tahy hráèe nepøátelského.
 
-##### Ohodnocovací funkce
-Vysokı branching faktor a cyklení znemoòuje pouití náhodné simulace,
-která by skonèila a ve chvíli vıhry jednoho z hráèù.
-Místo toho odsimulujeme pøedem urèenı poèet tahù, ohodnotíme pozici a zpìtnou propagací vrátíme èíslo v intervalu [0, 1]
-urèující kvalitu pozice.
-Tuto hodnotu pak propagujeme do koøene.
+##### Simulace
+Jak bylo uvedeno v analıze, obtínost hry Warlight spoèívá zejména ve vysokém branching faktoru.
+Kvùli nìmu je nevhodné pouít nevhodné pouít náhodnou simulaci. Vıhodnìjší je zvolit simulaci tìkou,
+její vısledek bude více odpovídat skuteènému stavu hry.
 
-Abychom mohli získat pøehled o celkové pozici, potøebujeme ohodnotit dílèí èásti.
+Kvùli velké hloubce vıpoèetního stromu však nelze dokonce ani dohrát simulaci do konce. Taková
+simulace by v lepším pøípadì stála mnoho èasu a v horším pøípadì vùbec neskonèila. Øešením je odsimulovat
+pøedem urèenı poèet tahù a ohodnotit vıslednou pozici. Toto hodnocení bude v intervalu [0, 1], kde 1 bude vıhra
+našeho hráèe a 0 vıhra soupeøe.
 
-###### Ohodnocení super regionu
-Ohodnocení super regionu se liší pøi zaèátku hry, a pozdìji.
+Pro získání pøedstavy o kvalitì pozice je potøeba bıt schopen tuto pozici ohodnotit.
+V následující sekci podrobnì probereme funkci, která tento problém øeší.
 
-Pøi zaèátku hry, ze znalosti Warlightu, víme, e:
+###### Ohodnocovací funkce
+Cílem ohodnocovací funkce je získat co nejlepší pøedstavu o kvalitì pozice
+libovolného hráèe.
+
+Naše ohodnocovací funkce nejprve ohodnotí pozici kadého hráèe tak,
+e seète hodnotu všech jeho regionù a jeho armád.
+
+**Pseudokód**
+```
+ohodnoPoziciHráèe(hráè) : hodnota
+    hodnoceníPoziceHráèe := 0;
+    pro kadı region takovı, e hráè ho vlastní
+        hodnoceníPoziceHráèe += ohodnoRegion(region) + c * region.Armáda;
+
+    vra hodnoceníPoziceHráèe;
+        
+```
+, kde *c* je reálná konstanta.
+
+Tuto hodnotu poté normalizuje do intervalu (0, 1) jednoduchou formulí:
+
+*normalizovanéOhodnoceníHráèe1 = hodnotaPoziceHráèe1 / (hodnotaPoziceHráèe1 + hodnotaPoziceHráèe2)*
+
+Pro úplnost zbıvá ji jen ohodnotit region.
+
+###### Ohodnocení regionu
+Ohodnocení regionu se musí lišit pro zaèátek hry, kde jsou vybírány poèáteèní regiony,
+a ostatní fáze hry. Dùvodem k tomu je fakt, e se tyto dvì fáze velmi liší.
+
+Pøi zaèátku hry:
+
+- není dobré brát více regionù blízko vedle sebe
+- hodnota super regionu pøidává na hodnotì regionu
+
+**Pseudokód ohodnocovací funkce regionu pøi zaèátku hry**
+```
+ohodnoRegionPøizaèátku(region, mùjHráè) : èíslo
+    hodnota := 0;
+    hodnota += a * získejHodnotuSuperRegionuPøiZaèátkuHry(region.SuperRegion);
+
+    pokud jsem ji zvolil nìjakı region
+        mojeRegiony := mùjHráè.MojeRegiony;
+        minimálníVzdálenostKMémuRegionu := Min(mojeRegiony, region);
+
+        hodnota += b * min(minimálníVzdálenostKMémuRegionu, maximálníVzdálenostDvouRegionùNaMapì / 2);
+
+    vra hodnota;
+```
+, kde *a* a *b* jsou reálné konstanty.
+
+Po zapoèetí hry:
+
+- hodnota super regionu pøidává na hodnotì regionu
+- vıhodnìjší je u super regionu je vlastnit co nejvíce regionù, nejlépe celı super region
+- region, kterı patøí nìjakému hráèi, má vìtší hodnotu - upøednostnìní útoèení na nepøítele a
+bránìní vlastních regionù
+
+**Pseudokód ohodnocovací funkce regionu po zapoèetí hry**
+```
+ohodnoRegion(region, mùjHráè) : èíslo
+    hodnota := 0;
+    // pøipoèti hodnotu super regionu
+    hodnota += a * získejHodnotuSuperRegionu(region.SuperRegion);
+    
+    // pøidej bonus za poèet regionù pro mého hráèe
+    hodnota := b * získejPoèetRegionùSuperRegionu(mùjHráè, region.SuperRegion);
+
+    // region patøí nepøíteli => pøipoèti bonus za to, e patøí nepøíteli
+    pokud region.Vlastník je soupeø
+        hodnota := b * získejPoèetRegionùSuperRegionu(nepøítel, region.SuperRegion);
+
+    // pokud patøí mì nebo soupeøi, zdvojnásob hodnotu regionu
+    pokud region.Vlastník jsem já nebo soupeø
+        hodnota *= 2;
+
+    vra hodnota;
+        
+```
+, kde *a* a *b* jsou reálné konstanty.
+
+Pro ohodnocení regionu je však stále potøeba ohodnotit super region.
+Ohodnocení super regionu se, obdobnì jako ohodnocení regionu, liší pøi zaèátku hry, a pozdìji.
+
+Pøi zaèátku hry víme, e:
 
 - je vıhodné brát super region, kterı má málo sousedících regionù,
 protoe po dobytí se bude lépe bránit
 - lepší je super region s více sousedními super regiony, protoe mùeme
 narušovat bonusy nepøátelùm nebo rychle dobıvat další super regiony
-- je lepší, kdy super region má bonus
+- je lepší, kdy super region má vyšší bonus
 - je nevıhodné brát super region, kterı se skládá z hodnì regionù,
 protoe ho je tìké dobıt a trvá to dlouho
 
 Tyto znalosti jsou poskládány do vzorce ohodnocovací funkce pro super region:
 
 ```
-hodnota := a * bonus + b * sousední_super_regiony - c * sousední_regiony - d * regiony_super_regionu
+hodnotaSuperRegionu := a * bonus + b * sousedníSuperRegiony - c * sousedníRegiony - d * regionySuperRegionu
 ```
 
 kde a, b, c, d jsou reálné konstanty.
 
 V pozdìjších fázích hry se ohodnocovací funkce liší pouze v hodnotách konstant.
 
-###### Ohodnocení regionu
-Pøi ohodnocování regionu záleí také, zdali je zaèátek hry èi ne.
-
-Pøi zaèátku hry:
-
-- není dobré brát více regionù blízko vedle sebe
-- hodnota super regionu má vliv na hodnotu regionu
-<!--- TODO --->
-
-###### Ohodnocení pozice hráèe
-Budeme ohodnocovat kadého hráèe zvláš. Pro ohodnocení hráèovy pozice
-porovnáme jeho hodnotu s hodnotou druhého hráèe.
-
-```
-hodnotaHráèe(hráè)
-    hodnota := 0
-
-    pro kadı region vlastnìnı tímto hráèem
-        hodnota += ohodnoceníRegionu(region)
-        hodnota += ohodnoceníArmády(region.armáda)
-    
-    vra hodnota
-```
-
-```
-ohodnoceníPoziceHráèe1(hráè1, hráè2)
-    hodnotaHráèe1 := hodnotaHráèe(hráè1)
-    hodnotaHráèe2 := hodnotaHráèe(hráè2)
-    
-    ohodnoceníPozice1 := hodnotaHráèe1 / (hodnotaHráèe1 + hodnotaHráèe2)
-
-    vra ohodnoceníPozice1
-```
-
 ##### Generátory akcí
 <!--- motivace --->
-Poèet monıch pokraèování v témìø libovolném stavu hry je pøíliš velkı.
+Jak ji bylo zmínìno v analıze, poèet monıch pokraèování v témìø libovolném stavu hry je pøíliš velkı.
 Algoritmus nemá dostatek èasu na procházení všech moností.
 Potøebujeme zmenšit stavovı prostor.
 
@@ -423,10 +541,13 @@ Klíèem k tomu je *generátor akcí*. To je softwarová komponenta,
 jejím úèelem je nalézt mnoinu smysluplnıch tahù pro daného hráèe.
 
 <!-- popsat, jak funguje pøesnì --->
-Náš akèní generátor nejprve vygeneruje monosti, jak udìlat deploy,
-potom pro kadou z tìchto moností vygeneruje zpùsoby, jka zaútoèit.
+Náš akèní generátor nejprve vygeneruje deploy fáze tahu, a pro kadou z nich
+poté vygeneruje attack fáze. Vısledkem je kartézskı souèin deploy a attack fází, ve kterém
+jsou posléze odstranìny duplikáty.
+Algoritmus tak místo generování náhodnıch permutací akcí v tahu pouívá nìkolik smysluplnıch pokraèování,
+které vzájemnì permutuje a znatelnì tak zmenšuje stavovı prostor. 
 
-Algoritmus:
+**Pseudokód**
 ```
 vygenerujTahy(stavHry) : tahy
     tahy := {}
@@ -449,8 +570,7 @@ vygenerujTahy(stavHry) : tahy
     vra tahy
 ```
 
-###### Generování deploy akcí
-Pouívá 3 pøístupy v generování deploy akcí: útoènı, obrannı a expanzivní.
+Generování deploy akcí vyuívá 3 pøístupy: útoènı, obrannı a expanzivní.
 
 1. *Útoènı* - postaví jednotky na region sousedící
 s neobsazenım nebo nepøátelskım regionem,
@@ -462,15 +582,14 @@ kterım hrozí dobytí nepøítelem.
 3. *Expanzivní* - postaví jednotky na region sousedící
 s nejcennìjším neobsazenım regionem.
 
-###### Generování attack akcí
 <!--- záleí na poøadí --->
 Pøi útoèení, narozdíl od stavìní jednotek, záleí na poøadí.
 Napøíklad máme-li pozici, kde X je mùj region s armádou 8
-a Y je s armádou také 8, je rozdíl, zdali X záleí první na
+a Y je s armádou také 8, je rozdíl, zdali X zaútoèí první na
 Y nebo naopak, protoe obránce má vıhodu.
 
 <!--- pøesouvání jednotek z vnitrozemí k okraji --->
-Jednotky, které jsou na našem regionu, kterı má
+Jednotky na našem regionu, kterı má
 za sousedy také pouze mé regionu, jsou nevyuité.
 Vyplatí se je pøesouvat k místùm, kde se budou moci
 zapojit do útoku nebo obrany.
@@ -503,15 +622,187 @@ nepøátelské sousední regiony, a potom na nì zaèneme posílat
 
 2. *Útoèná s vyèkáním* - nejprve provedeme pøesun jednotek
 z vnitrozemí, poté útoèíme stejnì, jako v pøípadì útoèné varianty.
+To, zaútoèí-li na nás nepøítel, nám zajistí vıhodu bránícího v boji.
 
 3. *Obranná* - nejprve pøesuneme jednotky, poté zaèneme posílat útoky.
 Ty provádíme ale tak, e na region zaútoèíme jen s armádou, která
-porazí tu nepøátelskou i v pøípadì, e by na region postavil všechny jednotky,
+porazí tu nepøátelskou i v pøípadì, e by na nìj nepøátelskı hráè postavil všechny jednotky,
 které mùe.
 
-#### Paralelní MCTS
+Díky vıše uvedenım algoritmùm se nám branching faktor znaènì zmenšil.
+Z pùvodního branching faktoru *56 * 56* dojde ke zmenšení na *9 * 9**,
+kde èíslo 9 reprezentuje všechny kombinace deploy a attack akcí.
+Z pravidla je vìtvení mnohem menší, protoe generování deploy a attack
+akcí vygeneruje neunikátní tahy, ve kterıch jsou duplikáty odstranìny.
 
-### Agresivní bot a Smart random bot
+#### Paralelní MCTS
+I pøes znatelné zmenšení branching faktoru je stavovı prostor hry stále
+velkı. Pro vyšší vıkon by bylo vhodné paralelizovat vıpoèet pøi hledání tahu. 
+V této sekci prozkoumáme monosti paralelizace algoritmu MCTS a 
+zvolíme metodu pøístupu k paralelizaci.
+
+Existují 4 druhy paralelizace: listová, koøenová, stromová s globálním zámkem
+a stromová s lokálními zámky.
+
+<img src="parallel_mcts.png" />
+
+1. *Listová paralelizace* - z expandovaného vrcholu je vedeno, místo jedné simulace,
+simulací nìkolik. Tento postup je velmi jednoduchı na implementaci, avšak má
+pro nás jeden dùleitı problém (podle [1]) - rozehrajeme-li napøíklad 8 simulací, kde 7
+skonèí prohrou, pak vıpoèetní èas strávenı na 8. z nich byl ztracenı, nebo po 7 prohrách
+jsme mohli usoudit, e to nemá cenu dále zkoušet.
+
+2. *Koøenová paralelizace* - místo stavìní jednoho vıpoèetního stromu jich stavíme rovnou nìkolik.
+Tyto stromy jsou na sobì zcela nezávislé. Kdy vyprší èas a algoritmus má vrátit nejlepší nalezenı tah,
+dìti koøenù ve všech stromech jsou sjednoceny - jsou-li dva vrcholy stejné, seète se jejich poèet vıher a poèet her
+a slijou se do jednoho, a v tìchto sjednocenıch vrcholech se vezme vrchol s nejvyšším poètem návštìv algoritmu.
+Tato paralelizace je opìt velmi jednoduchá.
+
+3. *Stromová paralelizace s globálním zámkem* - na strom je umístìn zámek, kterı zakáe pøístup
+ke stromu více ne jednomu vláknu. Simulace však mùou probíhat paralelnì, ostatní fáze MCTS však ne.
+
+4. *Stromová paralelizace s lokálními zámky* - stromová paralelizace s lokálními zámky umoòuje pøístup 
+ke stromu více vláknùm. Kdykoliv vlákno pøistoupí k vrcholu stromu, zamkne si ho, jakmile ho opustí, odemkne ho.
+Budou-li pouity jako zámky spinlocky, protoe zamykání bude pouze na krátkou chvíli, tento pøístup by mìl bıt efektivní.
+Èastokrát se však bude stávat, e vlákna budou procházet strom zcela stejnım zpùsobem - pokud vlákna zaènou v selekci
+paralelnì sestupovat od koøene a k listu, je pravdìpodobné, e budou sestupovat po stejné cestì. Po odsimulování by
+vzestup byl také po stejné cestì. Tím bychom se dostali do podobné situace, jakou má
+paralelizace listu - vedli bychom v podstatì paralelní simulaci.
+
+    Abychom se tomuto vyhnuli, z práce [1] bychom vyuili koncept
+"virtuální prohry" - kdykoliv vlákno pøistoupí k vrcholu, pøiøadí mu virtuální prohru, èim zmenší jeho hodnocení.
+Pøíští vlákno tak nepùjde po té stejné cestì, pokud díky virtuální prohøe je hodnocení vrcholu horší ne hodnocení
+nìkterého jiného vrcholu na stejné úrovni.
+
+Tyto metody paralelizace byly v práci [1] otestovány na høe Go, která, podobnì jako Warlight, má velmi velkı stavovı prostor.
+
+<table>
+<tr>
+   <th colspan="3">Listová paralelizace</th>
+</tr>
+<tr>
+   <th>Poèet vláken</th>
+   <th>Poèet vıher</th>
+   <th>Poèet her</th>
+</tr>
+<tr>
+   <td>1</td>
+   <td>26.7%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>2</td>
+   <td>26.8%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>4</td>
+   <td>32.0%</td>
+   <td>1000</td>
+</tr>
+<tr>
+   <td>16</td>
+   <td>36.5%</td>
+   <td>500</td>
+</tr>
+</table>
+
+<table>
+<tr>
+   <th colspan="3">Koøenová paralelizace</th>
+</tr>
+<tr>
+   <th>Poèet vláken</th>
+   <th>Poèet vıher</th>
+   <th>Poèet her</th>
+</tr>
+<tr>
+   <td>1</td>
+   <td>26.7%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>2</td>
+   <td>38.0%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>4</td>
+   <td>46.8%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>16</td>
+   <td>56.5%</td>
+   <td>2000</td>
+</tr>
+</table>
+
+<table>
+<tr>
+   <th colspan="3">Stromová paralelizace s globálním zámkem</th>
+</tr>
+<tr>
+   <th>Poèet vláken</th>
+   <th>Poèet vıher</th>
+   <th>Poèet her</th>
+</tr>
+<tr>
+   <td>1</td>
+   <td>26.7%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>2</td>
+   <td>31.3%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>4</td>
+   <td>37.9%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>16</td>
+   <td>36.5%</td>
+   <td>500</td>
+</tr>
+</table>
+
+<table>
+<tr>
+   <th colspan="3">Stromová paralelizace s lokálními zámky</th>
+</tr>
+<tr>
+   <th>Poèet vláken</th>
+   <th>Poèet vıher</th>
+   <th>Poèet her</th>
+</tr>
+<tr>
+   <td>1</td>
+   <td>26.7%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>2</td>
+   <td>33.8%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>4</td>
+   <td>40.2%</td>
+   <td>2000</td>
+</tr>
+<tr>
+   <td>16</td>
+   <td>49.9%</td>
+   <td>2000</td>
+</tr>
+</table>
+
+Kvùli dobrım vısledkùm a jednoduché implementaci byla pro naši práci zvolena "Koøenová paralelizace".
+
+### Referenèní umìlé inteligence
 
 ### Vısledky
 
