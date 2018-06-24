@@ -6,7 +6,7 @@ faktoru.
 
 Práce implementuje umìlou inteligenci do této hry schopnou hrát vyrovnanou hru
 s alespoò ménì zkušenım hráèem. Souèástí je také simulátor, monost
-hry proti UI i proti jinému lidskému hráèi ve formì hotseat (multiplayer hry na jednom poèítaèi).
+hry proti AI i proti jinému lidskému hráèi ve formì hotseat (multiplayer hry na jednom poèítaèi).
 Práce je navrena tak, aby umonila pouití tohoto frameworku pro další vıvoj a testování umìlé inteligence.
 
 ## Úvod
@@ -80,12 +80,12 @@ V práci je naimplementována jediná mapa slouící pro úèely testování a hraní - m
 Regiony této mapy jsou ohranièená území na obrázku, Super regiony jsou kontinenty - Afrika, Asie, Austrálie, Evropa, Severní a Jiní Amerika.
 
 ### Zaèátek hry
-Na zaèátku hry je pro kadého hráèe vygenerována mnoina regionù tak, e od kadého super regionu jsou zvoleny právì 2 regiony.
+Na zaèátku hry je pro kadého hráèe vygenerována mnoina regionù tak, e od kadého super regionu jsou zvoleny právì 2.
 Hráè si z této mnoiny vybírá 2 regiony. Tato území pøedstavují vıchozí body, ze kterıch bude obsazovat další.
-Commitem potvrzuje své pøedchozí akce
+Commitem potvrzuje své pøedchozí akce.
 
 ### Prùbìh hry
-Hra se dìlí na herní kola. Kadé herní kolo
+Hra se dìlí na herní kola. Kadé z nich
 se skládá z tahù, kde kadı hráè pøispívá do kola právì jedním tahem.
 
 Bìhem hry se hráèi se støídají po tazích. Odehrají-li všichni hráèi své tahy,
@@ -100,6 +100,14 @@ V deploy fázi hráè staví armádu, v attack fázi posílá útoky a v commit fázi potv
 Pøechody mezi tìmito fázemi se øídí následujícím schématem:
 
 <img src="turn_graph.svg" alt="Turn phases graph" />
+
+Po odehrávání deploy fáze hráè pøechází do attack fáze, po jejím odehrání pøechází do commit fáze.
+Svùj tah poté hráè dokonèuje potvrzením svıch pøedchozích akcí v comit fázi.
+
+V deploy, attack i commit fázi má hráè monost své zmìny vrátit. Mezi fázemi lze tak procházet
+i opaènım smìrem. Pøejde-li však hráè z napøíklad attack fáze do deploy fáze, zruší tím veškeré attack akce,
+které v této fázi zadal. Podobnì hráè mùe pøejít z commit fáze do deploy fáze, nebo v deploy fázi zrušit
+své veškeré zadané deploy akce.
 
 #### Deploy fáze
 V této fázi hráè staví armádu na ním vlastnìné regiony.
@@ -120,7 +128,7 @@ Super regiony mapy svìta mají následující bonusy:
 - Severní Amerika - 5
 - Jiní Amerika - 2
 - Afrika - 3
-- Austrálie - 3
+- Austrálie - 2
 
 #### Attack fáze
 V této fázi hráè útoèí armádou vdy ze svého regionu na region sousední,
@@ -150,9 +158,9 @@ obsahuje všechny deploy a attack akce tahù daného kola, ale ve zmìneném poøadí.
 
 <img src="linearizing.svg" alt="Linearizing algorithm" />
 
-Algoritmus nejprve zlinearizuje deploy akce tak, e pro kadé i vezme i-té deploy
-akce všech tahù daného kola (v poøadí, ve kterém jsou tahy zapsány) a pøidá je do vıstupního seznamu.
-Poté zlinearizuje attack akce tak, e pro kadé i vezme i-té attack akce
+Algoritmus nejprve zlinearizuje deploy akce tak, e pro kadı index *i = 1, ..., maximum(poèet deploy akcí libovolného tahu)* vezme i-té deploy
+akce všech tahù daného kola (v libovolném poøadí) a pøidá je do vıstupního seznamu.
+Poté zlinearizuje attack akce tak, e pro kadı index *i = 1, ..., maximum(poèet attack akcí libovolného tahu)* vezme i-té attack akce
 kadého tahu, a v náhodném poøadí je pøidá do vıstupního seznamu.
 Linearizované kolo je tvoøeno dvìma vıše popsanımi vıstupními seznamy.
 
@@ -196,10 +204,10 @@ Algoritmus implementuje následující pravidla:
 - pokud útoèící region zmìnil vlastníka, tento útok se neprovede (byl by proveden jednotkami hráèe, kterı útok neposlal)
 - nelze zaútoèit tak, e na regionu nezùstane ádná jednotka - vdy musí zùstat alespoò 1
 - útoèí-li hráè na svùj region, nedochází ke ztrátám na jednotkách
-- pokud pøi útoku dojde k zabití útoèících i bránících jednotek, na bránící je pøiøazena 1 jednotka (a nemìní se jeho majitel)
+- pokud pøi útoku dojde k zabití útoèících i bránících jednotek, na bránící region je pøiøazena 1 jednotka (a nemìní se jeho majitel)
 - pokud pøi útoku jsou zabity všechny bránící, ale nìjaká útoèící jednotka pøeila, novım vlastníkem regionu je útoèící hráè a zbytek
 útoèících jednotek se pøesune na dobytı region
-- pokud pøi útoku pøeily bránící i útoèící jednotky, zbytek pøeivších útoèících jednotek se po útoku vrátí na region, ze kterého pøišly
+- pokud pøi útoku pøeily bránící i útoèící jednotky, zbytek pøeivších útoèících jednotek se vrátí na region, ze kterého pøišly
 
 **Pseudokód**
 ```
@@ -241,12 +249,12 @@ spoèítejAttacky(linearizovanéAttacky)
 ## Umìlá inteligence
 <!--- popis kapitoly --->
 V této kapitole nejprve zanalyzujeme problematiku tvorby umìlé inteligence do hry Warlight a
-urèíme vhodnou metodu pøístupu k implementaci AI. Následnì
+urèíme vhodnı pøístup k implementaci AI. Následnì
 ukáeme naši implementaci a popíšeme vytvoøenou referenèní AI.
 Na závìr otestujeme schopnosti naší AI a zanalyzujeme vısledky testování.
 
 ### Analıza
-Cílem této sekce je prozkoumat problémy implementace umìlé inteligence pro hru Warlight.
+Cílem této sekce je prozkoumat problémy implementace umìlé inteligence do hry Warlight.
 
 #### Vıpoèetní nároènost
 Hra Warlight je vıpoèetnì velmi nároèná. Tah se skládá z deploy a attack akcí.
@@ -260,7 +268,7 @@ Je-li *n* je poèet jednotek na jednom z jeho regionù, pak mùe zaútoèit následuj
 
 *(i + 3)! / (i! * 3!)*
 
-Vıše uvedenı vzorec urèí, kolika zpùsoby lze rozdìlit *i* jednotek do 2 skupin.
+Vıše uvedenı vzorec urèí, kolika zpùsoby lze rozdìlit *i* jednotek do 2 skupin - na bránící a útoèící.
 Pro *n = 6*, co odpovídá situaci, kdy jeden region má 7 jednotek (z toho 6 lze poslat),
 bude vısledná hodnota 56.
 
@@ -279,11 +287,8 @@ Aèkoliv je bránìní zdánlivì vıhodnìjší, podle [najdu tu práci a pøidám referenci
 ke høe agresivnìji.
 
 #### Volba algoritmu umìlé inteligence
-V této sekci nejprve shrneme poadavky, které by mìl algoritmus splòovat. Poté zvolíme vhodnı algoritmus.
-
 Èasová doba vıpoètu je znaènì omezená. Algoritmus by mìl bıt schopen bìhem nìkolika sekund
-najít nejlepší odpovìï. Kvùli velkému poètu stavù je potøeba po urèitém èase vrátit dosud
-nejlepší nalezenou odpovìï.
+najít nejlepší odpovìï.
 
 <!--- volba algoritmu --->
 Pro naši práci byl zvolen *Monte Carlo tree search*. Tento algoritmus je best-first search, tedy prozkoumává nejprve
@@ -293,7 +298,7 @@ také dokáe dobøe pracovat v obrovském stavovém prostoru, právì proto, e se sou
 nejprve na nejkvalitnìjší pokraèování.
 
 ### Monte Carlo tree search AI
-V této sekci nejprve základnì popíšeme obecnì algoritmus MCTS,
+V této sekci nejprve popíšeme obecnı algoritmus Monte Carlo tree search,
 následnì ukáeme jeho úpravy pro hru Warlight. Pro
 zvıšení vıkonu je prozkoumán a zvolen jeden z pøístupù
 k paralelizaci tohoto algoritmu. V úvahu jsou brány pouze hry 1v1,
@@ -308,11 +313,12 @@ Monte Carlo tree search (neboli MCTS) je algoritmus, jeho cílem je
 najít nejlepší tah pro danı stav hry. Pro tento úèel
 je stavìn vıpoèetní strom. Jeho vrcholy pøedstavují
 stavy hry, hrany pøedstavují akce, které do nich vedou.
-Ve vrcholu je navíc uloen poèet vıher a poèet celkovıch her,
-které se dotkly stavu hry v nìm uloené.
+Ve vrcholu je navíc uloen poèet vıher a poèet her stavu hry ve vrcholu.
 V koøeni je uloen stav hry, ze kterého se pokoušíme nalézt
 nejlepší tah.
-Nejlepší odpovìï reprezentuje ta hrana, která vede do vrcholu s nejvyšším poètem celkovıch her.
+Nejlepší odpovìï vdy reprezentuje ta hrana, která vede do vrcholu s nejvyšším poètem her.
+Tedy nejlepší odpovìï pro pozici, kterou prozkoumáváme, je hrana vedoucí z koøenedo vrcholu s nejvyšším
+poètem her.
 
 Algoritmus popisují 4 fáze, které jsou opakovány a do pøerušení vıpoètu:
 selekce, expanze, simulace a zpìtná propagace.
@@ -333,7 +339,7 @@ selekcePotomka() : vrchol
 
 Aèkoliv hlavní myšlenkou algoritmu je rozvíjet tahy, které se jeví bıt nejlepšími,
 je potøeba také rozvíjet málo prozkoumané tahy. Kdyby tak algoritmus neèinil,
-mohl by mu utéct tah, kterı se zprvu jevil jako špatnı,
+mohl by vynechat tah, kterı se zprvu jevil jako špatnı,
 ve vısledku by ale byl nejlepším tahem v dané pozici.
 
 [Kocsis a Csaba] navrhli *UCT* (Upper Confidence Bound 1 applied to trees) funkci:
@@ -375,13 +381,13 @@ která strana vyhrála.
 Tento pøístup se však nehodí pro hry s velkım branching faktorem, protoe na odehrání
 dostateèného mnoství simulací, které by mìly vypovídající hodnotu, není dostatek èasu.
 
-*Tìká simulace* (heavy playout) volí opaènı pøístup. Namísto náhodného odehrávání se snaí volit smysluplné tahy,
-které se vyplatí prozkoumávat. Díky tomu má vısledek takové simulace mnohem vìtší váhu. Definovat však "smysluplnı tah" 
-je obtíné, nalézt ho je vıpoèetnì nároèné a vyaduje znalost hry. Tento typ simulace má [podle nìkoho] lepší
+*Tìká simulace* (heavy playout) se namísto náhodného odehrávání snaí volit tahy,
+které se vyplatí prozkoumávat. Díky tomu má vısledek takové simulace mnohem vìtší váhu. Definovat takovı tah je ale
+obtíné, nalézt ho je vıpoèetnì nároèné a vyaduje dobrou znalost hry. Tento typ simulace má [podle nìkoho] lepší
 vısledky u hrách s vysokım branching faktorem.
 
 ##### Zpìtná propagace
-Zpìtná propagace propaguje vısledek simulace a do koøene a aktualizuje tak vıpoèetní strom.
+Zpìtná propagace propaguje vısledek simulace od simulovaného vrcholu a do koøene.
 
 #### Úpravy MCTS
 Základní forma MCTS je pro Warlight stále nepouitelná.
@@ -389,7 +395,7 @@ V této sekci jsou popsány úpravy algoritmu tak,
 aby efektivnì nacházel nejlepší tah v prostøedí této hry.
 
 ##### Vıpoèetní strom
-Ve høe Warlight nejprve všichni hráèi odehrají své tahy,
+Ve høe Warlight nejprve všichni hráèi odehrají své tahy a
 a poté dojde k vıpoètu kola. Jak by mìl tedy vypadat vıpoèetní strom?
 
 <!--- vlastník vrcholu --->
@@ -397,27 +403,29 @@ Hrana bude reprezentovat tah hráèe.
 U kadého vrcholu urèíme navíc jeho vlastníka. To bude
 hráè, kterı odehrál tah vedoucí do tohoto vrcholu.
 Vlastníkem koøene a jeho dìtí bude náš hráè.
-Od následujících úrovní hloubky stromu se bude vlastnictví
+Od následujících úrovní stromu se bude vlastnictví
 vdy støídat zaèínaje od nepøítele.
 
 <!--- stav mapy v kadém sudém vrcholu --->
 Stav mapy staèí mít uloenı v koøeni a ve vrcholech vlastnìnıch nepøítelem, protoe
 jeho tah je posledním tahem kola.
 
-<img src="changed_tree.svg" alt="Modified evaluation tree" />
-
-Na obrázku jsou vrcholy našeho hráèe reprezentovány lutou barvou, vrcholy
-nepøátelského hráèe modrou. Stav hry mají v sobì uloené pouze modré vrcholy a koøen.
-
 <!--- expanze vdy po dvou --->
 Ve høe Warlight vdy dochází k odehrání kola a po odehrání tahù všech hráèù.
 Expanze proto nejprve listu zvolenému selekcí pøidá vrcholy urèené tahy
 našeho hráèe, a tìm rovnou pøidá jako potomky vrcholy urèené tahy hráèe nepøátelského.
 
+<img src="changed_tree.svg" alt="Modified evaluation tree" />
+
+Na obrázku jsou vrcholy našeho hráèe reprezentovány lutou barvou, vrcholy
+nepøátelského hráèe modrou. Stav hry mají v sobì uloené pouze modré vrcholy a koøen.
+Èísla *m/n* napsaná na vrchol pøedstavují *poèet vıher / poèet her* daného vrcholu.
+Modré vrcholy s poètem her 0 jsou vrcholy, z nich nebyla dosud vedena simulace.
+
 ##### Simulace
 Jak bylo uvedeno v analıze, obtínost hry Warlight spoèívá zejména ve vysokém branching faktoru.
-Kvùli nìmu je nevhodné pouít nevhodné pouít náhodnou simulaci. Vıhodnìjší je zvolit simulaci tìkou,
-její vısledek bude více odpovídat skuteènému stavu hry.
+Kvùli nìmu je nevhodné pouít náhodnou simulaci. Vıhodnìjší je zvolit simulaci tìkou,
+její vısledek bude více odpovídat skuteèné kvalitì pozice.
 
 Kvùli velké hloubce vıpoèetního stromu však nelze dokonce ani dohrát simulaci do konce. Taková
 simulace by v lepším pøípadì stála mnoho èasu a v horším pøípadì vùbec neskonèila. Øešením je odsimulovat
@@ -428,11 +436,11 @@ Pro získání pøedstavy o kvalitì pozice je potøeba bıt schopen tuto pozici ohodno
 V následující sekci podrobnì probereme funkci, která tento problém øeší.
 
 ###### Ohodnocovací funkce
-Cílem ohodnocovací funkce je získat co nejlepší pøedstavu o kvalitì pozice
+Cílem ohodnocovací funkce je získat co nejlepší pøedstavu o kvalitì pozice z pohledu
 libovolného hráèe.
 
 Naše ohodnocovací funkce nejprve ohodnotí pozici kadého hráèe tak,
-e seète hodnotu všech jeho regionù a jeho armád.
+e seète hodnotu všech jeho regionù a jejich armád.
 
 **Pseudokód**
 ```
@@ -454,7 +462,7 @@ Pro úplnost zbıvá ji jen ohodnotit region.
 
 ###### Ohodnocení regionu
 Ohodnocení regionu se musí lišit pro zaèátek hry, kde jsou vybírány poèáteèní regiony,
-a ostatní fáze hry. Dùvodem k tomu je fakt, e se tyto dvì fáze velmi liší.
+a zbylé èásti hry. Dùvodem k tomu je fakt, e se tyto dvì èásti velmi liší.
 
 Pøi zaèátku hry:
 
@@ -508,7 +516,7 @@ ohodnoRegion(region, mùjHráè) : èíslo
 , kde *a* a *b* jsou reálné konstanty.
 
 Pro ohodnocení regionu je však stále potøeba ohodnotit super region.
-Ohodnocení super regionu se, obdobnì jako ohodnocení regionu, liší pøi zaèátku hry, a pozdìji.
+Ohodnocení super regionu, obdobnì jako ohodnocení regionu, se liší pøi zaèátku hry, a pozdìji.
 
 Pøi zaèátku hry víme, e:
 
@@ -537,14 +545,14 @@ Algoritmus nemá dostatek èasu na procházení všech moností.
 Potøebujeme zmenšit stavovı prostor.
 
 <!--- popsat, co je generátor akcí a co dìlá --->
-Klíèem k tomu je *generátor akcí*. To je softwarová komponenta,
+Klíèem k tomu je *generátor akcí*. To je komponenta,
 jejím úèelem je nalézt mnoinu smysluplnıch tahù pro daného hráèe.
 
 <!-- popsat, jak funguje pøesnì --->
-Náš akèní generátor nejprve vygeneruje deploy fáze tahu, a pro kadou z nich
+Náš akèní generátor nejprve vygeneruje deploy fáze, a pro kadou z nich
 poté vygeneruje attack fáze. Vısledkem je kartézskı souèin deploy a attack fází, ve kterém
 jsou posléze odstranìny duplikáty.
-Algoritmus tak místo generování náhodnıch permutací akcí v tahu pouívá nìkolik smysluplnıch pokraèování,
+Algoritmus tak místo generování náhodnıch permutací akcí v tahu pouívá nìkolik potenciálnì dobrıch pokraèování,
 které vzájemnì permutuje a znatelnì tak zmenšuje stavovı prostor. 
 
 **Pseudokód**
@@ -576,7 +584,7 @@ Generování deploy akcí vyuívá 3 pøístupy: útoènı, obrannı a expanzivní.
 s neobsazenım nebo nepøátelskım regionem,
 kterı je nejcennìjší (má nejvyšší hodnotu podle ohodnocovací funkce).
 
-2. *Obrannı* - postaví jednotky na mé nejcennìjší regiony takové,
+2. *Obrannı* - postaví jednotky na nejcennìjší regiony takové,
 kterım hrozí dobytí nepøítelem.
 
 3. *Expanzivní* - postaví jednotky na region sousedící
@@ -590,10 +598,12 @@ Y nebo naopak, protoe obránce má vıhodu.
 
 <!--- pøesouvání jednotek z vnitrozemí k okraji --->
 Jednotky na našem regionu, kterı má
-za sousedy také pouze mé regionu, jsou nevyuité.
+za sousedy také pouze naše regiony, jsou nevyuité.
 Vyplatí se je pøesouvat k místùm, kde se budou moci
-zapojit do útoku nebo obrany.
+zapojit do útoku nebo obrany. Následující pseudokód tuto funkcionalitu
+implementuje.
 
+**Pseudokód**
 ```
 pøesuòArmádyZVnitrozemí(stavHry)
     pøesuny := {}
@@ -613,7 +623,7 @@ pøesuòArmádyZVnitrozemí(stavHry)
             pøesuny.pøidej(pøesun)
 ```
 
-Pøi generování attack akcí pouíváme 3 moné varianty:
+Pøi generování attack akcí pouíváme 3 pøístupy TODO:
 útoènou, útoènou s vyèkáním, obrannou.
 
 1. *Útoèná* - z kadého regionu se vdy podíváme na
@@ -803,14 +813,55 @@ Tyto metody paralelizace byly v práci [1] otestovány na høe Go, která, podobnì j
 Kvùli dobrım vısledkùm a jednoduché implementaci byla pro naši práci zvolena "Koøenová paralelizace".
 
 ### Referenèní umìlé inteligence
+Pro úèely testování našeho bota jsou naimplementováni 2 další referenèní boti: SmartRandomBot a AggressiveBot.
+
+1. *SmartRandomBot* - tento bot vyuívá stejnı generátor akcí jako MCTS bot. Narozdíl od nìj však nestaví ádnı strom,
+ale náhodnì vybere z mnoiny tahù, které mu generátor akcí vrátí.
+
+2. *AggressiveBot* - jak ji název napovídá, tento bot hraje agresivnì.
+Na zaèátku tahu vdy postaví armádu na svùj region, kterı sousedí s region s nejvyšší cenou ([ref na ohodnocovací funkci]).
+Poté útoèí na všechny sousedy takové, e mají slabší armádu. Po zaútoèení pøesune všechny své armády z vnitrozemí do okrajovıch
+regionù.
 
 ### Vısledky
+<!-- TODO -->
 
 ## Implementace
 Náplní této kapitoly je seznámit ètenáøe se soubory potøebnımi pro hru a
-základními komponentami a jejich vztahy.
+základními komponentami a jejich vztahy. Dùraz je kladen na popsání jednotlivıch
+funkèních celkù a rozšiøitelnost.
 
-Projekt je implementován v jazyce C\# verze 7.2 pro .NET verze 4.5.
+### Pouité technologie
+Práce je implementovaná pouitím C# na platformì .NET.
+
+Seznam pouitıch technologií:
+- *Windows Forms* - pouito pro vytvoøení GUI spustitelného na Windowsu i Linuxu
+- *NUnit* - unit testovací framework
+- *Moq* - slouí pro vytváøení mockovacích objektù v testech
+- *Protobuf-Net* - zajišuje efektivní binární serializaci a deserializaci
+- *Entity Framework* - ORM pro pøístup k databázi
+
+### Struktura práce
+Solution je rozdìlen do nìkolika projektù:
+- *WinformsUI* - grafické komponenty zobrazované uèivateli
+- *Client.Entities* - databázové entity
+- *GameHandlers* - pomocné jednotky pro UI, starají se o backendovou logiku
+uivatelskıch pøíkazù a o herní vıpoèty (napø. kola)
+- *GameObjects* - reprezentují herní objekty (pø. region, super region, mapu, tah, ...)
+- *GameAi* - tøídy slouící k vıpoètu umìlé inteligence
+- *GameAi.Data* - datové struktury, které umìlá inteligence vyuívá
+- *GameAi.Interfaces* - interfacy pro umìlou inteligenci
+- *FormatConverters* - obsahuje pomocné metody pro konverzi z herních objektù do objektù, které vyuívá AI, a naopak
+- *Common* - obecnì vyuitelné struktury a metody napøíè prací (napø. obsahuje *ObjectPool*)
+- *Communication.CommandHandling* - dll, které obsahuje tokeny pøedstavující pøíkazy od enginu
+(napø. "aktualizuj mapu") a tøídy, které umí na základì tìchto tokenù vykonávat odpovídající pøíkazy
+- *Communication.Shared* - obsahuje interfacy pro *Communication.CommandHandling*  (TODO: pøejmenovat)
+- *TheAiGames.EngineCommHandler* - zprostøedkuje komunikaci s TheAiGames enginem - ète
+vstup z TheAiGames enginu a pøekládá ho na tokeny definované v projektu *Communication.CommandHandling*
+Dále projekty, jejich jméno konèí na *{jméno}.Tests*, jsou testovací projekty pro projekt se jménem *{jméno}* ({jméno} je libovolné jméno).
+Tedy napøíklad *Common.Tests* je testovací projekt pro *Common*.
+
+Ve slozce solutionu je navíc sloka *Assets*, ve které jsou uloeny pomocné soubory.
 
 ### Soubory
 V této sekci jsou popsány soubory vytváøené nebo pøiloené k projektu a jejich vıznam.
@@ -821,9 +872,7 @@ hrách, simulacích a mapách. Pøedstavuje ji soubor *Utils.db*.
 
 #### Mapy
 Soubory map se nachází ve sloce *Maps*. Pro reprezentaci mapy jsou potøeba 4 soubory.
-Ke høe je pøiloena mapa svìta, s podobnımi 4 soubory lze však reprezentovat libovolnou mapu.
-
-Pøiloené soubory:
+Ke høe je pøiloena mapa svìta, s podobnımi 4 soubory lze však reprezentovat libovolnou mapu. Soubory pro mapu svìta jsou:
 - **World.png** - obrázek mapy svìta. Je prezentován uivateli.
 - **WorldTemplate.png** - obrázek mapy svìta, kde kadı region má pøiøazenou unikátní barvu.
 Ta slouí pøi rozpoznávání oblasti, na kterou uivatel klikl.
@@ -835,6 +884,22 @@ regiony, jejich sousedy, ke kterému super regionu patøí, poèáteèní armády na reg
 - **Map.xsd** - schéma validující XML se strukturou mapy
 - **RegionColorMapping.xsd** - schéma validující XML mapování barvy na region
 
+##### Pøidání nové mapy
+Aèkoliv je ke høe pøiloená pouze mapa svìta, mapou mùe bıt libovolnı
+neorientovanı graf regionù.
+
+Pro pøidání nové mapy je potøeba pøidat 4 soubory - 2 grafické obrázky mapy a 2 mapovací soubory.
+Je potøeba pøidat do sloky *Maps*:
+- obrázek mapy
+- obrázek mapy, kde kadı region má unikátní barvu
+- xml definující super regiony, regiony a jejich sousedy, které je
+validní vùèi schématu *Map.xsd* (lze se inspirovat v pøiloeném souboru *World.xml*)
+- xml mapující barvu na jméno regionu, které splòuje *RegionColorMapping.xsd*. Všechna
+jména regionù zde pouívajících musí navíc bıt definovány v xml uvedeném v pøedchozím bodì
+
+Navíc, aby aplikace byla schopna tuto mapu naèíst, musí bıt pøidán záznam do databáze *Utils.db* do
+tabulky *MapInfos*.
+
 #### Uloené hry a simulátor
 Uloené hry se nacházejí ve sloce *SavedGames*. Tato sloka má dva podadresáøe: *Hotseat* a *Singleplayer*.
 Ty urèují, pro jakı typ hry dané uloené hry slouí.
@@ -845,128 +910,62 @@ Navíc je, pokud bylo v prùbìhu simulace puštìné logování, obsah logu k dané høe 
 V tom je ve zjednodušené formì zapsáno, pro kadé kolo, jak AI ohodnotilo jednotlivá území, a jak vyhodnotilo
 kvalitu monıch tahù.
 
-### Architektura
-Cílem této sekce je projít a popsat hlavní komponenty práce a jejich fungování.
+### Herní struktury
+V této sekci popíšeme struktury, jejich úèel je popsat herní
+objekty, stav hry a její záznam.
 
-#### Pøehled
-<img src="assembly_map.svg" alt="Map of assemblys" />
+Následující schéma implementuje pravidla hry z kapitoly Pravidla hry [ref].
 
-Obrázek vıše pøedstavuje základní vztahy mezi projekty.
+<img src="game_objects.svg" alt="Herní objekty" />
 
-- *WinformsUI* - grafické komponenty zobrazované uèivateli
-- *Client.Entities* - databázové entity
-- *GameHandlers* - pomocné jednotky pro UI, starají se o backendovou logiku
-uivatelskıch pøíkazù a o herní vıpoèty (napø. kola)
-- *GameObjects* - reprezentují herní objekty (pø. region, super region, mapu, tah, ...)
-- *GameAi* - tøídy slouící k vıpoètu umìlé inteligence
+Hlavní komponentou je tøída *Game*. Ta reprezentuje souèasnı stav hry a 
+monitoruje také její záznam. Tato tøída má seznam hráèù, seznam odehranıch kol a souèasnı stav mapy.
 
-#### Projekt WinformsUI
-Tento projekt obsahuje grafické komponenty zobrazované uivateli: formuláøe
-a související user controly.
-Ty jsou psány pouitím Windows Forms technologie. Dìlí se na dvì logické celky:
-nastavovací a ingame komponenty.
+Je potøeba také evidovat záznam hry, aby hra šla znovu pøehrávat a analyzovat.
+Proto hra má seznam kol.
 
-1. *Nastavovací* - nachází se v adresáøi *GameSetup*. Umoòují uivateli nastavit
-hru. Jako pomocné user controly pouívají komponenty z adresáøe *HelperControls*.
-Nastavovací komponenty se starají o zaloení nové hry nebo simulace a naètení uloené hry
-nebo simulace.
-2. *InGame* - jsou zobrazovány uivateli po zaloení nebo naètení hry nebo simulace.
+<img src="game_objects_rounds.svg" alt="Záznam hry" />
 
-    O simulaci se stará tøída *SimulatorInGameControl*. Tato tøída je zobrazena 
-    uivateli po naètení nebo vytvoøení nové simulace. Pøijímá uivatelovy akce
-    a pøeposílá je dál komponentì *SimulationFlowHandler* na zpracování.
+Kadé kolo se skládá z mnoha tahù, kde hráè pøispívá do kola právì jedním tahem.
+Tah mùe bıt buï poèáteèní (na zaèátku hry), nebo standardní herní.
+Poèáteèní tah eviduje seznam *Seize* akcí, které danı hráè provedl.
+Standardní herní tah eviduje seznam deploy a attack akcí, které danı hráè odehrál.
 
-    O prùbìh hry se starají zbıvající tøídy. Tøída *InGameControl* je zobrazena
-    uivateli. Ta obsahuje mapu - reprezentována tøídou *MapHandlerControl* starající
-    se o uivatelskou interakci s mapou, a herní panel. Herní panel je reprezentován
-    ve sloce *Phases*. Ty se starají o zvládání jednotlivıch fází tahu.
+### Umìlá inteligence
+V této sekci rozebereme naimplementovanou umìlou inteligenci
+a popíšeme, jak pøidat novou.
 
-#### Projekt GameObjectLib
-V této knihovnì jsou datové struktury reprezentující mapu, hráèe, hru a její záznam.
+Bot je tøída implementující interface *IBot*. V programu je pouíván interface
+*IOnlineBot* implementující *IBot*, kterı navíc umoòuje pøerušit vıpoèet v libovolnou dobu.
 
-<img src="game_objects_lib.svg" alt="Game objects lib schema" />
+Jednou z hlavních náplní práce je implementovat umìlou inteligenci vyuívající Monte Carlo tree search algoritmus.
+Pro to slouí tøída *MonteCarloTreeSearchBot* implementující *IOnlineBot*. Ta pro vıpoèet vyuívá
+*MCTSEvaluationHandler*, jejím smyslem je postarat se o paralelní vıpoèet MCTS bota pouitím Koøenové paralelizace [reference].
+Ta staví oddìlenì vıpoèetní stromy, kde o vıpoèet kadého se stará *MCTSTreeHandler*.
+Kadı z tìchto stromù pro vıpoèet potøebuje generátory akcí, komponentu pro ohodnocení pozice a komponentu pro vıpoèet kola.
 
-Na obrázku vıše je znázornìné zjednodušené schéma popisující objekty a jejich vztahy.
+1. *Generátory akcí* - tøídy implementující *IGameBeginningActionsGenerator*
+nebo *IGameActionsGenerator*, podle toho pro kterou fázi generuje tahy.
+2. *Ohodnocování pozice* - pro tento úèel slouí tøídy implementující *IPlayerPerspectiveEvaluator*.
+3. *Vıpoèet nového kola* - øeší *ProbabilityAwareRoundEvaluator*. Vıpoèet stavu po kole ve høe Warlight je nedeterministickı,
+mùe tedy dopadnout rùznımi zpùsoby závise pouze na náhodì. Metoda *EvaluateInExpectedAndWorstCase* proto vypoèítá,
+jak by vypadalo kolo z pohledu našeho hráèe nejlépe a nejhùøe a vrátí tyto nové stavy.
 
-**Tøídy**
+Jak ji bylo øeèeno v kapitole Umìlá inteligence, je potøeba reprezentovat stav hry.
 
-- *Map* - reprezentuje mapu hry, obsahuje informaci o všech regionech a super regionech
-- *Game* - pøedstavuje hru, má mapu a seznam hráèù, co tuto hru hrají. Obsahuje také
-informaci o všech dosud odehranıch kolech.
-- *Player* - reprezentuje hráèe hry.
-- *Turn* - tah hráèe. Obsahuje seznam útokù a deploy akcí, které hráè v daném kole odehrál.
-- *Round* - kolo hry. Má seznam tahù.
-- *Attack* - kdo na koho útoèil s jakım poètem jednotek. Kvùli nedeterministickému vıpoètu
-obsahuje také informaci o novém stavu hry po útoku (*PostAttackMapChange*).
+<img src="evaluation_structures.svg" alt="Struktury pro vıpoèet" />
 
-#### Projekt GameHandlersLib
-V tomto projektu se nachází pomocné tøídy UI. Protoe tato logika je pøenosná i na jiné platformy
-ne desktopové, jsou komponenty oddìleny od Winforms UI tøíd.
-Tøídy tohoto projektu se dìlí na dvì skupiny: map handlery a game handlery.
+*PlayerPerspective* reprezentuje stav hry z pohledu urèitého hráèe. *MapMin* reprezentuje mapu hry,
+*SuperRegionMin* super region a *RegionMin* region. Všechny tyto struktury jsou optimalizované
+tak, aby mìly minimální velikost z dùvodu èastého kopírování bìhem vıpoètu.
 
-##### Map handlery
-Map handlery slouí k vykreslování zmìn na mapì do bitmapy. Starají se o vykreslování
-poètu jednotek na regiony, pøekreslování barev regionù a zvıraznìní regionù.
+#### Pøidání nové umìlé inteligence
+Pro pøidání nového bota je potøeba:
+1. Napsat tøídu implementující interface *IOnlineBot*, ve které definuje chování bota.
+2. Pøidat do enumu *GameBotType* novou polokou, pøidat novı case do metody *GameBotCreator.Create* pøi vytváøení bota
 
-**Tøídy**
-
-- *ColoringHandler* - pøekresluje region na poadovanou barvu. Dùraz byl kladen èasovì
-efektivní implementaci.
-- *TextDrawingHandler* - vykresluje text na obrázek mapy. Pouívá se k vykreslení poètu jednotek na region mapy.
-Algoritmus nejprve najde region, na kterı se má èíslo vypsat. Na tomto regionu pak najde unikátnì zbarvenı
-pixel urèující kam napsat toto èíslo, a èíslo pak vypíše.
-- *HighlightHandler* - dokáe zvıraznit region. Zvıraznìní probíhá tak, e
-algoritmus vykreslí kadı 3. pixel regionu mapy na pøedem zvolenou highlight barvu. 
-- *MapImageTemplateProcessor* - pøedstavuje low-level mapování mezi obrázkem a herní objektem regionu.
-Umoòuje pro kadı pixel najít region, nebo oznámit, e na daném místì se region nenachází.
-- *MapImageProcessor* - wrapper nad ostatními handlery, kterı zprostøedkovává volání.
-
-##### Game handlery
-Game handlery slouí k obsluze jednotlivıch èástí hry.
-
-**Tøídy**
-
-- *RoundHandler* - zajišuje vıpoèet zmìn pøi pøechodu
-z jednoho kola do druhého
-- *GameFlowHandler* - wrapper, kterı obsahuje pomocné metody,
-které se mùou z uivatelského rozhraní volat.
-- *ActionEnumerator* - aby šla odsimulovaná hra
-pøehrávat, je potøeba zajistit pøehrávání akcí obìma smìry.
-Tato komponenta umoòuje iterovat pøes akce všech odehranıch
-kol obìma smìry.
-- *GameRecordHandler* - vyuitím ActionEnumeratoru umoòuje
-iterovat pøes odehraná herní kola nebo odehrané herní akce.
-- *BotEvaluationHandler* - spouští a zastavuje vıpoèet bota pøi simulaci.
-- *SimulationFlowHandler* - pomocná tøída pro UI simulátoru,
-zajišuje provolávání metod do *BotEvaluationHandler*u,
-*GameRecordHandleru*
-
-#### Projekt GameAi.Data
-Tento projekt obsahuje datové struktury slouící k vıpoètu bota a reprezentaci jeho tahu.
-Projekt se dìlí do nìkolika adresáøù.
-
-Adresáø *EvaluationStructures* obsahuje
-struktury, které jsou potøeba pro vıpoèet. Struktury *MapMin*, *RegionMin* a *SuperRegionMin* jsou
-minifikovanım ekvivalentem obdobnì pojmenovanım tøídám v knihovnì *GameObjectsLib*. Pøi jejich
-implementaci byl kladen dùraz na minimální velikost. To hraje roli pøi èastém kopírování.
-K zajištìní lepšího vıkonu byly místo tøíd pouity struktury. Tøída *PlayerPerspective* odpovídá
-pohledu na stav hry z perspektivy jednoho urèitého hráèe.
-
-Adresáø *GameRecording* obsahuje tøídy, které jsou zmenšenımi ekvivalenty tøíd z *GameObjectsLib*
-slouící pro záznam. Tyto tøídy pak pouívá AI mimo jiné na návrat nejlepšího nalezeného tahu.
-
-#### Projekt GameAi
-V tomto projektu jsou komponenty související s implementací AI.
-
-Dìlí se na nìkolik skupin:
-- *ActionGenerators* - generátory akcí, neboli sekvencí deploy jednotek a útokù,
-pro danı stav hry z perspektivy urèitého hráèe. Tyto generátory implementují interface
-*IActionsGenerator*. Rozlišují se podle fáze hry:
-    - *IGameBeginningActionsGenerator* - implementace generují akce pro zaèátek
-    hry
-    - *IGameActionsGenerator* - implementace generují akce pro ostatní fáze hry ne poèáteèní
-- *StructureEvaluators* - jedná se o implementace ohodnocovacích
-funkcí pro struktury hry, tedy *RegionMin*, *SuperRegionMin* a *PlayerPerspective*
+### GUI
+TODO
 
 ## Seznam pouité literatury
 [1] *Parallel Monte-Carlo Tree Search*, Guillaume M.J-B. Chaslot, Mark H.M. Winands, and H. Jaap van den Herik

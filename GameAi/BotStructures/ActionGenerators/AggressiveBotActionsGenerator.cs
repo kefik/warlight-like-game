@@ -32,7 +32,7 @@
         /// <returns></returns>
         public IReadOnlyList<BotGameTurn> Generate(PlayerPerspective currentGameState)
         {
-            IEnumerable<BotGameTurn> botGameTurns = new List<BotGameTurn>();
+            IEnumerable<BotGameTurn> botGameTurns = Enumerable.Empty<BotGameTurn>();
 
             botGameTurns = botGameTurns.Concat(GenerateNoWaitAggressive(currentGameState));
 
