@@ -60,7 +60,7 @@ implementovanıch tøíd.
 1. [Pravidla hry]
 2. [Umìlá inteligence]
 3. [Implementace]
-4. Závìr práce
+4. [Závìr]
 5. [Seznam pouité literatury]
 
 ## Pravidla hry
@@ -640,7 +640,7 @@ porazí tu nepøátelskou i v pøípadì, e by na nìj nepøátelskı hráè postavil všech
 které mùe.
 
 Díky vıše uvedenım algoritmùm se nám branching faktor znaènì zmenšil.
-Z pùvodního branching faktoru *56 * 56* dojde ke zmenšení na *9 * 9**,
+Z pùvodního branching faktoru *56 * 56* dojde ke zmenšení na *9 * 9*,
 kde èíslo 9 reprezentuje všechny kombinace deploy a attack akcí.
 Z pravidla je vìtvení mnohem menší, protoe generování deploy a attack
 akcí vygeneruje neunikátní tahy, ve kterıch jsou duplikáty odstranìny.
@@ -677,12 +677,11 @@ Budou-li pouity jako zámky spinlocky, protoe zamykání bude pouze na krátkou ch
 Èastokrát se však bude stávat, e vlákna budou procházet strom zcela stejnım zpùsobem - pokud vlákna zaènou v selekci
 paralelnì sestupovat od koøene a k listu, je pravdìpodobné, e budou sestupovat po stejné cestì. Po odsimulování by
 vzestup byl také po stejné cestì. Tím bychom se dostali do podobné situace, jakou má
-paralelizace listu - vedli bychom v podstatì paralelní simulaci.
+paralelizace listu - vedli bychom èastokrát simulace ze stejného vrcholu.
 
     Abychom se tomuto vyhnuli, z práce [1] bychom vyuili koncept
 "virtuální prohry" - kdykoliv vlákno pøistoupí k vrcholu, pøiøadí mu virtuální prohru, èim zmenší jeho hodnocení.
-Pøíští vlákno tak nepùjde po té stejné cestì, pokud díky virtuální prohøe je hodnocení vrcholu horší ne hodnocení
-nìkterého jiného vrcholu na stejné úrovni.
+Pøíští vlákno tak nemusí jít nutnì po té stejné cestì. Pøi zpìtné propagaci virtuální prohru zrušíme.
 
 Tyto metody paralelizace byly v práci [1] otestovány na høe Go, která, podobnì jako Warlight, má velmi velkı stavovı prostor.
 
@@ -900,7 +899,7 @@ jména regionù zde pouívajících musí navíc bıt definovány v xml uvedeném v pøedc
 Navíc, aby aplikace byla schopna tuto mapu naèíst, musí bıt pøidán záznam do databáze *Utils.db* do
 tabulky *MapInfos*.
 
-#### Uloené hry a simulátor
+#### Uloené hry a uloenı stav simulátoru
 Uloené hry se nacházejí ve sloce *SavedGames*. Tato sloka má dva podadresáøe: *Hotseat* a *Singleplayer*.
 Ty urèují, pro jakı typ hry dané uloené hry slouí.
 Uloené hry jsou pojmenovány *{èíslo hry}.sav*, jedná se o binárnì serializovanou *Game* tøídu.
@@ -918,8 +917,9 @@ Následující schéma implementuje pravidla hry z kapitoly Pravidla hry [ref].
 
 <img src="game_objects.svg" alt="Herní objekty" />
 
-Hlavní komponentou je tøída *Game*. Ta reprezentuje souèasnı stav hry a 
+Hlavní komponentou je abstraktní tøída *Game*. Ta reprezentuje souèasnı stav hry a 
 monitoruje také její záznam. Tato tøída má seznam hráèù, seznam odehranıch kol a souèasnı stav mapy.
+Podle typu hry pak od *Game* pak další tøídy dìdí - potomci: SimulatorGame, HotseatMultiplayerGame, SingleplayerGame.
 
 Je potøeba také evidovat záznam hry, aby hra šla znovu pøehrávat a analyzovat.
 Proto hra má seznam kol.
@@ -952,6 +952,7 @@ mùe tedy dopadnout rùznımi zpùsoby závise pouze na náhodì. Metoda *EvaluateInEx
 jak by vypadalo kolo z pohledu našeho hráèe nejlépe a nejhùøe a vrátí tyto nové stavy.
 
 Jak ji bylo øeèeno v kapitole Umìlá inteligence, je potøeba reprezentovat stav hry.
+Proto zavedeme minifikované vıpoèetní struktury.
 
 <img src="evaluation_structures.svg" alt="Struktury pro vıpoèet" />
 
@@ -959,13 +960,62 @@ Jak ji bylo øeèeno v kapitole Umìlá inteligence, je potøeba reprezentovat stav 
 *SuperRegionMin* super region a *RegionMin* region. Všechny tyto struktury jsou optimalizované
 tak, aby mìly minimální velikost z dùvodu èastého kopírování bìhem vıpoètu.
 
+Pøed pouíváním vıše uvedenıch struktur je však kvùli optimalizaci provést úpravy.
+Jedna z nich je napøíklad taková, e poloku *Id* u regionu a super regionu. Toto *Id*
+mùe bıt standardnì libovolné èíslo. Z dùvodu rychlejšího pøístupu však chceme, aby
+kadı region uvedenı v seznamu regionu v *MapMin* mìl stejné *Id*, jakı má index v tomto seznamu.
+Proto je zavedena tøída *WarlightAiBotHandler* implementující *IOnlineBotHandler*, která se
+stará právì o mapování tìchto *Id*, ale i o další vìci.
+
 #### Pøidání nové umìlé inteligence
 Pro pøidání nového bota je potøeba:
-1. Napsat tøídu implementující interface *IOnlineBot*, ve které definuje chování bota.
+1. Napsat tøídu implementující interface *IOnlineBot*, která definuje chování bota.
 2. Pøidat do enumu *GameBotType* novou polokou, pøidat novı case do metody *GameBotCreator.Create* pøi vytváøení bota
 
-### GUI
-TODO
+### Hra jednoho a více hráèù
+V této sekci popíšeme hlavní komponenty hry jednoho a více hráèù a popíšeme jejich komunikaci.
+
+Støedobodem je tøída *GameFlowHandler*. Její smysl je umonit volání
+všech potøebnıch funkcí z GUI. Takové funkce jsou napøíklad *Deploy* (pøidá do aktuálního tahu deploy akci),
+*Attack* (pøidá attack akci),... 
+
+Od tøídy *GameFlowHandler* dìdí *SingleplayerGameFlowHandler*, která je vyuívána pro singleplayer hry, a *HotseatGameFlowHandler*, která je vyuívána pro hotseat multiplayer hry.
+
+Schéma:
+<img src="game_interaction.svg" alt="Hra jednoho a více hráèù schéma" />
+
+Tøída *GameFlowHandler* vyuívá pro vykreslování komponenty *MapHandlers* a
+pro vıpoèet nového kola tøídu *RoundHandler*. Také se sama pøímo stará o vıpoèet AI.
+
+*GameFlowHandler* není díky tomuto návrhu závislı na specifickém GUI. Lze tedy
+snadno pøidat jiné GUI a pouívat portabilní logiku *GameFlowHandler*u a na nìm závislıch komponent i v novém grafickém uivatelském rozhraní.
+
+### Simulátor
+Simulátor umoòuje uivateli nechat hrát AI proti sobì
+a následnì zkoumat jejich odehrané tahy, a také odehrané hry.
+
+<img src="simulation_interaction.svg" />
+
+Støedobodem simulátoru je tøída *SimulationFlowHandler*.
+Tato tøída, podobnì jako *GameFlowHandler* pro hru jednoho nebo více hráèù,
+poskytuje API, které je moné z GUI volat a pomocí dalších tøíd implementuje
+logiku nezávislou na GUI.
+
+Simulátor však navíc má monost pøehrávat ji odehrané tahy a odehrané hry.
+Toto umoòuje *GameRecordHandler*, kterı si
+pamatuje aktuálnì zobrazenı stav hry uivateli a je schopen posunout ho o akci nebo kolo vpøed nebo zpìt.
+Uivatel tak mùe jednoduše prozkoumávat ji odehrané simulace a vylepšovat bota.
+
+*BotEvaluationHandler* umoòuje spustit a pøerušit simulaci.
+Spuštìní simulace spustí vıpoèet všech botù. Vdy, jak boti odehrají své tahy,
+je potøeba spustit vıpoèet kola, o kterı se stará tøída *RoundHandler*.
+Její nezávislost na *MapHandlers* zajišuje
+monost spuštìní simulace bez grafického rozhraní.
+
+Nakonec, o vykreslování zmìn do mapy, stejnì jako u hry jednoho a více hráèù,
+jsou pouívány komponenty *MapHandlers*.
+
+## Závìr
 
 ## Seznam pouité literatury
 [1] *Parallel Monte-Carlo Tree Search*, Guillaume M.J-B. Chaslot, Mark H.M. Winands, and H. Jaap van den Herik
